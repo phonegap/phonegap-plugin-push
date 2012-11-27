@@ -1,0 +1,96 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>com.PhoneGap.c2dm</title>
+        <script type="text/javascript" charset="utf-8" src="cordova-2.1.0.js"></script>
+        <script type="text/javascript" charset="utf-8" src="jquery_1.5.2.min.js"></script>
+        <script type="text/javascript" src="PushNotification.js"></script>
+        
+        <script type="text/javascript">
+            var pushNotification;
+            
+            function onLoad() {
+                document.addEventListener('deviceready', onDeviceReady, true);
+            }
+            
+            function onDeviceReady() {
+                $("#app-status-ul").append('<li>deviceready event received</li>');
+                
+                pushNotification = window.plugins.pushNotification;
+                if (device.platform == 'android' || device.platform == 'Android') {
+                    pushNotification.register(successHandler, errorHandler, {"senderID":"661780372179","ecb":"onNotificationGCM"});
+                } else {
+                    pushNotification.register(tokenHandler, errorHandler, {"badge":"true","sound":"true","alert":"true","ecb":"onNotificationAPN"});
+                }
+            }
+            
+            // handle APNS notifications for iOS
+            function onNotificationAPN(event) {
+                if (event.alert) {
+                    $("#app-status-ul").append('<li>push-notification: ' + event.alert + '</li>');
+                    navigator.notification.alert(event.alert);
+                }
+                
+                if (event.sound) {
+                    var snd = new Media(event.sound);
+                    snd.play();
+                }
+                
+                if (event.badge) {
+                    pushNotification.setApplicationIconBadgeNumber(successHandler, event.badge);
+                }
+            }
+            
+            // handle GCM notifications for Android
+            function onNotificationGCM(e) {
+                $("#app-status-ul").append('<li>EVENT -> RECEIVED:' + e.event + '</li>');
+                
+                switch( e.event )
+                {
+                    case 'registered':
+					if ( e.regid.length > 0 )
+					{
+						$("#app-status-ul").append('<li>REGISTERED -> REGID:' + e.regid + "</li>");
+						// Your GCM push server needs to know the regID before it can push to this device
+						// here is where you might want to send it the regID for later use.
+					}
+                    break;
+                    
+                    case 'message':
+					$("#app-status-ul").append('<li>MESSAGE -> MSG: ' + e.message + '</li>');
+					$("#app-status-ul").append('<li>MESSAGE -> MSGCNT: ' + e.msgcnt + '</li>');
+                    break;
+                    
+                    case 'error':
+					$("#app-status-ul").append('<li>ERROR -> MSG:' + e.msg + '</li>');
+                    break;
+                    
+                    default:
+					$("#app-status-ul").append('<li>EVENT -> Unknown, an event was received and we do not know what it is</li>');
+                    break;
+                }
+            }
+            
+            function tokenHandler (result) {
+                $("#app-status-ul").append('<li>token: '+ result +'</li>');
+                // Your iOS push server needs to know the token before it can push to this device
+                // here is where you might want to send it the token for later use.
+            }
+			
+            function successHandler (result) {
+                $("#app-status-ul").append('<li>success:'+ result +'</li>');
+            }
+            
+            function errorHandler (error) {
+                $("#app-status-ul").append('<li>error:'+ error +'</li>');
+            }
+            </script>
+    </head>
+    <body onload="onLoad();">
+        <div id="app-status-div">
+            <ul id="app-status-ul">
+                <li>Cordova Google Cloud Messaging Plugin Demo</li>
+            </ul>
+        </div>
+    </body>
+</html>

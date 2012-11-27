@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="com.adobe.plugins.PushPlugin"
+    version="1.0.0">
+    <name>PushPlugin</name>
+
+	<asset src="www/PushNotification.js" target="PushNotification.js" />
+
+	<platform name="android">
+        <config-file target="res/xml/config.xml" parent="plugins">
+    		<plugin name="PushPlugin" value="com.plugin.GCM.PushPlugin" />
+        </config-file>
+    
+		<config-file target="AndroidManifest.xml" parent="/manifest">
+			<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+			<uses-permission android:name="android.permission.WAKE_LOCK" />
+			<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+			<permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+			<uses-permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" />
+  		</config-file>
+  		
+     	<config-file target="AndroidManifest.xml" parent="/manifest/application">
+ 			<receiver android:name="com.google.android.gcm.GCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
+ 				<intent-filter>
+ 					<action android:name="com.google.android.c2dm.intent.RECEIVE" />
+ 					<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+ 					<category android:name="$PACKAGE_NAME" />
+ 				</intent-filter>
+ 			</receiver>
+ 			<service android:name="com.google.android.gcm.GCMIntentService" />
+		</config-file>
+		
+		<source-file src="src/android/gcm/GCMBaseIntentService.java" target-dir="src/com/google/android/gcm/" />
+ 		<source-file src="src/android/gcm/GCMBroadcastReceiver.java" target-dir="src/com/google/android/gcm/" />
+ 		<source-file src="src/android/gcm/GCMConstants.java" target-dir="src/com/google/android/gcm/" />
+ 		<source-file src="src/android/gcm/GCMRegistrar.java" target-dir="src/com/google/android/gcm/" />
+ 		<source-file src="src/android/gcm/GCMIntentService.java" target-dir="src/com/google/android/gcm/" />
+ 		<source-file src="src/android/plugin/PushPlugin.java" target-dir="src/com/plugin/GCM/" />
+		
+    </platform>
+
+  <!-- ios -->
+    <platform name="ios">
+        <plugins-plist key="PushPlugin" string="PushPlugin" />
+        <source-file src="AppDelegate+notification.h" />
+        <source-file src="AppDelegate+notification.m" />
+        <source-file src="PushPlugin.h" />
+        <source-file src="PushPlugin.m" />
+    </platform>
+</plugin>
