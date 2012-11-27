@@ -69,8 +69,6 @@ Add the **PushNotification.js** script to your assets/www folder (or javascripts
 
     <script type="text/javascript" charset="utf-8" src="PushNotification.js"></script>
 
-In the Examples folder you will find a sample implementation showing how to interact with the PushPlugin. Modify it to suit your needs.
-
 ## Manual Installation for iOS
 
 Copy the following files to your project's Plugins folder:
@@ -291,4 +289,4 @@ While the data model for iOS is somewhat fixed, it should be noted that GCM is f
 
 Huge thanks to Mark Nutter whose [GCM-Cordova plugin](https://github.com/marknutter/GCM-Cordova) forms the basis for the Android side implimentation.
 
-Likewise, the iOS side was inspired by Olivier Louvignes' [Cordova PushNotification Plugin](https://github.com/phonegap/phonegap-plugins/tree/master/iOS/PushNotification) (**Copyright (c) 2012 Olivier Louvignes**) for iOS.
+Likewise, the iOS side was inspired by Olivier Louvignes' [Cordova PushNotification Plugin](https://github.com/phonegap/phonegap-plugins/tree/master/iOS/PushNotification) (Copyright (c) 2012 Olivier Louvignes) for iOS.
