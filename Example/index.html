@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>com.PhoneGap.c2dm</title>
-        <script type="text/javascript" charset="utf-8" src="cordova-2.1.0.js"></script>
+        <script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
         <script type="text/javascript" charset="utf-8" src="jquery_1.5.2.min.js"></script>
         <script type="text/javascript" src="PushNotification.js"></script>
         
@@ -18,7 +18,7 @@
                 
                 pushNotification = window.plugins.pushNotification;
                 if (device.platform == 'android' || device.platform == 'Android') {
-                    pushNotification.register(successHandler, errorHandler, {"senderID":"661780372179","ecb":"onNotificationGCM"});
+                    pushNotification.register(successHandler, errorHandler, {"senderID":"replace_with_sender_id","ecb":"onNotificationGCM"});
                 } else {
                     pushNotification.register(tokenHandler, errorHandler, {"badge":"true","sound":"true","alert":"true","ecb":"onNotificationAPN"});
                 }
