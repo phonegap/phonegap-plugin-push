@@ -35,9 +35,28 @@ This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and
 
 ## Manual Installation for Android
 
-Add the **com.google.android.gcm** and **com.plugin.GCM** packages to your project's src directory.
 
-Modify your **AndroidManifest.xml** and add the following lines to your manifest tag, replacing **your_app_package** with your app's package path:
+1) copy the contents of **src/android/com/** to your project's **src/com/** folder. The final hirearchy will likely look something like this;
+
+	{project_folder}
+		src
+			com
+				google
+					android
+						gcm
+							GCMBaseIntentService.java
+							GCMBroadcastReceiver.java
+							GCMConstants.java
+							GCMIntentService.java
+							GCMRegistrar.java
+				plugin
+					GCM
+						PushPlugin.java
+				{company_name}
+					{intent_name}
+						{intent_name}.java
+
+2) Modify your **AndroidManifest.xml** and add the following lines to your manifest tag, replacing **your_app_package** with your app's package path:
 
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -48,7 +67,7 @@ Modify your **AndroidManifest.xml** and add the following lines to your manifest
     <uses-permission android:name="your_app_package.permission.C2D_MESSAGE" />
 
 
-Modify your **AndroidManifest.xml** and add the **receiver** and **service** tags to your **application** section, replacing **your_app_package** with your app's package path: (See the Sample_AndroidManifest.xml file in the Example folder.)
+3) Modify your **AndroidManifest.xml** and add the **receiver** and **service** tags to your **application** section, replacing **your_app_package** with your app's package path: (See the Sample_AndroidManifest.xml file in the Example folder.)
 
 
     <receiver android:name="com.google.android.gcm.GCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
@@ -60,11 +79,11 @@ Modify your **AndroidManifest.xml** and add the **receiver** and **service** tag
     </receiver>
     <service android:name="com.google.android.gcm.GCMIntentService" />
 
-Modify your **res/xml/config.xml** to include the following line in order to tell Cordova to include this plugin and where it can be found: (See the Sample_config.xml file in the Example folder)
+4) Modify your **res/xml/config.xml** to include the following line in order to tell Cordova to include this plugin and where it can be found: (See the Sample_config.xml file in the Example folder)
 
     <plugin name="PushPlugin" value="com.plugin.GCM.PushPlugin" />
 
-Add the **PushNotification.js** script to your assets/www folder (or javascripts folder, wherever you want really) and reference it in your main index.html file. This file's usage is described in the **Plugin API** section below.
+5) Add the **PushNotification.js** script to your assets/www folder (or javascripts folder, wherever you want really) and reference it in your main index.html file. This file's usage is described in the **Plugin API** section below.
 
     <script type="text/javascript" charset="utf-8" src="PushNotification.js"></script>
 

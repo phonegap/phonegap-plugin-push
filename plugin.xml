@@ -32,12 +32,12 @@
  			<service android:name="com.google.android.gcm.GCMIntentService" />
 		</config-file>
 		
-		<source-file src="src/android/gcm/GCMBaseIntentService.java" target-dir="src/com/google/android/gcm/" />
- 		<source-file src="src/android/gcm/GCMBroadcastReceiver.java" target-dir="src/com/google/android/gcm/" />
- 		<source-file src="src/android/gcm/GCMConstants.java" target-dir="src/com/google/android/gcm/" />
- 		<source-file src="src/android/gcm/GCMRegistrar.java" target-dir="src/com/google/android/gcm/" />
- 		<source-file src="src/android/gcm/GCMIntentService.java" target-dir="src/com/google/android/gcm/" />
- 		<source-file src="src/android/plugin/PushPlugin.java" target-dir="src/com/plugin/GCM/" />
+		<source-file src="src/android/com/google/android/gcm/GCMBaseIntentService.java" target-dir="src/com/google/android/gcm/" />
+ 		<source-file src="src/android/com/google/android/gcm/GCMBroadcastReceiver.java" target-dir="src/com/google/android/gcm/" />
+ 		<source-file src="src/android/com/google/android/gcm/GCMConstants.java" target-dir="src/com/google/android/gcm/" />
+ 		<source-file src="src/android/com/google/android/gcm/GCMRegistrar.java" target-dir="src/com/google/android/gcm/" />
+ 		<source-file src="src/android/com/google/android/gcm/GCMIntentService.java" target-dir="src/com/google/android/gcm/" />
+ 		<source-file src="src/android/com/plugin/GCM/PushPlugin.java" target-dir="src/com/plugin/GCM/" />
 		
     </platform>
 
