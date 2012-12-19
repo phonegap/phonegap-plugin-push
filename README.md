@@ -40,6 +40,7 @@ Add the **com.google.android.gcm** and **com.plugin.GCM** packages to your proje
 Modify your **AndroidManifest.xml** and add the following lines to your manifest tag, replacing **your_app_package** with your app's package path:
 
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -47,7 +48,7 @@ Modify your **AndroidManifest.xml** and add the following lines to your manifest
     <uses-permission android:name="your_app_package.permission.C2D_MESSAGE" />
 
 
-Modify your **AndroidManifest.xml** and add the following lines to your application tag, replacing **your_app_package** with your app's package path:
+Modify your **AndroidManifest.xml** and add the **receiver** and **service** tags to your **application** section, replacing **your_app_package** with your app's package path: (See the Sample_AndroidManifest.xml file in the Example folder.)
 
 
     <receiver android:name="com.google.android.gcm.GCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
@@ -57,15 +58,13 @@ Modify your **AndroidManifest.xml** and add the following lines to your applicat
         <category android:name="your_app_package" />
       </intent-filter>
     </receiver>
-
     <service android:name="com.google.android.gcm.GCMIntentService" />
 
-
-Modify your **res/xml/plugins.xml** to include the following line in order to tell Cordova to include this plugin and where it can be found:
+Modify your **res/xml/config.xml** to include the following line in order to tell Cordova to include this plugin and where it can be found: (See the Sample_config.xml file in the Example folder)
 
     <plugin name="PushPlugin" value="com.plugin.GCM.PushPlugin" />
 
-Add the **PushNotification.js** script to your assets/www folder (or javascripts folder, wherever you want really) and reference it in your main index.html file.
+Add the **PushNotification.js** script to your assets/www folder (or javascripts folder, wherever you want really) and reference it in your main index.html file. This file's usage is described in the **Plugin API** section below.
 
     <script type="text/javascript" charset="utf-8" src="PushNotification.js"></script>
 
@@ -115,12 +114,16 @@ When deviceReady fires, get the plugin reference
 #### register
 This should be called as soon as the device becomes ready. On success, you will get a call to tokenHandler (iOS), or  onNotificationGCM (Android), allowing you to obtain the device token or registration ID, respectively. Those values will typically get posted to your intermediary push server so it knows who it can send notifications to.
 
+
+For Android, If you have not already done so, you'll need to set up a Google API project, to generate your senderID. [Follow these steps](http://developer.android.com/guide/google/gcm/gs.html) to do so. This is described more fully in the **Test Environment** section below.
+
+In this example, sure and substitute your own senderID. Get your senderID by signing into to your [google dashboard](https://code.google.com/apis/console/). The senderID is found at **Overview->Dashboard->Project Number**.
+
 	if (device.platform == 'android' || device.platform == 'Android') {
-		pushNotification.register(successHandler, errorHandler,{"senderID":"661780372179","ecb":"onNotificationGCM"});
+		pushNotification.register(successHandler, errorHandler,{"senderID":"replace_with_sender_id","ecb":"onNotificationGCM"});
 	} else {
 		pushNotification.register(tokenHandler, errorHandler {"badge":"true","sound":"true","alert":"true","ecb":"onNotificationAPN"});
 	}
-	
 
 **successHandler** - called when a plugin method returns without error
 
@@ -223,15 +226,13 @@ This plugin and its target Cordova application comprise the client application.T
 - You have successfully built a client with this plugin, on both iOS and Android and have installed them on a device.
 
 
-#### 1) [Get the gem](https://github.com/NicosKaralis/pushmeup), either by downloading the zip or cloning the repo.
-	
-	a) cd to the pushmeup directory you just downloaded
-	b) sudo gem install pushmeup
+#### 1) [Get the gem](https://github.com/NicosKaralis/pushmeup)	
+	$ sudo gem install pushmeup
 	
 #### 2) (iOS) [Follow this tutorial](http://www.raywenderlich.com/3443/apple-push-notification-services-tutorial-part-12) to create a file called ck.pem.
 Start at the section entitled "Generating the Certificate Signing Request (CSR)", and substitute your own Bundle Identifier, and Description.
 	
-	a) go the this plugin's Example folder and open pushAPNS.rb in the text editor of your choice.
+	a) go the this plugin's Example/server folder and open pushAPNS.rb in the text editor of your choice.
 	b) set the APNS.pem variable to the path of the ck.pem file you just created
 	c) set APNS.pass to the password associated with the certificate you just created. (warning this is cleartext, so don't share this file)
 	d) set device_token to the token for the device you want to send a push to. (you can run the Cordova app / plugin in Xcode and extract the token from the log messages)
@@ -239,7 +240,7 @@ Start at the section entitled "Generating the Certificate Signing Request (CSR)"
 	
 #### 3) (Android) [Follow these steps](http://developer.android.com/guide/google/gcm/gs.html) to generate a project ID and a server based API key.
 
-	a) go the this plugin's Example folder and open pushGCM.rb in the text editor of your choice.
+	a) go the this plugin's Example/server folder and open pushGCM.rb in the text editor of your choice.
 	b) set the GCM.key variable to the API key you just generated.
 	c) set the destination variable to the Registration ID of the device. (you can run the Cordova app / plugin in on a device via Eclipse and extract the regID from the log messages)
 	
