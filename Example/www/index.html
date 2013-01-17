@@ -2,23 +2,21 @@
 <html>
     <head>
         <title>com.PhoneGap.c2dm</title>
-        <script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
         <script type="text/javascript" charset="utf-8" src="jquery_1.5.2.min.js"></script>
         <script type="text/javascript" src="PushNotification.js"></script>
         
         <script type="text/javascript">
             var pushNotification;
             
-            function onLoad() {
-                document.addEventListener('deviceready', onDeviceReady, true);
-            }
-            
             function onDeviceReady() {
                 $("#app-status-ul").append('<li>deviceready event received</li>');
                 
                 pushNotification = window.plugins.pushNotification;
                 if (device.platform == 'android' || device.platform == 'Android') {
-                    pushNotification.register(successHandler, errorHandler, {"senderID":"replace_with_sender_id","ecb":"onNotificationGCM"});
+                    pushNotification.register(successHandler, errorHandler, {"senderID":"661780372179","ecb":"onNotificationGCM"});
                 } else {
                     pushNotification.register(tokenHandler, errorHandler, {"badge":"true","sound":"true","alert":"true","ecb":"onNotificationAPN"});
                 }
@@ -53,6 +51,7 @@
 						$("#app-status-ul").append('<li>REGISTERED -> REGID:' + e.regid + "</li>");
 						// Your GCM push server needs to know the regID before it can push to this device
 						// here is where you might want to send it the regID for later use.
+						console.log("regID = " + regID);
 					}
                     break;
                     
@@ -84,13 +83,15 @@
             function errorHandler (error) {
                 $("#app-status-ul").append('<li>error:'+ error +'</li>');
             }
-            </script>
-    </head>
-    <body onload="onLoad();">
+            
+			document.addEventListener('deviceready', onDeviceReady, true);
+
+         </script>
+         
         <div id="app-status-div">
-            <ul id="app-status-ul">
-                <li>Cordova PushNotification Plugin Demo</li>
-            </ul>
-        </div>
+			<ul id="app-status-ul">
+				<li>Cordova PushNotification Plugin Demo</li>
+			</ul>
+		</div>
     </body>
 </html>
