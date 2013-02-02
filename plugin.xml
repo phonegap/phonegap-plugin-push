@@ -2,7 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="com.adobe.plugins.PushPlugin"
-    version="1.0.0">
+    version="1.0.1">
     <name>PushPlugin</name>
 
 	<asset src="www/PushNotification.js" target="PushNotification.js" />
@@ -43,7 +43,14 @@
 
   <!-- ios -->
     <platform name="ios">
+		<!-- Cordova < 2.3 -->
         <plugins-plist key="PushPlugin" string="PushPlugin" />
+        
+		<!-- Cordova >= 2.3 -->
+		<config-file target="config.xml" parent="/cordova/plugins">
+			<plugin name="PushPlugin" value="PushPlugin"/>
+		</config-file>
+        
         <source-file src="AppDelegate+notification.h" />
         <source-file src="AppDelegate+notification.m" />
         <source-file src="PushPlugin.h" />
