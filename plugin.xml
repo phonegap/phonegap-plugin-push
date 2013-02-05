@@ -41,7 +41,7 @@
  		<source-file src="src/android/com/google/android/gcm/GCMIntentService.java" target-dir="src/com/google/android/gcm/" />
  		<source-file src="src/android/com/plugin/GCM/PushPlugin.java" target-dir="src/com/plugin/GCM/" />
  		<source-file src="src/android/com/plugin/GCM/PushHandlerActivity.java" target-dir="src/com/plugin/GCM/" />
-		
+ 		<source-file src="src/android/com/plugin/android-support-v13.jar" target-dir="libs/" />
     </platform>
 
   <!-- ios -->
