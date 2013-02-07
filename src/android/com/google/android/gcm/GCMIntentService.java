@@ -6,7 +6,6 @@ import java.util.List;
 import com.plugin.GCM.PushHandlerActivity;
 import com.google.android.gcm.*;
 
-import org.apache.cordova.example.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -128,7 +127,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);		
 
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-		.setSmallIcon(R.drawable.icon)
+		.setSmallIcon(context.getApplicationInfo().icon)
 		.setWhen(System.currentTimeMillis())
 		.setContentTitle(appName)
 		.setTicker(appName)
