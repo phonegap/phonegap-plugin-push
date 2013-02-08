@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="com.adobe.plugins.PushPlugin"
     version="1.1.0">
+
     <name>PushPlugin</name>
 
 	<asset src="www/PushNotification.js" target="PushNotification.js" />
