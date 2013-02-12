@@ -4,6 +4,8 @@
         <title>com.PhoneGap.c2dm</title>
     </head>
     <body>
+        
+        <!--<script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>-->
         <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
         <script type="text/javascript" charset="utf-8" src="jquery_1.5.2.min.js"></script>
         <script type="text/javascript" src="PushNotification.js"></script>
@@ -14,28 +16,51 @@
             function onDeviceReady() {
                 $("#app-status-ul").append('<li>deviceready event received</li>');
                 
-                pushNotification = window.plugins.pushNotification;
-                if (device.platform == 'android' || device.platform == 'Android') {
-                    pushNotification.register(successHandler, errorHandler, {"senderID":"661780372179","ecb":"onNotificationGCM"});
-                } else {
-                    pushNotification.register(tokenHandler, errorHandler, {"badge":"true","sound":"true","alert":"true","ecb":"onNotificationAPN"});
+				try 
+				{ 
+                	pushNotification = window.plugins.pushNotification;
+                	if (device.platform == 'android' || device.platform == 'Android') {
+						$("#app-status-ul").append('<li>registering android</li>');
+                    	pushNotification.register(successHandler, errorHandler, {"senderID":"661780372179","ecb":"onNotificationGCM"});
+					} else {
+						$("#app-status-ul").append('<li>registering iOS</li>');
+                    	pushNotification.register(tokenHandler, errorHandler, {"badge":"true","sound":"true","alert":"true","ecb":"onNotificationAPN"});
+                	}
                 }
+				catch(err) 
+				{ 
+					txt="There was an error on this page.\n\n"; 
+					txt+="Error description: " + err.message + "\n\n"; 
+					alert(txt); 
+				} 
             }
             
             // handle APNS notifications for iOS
-            function onNotificationAPN(event) {
-                if (event.alert) {
-                    $("#app-status-ul").append('<li>push-notification: ' + event.alert + '</li>');
-                    navigator.notification.alert(event.alert);
+            function onNotificationAPN(e) {
+                
+                if (e.foreground) {
+                    $("#app-status-ul").append('<li>--INLINE NOTIFICATION--' + '</li>');
+                    
+                    if (e.sound) {
+                        var snd = new Media(e.sound);
+                        snd.play();
+                    }
+                    
+                    if (e.alert) {
+                        $("#app-status-ul").append('<li>push-notification: ' + e.alert + '</li>');
+                        navigator.notification.alert(e.alert);
+                    }
+                }
+                else {
+                    $("#app-status-ul").append('<li>--BACKGROUND NOTIFICATION--' + '</li>');
+                    
+                    if (e.alert) {
+                        $("#app-status-ul").append('<li>push-notification: ' + e.alert + '</li>');
+                    }
                 }
                 
-                if (event.sound) {
-                    var snd = new Media(event.sound);
-                    snd.play();
-                }
-                
-                if (event.badge) {
-                    pushNotification.setApplicationIconBadgeNumber(successHandler, event.badge);
+                if (e.badge) {
+                    pushNotification.setApplicationIconBadgeNumber(successHandler, e.badge);
                 }
             }
             
@@ -74,17 +99,18 @@
                     break;
                     
                     case 'error':
-					$("#app-status-ul").append('<li>ERROR -> MSG:' + e.msg + '</li>');
+						$("#app-status-ul").append('<li>ERROR -> MSG:' + e.msg + '</li>');
                     break;
                     
                     default:
-					$("#app-status-ul").append('<li>EVENT -> Unknown, an event was received and we do not know what it is</li>');
+						$("#app-status-ul").append('<li>EVENT -> Unknown, an event was received and we do not know what it is</li>');
                     break;
                 }
             }
             
             function tokenHandler (result) {
                 $("#app-status-ul").append('<li>token: '+ result +'</li>');
+                console.log("token = " + result);
                 // Your iOS push server needs to know the token before it can push to this device
                 // here is where you might want to send it the token for later use.
             }

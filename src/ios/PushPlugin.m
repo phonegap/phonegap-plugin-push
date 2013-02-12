@@ -28,6 +28,7 @@
 @implementation PushPlugin
 
 @synthesize notificationMessage;
+@synthesize isInline;
 
 @synthesize callbackId;
 @synthesize notificationCallbackId;
@@ -69,6 +70,8 @@
 
     if (notificationTypes == UIRemoteNotificationTypeNone)
         NSLog(@"PushPlugin.register: Push notification type is set to none");
+
+    isInline = NO;
 
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:notificationTypes];
 }
@@ -163,6 +166,12 @@
         if ([notificationMessage objectForKey:@"badge"])
             [jsonStr appendFormat:@"badge:%d,", [[notificationMessage objectForKey:@"badge"] intValue]];
 
+        if (isInline)
+        {
+            [jsonStr appendFormat:@"foreground:'%d',", 1];
+            isInline = NO;
+        }
+        
         if ([notificationMessage objectForKey:@"sound"])
             [jsonStr appendFormat:@"sound:'%@',", [notificationMessage objectForKey:@"sound"]];
 

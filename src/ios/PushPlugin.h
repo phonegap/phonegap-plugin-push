@@ -29,6 +29,7 @@
 @interface PushPlugin : CDVPlugin
 {
     NSDictionary *notificationMessage;
+    BOOL    isInline;
     NSString *notificationCallbackId;
     NSString *callback;
     
@@ -40,6 +41,7 @@
 @property (nonatomic, copy) NSString *callback;
 
 @property (nonatomic, retain) NSDictionary *notificationMessage;
+@property BOOL                          isInline;
 
 - (void)register:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options;
 

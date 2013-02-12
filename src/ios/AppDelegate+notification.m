@@ -41,6 +41,7 @@ static char launchNotificationKey;
     if (appState == UIApplicationStateActive) {
         PushPlugin *pushHandler = [self getCommandInstance:@"PushPlugin"];
         pushHandler.notificationMessage = [userInfo objectForKey:@"aps"];
+        pushHandler.isInline = YES;
         [pushHandler notificationReceived];
     } else {
         //save it for later
