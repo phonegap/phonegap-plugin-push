@@ -1,31 +1,23 @@
 package com.google.android.gcm;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.plugin.GCM.PushHandlerActivity;
-import com.google.android.gcm.*;
-import java.util.Iterator;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import com.plugin.GCM.PushPlugin;
 
