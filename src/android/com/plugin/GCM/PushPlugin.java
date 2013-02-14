@@ -76,7 +76,7 @@ public class PushPlugin extends Plugin {
 
       GCMRegistrar.unregister(this.ctx.getContext());
       Log.v(ME + ":" + UNREGISTER, "GCMRegistrar.unregister called ");
-
+      result = new PluginResult(Status.OK);
     }
     else
     {

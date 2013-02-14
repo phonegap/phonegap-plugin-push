@@ -8,6 +8,9 @@
 
 package com.plugin.GCM;
 
+import java.util.Iterator;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,28 +38,86 @@ public class PushHandlerActivity extends Activity
         {
     		Bundle	originalExtras = extras.getBundle("pushBundle");
     		if (originalExtras != null)
-    		{
-    			try
-    			{
-     				JSONObject json;
-    				json = new JSONObject().put("event", "message");
-
-    				json.put("message", originalExtras.getString("message"));
-    				json.put("msgcnt", originalExtras.getString("msgcnt"));
-    				json.put("foreground", originalExtras.getBoolean("foreground"));
-
-    				Log.v("PushHandlerActivity:handlePush", json.toString());
-
-    				PushPlugin.sendJavascript( json );
-    			}
-    			catch( JSONException e)
-    			{
-    				Log.e("PushHandlerActivity:handlePush", "JSON exception");
-    			}
-    		}
-	}
+    			PushHandlerActivity.sendToApp(originalExtras);
+        }
         finish();
-  }
+	}
+    
+    public static void sendToApp(Bundle extras)
+    {
+		try
+		{
+			JSONObject json;
+			json = new JSONObject().put("event", "message");
+        
+			JSONObject jsondata = new JSONObject();
+			Iterator<String> it = extras.keySet().iterator();
+			while (it.hasNext())
+			{
+				String key = it.next();
+				String value = extras.getString(key);	
+        	
+				// System data from Android
+				if (key.equals("from") || key.equals("collapse_key"))
+				{
+					json.put(key, value);
+				}
+				else if (key.equals("foreground"))
+				{
+					json.put(key, extras.getBoolean("foreground"));
+				}
+				else
+				{
+					// Maintain backwards compatibility
+					if (key.equals("message") || key.equals("msgcnt") || key.equals("soundname"))
+					{
+						json.put(key, value);
+					}
+        		
+					// Try to figure out if the value is another JSON object
+					if (value.startsWith("{"))
+					{
+						try
+						{
+							JSONObject json2 = new JSONObject(value);
+							jsondata.put(key, json2);
+						}
+						catch (Exception e)
+						{
+							jsondata.put(key, value);
+						}
+						// Try to figure out if the value is another JSON array
+					}
+					else if (value.startsWith("["))
+					{
+						try
+						{
+							JSONArray json2 = new JSONArray(value);
+							jsondata.put(key, json2);
+						}
+						catch (Exception e)
+						{
+							jsondata.put(key, value);
+						}
+					}
+					else
+					{
+						jsondata.put(key, value);
+					}
+				}
+			} // while
+			json.put("payload", jsondata);
+        
+			Log.v("sendToApp:", json.toString());
+
+			PushPlugin.sendJavascript( json );
+			// Send the MESSAGE to the Javascript application
+		}
+		catch( JSONException e)
+		{
+			Log.e("sendToApp:", "JSON exception");
+		}        	
+    }
 
     @Override
     protected void onNewIntent(Intent intent)

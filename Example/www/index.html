@@ -16,6 +16,22 @@
             function onDeviceReady() {
                 $("#app-status-ul").append('<li>deviceready event received</li>');
                 
+				document.addEventListener("backbutton", function(e)
+				{
+                	$("#app-status-ul").append('<li>backbutton event received</li>');
+  					
+      				if( $("#home").length > 0)
+					{
+						e.preventDefault();
+						pushNotification.unregister(successHandler, errorHandler);
+						navigator.app.exitApp();
+					}
+					else
+					{
+						navigator.app.backHistory();
+					}
+				}, false);
+			
 				try 
 				{ 
                 	pushNotification = window.plugins.pushNotification;
@@ -37,8 +53,7 @@
             
             // handle APNS notifications for iOS
             function onNotificationAPN(e) {
-                
-                if (e.foreground) {
+               if (e.foreground) {
                     $("#app-status-ul").append('<li>--INLINE NOTIFICATION--' + '</li>');
                     
                     if (e.sound) {
@@ -93,9 +108,9 @@
 						}
 						else	// otherwise we were launched because the user touched a notification in the notification tray.
 							$("#app-status-ul").append('<li>--BACKGROUND NOTIFICATION--' + '</li>');
-                    
-						$("#app-status-ul").append('<li>MESSAGE -> MSG: ' + e.message + '</li>');
-						$("#app-status-ul").append('<li>MESSAGE -> MSGCNT: ' + e.msgcnt + '</li>');
+							
+						$("#app-status-ul").append('<li>MESSAGE -> MSG: ' + e.payload.message + '</li>');
+						$("#app-status-ul").append('<li>MESSAGE -> MSGCNT: ' + e.payload.msgcnt + '</li>');
                     break;
                     
                     case 'error':
@@ -126,11 +141,12 @@
 			document.addEventListener('deviceready', onDeviceReady, true);
 
          </script>
-         
-        <div id="app-status-div">
-			<ul id="app-status-ul">
-				<li>Cordova PushNotification Plugin Demo</li>
-			</ul>
+		<div id="home">
+			<div id="app-status-div">
+				<ul id="app-status-ul">
+					<li>Cordova PushNotification Plugin Demo</li>
+				</ul>
+			</div>
 		</div>
     </body>
 </html>

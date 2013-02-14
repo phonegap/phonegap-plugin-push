@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.plugin.GCM.PushHandlerActivity;
 import com.google.android.gcm.*;
+import java.util.Iterator;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -80,39 +82,16 @@ public class GCMIntentService extends GCMBaseIntentService {
     if (extras != null)
     {
     	boolean	foreground = this.isInForeground();
+    	
     	extras.putBoolean("foreground", foreground);
     	
-    	// we can't call into the JS app if we are in the background
     	if (foreground)
-    	{
-    		try
-    		{
-    			JSONObject json;
-    			json = new JSONObject().put("event", "message");
-            	
-    			// My application on my host server sends back to "EXTRAS" variables message and msgcnt
-    			// Depending on how you build your server app you can specify what variables you want to send
-    			json.put("message", extras.getString("message"));
-    			json.put("msgcnt", extras.getString("msgcnt"));
-    			json.put("soundname", extras.getString("soundname"));
-    			json.put("foreground", foreground);
-
-    			Log.v(ME + ":onMessage ", json.toString());
-
-    			PushPlugin.sendJavascript( json );
-    		}
-    		catch( JSONException e)
-    		{
-    			Log.e(ME + ":onMessage", "JSON exception");
-    		}
-    	}
+    		PushHandlerActivity.sendToApp(extras);
     	else
     		this.onReceive(context, extras);
-	}
+    }
   }
   
-	// This is called for all notifications, whether the app is in the foreground or the background.
-	// This is so we can update any existing notification in the tray, for our app.
 	public void onReceive(Context context, Bundle extras)
 	{
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -160,8 +139,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	        return true;
 		
 		return false;
-	}
-	
+	}	
 
   @Override
   public void onError(Context context, String errorId) {
