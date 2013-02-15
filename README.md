@@ -51,10 +51,10 @@ This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and
 							GCMRegistrar.java
 				plugin
 					GCM
-						PushPlugin.java
+						PushPlugin.java						
 				{company_name}
 					{intent_name}
-						{intent_name}.java
+						{intent_name}.java						
 
 2) Modify your **AndroidManifest.xml** and add the following lines to your manifest tag, replacing **your_app_package** with your app's package path:
 
@@ -67,9 +67,9 @@ This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and
     <uses-permission android:name="your_app_package.permission.C2D_MESSAGE" />
 
 
-3) Modify your **AndroidManifest.xml** and add the **receiver** and **service** tags to your **application** section, replacing **your_app_package** with your app's package path: (See the Sample_AndroidManifest.xml file in the Example folder.)
+3) Modify your **AndroidManifest.xml** and add the following **activity**, **receiver** and **service** tags to your **application** section, replacing **your_app_package** with your app's package path: (See the Sample_AndroidManifest.xml file in the Example folder.)
 
-
+	<activity android:name="com.plugin.GCM.PushHandlerActivity"/>
     <receiver android:name="com.google.android.gcm.GCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
       <intent-filter>
         <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -136,7 +136,7 @@ This should be called as soon as the device becomes ready. On success, you will 
 
 For Android, If you have not already done so, you'll need to set up a Google API project, to generate your senderID. [Follow these steps](http://developer.android.com/guide/google/gcm/gs.html) to do so. This is described more fully in the **Test Environment** section below.
 
-In this example, sure and substitute your own senderID. Get your senderID by signing into to your [google dashboard](https://code.google.com/apis/console/). The senderID is found at **Overview->Dashboard->Project Number**.
+In this example, be sure and substitute your own senderID. Get your senderID by signing into to your [google dashboard](https://code.google.com/apis/console/). The senderID is found at **Overview->Dashboard->Project Number**.
 
 	if (device.platform == 'android' || device.platform == 'Android') {
 		pushNotification.register(successHandler, errorHandler,{"senderID":"replace_with_sender_id","ecb":"onNotificationGCM"});
@@ -201,9 +201,21 @@ In this example, sure and substitute your own senderID. Get your senderID by sig
 			break;
                 
 			case 'message':
-				// this is the actual push notification. its format depends on the data model
-				// of the intermediary push server which must also be reflected in GCMIntentService.java
-				alert('message = '+e.message+' msgcnt = '+e.msgcnt);
+				// if this flag is set, this notification happened while we were in the foreground.
+				// you might want to play a sound to get the user's attention, throw up a dialog, etc.
+				if (e.foreground)
+				{
+					$("#app-status-ul").append('<li>--INLINE NOTIFICATION--' + '</li>');
+							
+					// if the notification contains a soundname, play it.
+					var my_media = new Media("/android_asset/www/"+e.soundname);
+					my_media.play();
+				}
+				else	// otherwise we were launched because the user touched a notification in the notification tray.
+					$("#app-status-ul").append('<li>--BACKGROUND NOTIFICATION--' + '</li>');
+							
+				$("#app-status-ul").append('<li>MESSAGE -> MSG: ' + e.payload.message + '</li>');
+				$("#app-status-ul").append('<li>MESSAGE -> MSGCNT: ' + e.payload.msgcnt + '</li>');
 			break;
                 
 			case 'error':
@@ -216,10 +228,49 @@ In this example, sure and substitute your own senderID. Get your senderID by sig
 		}
 	}
 	
+Looking at the above message handling code for Android, a few things bear explaination. Your app may receive a notification while it is active (INLINE). If you background the app by hitting the Home button on your device, you may later receive a status bar notification. Selecting that notification from the status will bring your app to the front and allow you to process the notification (BACKGROUND). You can look at the **foreground** flag on the event to determine whether you are processing a background or na in-line notification. You may choose, for example to play a sound or show a dialog only for inline notifications since the user has already been allerted via the status bar.
+
+Also make note of the **payload** object. Since the Android notification data model is much more flexible than that of iOS, there may be additional elements beyond **message**, **soundname**, and **msgcnt**. You can access those elements and any additional ones via the payload element. This means that if your data model should change in the future, there will be no need to change and recompile the plugin.
+	
 #### unregister
 Call this when your app is exiting to cleanup any used resources.
 
 	pushNotification.unregister(successHandler, errorHandler);
+	
+You'll probably want to trap on the **backbutton** event and only call this when the home page is showing. Remember, the back button on android is not the same as the Home button. When you hit the back button from the home page, your activity gets dismissed. While you will still receive status bar notifications thereafter, selecting that notification from the status tray will not sub-launch your app. If you, however, "exit" the app by pressing the home button, subsequent status bar touchs WILL sublaunch your app, giving you the opportunity to process the notification. Here is an example of how to trap the backbutton event;
+
+	function onDeviceReady() {
+		$("#app-status-ul").append('<li>deviceready event received</li>');
+                
+		document.addEventListener("backbutton", function(e)
+		{
+			$("#app-status-ul").append('<li>backbutton event received</li>');
+  					
+			if( $("#home").length > 0)
+			{
+				e.preventDefault();
+				pushNotification.unregister(successHandler, errorHandler);
+				navigator.app.exitApp();
+			}
+			else
+			{
+				navigator.app.backHistory();
+			}
+		}, false);
+			
+		// aditional onDeviceReady work…
+	}
+For the above to work, make sure the content for your home page is wrapped in an element with an id of home, like this;
+
+	<div id="home">
+		<div id="app-status-div">
+			<ul id="app-status-ul">
+				<li>Cordova PushNotification Plugin Demo</li>
+			</ul>
+		</div>
+	</div>
+
+
 	
 #### setApplicationIconBadgeNumber (iOS only)
 set the badge count visible when the app is not running
@@ -291,7 +342,7 @@ If you run this demo using the emulator you will not receive notifications from 
 
 If everything seems right and you are not receiving a registration id response back from Google, try uninstalling and reinstalling your app. That has worked for some devs out there.
 
-While the data model for iOS is somewhat fixed, it should be noted that GCM is far more flexible. The Android implementation in this plugin, for example, assumes the incoming message will contain a 'message' and a 'msgcnt' node. This is reflected in both the plugin (see GCMIntentService.java) as well as in provided example ruby script (pushGCM.rb). Should you employ a commercial service, their data model may differ, in which case the plugin will need to me modified to accommodate those differences.
+While the data model for iOS is somewhat fixed, it should be noted that GCM is far more flexible. The Android implementation in this plugin, for example, assumes the incoming message will contain a '**message**' and a '**msgcnt**' node. This is reflected in both the plugin (see GCMIntentService.java) as well as in provided example ruby script (pushGCM.rb). Should you employ a commercial service, their data model may differ. As mentioned earlier, this is where you will want to take a look at the **payload** element of the message event. In addition to the cannonical message and msgcnt elements, any additional elements in the incoming JSON object will be accessible here, obviating the need to edit and recompile the plugin. Many thanks to Tobias Hößl for this functionality!
 
 ## Additional Resources
 
@@ -310,3 +361,5 @@ While the data model for iOS is somewhat fixed, it should be noted that GCM is f
 Huge thanks to Mark Nutter whose [GCM-Cordova plugin](https://github.com/marknutter/GCM-Cordova) forms the basis for the Android side implimentation.
 
 Likewise, the iOS side was inspired by Olivier Louvignes' [Cordova PushNotification Plugin](https://github.com/phonegap/phonegap-plugins/tree/master/iOS/PushNotification) (Copyright (c) 2012 Olivier Louvignes) for iOS.
+
+Props to [Tobias Hößl](https://github.com/CatoTH), who provided the code to surface the full JSON object up to the JS layer.
