@@ -156,15 +156,12 @@
 
 - (void)notificationReceived {
     NSLog(@"Notification received");
-    NSLog(@"Msg: %@", [notificationMessage descriptionWithLocale:[NSLocale currentLocale] indent:4]);
 
-    if (notificationMessage) {
+    if (notificationMessage)
+    {
         NSMutableString *jsonStr = [NSMutableString stringWithString:@"{"];
-        if ([notificationMessage objectForKey:@"alert"])
-            [jsonStr appendFormat:@"alert:'%@',", [[notificationMessage objectForKey:@"alert"] stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"]];
 
-        if ([notificationMessage objectForKey:@"badge"])
-            [jsonStr appendFormat:@"badge:%d,", [[notificationMessage objectForKey:@"badge"] intValue]];
+        [self parseDictionary:notificationMessage intoJSON:jsonStr];
 
         if (isInline)
         {
@@ -172,15 +169,31 @@
             isInline = NO;
         }
         
-        if ([notificationMessage objectForKey:@"sound"])
-            [jsonStr appendFormat:@"sound:'%@',", [notificationMessage objectForKey:@"sound"]];
-
         [jsonStr appendString:@"}"];
+
+        NSLog(@"Msg: %@", jsonStr);
 
         NSString * jsCallBack = [NSString stringWithFormat:@"%@(%@);", self.callback, jsonStr];
         [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
         
         self.notificationMessage = nil;
+    }
+}
+
+// reentrant method to drill down and surface all sub-dictionaries' key/value pairs into the top level json
+-(void)parseDictionary:(NSDictionary *)inDictionary intoJSON:(NSMutableString *)jsonString
+{
+    NSArray         *keys = [inDictionary allKeys];
+    NSString        *key;
+    
+    for (key in keys)
+    {
+        id thisObject = [inDictionary objectForKey:key];
+    
+        if ([thisObject isKindOfClass:[NSDictionary class]])
+            [self parseDictionary:thisObject intoJSON:jsonString];
+        else
+            [jsonString appendFormat:@"%@:'%@',", key, [inDictionary objectForKey:key]];
     }
 }
 

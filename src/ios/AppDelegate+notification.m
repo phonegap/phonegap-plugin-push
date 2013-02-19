@@ -40,7 +40,7 @@ static char launchNotificationKey;
     
     if (appState == UIApplicationStateActive) {
         PushPlugin *pushHandler = [self getCommandInstance:@"PushPlugin"];
-        pushHandler.notificationMessage = [userInfo objectForKey:@"aps"];
+        pushHandler.notificationMessage = userInfo;
         pushHandler.isInline = YES;
         [pushHandler notificationReceived];
     } else {
@@ -58,7 +58,7 @@ static char launchNotificationKey;
 
     if (![self.viewController.webView isLoading] && self.launchNotification) {
         PushPlugin *pushHandler = [self getCommandInstance:@"PushPlugin"];
-        pushHandler.notificationMessage = [self.launchNotification objectForKey:@"aps"];
+        pushHandler.notificationMessage = self.launchNotification;
         
         self.launchNotification = nil;
         
