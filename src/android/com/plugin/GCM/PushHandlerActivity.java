@@ -15,12 +15,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 public class PushHandlerActivity extends Activity
 {
+	public static final int NOTIFICATION_ID = 237;
+	
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -41,6 +45,16 @@ public class PushHandlerActivity extends Activity
     			PushHandlerActivity.sendToApp(originalExtras);
         }
         finish();
+
+		// Now that we've processed the notification, remove it from the tray
+		CharSequence appName = this.getPackageManager().getApplicationLabel(this.getApplicationInfo());
+		if (null == appName)
+			appName = "";
+        
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // use a combo of appName and id to insure uniqueness since this plugin may be running
+        // in multiple apps on a particular device.
+        mNotificationManager.cancel((String) appName, NOTIFICATION_ID);
 	}
     
     public static void sendToApp(Bundle extras)

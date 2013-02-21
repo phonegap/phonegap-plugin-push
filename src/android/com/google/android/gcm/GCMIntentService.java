@@ -26,7 +26,6 @@ import com.plugin.GCM.PushPlugin;
 public class GCMIntentService extends GCMBaseIntentService {
 
   public static final String ME="GCMReceiver";
-  public static final int notificationID = 237;
 
   public GCMIntentService() {
     super("GCMIntentService");
@@ -120,8 +119,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			mBuilder.setNumber(Integer.parseInt(msgcnt));
 		}
 		
-		mNotificationManager.notify(notificationID, mBuilder.build());
-	
+		mNotificationManager.notify((String) appName, PushHandlerActivity.NOTIFICATION_ID, mBuilder.build());
 		try
 		{
 			Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
