@@ -102,9 +102,23 @@ public class GCMIntentService extends GCMBaseIntentService {
 		.setWhen(System.currentTimeMillis())
 		.setContentTitle(appName)
 		.setTicker(appName)
-		.setContentText(extras.getString("message"))
-		.setNumber(Integer.parseInt(extras.getString("msgcnt")))
 		.setContentIntent(contentIntent);
+		
+		String message = extras.getString("message");
+		if (message != null)
+		{
+			mBuilder.setContentText(message);
+		}
+		else 
+		{
+			mBuilder.setContentText("<missing message content>");
+		}
+
+		String msgcnt = extras.getString("msgcnt");
+		if (msgcnt != null)
+		{
+			mBuilder.setNumber(Integer.parseInt(msgcnt));
+		}
 		
 		mNotificationManager.notify(notificationID, mBuilder.build());
 	
