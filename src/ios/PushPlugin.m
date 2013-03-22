@@ -138,9 +138,8 @@
         [results setValue:pushAlert forKey:@"pushAlert"];
         [results setValue:pushSound forKey:@"pushSound"];
 
-        // Get the users Device Model, Display Name, Unique ID, Token & Version Number
+        // Get the users Device Model, Display Name, Token & Version Number
         UIDevice *dev = [UIDevice currentDevice];
-        [results setValue:dev.uniqueIdentifier forKey:@"deviceUuid"];
         [results setValue:dev.name forKey:@"deviceName"];
         [results setValue:dev.model forKey:@"deviceModel"];
         [results setValue:dev.systemVersion forKey:@"deviceSystemVersion"];
