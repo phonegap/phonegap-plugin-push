@@ -188,56 +188,64 @@ In this example, be sure and substitute your own senderID. Get your senderID by 
 
 
 	// Android
-	function onNotificationGCM(e) {
-		switch( e.event )
-		{
-			case 'registered':
-				if ( e.regid.length > 0 )
-				{
-					// Your GCM push server needs to know the regID before it can push to this device
-					// here is where you might want to send it the regID for later use.
-					alert('registration id = e.regid);
-				}
-			break;
+            function onNotificationGCM(e) {
+                $("#app-status-ul").append('<li>EVENT -> RECEIVED:' + e.event + '</li>');
                 
-			case 'message':
-				// if this flag is set, this notification happened while we were in the foreground.
-				// you might want to play a sound to get the user's attention, throw up a dialog, etc.
-				if (e.foreground)
-				{
-					$("#app-status-ul").append('<li>--INLINE NOTIFICATION--' + '</li>');
+                switch( e.event )
+                {
+                    case 'registered':
+					if ( e.regid.length > 0 )
+					{
+						$("#app-status-ul").append('<li>REGISTERED -> REGID:' + e.regid + "</li>");
+						// Your GCM push server needs to know the regID before it can push to this device
+						// here is where you might want to send it the regID for later use.
+						console.log("regID = " + e.regID);
+					}
+                    break;
+                    
+                    case 'message':
+                    	// if this flag is set, this notification happened while we were in the foreground.
+                    	// you might want to play a sound to get the user's attention, throw up a dialog, etc.
+                    	if (e.foreground)
+                    	{
+							$("#app-status-ul").append('<li>--INLINE NOTIFICATION--' + '</li>');
 							
-					// if the notification contains a soundname, play it.
-					var my_media = new Media("/android_asset/www/"+e.soundname);
-					my_media.play();
-				}
-				else	// otherwise we were launched because the user touched a notification in the notification tray.
-					$("#app-status-ul").append('<li>--BACKGROUND NOTIFICATION--' + '</li>');
+							// if the notification contains a soundname, play it.
+							var my_media = new Media("/android_asset/www/"+e.soundname);
+							my_media.play();
+						}
+						else
+						{	// otherwise we were launched because the user touched a notification in the notification tray.
+							if (e.coldstart)
+								$("#app-status-ul").append('<li>--COLDSTART NOTIFICATION--' + '</li>');
+							else
+							$("#app-status-ul").append('<li>--BACKGROUND NOTIFICATION--' + '</li>');
+						}
 							
-				$("#app-status-ul").append('<li>MESSAGE -> MSG: ' + e.payload.message + '</li>');
-				$("#app-status-ul").append('<li>MESSAGE -> MSGCNT: ' + e.payload.msgcnt + '</li>');
-			break;
-                
-			case 'error':
-				alert('GCM error = e.msg);
-			break;
-                
-			default:
-				alert('An unknown GCM event has occurred);
-			break;
-		}
-	}
+						$("#app-status-ul").append('<li>MESSAGE -> MSG: ' + e.payload.message + '</li>');
+						$("#app-status-ul").append('<li>MESSAGE -> MSGCNT: ' + e.payload.msgcnt + '</li>');
+                    break;
+                    
+                    case 'error':
+						$("#app-status-ul").append('<li>ERROR -> MSG:' + e.msg + '</li>');
+                    break;
+                    
+                    default:
+						$("#app-status-ul").append('<li>EVENT -> Unknown, an event was received and we do not know what it is</li>');
+                    break;
+                }
+            }
 	
-Looking at the above message handling code for Android, a few things bear explaination. Your app may receive a notification while it is active (INLINE). If you background the app by hitting the Home button on your device, you may later receive a status bar notification. Selecting that notification from the status will bring your app to the front and allow you to process the notification (BACKGROUND). You can look at the **foreground** flag on the event to determine whether you are processing a background or na in-line notification. You may choose, for example to play a sound or show a dialog only for inline notifications since the user has already been allerted via the status bar.
+Looking at the above message handling code for Android, a few things bear explaination. Your app may receive a notification while it is active (INLINE). If you background the app by hitting the Home button on your device, you may later receive a status bar notification. Selecting that notification from the status will bring your app to the front and allow you to process the notification (BACKGROUND). Finally, should you completely exit the app by hitting the back button from the home page, you may still receive a notification. Touching that notification in the notification tray will relaunch your app and allow you to process the notification (COLDSTART). In this case the **coldstart** flag will be set on the incoming event. You can look at the **foreground** flag on the event to determine whether you are processing a background or an in-line notification. You may choose, for example to play a sound or show a dialog only for inline or coldstart notifications since the user has already been alerted via the status bar.
 
-Also make note of the **payload** object. Since the Android notification data model is much more flexible than that of iOS, there may be additional elements beyond **message**, **soundname**, and **msgcnt**. You can access those elements and any additional ones via the payload element. This means that if your data model should change in the future, there will be no need to change and recompile the plugin.
+Also make note of the **payload** object. Since the Android notification data model is much more flexible than that of iOS, there may be additional elements beyond **message**, **soundname**, and **msgcnt**. You can access those elements and any additional ones via the **payload** element. This means that if your data model should change in the future, there will be no need to change and recompile the plugin.
 	
 #### unregister
-Call this when your app is exiting to cleanup any used resources.
+You will typically call this when your app is exiting, to cleanup any used resources. Its not strictly necessary to call it, and indeed it may be desireable to NOT call it if you are debugging your intermediarry push server. When you call unregister(), the current token for a particular device will get invalidated, and the next call to register() will return a new token. If you do NOT call unregister(), the last token will remain in effect until it is invalidated for some reason at the GCM side. Since such invalidations are beyond your control, its recommended that, in a production environment, that you have a matching unregister() call, for every call to register(), and that your server updates the devices' records each time.
 
 	pushNotification.unregister(successHandler, errorHandler);
 	
-You'll probably want to trap on the **backbutton** event and only call this when the home page is showing. Remember, the back button on android is not the same as the Home button. When you hit the back button from the home page, your activity gets dismissed. While you will still receive status bar notifications thereafter, selecting that notification from the status tray will not sub-launch your app. If you, however, "exit" the app by pressing the home button, subsequent status bar touchs WILL sublaunch your app, giving you the opportunity to process the notification. Here is an example of how to trap the backbutton event;
+You'll probably want to trap on the **backbutton** event and only call this when the home page is showing. Remember, the back button on android is not the same as the Home button. When you hit the back button from the home page, your activity gets dismissed. Here is an example of how to trap the backbutton event;
 
 	function onDeviceReady() {
 		$("#app-status-ul").append('<li>deviceready event received</li>');
