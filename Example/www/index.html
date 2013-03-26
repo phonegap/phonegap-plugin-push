@@ -22,8 +22,9 @@
   					
       				if( $("#home").length > 0)
 					{
+						// call this to get a new token each time. don't call it to reuse existing token.
+						//pushNotification.unregister(successHandler, errorHandler);
 						e.preventDefault();
-						pushNotification.unregister(successHandler, errorHandler);
 						navigator.app.exitApp();
 					}
 					else
@@ -37,10 +38,10 @@
                 	pushNotification = window.plugins.pushNotification;
                 	if (device.platform == 'android' || device.platform == 'Android') {
 						$("#app-status-ul").append('<li>registering android</li>');
-                    	pushNotification.register(successHandler, errorHandler, {"senderID":"661780372179","ecb":"onNotificationGCM"});
+                    	pushNotification.register(successHandler, errorHandler, {"senderID":"661780372179","ecb":"onNotificationGCM"});		// required!
 					} else {
 						$("#app-status-ul").append('<li>registering iOS</li>');
-                    	pushNotification.register(tokenHandler, errorHandler, {"badge":"true","sound":"true","alert":"true","ecb":"onNotificationAPN"});
+                    	pushNotification.register(tokenHandler, errorHandler, {"badge":"true","sound":"true","alert":"true","ecb":"onNotificationAPN"});	// required!
                 	}
                 }
 				catch(err) 
@@ -53,25 +54,14 @@
             
             // handle APNS notifications for iOS
             function onNotificationAPN(e) {
-               if (e.foreground) {
-                    $("#app-status-ul").append('<li>--INLINE NOTIFICATION--' + '</li>');
-                    
-                    if (e.sound) {
-                        var snd = new Media(e.sound);
-                        snd.play();
-                    }
-                    
-                    if (e.alert) {
-                        $("#app-status-ul").append('<li>push-notification: ' + e.alert + '</li>');
-                        navigator.notification.alert(e.alert);
-                    }
+                if (e.alert) {
+                     $("#app-status-ul").append('<li>push-notification: ' + e.alert + '</li>');
+                     navigator.notification.alert(e.alert);
                 }
-                else {
-                    $("#app-status-ul").append('<li>--BACKGROUND NOTIFICATION--' + '</li>');
                     
-                    if (e.alert) {
-                        $("#app-status-ul").append('<li>push-notification: ' + e.alert + '</li>');
-                    }
+                if (e.sound) {
+                    var snd = new Media(e.sound);
+                    snd.play();
                 }
                 
                 if (e.badge) {
@@ -89,9 +79,9 @@
 					if ( e.regid.length > 0 )
 					{
 						$("#app-status-ul").append('<li>REGISTERED -> REGID:' + e.regid + "</li>");
-						console.log("regID = " + e.regID);
 						// Your GCM push server needs to know the regID before it can push to this device
 						// here is where you might want to send it the regID for later use.
+						console.log("regID = " + e.regID);
 					}
                     break;
                     
@@ -106,8 +96,13 @@
 							var my_media = new Media("/android_asset/www/"+e.soundname);
 							my_media.play();
 						}
-						else	// otherwise we were launched because the user touched a notification in the notification tray.
+						else
+						{	// otherwise we were launched because the user touched a notification in the notification tray.
+							if (e.coldstart)
+								$("#app-status-ul").append('<li>--COLDSTART NOTIFICATION--' + '</li>');
+							else
 							$("#app-status-ul").append('<li>--BACKGROUND NOTIFICATION--' + '</li>');
+						}
 							
 						$("#app-status-ul").append('<li>MESSAGE -> MSG: ' + e.payload.message + '</li>');
 						$("#app-status-ul").append('<li>MESSAGE -> MSGCNT: ' + e.payload.msgcnt + '</li>');
@@ -125,7 +120,6 @@
             
             function tokenHandler (result) {
                 $("#app-status-ul").append('<li>token: '+ result +'</li>');
-                console.log("token = " + result);
                 // Your iOS push server needs to know the token before it can push to this device
                 // here is where you might want to send it the token for later use.
             }

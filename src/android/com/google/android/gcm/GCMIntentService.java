@@ -138,8 +138,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	    List<RunningTaskInfo> services = activityManager
 	    		.getRunningTasks(Integer.MAX_VALUE);
 
-	    if (services.get(0).topActivity.getPackageName().toString()
-	            .equalsIgnoreCase(getApplicationContext().getPackageName().toString()))
+	    if (services.get(0).topActivity.getPackageName().toString().equalsIgnoreCase(getApplicationContext().getPackageName().toString()))
 	        return true;
 		
 		return false;
