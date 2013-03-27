@@ -63,6 +63,7 @@ This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
     <permission android:name="your_app_package.permission.C2D_MESSAGE" android:protectionLevel="signature" />
     <uses-permission android:name="your_app_package.permission.C2D_MESSAGE" />
 
