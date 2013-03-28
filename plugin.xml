@@ -2,7 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="com.adobe.plugins.PushPlugin"
-    version="1.2.0">
+    version="1.2.1">
 
     <name>PushPlugin</name>
 
@@ -51,7 +51,7 @@
         <plugins-plist key="PushPlugin" string="PushPlugin" />
         
 		<!-- Cordova >= 2.3 -->
-		<config-file target="config.xml" parent="/cordova/plugins">
+		<config-file target="config.xml" parent="plugins">
 			<plugin name="PushPlugin" value="PushPlugin"/>
 		</config-file>
         
