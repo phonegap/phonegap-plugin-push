@@ -138,6 +138,6 @@ public class PushPlugin extends Plugin {
 
     	// let the service know we are exiting so it can cache the next notification payload.
 		PushHandlerActivity.EXITED = true;
-        GCMRegistrar.onDestroy(cordova.getContext());
+        GCMRegistrar.onDestroy(cordova.getActivity());
 	}
 }
