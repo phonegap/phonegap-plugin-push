@@ -8,6 +8,10 @@
 
 	<asset src="www/PushNotification.js" target="PushNotification.js" />
 
+    <engines>
+      <engine name="cordova" version=">=2.0.0" />
+    </engines>	
+	
 	<platform name="android">
         <config-file target="res/xml/config.xml" parent="plugins">
     		<plugin name="PushPlugin" value="com.plugin.GCM.PushPlugin" />
@@ -55,9 +59,11 @@
 			<plugin name="PushPlugin" value="PushPlugin"/>
 		</config-file>
         
-        <source-file src="AppDelegate+notification.h" />
         <source-file src="AppDelegate+notification.m" />
-        <source-file src="PushPlugin.h" />
         <source-file src="PushPlugin.m" />
+        
+        <header-file src="AppDelegate+notification.h" />
+        <header-file src="PushPlugin.h" />
+
     </platform>
 </plugin>
