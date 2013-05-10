@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns     = "http://www.w3.org/ns/widgets"
+        xmlns:gap = "http://phonegap.com/ns/1.0"
+        id        = "com.phonegap.genericpushtest"
+        version   = "1.0.0">
+    <name>cordovaExample</name>
+
+    <description>
+        GenericPush Spec
+    </description>
+
+    <author href="http://phonegap.com" email="support@phonegap.com">
+        Bob Easterday - PhoneGap Team
+    </author>
+
+    <gap:preference name="phonegap-version" value="2.5.0" />
+
+    <gap:plugin name="GenericPush"/>
+
+</widget>
