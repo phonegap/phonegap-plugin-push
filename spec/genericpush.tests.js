@@ -31,16 +31,16 @@ describe('Plugin object (window.plugins)', function () {
 
     it("should contain a register function", function() {
         expect(window.plugins.pushNotification.register).toBeDefined();
-        expect(typeof window.plugins.barcodeScanner.register == 'function').toBe(true);
+        expect(typeof window.plugins.pushNotification.register == 'function').toBe(true);
     });
     
     it("should contain an unregister function", function() {
         expect(window.plugins.pushNotification.unregister).toBeDefined();
-        expect(typeof window.plugins.barcodeScanner.unregister == 'function').toBe(true);
+        expect(typeof window.plugins.pushNotification.unregister == 'function').toBe(true);
     });
     
     it("should contain a setApplicationIconBadgeNumber function", function() {
         expect(window.plugins.pushNotification.setApplicationIconBadgeNumber).toBeDefined();
-        expect(typeof window.plugins.barcodeScanner.setApplicationIconBadgeNumber == 'function').toBe(true);
+        expect(typeof window.plugins.pushNotification.setApplicationIconBadgeNumber == 'function').toBe(true);
     });
 });
