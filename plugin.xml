@@ -59,11 +59,11 @@
 			<plugin name="PushPlugin" value="PushPlugin"/>
 		</config-file>
         
-        <source-file src="AppDelegate+notification.m" />
-        <source-file src="PushPlugin.m" />
+        <source-file src="src/ios/AppDelegate+notification.m" />
+        <source-file src="src/ios/PushPlugin.m" />
         
-        <header-file src="AppDelegate+notification.h" />
-        <header-file src="PushPlugin.h" />
+        <header-file src="src/ios/AppDelegate+notification.h" />
+        <header-file src="src/ios/PushPlugin.h" />
 
     </platform>
 </plugin>
