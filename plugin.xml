@@ -39,7 +39,7 @@
  			<service android:name="com.plugin.gcm.GCMIntentService" />
 		</config-file>
 
-		<source-file src="libs/gcm.jar" target-dir="libs/" />
+		<source-file src="src/android/libs/gcm.jar" target-dir="libs/" />
 		<source-file src="src/android/com/plugin/gcm/CordovaGCMBroadcastReceiver.java" target-dir="src/com/plugin/gcm/" />
 		<source-file src="src/android/com/plugin/gcm/GCMIntentService.java" target-dir="src/com/plugin/gcm/" />
 		<source-file src="src/android/com/plugin/gcm/PushHandlerActivity.java" target-dir="src/com/plugin/gcm/" />
