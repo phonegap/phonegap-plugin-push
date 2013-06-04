@@ -56,14 +56,32 @@
 	self.callbackId = [arguments pop];
 
     UIRemoteNotificationType notificationTypes = UIRemoteNotificationTypeNone;
+    id badgeArg = [options objectForKey:@"badge"];
+    id soundArg = [options objectForKey:@"sound"];
+    id alertArg = [options objectForKey:@"alert"];
     
-    if ([[options objectForKey:@"badge"] isEqualToString:@"true"])
+    if ([badgeArg isKindOfClass:[NSString class]])
+    {
+        if ([badgeArg isEqualToString:@"true"])
+            notificationTypes |= UIRemoteNotificationTypeBadge;
+    }
+    else if ([badgeArg boolValue])
         notificationTypes |= UIRemoteNotificationTypeBadge;
-
-    if ([[options objectForKey:@"sound"] isEqualToString:@"true"])
+    
+    if ([soundArg isKindOfClass:[NSString class]])
+    {
+        if ([soundArg isEqualToString:@"true"])
+            notificationTypes |= UIRemoteNotificationTypeSound;
+    }
+    else if ([soundArg boolValue])
         notificationTypes |= UIRemoteNotificationTypeSound;
-
-    if ([[options objectForKey:@"alert"] isEqualToString:@"true"])
+    
+    if ([alertArg isKindOfClass:[NSString class]])
+    {
+        if ([alertArg isEqualToString:@"true"])
+            notificationTypes |= UIRemoteNotificationTypeAlert;
+    }
+    else if ([alertArg boolValue])
         notificationTypes |= UIRemoteNotificationTypeAlert;
     
     self.callback = [options objectForKey:@"ecb"];
