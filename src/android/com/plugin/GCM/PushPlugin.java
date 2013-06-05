@@ -1,143 +1,216 @@
-package com.plugin.GCM;
+package com.plugin.gcm;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.Iterator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 
-import org.apache.cordova.api.Plugin;
-import org.apache.cordova.api.PluginResult;
-import org.apache.cordova.api.PluginResult.Status;
-import com.google.android.gcm.*;
+import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.api.CallbackContext;
+import org.apache.cordova.api.CordovaPlugin;
 
+import com.google.android.gcm.*;
 
 /**
  * @author awysocki
- *
  */
 
-public class PushPlugin extends Plugin {
+public class PushPlugin extends CordovaPlugin {
+	public static final String TAG = "PushPlugin";
+	
+	public static final String REGISTER = "register";
+	public static final String UNREGISTER = "unregister";
+	public static final String EXIT = "exit";
 
-  public static final String ME="PushPlugin";
+	private static CordovaWebView gWebView;
+	private static String gECB;
+	private static String gSenderID;
+	private static Bundle gCachedExtras = null;
 
-  public static final String REGISTER="register";
-  public static final String UNREGISTER="unregister";
-  public static final String EXIT="exit";
-
-  public static Plugin gwebView;
-  private static String gECB;
-  private static String gSenderID;
-
-  @SuppressWarnings("deprecation")
-  @Override
-  public PluginResult execute(String action, JSONArray data, String callbackId)
-  {
-
-    PluginResult result = null;
-
-    Log.v(ME + ":execute", "action=" + action);
-
-    if (REGISTER.equals(action)) {
-
-      Log.v(ME + ":execute", "data=" + data.toString());
-
-
-      try {
-
-        JSONObject jo= new JSONObject(data.toString().substring(1, data.toString().length()-1));
-
-        gwebView = this;
-
-        Log.v(ME + ":execute", "jo=" + jo.toString());
-
-        gECB = (String)jo.get("ecb");
-        gSenderID = (String)jo.get("senderID");
-
-        Log.v(ME + ":execute", "ECB="+gECB+" senderID="+gSenderID );
-
-        GCMRegistrar.register(this.ctx.getContext(), gSenderID);
-
-
-        Log.v(ME + ":execute", "GCMRegistrar.register called ");
-
-        result = new PluginResult(Status.OK);
-      }
-      catch (JSONException e) {
-		Log.e(ME, "Got JSON Exception " + e.getMessage());
-        result = new PluginResult(Status.JSON_EXCEPTION);
-      }
-      
-      // if a notification was touched while we were completely exited, process it now
-      try
-      {
-    	  BufferedReader inputReader = new BufferedReader(new InputStreamReader(ctx.getApplicationContext().openFileInput("cached_payload")));
-    	  String inputString;
-    	  StringBuffer stringBuffer = new StringBuffer();                
-    	  while ((inputString = inputReader.readLine()) != null)
-    	  {
-    		  stringBuffer.append(inputString);
-    	  }
-
-    	  // surface the cached payload
-    	  JSONObject jsonObj = new JSONObject(stringBuffer.toString());
-    	  sendJavascript(jsonObj);
-    	  ctx.getApplicationContext().getFileStreamPath("cached_payload").delete();
-      }
-      catch (FileNotFoundException fnf)
-      {
-    	  Log.e("REGISTER", fnf.getMessage());
-      }
-      catch (IOException io)
-      {
-    	  io.printStackTrace();
-      }
-      catch (JSONException j)
-      {
-    	  j.printStackTrace();
-      }      
-      
-      PushHandlerActivity.EXITED = false;
-    }
-    else if (UNREGISTER.equals(action)) {
-
-      GCMRegistrar.unregister(this.ctx.getContext());
-      
-      Log.v(ME + ":" + UNREGISTER, "GCMRegistrar.unregister called ");
-      result = new PluginResult(Status.OK);
-    }
-    else
-    {
-      result = new PluginResult(Status.INVALID_ACTION);
-      Log.e(ME, "Invalid action : "+action);
-    }
-
-    return result;
-  }
-
-
-  public static void sendJavascript( JSONObject _json )
-  {
-	String _d =  "javascript:"+gECB+"(" + _json.toString() + ")";
-	Log.v(ME + ":sendJavascript", _d);
-
-	if (gECB != null ) {
-		gwebView.sendJavascript( _d );
+	/**
+	 * Gets the application context from cordova's main activity.
+	 * @return the application context
+	 */
+	private Context getApplicationContext() {
+		return this.cordova.getActivity().getApplicationContext();
 	}
-  }
 
+	@Override
+	public boolean execute(String action, JSONArray data, CallbackContext callbackContext) {
 
-	public void onDestroy()
+		boolean result = false;
+
+		Log.v(TAG, "execute: action=" + action);
+
+		if (REGISTER.equals(action)) {
+
+			Log.v(TAG, "execute: data=" + data.toString());
+
+			try {
+				JSONObject jo = data.getJSONObject(0);
+				
+				gWebView = this.webView;
+				Log.v(TAG, "execute: jo=" + jo.toString());
+
+				gECB = (String) jo.get("ecb");
+				gSenderID = (String) jo.get("senderID");
+
+				Log.v(TAG, "execute: ECB=" + gECB + " senderID=" + gSenderID);
+
+				GCMRegistrar.register(getApplicationContext(), gSenderID);
+				result = true;
+			} catch (JSONException e) {
+				Log.e(TAG, "execute: Got JSON Exception " + e.getMessage());
+				result = false;
+			}
+
+			if ( gCachedExtras != null) {
+				Log.v(TAG, "sending cached extras");
+				sendExtras(gCachedExtras);
+				gCachedExtras = null;
+			}
+			
+		} else if (UNREGISTER.equals(action)) {
+
+			GCMRegistrar.unregister(getApplicationContext());
+
+			Log.v(TAG, "UNREGISTER");
+			result = true;
+		} else {
+			result = false;
+			Log.e(TAG, "Invalid action : " + action);
+		}
+
+		return result;
+	}
+
+	/*
+	 * Sends a json object to the client as parameter to a method which is defined in gECB.
+	 */
+	public static void sendJavascript(JSONObject _json) {
+		String _d = "javascript:" + gECB + "(" + _json.toString() + ")";
+		Log.v(TAG, "sendJavascript: " + _d);
+
+		if (gECB != null && gWebView != null) {
+			gWebView.sendJavascript(_d); 
+		}
+	}
+
+	/*
+	 * Sends the pushbundle extras to the client application.
+	 * If the client application isn't currently active, it is cached for later processing.
+	 */
+	public static void sendExtras(Bundle extras)
 	{
-		super.onDestroy();
+		if (extras != null) {
+			if (gECB != null && gWebView != null) {
+				sendJavascript(convertBundleToJson(extras));
+			} else {
+				Log.v(TAG, "sendExtras: caching extras to send at a later time.");
+				gCachedExtras = extras;
+			}
+		}
+	}
+	
+	/*
+	 * serializes a bundle to JSON.
+	 */
+    private static JSONObject convertBundleToJson(Bundle extras)
+    {
+		try
+		{
+			JSONObject json;
+			json = new JSONObject().put("event", "message");
+        
+			JSONObject jsondata = new JSONObject();
+			Iterator<String> it = extras.keySet().iterator();
+			while (it.hasNext())
+			{
+				String key = it.next();
+				Object value = extras.get(key);	
+        	
+				// System data from Android
+				if (key.equals("from") || key.equals("collapse_key"))
+				{
+					json.put(key, value);
+				}
+				else if (key.equals("foreground"))
+				{
+					json.put(key, extras.getBoolean("foreground"));
+				}
+				else if (key.equals("coldstart"))
+				{
+					json.put(key, extras.getBoolean("coldstart"));
+				}
+				else
+				{
+					// Maintain backwards compatibility
+					if (key.equals("message") || key.equals("msgcnt") || key.equals("soundname"))
+					{
+						json.put(key, value);
+					}
+        		
+					if ( value instanceof String ) {
+					// Try to figure out if the value is another JSON object
+						
+						String strValue = (String)value;
+						if (strValue.startsWith("{")) {
+							try {
+								JSONObject json2 = new JSONObject(strValue);
+								jsondata.put(key, json2);
+							}
+							catch (Exception e) {
+								jsondata.put(key, value);
+							}
+							// Try to figure out if the value is another JSON array
+						}
+						else if (strValue.startsWith("["))
+						{
+							try
+							{
+								JSONArray json2 = new JSONArray(strValue);
+								jsondata.put(key, json2);
+							}
+							catch (Exception e)
+							{
+								jsondata.put(key, value);
+							}
+						}
+						else
+						{
+							jsondata.put(key, value);
+						}
+					}
+				}
+			} // while
+			json.put("payload", jsondata);
+        
+			Log.v(TAG, "extrasToJSON: " + json.toString());
 
-    	// let the service know we are exiting so it can cache the next notification payload.
-		PushHandlerActivity.EXITED = true;
-        GCMRegistrar.onDestroy(cordova.getActivity());
+			return json;
+		}
+		catch( JSONException e)
+		{
+			Log.e(TAG, "extrasToJSON: JSON exception");
+		}        	
+		return null;      	
+    }
+    
+    public static boolean isActive()
+    {
+    	return gWebView != null;
+    }
+    
+	public void onDestroy() 
+	{
+		GCMRegistrar.onDestroy(getApplicationContext());
+		gWebView = null;
+		gECB = null;
+		super.onDestroy();
 	}
 }
