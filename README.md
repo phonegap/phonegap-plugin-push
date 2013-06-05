@@ -43,6 +43,8 @@ This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and
 	{project_folder}
 		libs
 			gcm.jar
+			android-support-v13.jar
+			cordova-2.7.0.jar
 		src
 			com
 				plugin
@@ -55,33 +57,32 @@ This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and
 					{intent_name}
 						{intent_name}.java						
 
-2) Modify your **AndroidManifest.xml** and add the following lines to your manifest tag, replacing **your_app_package** with your app's package path:
+2) Modify your **AndroidManifest.xml** and add the following lines to your manifest tag:
+
+			<uses-permission android:name="android.permission.GET_TASKS" />
+			<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+			<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+			<uses-permission android:name="android.permission.WAKE_LOCK" />
+			<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+			<permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+			<uses-permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" />
 
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
-    <permission android:name="your_app_package.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-    <uses-permission android:name="your_app_package.permission.C2D_MESSAGE" />
+3) Modify your **AndroidManifest.xml** and add the following **activity**, **receiver** and **service** tags to your **application** section. (See the Sample_AndroidManifest.xml file in the Example folder.)
 
-
-3) Modify your **AndroidManifest.xml** and add the following **activity**, **receiver** and **service** tags to your **application** section, replacing **your_app_package** with your app's package path: (See the Sample_AndroidManifest.xml file in the Example folder.)
-
-	<activity android:name="com.plugin.gcm.PushHandlerActivity"/>
-    <receiver android:name="com.plugin.gcm.CordovaGCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
-      <intent-filter>
-        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-        <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-        <category android:name="your_app_package" />
-      </intent-filter>
-    </receiver>
-    <service android:name="com.plugin.gcm.GCMIntentService" />
+			<activity android:name="com.plugin.gcm.PushHandlerActivity"/>
+			<receiver android:name="com.plugin.gcm.CordovaGCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
+				<intent-filter>
+					<action android:name="com.google.android.c2dm.intent.RECEIVE" />
+					<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+					<category android:name="$PACKAGE_NAME" />
+				</intent-filter>
+			</receiver>
+			<service android:name="com.plugin.gcm.GCMIntentService" />
 
 4) Modify your **res/xml/config.xml** to include the following line in order to tell Cordova to include this plugin and where it can be found: (See the Sample_config.xml file in the Example folder)
 
-    <plugin name="PushPlugin" value="com.plugin.gcm.PushPlugin" />
+	<plugin name="PushPlugin" value="com.plugin.gcm.PushPlugin" />
 
 5) Add the **PushNotification.js** script to your assets/www folder (or javascripts folder, wherever you want really) and reference it in your main index.html file. This file's usage is described in the **Plugin API** section below.
 
@@ -96,27 +97,27 @@ Copy the following files to your project's Plugins folder:
 	PushPlugin.h
 	PushPlugin.m
 	
-Add a reference for this plugin to the plugins dictionary in **Cordove.plist**:
+Add a reference for this plugin to the plugins section in **config.xml**:
 
-	<key>PushPlugin</key>
-	<string>PushPlugin</string>
+	<plugin name="PushPlugin" value="PushPlugin" />
+
 
 Add the **PushNotification.js** script to your assets/www folder (or javascripts folder, wherever you want really) and reference it in your main index.html file.
 
     <script type="text/javascript" charset="utf-8" src="PushNotification.js"></script>
 
 ## Automatic Installation
-This plugin is based on [pluginstall](https://github.com/alunny/pluginstall). to install it to your app,
-simply execute pluginstall as follows;
+This plugin is based on [plugman](https://github.com/apache/cordova-plugman). to install it to your app,
+simply execute plugman as follows;
 
-	pluginstall [PLATFORM] [TARGET-PATH] [PLUGIN-PATH]
+	plugman --platform [PLATFORM] --project [TARGET-PATH] --plugin [PLUGIN-PATH]
 	
 	where
 		[PLATFORM] = ios or android
 		[TARGET-PATH] = path to folder containing your phonegap project
 		[PLUGIN-PATH] = path to folder containing this plugin
 
-For additional info, take a look at the [Cordova Pluginstall Specification](https://github.com/alunny/cordova-plugin-spec)
+For additional info, take a look at the [Plugman Documentation](https://github.com/apache/cordova-plugman/blob/master/README.md)
 
 ## Plugin API
 
