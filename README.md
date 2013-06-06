@@ -183,7 +183,7 @@ In this example, be sure and substitute your own senderID. Get your senderID by 
 		}
 	  
 		if (event.badge) {
-			pushNotification.setApplicationIconBadgeNumber(successHandler, event.badge);
+			pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
 		}
 	}
 
@@ -284,7 +284,7 @@ For the above to work, make sure the content for your home page is wrapped in an
 #### setApplicationIconBadgeNumber (iOS only)
 set the badge count visible when the app is not running
 	
-	pushNotification.setApplicationIconBadgeNumber(successCallback, badgeCount);
+	pushNotification.setApplicationIconBadgeNumber(successCallback, errorCallback, badgeCount);
 
 **badgeCount** -  an integer indicating what number should show up in the badge. Passing 0 will clear the badge.
 
