@@ -92,6 +92,9 @@
     isInline = NO;
 
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:notificationTypes];
+	
+	if (notificationMessage)			// if there is a pending startup notification
+		[self notificationReceived];	// go ahead and process it
 }
 
 - (void)isEnabled:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
@@ -174,7 +177,7 @@
 - (void)notificationReceived {
     NSLog(@"Notification received");
 
-    if (notificationMessage)
+    if (notificationMessage && self.callback)
     {
         NSMutableString *jsonStr = [NSMutableString stringWithString:@"{"];
 
@@ -185,6 +188,8 @@
             [jsonStr appendFormat:@"foreground:'%d',", 1];
             isInline = NO;
         }
+		else
+            [jsonStr appendFormat:@"foreground:'%d',", 0];
         
         [jsonStr appendString:@"}"];
 
