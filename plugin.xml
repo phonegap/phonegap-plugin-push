@@ -2,9 +2,13 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="com.adobe.plugins.PushPlugin"
-    version="1.3.2">
+    version="1.3.3">
 
     <name>PushPlugin</name>
+    
+	<description>
+		This plugin allows your application to receive push notifications on both Android and iOS devices. The Android implementation uses Google Cloud Messaging whereas the iOS version is based on Apple APNS Notifications
+	</description>
 
 	<asset src="www/PushNotification.js" target="PushNotification.js" />
 
