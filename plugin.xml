@@ -10,6 +10,8 @@
 		This plugin allows your application to receive push notifications on both Android and iOS devices. The Android implementation uses Google Cloud Messaging whereas the iOS version is based on Apple APNS Notifications
 	</description>
 
+	<license>MIT</license>
+
 	<asset src="www/PushNotification.js" target="PushNotification.js" />
 
     <engines>
