@@ -15,23 +15,26 @@
 	<asset src="www/PushNotification.js" target="PushNotification.js" />
 
     <engines>
-      <engine name="cordova" version=">=2.0.0" />
+      <engine name="cordova" version=">=3.0.0" />
     </engines>	
 	
 	<platform name="android">
-        <config-file target="res/xml/config.xml" parent="plugins">
-    		<plugin name="PushPlugin" value="com.plugin.gcm.PushPlugin" />
-        </config-file>
+        
+	<config-file target="res/xml/config.xml" parent="/*">
+		<feature name="PushPlugin" >
+			<param name="android-package" value="com.plugin.gcm.PushPlugin"/>
+		</feature>
+	</config-file>
     
-		<config-file target="AndroidManifest.xml" parent="/manifest">
-			<uses-permission android:name="android.permission.GET_TASKS" />
-			<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-			<uses-permission android:name="android.permission.GET_ACCOUNTS" />
-			<uses-permission android:name="android.permission.WAKE_LOCK" />
-			<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-			<permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-			<uses-permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" />
-  		</config-file>
+	<config-file target="AndroidManifest.xml" parent="/manifest">
+		<uses-permission android:name="android.permission.GET_TASKS" />
+		<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+		<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+		<uses-permission android:name="android.permission.WAKE_LOCK" />
+		<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+		<permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+		<uses-permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" />
+  	</config-file>
   		
      	<config-file target="AndroidManifest.xml" parent="/manifest/application">
 			<activity android:name="com.plugin.gcm.PushHandlerActivity"/>
@@ -56,13 +59,13 @@
 
   <!-- ios -->
     <platform name="ios">
-		<!-- Cordova < 2.3 -->
-        <plugins-plist key="PushPlugin" string="PushPlugin" />
         
-		<!-- Cordova >= 2.3 -->
-		<config-file target="config.xml" parent="plugins">
-			<plugin name="PushPlugin" value="PushPlugin"/>
-		</config-file>
+		
+	<config-file target="config.xml" parent="/*">
+		<feature name="PushPlugin">
+			<param name="ios-package" value="PushPlugin"/>
+		</feature>
+	</config-file>
         
         <source-file src="src/ios/AppDelegate+notification.m" />
         <source-file src="src/ios/PushPlugin.m" />
