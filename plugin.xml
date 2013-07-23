@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    id="com.adobe.plugins.PushPlugin"
-    version="1.3.3">
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	id="com.adobe.plugins.PushPlugin"
+	version="1.3.3">
 
-    <name>PushPlugin</name>
-    
+	<name>PushPlugin</name>
+
 	<description>
 		This plugin allows your application to receive push notifications on both Android and iOS devices. The Android implementation uses Google Cloud Messaging whereas the iOS version is based on Apple APNS Notifications
 	</description>
@@ -14,38 +14,39 @@
 
 	<asset src="www/PushNotification.js" target="PushNotification.js" />
 
-    <engines>
-      <engine name="cordova" version=">=3.0.0" />
-    </engines>	
+	<engines>
+		<engine name="cordova" version=">=3.0.0" />
+	</engines>	
 	
+	<!-- android -->
 	<platform name="android">
-        
-	<config-file target="res/xml/config.xml" parent="/*">
-		<feature name="PushPlugin" >
-			<param name="android-package" value="com.plugin.gcm.PushPlugin"/>
-		</feature>
-	</config-file>
-    
-	<config-file target="AndroidManifest.xml" parent="/manifest">
-		<uses-permission android:name="android.permission.GET_TASKS" />
-		<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-		<uses-permission android:name="android.permission.GET_ACCOUNTS" />
-		<uses-permission android:name="android.permission.WAKE_LOCK" />
-		<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-		<permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-		<uses-permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" />
-  	</config-file>
-  		
-     	<config-file target="AndroidManifest.xml" parent="/manifest/application">
+
+		<config-file target="res/xml/config.xml" parent="/*">
+			<feature name="PushPlugin" >
+				<param name="android-package" value="com.plugin.gcm.PushPlugin"/>
+			</feature>
+		</config-file>
+
+		<config-file target="AndroidManifest.xml" parent="/manifest">
+			<uses-permission android:name="android.permission.GET_TASKS" />
+			<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+			<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+			<uses-permission android:name="android.permission.WAKE_LOCK" />
+			<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+			<permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+			<uses-permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" />
+		</config-file>
+
+		<config-file target="AndroidManifest.xml" parent="/manifest/application">
 			<activity android:name="com.plugin.gcm.PushHandlerActivity"/>
- 			<receiver android:name="com.plugin.gcm.CordovaGCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
- 				<intent-filter>
- 					<action android:name="com.google.android.c2dm.intent.RECEIVE" />
- 					<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
- 					<category android:name="$PACKAGE_NAME" />
- 				</intent-filter>
- 			</receiver>
- 			<service android:name="com.plugin.gcm.GCMIntentService" />
+			<receiver android:name="com.plugin.gcm.CordovaGCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
+				<intent-filter>
+					<action android:name="com.google.android.c2dm.intent.RECEIVE" />
+					<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+					<category android:name="$PACKAGE_NAME" />
+				</intent-filter>
+			</receiver>
+			<service android:name="com.plugin.gcm.GCMIntentService" />
 		</config-file>
 
 		<source-file src="src/android/libs/gcm.jar" target-dir="libs/" />
@@ -53,25 +54,24 @@
 		<source-file src="src/android/com/plugin/gcm/GCMIntentService.java" target-dir="src/com/plugin/gcm/" />
 		<source-file src="src/android/com/plugin/gcm/PushHandlerActivity.java" target-dir="src/com/plugin/gcm/" />
 		<source-file src="src/android/com/plugin/gcm/PushPlugin.java" target-dir="src/com/plugin/gcm/" />
- 		<source-file src="src/android/com/plugin/android-support-v13.jar" target-dir="libs/" />
+		<source-file src="src/android/com/plugin/android-support-v13.jar" target-dir="libs/" />
 		
-    </platform>
+	</platform>
 
-  <!-- ios -->
-    <platform name="ios">
-        
+	<!-- ios -->
+	<platform name="ios">
 		
-	<config-file target="config.xml" parent="/*">
-		<feature name="PushPlugin">
-			<param name="ios-package" value="PushPlugin"/>
-		</feature>
-	</config-file>
-        
-        <source-file src="src/ios/AppDelegate+notification.m" />
-        <source-file src="src/ios/PushPlugin.m" />
-        
-        <header-file src="src/ios/AppDelegate+notification.h" />
-        <header-file src="src/ios/PushPlugin.h" />
+		<config-file target="config.xml" parent="/*">
+			<feature name="PushPlugin">
+				<param name="ios-package" value="PushPlugin"/>
+			</feature>
+		</config-file>
 
-    </platform>
+		<source-file src="src/ios/AppDelegate+notification.m" />
+		<source-file src="src/ios/PushPlugin.m" />
+
+		<header-file src="src/ios/AppDelegate+notification.h" />
+		<header-file src="src/ios/PushPlugin.h" />
+
+	</platform>
 </plugin>
