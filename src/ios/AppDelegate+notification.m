@@ -113,7 +113,6 @@ static char launchNotificationKey;
 - (void)dealloc
 {
     self.launchNotification	= nil; // clear the association and release the object
-    [super dealloc];
 }
 
 @end
