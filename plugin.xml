@@ -17,7 +17,7 @@
     <engines>
 		<engine name="cordova" version=">=2.0.0" />
 		<engine name="cordova" version="<3.0.0" />
-    </engines>	
+    </engines>
 	
 	<platform name="android">
         <config-file target="res/xml/config.xml" parent="plugins">
