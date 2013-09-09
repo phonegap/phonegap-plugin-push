@@ -2,7 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="com.adobe.plugins.PushPlugin"
-    version="1.3.3">
+    version="1.3.4">
 
     <name>PushPlugin</name>
     
@@ -15,7 +15,8 @@
 	<asset src="www/PushNotification.js" target="PushNotification.js" />
 
     <engines>
-      <engine name="cordova" version=">=2.0.0" />
+		<engine name="cordova" version=">=2.0.0" />
+		<engine name="cordova" version="<3.0.0" />
     </engines>	
 	
 	<platform name="android">
