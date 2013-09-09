@@ -16,8 +16,8 @@
 	<asset src="www/PushNotification.js" target="PushNotification.js" />
 
     <engines>
-		<engine name="cordova" version=">=2.0.0" />
-		<engine name="cordova" version="<3.0.0" />
+		<engine name="cordova" version="&gt;=2.0.0" />
+		<engine name="cordova" version="&lt;3.0.0" />
     </engines>
 	
 	<platform name="android">
