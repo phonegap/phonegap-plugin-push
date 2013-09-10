@@ -25,6 +25,7 @@
 
 #import <Foundation/Foundation.h>
 #import <Cordova/CDV.h>
+#import <Cordova/CDVPlugin.h>
 
 @interface PushPlugin : CDVPlugin
 {
@@ -40,10 +41,10 @@
 @property (nonatomic, copy) NSString *notificationCallbackId;
 @property (nonatomic, copy) NSString *callback;
 
-@property (nonatomic, retain) NSDictionary *notificationMessage;
+@property (nonatomic, strong) NSDictionary *notificationMessage;
 @property BOOL                          isInline;
 
-- (void)register:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options;
+- (void)register:(CDVInvokedUrlCommand*)command;
 
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken;
 - (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
