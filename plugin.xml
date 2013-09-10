@@ -2,7 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="com.phonegap.plugins.PushPlugin"
-    version="1.3.5">
+    version="1.3.6">
 
     <name>PushPlugin</name>
 	<author>Bob Easterday</author>
