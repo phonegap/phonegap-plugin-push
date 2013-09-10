@@ -59,7 +59,6 @@ This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and
 
 2) Modify your **AndroidManifest.xml** and add the following lines to your manifest tag:
 
-			<uses-permission android:name="android.permission.GET_TASKS" />
 			<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 			<uses-permission android:name="android.permission.GET_ACCOUNTS" />
 			<uses-permission android:name="android.permission.WAKE_LOCK" />
