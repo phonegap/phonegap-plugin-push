@@ -99,7 +99,7 @@ Copy the following files to your project's Plugins folder:
 	
 Add a reference for this plugin to the plugins section in **config.xml**:
 
-	<plugin name="PushPlugin" value="PushPlugin" />
+	<gap:plugin name="com.phonegap.plugins.PushPlugin"/>
 
 
 Add the **PushNotification.js** script to your assets/www folder (or javascripts folder, wherever you want really) and reference it in your main index.html file.
@@ -110,7 +110,7 @@ Add the **PushNotification.js** script to your assets/www folder (or javascripts
 This plugin is based on [plugman](https://github.com/apache/cordova-plugman). to install it to your app,
 simply execute plugman as follows;
 
-	plugman --platform [PLATFORM] --project [TARGET-PATH] --plugin [PLUGIN-PATH]
+	plugman install --platform [PLATFORM] --project [TARGET-PATH] --plugin [PLUGIN-PATH]
 	
 	where
 		[PLATFORM] = ios or android
