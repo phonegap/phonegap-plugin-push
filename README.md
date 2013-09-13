@@ -140,9 +140,9 @@ For Android, If you have not already done so, you'll need to set up a Google API
 In this example, be sure and substitute your own senderID. Get your senderID by signing into to your [google dashboard](https://code.google.com/apis/console/). The senderID is found at **Overview->Dashboard->Project Number**.
 
 	if (device.platform == 'android' || device.platform == 'Android') {
-		pushNotification.register(successHandler, errorHandler,{"senderID":"replace_with_sender_id","ecb":"onNotificationGCM"});
+		pushNotification.register(successHandler, errorHandler, {"senderID":"replace_with_sender_id", "ecb":"onNotificationGCM"});
 	} else {
-		pushNotification.register(tokenHandler, errorHandler {"badge":"true","sound":"true","alert":"true","ecb":"onNotificationAPN"});
+		pushNotification.register(tokenHandler, errorHandler, {"badge":"true", "sound":"true", "alert":"true", "ecb":"onNotificationAPN"});
 	}
 
 **successHandler** - called when a plugin method returns without error
