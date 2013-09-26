@@ -67,14 +67,12 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Bundle extras = intent.getExtras();
 		if (extras != null)
 		{
-			boolean	foreground = this.isInForeground();
+			PushPlugin.sendExtras(extras);
 
-			extras.putBoolean("foreground", foreground);
-
-			if (foreground)
-				PushPlugin.sendExtras(extras);
-			else
+			// Send a notification if there is a message
+			if (extras.getString("message").length() != 0) {
 				createNotification(context, extras);
+			}
 		}
 	}
 
@@ -129,18 +127,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 		return (String)appName;
 	}
 	
-	public boolean isInForeground()
-	{
-		ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-		List<RunningTaskInfo> services = activityManager
-				.getRunningTasks(Integer.MAX_VALUE);
-
-		if (services.get(0).topActivity.getPackageName().toString().equalsIgnoreCase(getApplicationContext().getPackageName().toString()))
-			return true;
-
-		return false;
-	}	
-
 	@Override
 	public void onError(Context context, String errorId) {
 		Log.e(TAG, "onError - errorId: " + errorId);
