@@ -31,7 +31,7 @@ public class PushPlugin extends CordovaPlugin {
 	private static String gECB;
 	private static String gSenderID;
 	private static Bundle gCachedExtras = null;
-    private static boolean gForeground;
+    private static boolean gForeground = true;
 
 	/**
 	 * Gets the application context from cordova's main activity.
