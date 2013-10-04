@@ -214,7 +214,12 @@ public class PushPlugin extends CordovaPlugin {
 		}        	
 		return null;      	
     }
-    
+
+    public static boolean isInForeground()
+    {
+      return gForeground;
+    }
+
     public static boolean isActive()
     {
     	return gWebView != null;
