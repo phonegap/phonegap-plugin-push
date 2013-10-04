@@ -31,6 +31,7 @@ public class PushPlugin extends CordovaPlugin {
 	private static String gECB;
 	private static String gSenderID;
 	private static Bundle gCachedExtras = null;
+    private static boolean gForeground;
 
 	/**
 	 * Gets the application context from cordova's main activity.
@@ -108,6 +109,7 @@ public class PushPlugin extends CordovaPlugin {
 	public static void sendExtras(Bundle extras)
 	{
 		if (extras != null) {
+			extras.putBoolean("foreground", gForeground);
 			if (gECB != null && gWebView != null) {
 				sendJavascript(convertBundleToJson(extras));
 			} else {
@@ -116,10 +118,22 @@ public class PushPlugin extends CordovaPlugin {
 			}
 		}
 	}
-	
-	/*
-	 * serializes a bundle to JSON.
-	 */
+
+    @Override
+    public void onPause(boolean multitasking) {
+        super.onPause(multitasking);
+        gForeground = false;
+    }
+
+    @Override
+    public void onResume(boolean multitasking) {
+        super.onResume(multitasking);
+        gForeground = true;
+    }
+
+    /*
+     * serializes a bundle to JSON.
+     */
     private static JSONObject convertBundleToJson(Bundle extras)
     {
 		try
