@@ -92,8 +92,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 				.setDefaults(Notification.DEFAULT_ALL)
 				.setSmallIcon(context.getApplicationInfo().icon)
 				.setWhen(System.currentTimeMillis())
-				.setContentTitle(getString("title"))
-				.setTicker(getString("title"))
+				.setContentTitle(extras.getString("title"))
+				.setTicker(extras.getString("title"))
 				.setContentIntent(contentIntent);
 
 		String message = extras.getString("message");
