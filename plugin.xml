@@ -12,8 +12,10 @@
 	</description>
 
 	<license>MIT</license>
-
-	<asset src="www/PushNotification.js" target="PushNotification.js" />
+	
+	<js-module src="www/PushNotification.js" name="PushNotification">
+   	<clobbers target="window.PushNotification" />
+	</js-module>
 
 	<engines>
 		<engine name="cordova" version=">=3.0.0" />
