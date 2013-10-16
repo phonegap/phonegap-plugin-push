@@ -164,11 +164,11 @@
 
         if (isInline)
         {
-            [jsonStr appendFormat:@"foreground:'%d',", 1];
+            [jsonStr appendFormat:@"foreground:\"%d\"", 1];
             isInline = NO;
         }
 		else
-            [jsonStr appendFormat:@"foreground:'%d',", 0];
+            [jsonStr appendFormat:@"foreground:\"%d\"", 0];
         
         [jsonStr appendString:@"}"];
 
