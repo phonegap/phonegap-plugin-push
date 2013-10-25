@@ -65,9 +65,11 @@ public class PushPlugin extends CordovaPlugin {
 
 				GCMRegistrar.register(getApplicationContext(), gSenderID);
 				result = true;
+				callbackContext.success();
 			} catch (JSONException e) {
 				Log.e(TAG, "execute: Got JSON Exception " + e.getMessage());
 				result = false;
+				callbackContext.error(e.getMessage());
 			}
 
 			if ( gCachedExtras != null) {
@@ -82,9 +84,11 @@ public class PushPlugin extends CordovaPlugin {
 
 			Log.v(TAG, "UNREGISTER");
 			result = true;
+			callbackContext.success();
 		} else {
 			result = false;
 			Log.e(TAG, "Invalid action : " + action);
+			callbackContext.error("Invalid action : " + action);
 		}
 
 		return result;
