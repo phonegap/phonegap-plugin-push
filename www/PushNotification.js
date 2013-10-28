@@ -62,3 +62,7 @@ if(!window.plugins) {
 if (!window.plugins.pushNotification) {
     window.plugins.pushNotification = new PushNotification();
 }
+
+if (module.exports) {
+  module.exports = PushNotification;
+}
