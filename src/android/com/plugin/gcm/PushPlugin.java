@@ -31,7 +31,7 @@ public class PushPlugin extends CordovaPlugin {
 	private static String gECB;
 	private static String gSenderID;
 	private static Bundle gCachedExtras = null;
-    private static boolean gForeground = false;
+    private static boolean gForeground = true;
 
 	/**
 	 * Gets the application context from cordova's main activity.
@@ -123,25 +123,6 @@ public class PushPlugin extends CordovaPlugin {
 		}
 	}
 	
-    @Override
-    public void onStart(boolean multitasking) {
-        super.onStart(multitasking);
-        gForeground = true;
-    }
-
-    @Override
-    public void onRestart(boolean multitasking) {
-        super.onRestart(multitasking);
-        gForeground = true;
-    }
-
-    @Override
-    public void onStop(boolean multitasking) {
-        super.onStop(multitasking);
-        gForeground = false;
-    }
-
-
     @Override
     public void onPause(boolean multitasking) {
         super.onPause(multitasking);
@@ -253,7 +234,6 @@ public class PushPlugin extends CordovaPlugin {
 		GCMRegistrar.onDestroy(getApplicationContext());
 		gWebView = null;
 		gECB = null;
-		gForeground = false;
 		super.onDestroy();
 	}
 }
