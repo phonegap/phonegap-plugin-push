@@ -69,8 +69,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 		{
 			PushPlugin.sendExtras(extras);
 
-			// Send a notification if there is a message and not in foreground
-			if (!PushPlugin.isInForeground() && extras.getString("message").length() != 0) {
+			// Send a notification if there is a message
+			if (extras.getString("message").length() != 0) {
 				createNotification(context, extras);
 			}
 		}
