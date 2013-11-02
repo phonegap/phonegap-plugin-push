@@ -122,7 +122,7 @@ public class PushPlugin extends CordovaPlugin {
 			}
 		}
 	}
-
+	
     @Override
     public void onPause(boolean multitasking) {
         super.onPause(multitasking);
@@ -234,7 +234,6 @@ public class PushPlugin extends CordovaPlugin {
 		GCMRegistrar.onDestroy(getApplicationContext());
 		gWebView = null;
 		gECB = null;
-		gForeground = false;
 		super.onDestroy();
 	}
 }
