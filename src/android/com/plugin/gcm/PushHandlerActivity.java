@@ -25,8 +25,6 @@ public class PushHandlerActivity extends Activity
 		boolean isPushPluginActive = PushPlugin.isActive();
 		processPushBundle(isPushPluginActive);
 
-		GCMIntentService.cancelNotification(this);
-
 		finish();
 
 		if (!isPushPluginActive) {
