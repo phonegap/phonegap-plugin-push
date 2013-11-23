@@ -10,6 +10,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -113,7 +114,6 @@ public class PushPlugin extends CordovaPlugin {
 	public static void sendExtras(Bundle extras)
 	{
 		if (extras != null) {
-			extras.putBoolean("foreground", gForeground);
 			if (gECB != null && gWebView != null) {
 				sendJavascript(convertBundleToJson(extras));
 			} else {
@@ -124,6 +124,12 @@ public class PushPlugin extends CordovaPlugin {
 	}
 	
     @Override
+    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+        super.initialize(cordova, webView);
+        gForeground = true;
+    }
+	
+	@Override
     public void onPause(boolean multitasking) {
         super.onPause(multitasking);
         gForeground = false;
@@ -133,6 +139,12 @@ public class PushPlugin extends CordovaPlugin {
     public void onResume(boolean multitasking) {
         super.onResume(multitasking);
         gForeground = true;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        gForeground = false;
     }
 
     /*
@@ -228,14 +240,4 @@ public class PushPlugin extends CordovaPlugin {
     {
     	return gWebView != null;
     }
-    
-	public void onDestroy() 
-	{
-		GCMRegistrar.onDestroy(getApplicationContext());
-		gWebView = null;
-		gECB = null;
-        gForeground = false;
-		
-		super.onDestroy();
-	}
 }
