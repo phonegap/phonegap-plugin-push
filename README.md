@@ -38,6 +38,7 @@ This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and
 
 1) copy the contents of **src/android/com/** to your project's **src/com/** folder.
    copy the contents of **libs/** to your **libs/** folder.
+   copy **{android_sdk_path}/extras/android/support/v13/android-support-v13.jar** to your **libs/** folder.
    The final hirearchy will likely look something like this;
 
 	{project_folder}
