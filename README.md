@@ -131,6 +131,18 @@ where
 	[PLUGIN-PATH] = path to folder containing this plugin
 ```
 
+Alternatively this plugin can be installed using the Phonegap CLI.
+
+1) Navigaate to the root folder for your phonegap project.
+2) Run the command.
+
+```sh
+
+phonegap local plugin add https://github.com/phonegap-build/PushPlugin.git
+
+
+```
+
 For additional info, take a look at the [Plugman Documentation](https://github.com/apache/cordova-plugman/blob/master/README.md)
 
 ## Plugin API
