@@ -145,6 +145,8 @@ public class PushPlugin extends CordovaPlugin {
     public void onDestroy() {
         super.onDestroy();
         gForeground = false;
+		gECB = null;
+		gWebView = null;
     }
 
     /*
