@@ -1,4 +1,4 @@
-# Cordova Push Notifications Plugin for Android and iOS
+# Cordova Push Notifications Plugin for Android, iOS and WP8
 
 ---
 
@@ -39,13 +39,13 @@ This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and
 1) copy the contents of **src/android/com/** to your project's **src/com/** folder.
    copy the contents of **libs/** to your **libs/** folder.
    copy **{android_sdk_path}/extras/android/support/v13/android-support-v13.jar** to your **libs/** folder.
-   The final hirearchy will likely look something like this;
+   The final hierarchy will likely look something like this:
 
 	{project_folder}
 		libs
 			gcm.jar
 			android-support-v13.jar
-			cordova-2.7.0.jar
+			cordova-3.4.0.jar
 		src
 			com
 				plugin
@@ -86,7 +86,9 @@ This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and
 4) Modify your **res/xml/config.xml** to include the following line in order to tell Cordova to include this plugin and where it can be found: (See the Sample_config.xml file in the Example folder)
 
 ```xml
-<plugin name="PushPlugin" value="com.plugin.gcm.PushPlugin" />
+<feature name="PushPlugin">
+  <param name="android-package" value="com.plugin.gcm.PushPlugin" />
+</feature>
 ```
 
 5) Add the **PushNotification.js** script to your assets/www folder (or javascripts folder, wherever you want really) and reference it in your main index.html file. This file's usage is described in the **Plugin API** section below.
@@ -109,11 +111,34 @@ PushPlugin.m
 Add a reference for this plugin to the plugins section in **config.xml**:
 
 ```xml
-<gap:plugin name="com.phonegap.plugins.PushPlugin"/>
+<feature name="PushPlugin">
+  <param name="ios-package" value="PushPlugin" />
+</feature>
 ```
 
 Add the **PushNotification.js** script to your assets/www folder (or javascripts folder, wherever you want really) and reference it in your main index.html file.
 
+```html
+<script type="text/javascript" charset="utf-8" src="PushNotification.js"></script>
+```
+
+## Manual Installation for WP8
+
+Copy the following files to your project's Commands folder and add it to the VS project:
+
+```
+PushPlugin.cs
+```
+
+Add a reference to this plugin in **config.xml**:
+
+```xml
+<feature name="PushPlugin">
+  <param name="wp-package" value="PushPlugin" />
+</feature>
+```
+
+Add the **PushNotification.js** script to your assets/www folder (or javascripts folder, wherever you want really) and reference it in your main index.html file.
 ```html
 <script type="text/javascript" charset="utf-8" src="PushNotification.js"></script>
 ```
@@ -131,15 +156,17 @@ where
 	[PLUGIN-PATH] = path to folder containing this plugin
 ```
 
-Alternatively this plugin can be installed using the Phonegap CLI.
-
-1) Navigaate to the root folder for your phonegap project.
-2) Run the command.
+Alternatively this plugin can be installed using the Phonegap CLI:
 
 ```sh
-
 phonegap local plugin add https://github.com/phonegap-build/PushPlugin.git
 
+```
+
+or the Cordova CLI:
+
+```sh
+cordova plugin add https://github.com/phonegap-build/PushPlugin.git
 
 ```
 
@@ -210,7 +237,7 @@ function errorHandler (error) {
 }
 ```
 
-**tokenHandler (iOS ony)** - called when the device has registeredwith a unique device token.
+**tokenHandler (iOS only)** - called when the device has registered with a unique device token.
 
 ```js
 function tokenHandler (result) {
@@ -301,6 +328,46 @@ function onNotificationGCM(e) {
 Looking at the above message handling code for Android, a few things bear explaination. Your app may receive a notification while it is active (INLINE). If you background the app by hitting the Home button on your device, you may later receive a status bar notification. Selecting that notification from the status will bring your app to the front and allow you to process the notification (BACKGROUND). Finally, should you completely exit the app by hitting the back button from the home page, you may still receive a notification. Touching that notification in the notification tray will relaunch your app and allow you to process the notification (COLDSTART). In this case the **coldstart** flag will be set on the incoming event. You can look at the **foreground** flag on the event to determine whether you are processing a background or an in-line notification. You may choose, for example to play a sound or show a dialog only for inline or coldstart notifications since the user has already been alerted via the status bar.
 
 Also make note of the **payload** object. Since the Android notification data model is much more flexible than that of iOS, there may be additional elements beyond **message**, **soundname**, and **msgcnt**. You can access those elements and any additional ones via the **payload** element. This means that if your data model should change in the future, there will be no need to change and recompile the plugin.
+
+##### wp8
+Register as
+
+```js
+pushNotification = window.plugins.pushNotification;
+pushNotification.register(successHandler, errorHandler, {"channelName":"your_channel_name","ecb":"onNotification"});
+
+function successHandler(result) {
+  console.log('registered###' + result.uri);
+  // send uri to your notification server
+}
+```
+
+onNotification is fired if the app is running when you receive the toast notification
+
+```js
+function onNotification (e) {
+  navigator.notification.alert(e.text2, function(){}, e.text1);
+}
+```
+
+When not using PhoneGap Build, you can control the launch page when the user taps on your toast notification when the app is not running. Add the following code to your MainPage.xaml.cs:
+
+```
+  protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+  {
+      base.OnNavigatedTo(e);
+      try
+      {
+          if (this.NavigationContext.QueryString["NavigatedFrom"] == "toast") // this is set on the server
+          {
+              this.CordovaView.StartPageUri = new Uri("//www/index.html#notification-page", UriKind.Relative);
+          }
+      }
+      catch (KeyNotFoundException)
+      {
+      }
+  }
+```
 
 #### unregister
 You will typically call this when your app is exiting, to cleanup any used resources. Its not strictly necessary to call it, and indeed it may be desireable to NOT call it if you are debugging your intermediarry push server. When you call unregister(), the current token for a particular device will get invalidated, and the next call to register() will return a new token. If you do NOT call unregister(), the last token will remain in effect until it is invalidated for some reason at the GCM side. Since such invalidations are beyond your control, its recommended that, in a production environment, that you have a matching unregister() call, for every call to register(), and that your server updates the devices' records each time.
