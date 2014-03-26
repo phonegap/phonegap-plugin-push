@@ -1,10 +1,10 @@
-# Cordova Push Notifications Plugin for Android and iOS
+# Cordova Push Notifications Plugin for Amazon Fire OS, Android and iOS
 
 ---
 
 ## DESCRIPTION
 
-This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and allows your application to receive push notifications on both Android and iOS devices. The Android implementation uses [Google's GCM (Google Cloud Messaging) service](http://developer.android.com/guide/google/gcm/index.html), whereas the iOS version is based on [Apple APNS Notifications](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/ApplePushService/ApplePushService.html)
+This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and allows your application to receive push notifications on Amazon Fire OS, Android and iOS devices. The Amazon Fire OS implementation uses [Amazon's ADM(Amazon Device Messaging) service](https://developer.amazon.com/sdk/adm.html), Android implementation uses [Google's GCM (Google Cloud Messaging) service](http://developer.android.com/guide/google/gcm/index.html) and the iOS version is based on [Apple APNS Notifications](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/ApplePushService/ApplePushService.html)
 
 **Important** - Push notifications are intended for real devices. The registration process will fail on the iOS simulator. Notifications can be made to work on the Android Emulator. However, doing so requires installation of some helper libraries, as outlined [here,](http://www.androidhive.info/2012/10/android-push-notifications-using-google-cloud-messaging-gcm-php-and-mysql/) under the section titled "Installing helper libraries and setting up the Emulator".
 
@@ -32,6 +32,57 @@ This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and
 	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	THE SOFTWARE.
+
+## Manual Installation for Amazon Fire OS
+
+1) Copy the contents of **src/amazon/com/** to your project's **src/com/** folder.
+
+2) Modify your **AndroidManifest.xml** and add the following lines to your manifest tag:
+
+```xml
+<permission android:name="$PACKAGE_NAME.permission.RECEIVE_ADM_MESSAGE" android:protectionLevel="signature" />
+<uses-permission android:name="$PACKAGE_NAME.permission.RECEIVE_ADM_MESSAGE" />
+<uses-permission android:name="com.amazon.device.messaging.permission.RECEIVE" />
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+```
+
+3) Modify your **AndroidManifest.xml** and add the following **activity**, **receiver** and **service** tags to your **application** section.
+
+```xml
+<amazon:enable-feature android:name="com.amazon.device.messaging" android:required="true"/>
+<service android:exported="false" android:name="com.amazon.cordova.plugin.ADMMessageHandler" />
+<activity android:name="com.amazon.cordova.plugin.ADMHandlerActivity" />
+<receiver android:name="com.amazon.cordova.plugin.ADMMessageHandler$Receiver" android:permission="com.amazon.device.messaging.permission.SEND">
+	<intent-filter>
+        	<action android:name="com.amazon.device.messaging.intent.REGISTRATION" />
+                <action android:name="com.amazon.device.messaging.intent.RECEIVE" />
+                <category android:name="$PACKAGE_NAME" />
+	</intent-filter>
+</receiver>	
+```
+
+4) Modify your **AndroidManifest.xml** and add "amazon" XML namespace to <manifest> tag:
+
+```xml
+xmlns:amazon="http://schemas.amazon.com/apk/res/android"
+```
+
+5) Modify your res/xml/config.xml to add a reference to PushPlugin:
+
+```xml
+<feature name="PushPlugin" >
+	<param name="android-package" value="com.amazon.cordova.plugin.PushPlugin"/>
+</feature>
+```
+
+6) Modify your res/xml/config.xml to set some config options to let Cordova know whether to display ADM message in the notification center or not. If not, provide the default message. By default, message will be visible in the notification. These config options are used if message arrives and app is not in the foreground(either Killed or running in the background).
+
+```xml
+<preference name="showmessageinnotification" value="true" />
+<preference name="defaultnotificationmessage" value="New message has arrived!" />
+```
+
+7) Finally, put api_key.txt (given to you when you register your app on [Amazon Developer Portal](https://developer.amazon.com/sdk/adm.html). For detailed steps on how to register for ADM please refer to section "Registering your app for Amazon Device Messaging(ADM)"
 
 ## Manual Installation for Android
 
@@ -145,6 +196,16 @@ phonegap local plugin add https://github.com/phonegap-build/PushPlugin.git
 
 For additional info, take a look at the [Plugman Documentation](https://github.com/apache/cordova-plugman/blob/master/README.md)
 
+Note: For Amazon Fire OS, you will have to follow 2 steps below after automatic installation:
+
+1) Modify your **AndroidManifest.xml** and add "amazon" XML namespace to <manifest> tag:
+
+```xml
+xmlns:amazon="http://schemas.amazon.com/apk/res/android"
+```
+
+2) Put api_key.txt (given to you when you register your app on [Amazon Developer Portal](https://developer.amazon.com/sdk/adm.html) in your app's assets folder ($path to app/platforms/amazon-fireos/assets/). For detailed steps on how to register for ADM please refer to section "Registering your app for Amazon Device Messaging(ADM)"
+
 ## Plugin API
 
 In the Examples folder you will find a sample implementation showing how to interact with the PushPlugin. Modify it to suit your needs.
@@ -162,15 +223,18 @@ pushNotification = window.plugins.pushNotification;
 ```
 
 #### register
-This should be called as soon as the device becomes ready. On success, you will get a call to tokenHandler (iOS), or  onNotificationGCM (Android), allowing you to obtain the device token or registration ID, respectively. Those values will typically get posted to your intermediary push server so it knows who it can send notifications to.
+This should be called as soon as the device becomes ready. On success, you will get a call to tokenHandler (iOS), or  onNotificationGCM (Amazon Fire OS or Android), allowing you to obtain the device token or registration ID, respectively. Those values will typically get posted to your intermediary push server so it knows who it can send notifications to.
 
+For Amazon Fire OS, if you have not already registered with Amazon developer portal,you will have to obtain credentials and api_key for your app. This is described more in detail in the **Registering your app for Amazon Device Messaging(ADM)** section below.
 
 For Android, If you have not already done so, you'll need to set up a Google API project, to generate your senderID. [Follow these steps](http://developer.android.com/guide/google/gcm/gs.html) to do so. This is described more fully in the **Test Environment** section below.
 
 In this example, be sure and substitute your own senderID. Get your senderID by signing into to your [google dashboard](https://code.google.com/apis/console/). The senderID is found at **Overview->Dashboard->Project Number**.
 
+Note: For Amazon Fire OS platform, sender_id is not needed. If you provide one, it will be ignored. "ecb" MUST be provided in order to get callback notifications.
+
 ```js
-if ( device.platform == 'android' || device.platform == 'Android' )
+if ( device.platform == 'android' || device.platform == 'Android' || device.platform == "Amazon" || device.platform == "amazon")
 {
 	pushNotification.register(
 		successHandler,
@@ -284,7 +348,10 @@ function onNotificationGCM(e) {
 		}
 
 		$("#app-status-ul").append('<li>MESSAGE -> MSG: ' + e.payload.message + '</li>');
-		$("#app-status-ul").append('<li>MESSAGE -> MSGCNT: ' + e.payload.msgcnt + '</li>');
+		//Only works for GCM
+	       $("#app-status-ul").append('<li>MESSAGE -> MSGCNT: ' + e.payload.msgcnt + '</li>');
+	       //Only works on Amazon Fire OS
+	       $status.append('<li>MESSAGE -> TIME: ' + e.payload.timeStamp + '</li>');
 	break;
 
 	case 'error':
@@ -298,9 +365,12 @@ function onNotificationGCM(e) {
 }
 ```
 
-Looking at the above message handling code for Android, a few things bear explaination. Your app may receive a notification while it is active (INLINE). If you background the app by hitting the Home button on your device, you may later receive a status bar notification. Selecting that notification from the status will bring your app to the front and allow you to process the notification (BACKGROUND). Finally, should you completely exit the app by hitting the back button from the home page, you may still receive a notification. Touching that notification in the notification tray will relaunch your app and allow you to process the notification (COLDSTART). In this case the **coldstart** flag will be set on the incoming event. You can look at the **foreground** flag on the event to determine whether you are processing a background or an in-line notification. You may choose, for example to play a sound or show a dialog only for inline or coldstart notifications since the user has already been alerted via the status bar.
+Looking at the above message handling code for Android/Amazon Fire OS, a few things bear explanation. Your app may receive a notification while it is active (INLINE). If you background the app by hitting the Home button on your device, you may later receive a status bar notification. Selecting that notification from the status will bring your app to the front and allow you to process the notification (BACKGROUND). Finally, should you completely exit the app by hitting the back button from the home page, you may still receive a notification. Touching that notification in the notification tray will relaunch your app and allow you to process the notification (COLDSTART). In this case the **coldstart** flag will be set on the incoming event. You can look at the **foreground** flag on the event to determine whether you are processing a background or an in-line notification. You may choose, for example to play a sound or show a dialog only for inline or coldstart notifications since the user has already been alerted via the status bar.
+
+For Amazon Fire OS platform, offline message can also be received when app is launched via carousel or by tapping on app icon from apps. In either case once app delivers the offline message to JS, notification will be cleared.
 
 Also make note of the **payload** object. Since the Android notification data model is much more flexible than that of iOS, there may be additional elements beyond **message**, **soundname**, and **msgcnt**. You can access those elements and any additional ones via the **payload** element. This means that if your data model should change in the future, there will be no need to change and recompile the plugin.
+**payload** for Amazon Fire OS is mostly similar to Android with minor differences. It does NOT have **msgcnt** but instead it has **timestamp**. 
 
 #### unregister
 You will typically call this when your app is exiting, to cleanup any used resources. Its not strictly necessary to call it, and indeed it may be desireable to NOT call it if you are debugging your intermediarry push server. When you call unregister(), the current token for a particular device will get invalidated, and the next call to register() will return a new token. If you do NOT call unregister(), the last token will remain in effect until it is invalidated for some reason at the GCM side. Since such invalidations are beyond your control, its recommended that, in a production environment, that you have a matching unregister() call, for every call to register(), and that your server updates the devices' records each time.
@@ -361,10 +431,10 @@ pushNotification.setApplicationIconBadgeNumber(successCallback, errorCallback, b
 The notification system consists of several interdependent components.
 
 	1) The client application which runs on a device and receives notifications.
-	2) The notification service provider (APNS for Apple, GCM for Google)
-	3) Intermediary servers that collect device IDs from clients and push notifications through APNS and/or GCM.
+	2) The notification service provider (ADM for Amazon Fire OS, APNS for Apple, GCM for Google)
+	3) Intermediary servers that collect device IDs from clients and push notifications through Amazon ADM servers, APNS and/or GCM.
 
-This plugin and its target Cordova application comprise the client application.The APNS and GCM infrastructure are maintained by Apple and Google, respectively. In order to send push notifications to your users, you would typically run an intermediary server or employ a 3rd party push service. This is true for both GCM (Android) and APNS (iOS) notifications. However, when testing the notification client applications, it may be desirable to be able to push notifications directly from your desktop, without having to design and build those server's first. There are a number of solutions out there to allow you to push from a desktop machine, sans server. The easiest I've found to work with is a ruby gem called [pushmeup](http://rubygems.org/gems/pushmeup). I've only tried this on Mac, but it probably works fine on Windows as well. Here's a rough outline;
+This plugin and its target Cordova application comprise the client application.The ADM, APNS and GCM infrastructure are maintained by Amazon, Apple and Google, respectively. In order to send push notifications to your users, you would typically run an intermediary server or employ a 3rd party push service. This is true for all ADM(Amazon), GCM (Android) and APNS (iOS) notifications. However, when testing the notification client applications, it may be desirable to be able to push notifications directly from your desktop, without having to design and build those server's first. There are a number of solutions out there to allow you to push from a desktop machine, sans server. The easiest I've found to work with is a ruby gem called [pushmeup](http://rubygems.org/gems/pushmeup). I've only tried this on Mac, but it probably works fine on Windows as well. Here's a rough outline;
 
 **Prerequisites**.
 
@@ -398,6 +468,22 @@ Start at the section entitled "Generating the Certificate Signing Request (CSR)"
 	c) $ ruby pushGCM.rb
 	d) $ ruby pushAPNS.rb
 
+**Server for ADM**
+
+There is a python script that runs a simple web server from your local machine. Goto Example/Server folder. Follow the steps below:
+
+#### 1) open ADMServer.py in text editor and change the PORT, PROD_CLIENT_ID and PROD_CLIENT_SECRET values.
+
+#### 2) From command line run this command - "python ADMServer.py".  
+
+#### 3) Open your favorite browser and load server url : http://localhost:4000/. It should report "Server Running". If you don't see this then check on command line for any errors. This also means something went wrong with ADM registration. Double check your Client_ID and Secret_Code. Also, make sure your app on Amazon dev portal has Device Messaging switch turned ON.
+
+#### 4) Once you register through the app and have valid registrationId, you should register that with the server too using this url: http://localhost:4000/register?device=registraionId.
+
+#### 5) To see list of registered devices with your server use this url: http://localhost:4000/show-devices
+
+#### 6) To send a message to one or more registered devices use this url: http://localhost:4000/show-devices, click on the radio button next to device id and type in the message.
+
 If all went well, you should see a notification show up on each device. If not, make sure you are not being blocked by a firewall, and that you have internet access. Check and recheck the token id, the registration ID and the certificate generating process.
 
 In a production environment, your app, upon registration, would send the device id (iOS) or the registration id (Android), to your intermediary push server. For iOS, the push certificate would also be stored there, and would be used to authenticate push requests to the APNS server. When a push request is processed, this information is then used to target specific apps running on individual devices.
@@ -412,6 +498,7 @@ If you're not up to building and maintaining your own intermediary push server, 
 
 [kony](http://www.kony.com/push-notification-services) and many others.
 
+[Amazon Simple Notification Service](https://aws.amazon.com/sns/)
 
 ## Notes
 
