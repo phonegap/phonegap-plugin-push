@@ -94,9 +94,17 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		
+		int defaults = Notification.DEFAULT_ALL;
+
+		if (extras.getString("defaults") != null) {
+			try {
+				defaults = Integer.parseInt(extras.getString("defaults"));
+			} catch (NumberFormatException e) {}
+		}
+		
 		NotificationCompat.Builder mBuilder =
 			new NotificationCompat.Builder(context)
-				.setDefaults(Notification.DEFAULT_ALL)
+				.setDefaults(defaults)
 				.setSmallIcon(context.getApplicationInfo().icon)
 				.setWhen(System.currentTimeMillis())
 				.setContentTitle(extras.getString("title"))
