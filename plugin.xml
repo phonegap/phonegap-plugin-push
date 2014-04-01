@@ -88,7 +88,7 @@
             is unavailable. -->
             <amazon:enable-feature android:name="com.amazon.device.messaging" android:required="true"/>
 			<service android:exported="false" android:name="com.amazon.cordova.plugin.ADMMessageHandler" />
-            <activity android:name="com.amazon.cordova.plugin.ADMHandlerActivity" />
+            <activity android:exported="true" android:name="com.amazon.cordova.plugin.ADMHandlerActivity" />
             <receiver android:name="com.amazon.cordova.plugin.ADMMessageHandler$Receiver" android:permission="com.amazon.device.messaging.permission.SEND">
                 <intent-filter>
                     <action android:name="com.amazon.device.messaging.intent.REGISTRATION" />
