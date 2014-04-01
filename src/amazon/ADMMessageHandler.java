@@ -145,7 +145,7 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
      * @param extras
      */
     public void createNotification(Context context, Bundle extras) {
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String appName = getAppName(this);
 
         // reuse the intent so that we can combine multiple messages into extra
@@ -159,23 +159,23 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
             notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        final Builder mBuilder = new Notification.Builder(context);
-        mBuilder.setSmallIcon(context.getApplicationInfo().icon)
+        final Builder notificationBuilder = new Notification.Builder(context);
+        notificationBuilder.setSmallIcon(context.getApplicationInfo().icon)
             .setWhen(System.currentTimeMillis())
             .setContentIntent(contentIntent);
 
         if (PushPlugin.showMessageInNotificationCenter()) {
-            mBuilder.setContentText(extras.getString("message"));
+            notificationBuilder.setContentText(extras.getString("message"));
         } else {
-            mBuilder.setContentText(PushPlugin.defaultNotificationMessage());
+            notificationBuilder.setContentText(PushPlugin.defaultNotificationMessage());
         }
 
         String title = appName;
-        mBuilder.setContentTitle(title).setTicker(title);
-        mBuilder.setAutoCancel(true);
+        notificationBuilder.setContentTitle(title).setTicker(title);
+        notificationBuilder.setAutoCancel(true);
         // Because the ID remains unchanged, the existing notification is updated.
-        mNotificationManager.notify((String) appName, NOTIFICATION_ID,
-            mBuilder.build());
+        notificationManager.notify((String) appName, NOTIFICATION_ID,
+            notificationBuilder.getNotification());
     }
 
     public static void cancelNotification(Context context) {
@@ -203,7 +203,7 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
         }
     }
 
-    static Bundle getOfflineMessage() {
+    public static Bundle getOfflineMessage() {
         Bundle pushBundle = null;
         if (notificationIntent != null) {
             pushBundle = notificationIntent.getExtras().getBundle(PUSH_BUNDLE);

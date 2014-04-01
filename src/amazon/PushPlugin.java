@@ -21,6 +21,7 @@ import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CordovaActivity;
+import org.apache.cordova.LOG;
 import org.json.JSONArray;
 import org.json.JSONException;
 import com.amazon.device.messaging.ADM;
@@ -99,7 +100,7 @@ public class PushPlugin extends CordovaPlugin {
                     .getStringProperty("defaultnotificationmessage", null);
             }
         } else {
-            Log.e(TAG, NON_AMAZON_DEVICE_ERROR);
+            LOG.e(TAG, NON_AMAZON_DEVICE_ERROR);
         }
     }
 
@@ -136,7 +137,6 @@ public class PushPlugin extends CordovaPlugin {
     public boolean execute(final String request, final JSONArray args,
         CallbackContext callbackContext) throws JSONException {
         try {
-
             // check ADM readiness
             ADMReadiness ready = isPushPluginReady();
             if (ready == ADMReadiness.NON_AMAZON_DEVICE) {
@@ -146,7 +146,7 @@ public class PushPlugin extends CordovaPlugin {
                 callbackContext.error(ADM_NOT_SUPPORTED_ERROR);
                 return false;
             } else if (callbackContext == null) {
-                Log.e(TAG,
+                LOG.e(TAG,
                     "CallbackConext is null. Notification to WebView is not possible. Can not proceed.");
                 return false;
             }
@@ -155,28 +155,28 @@ public class PushPlugin extends CordovaPlugin {
             if (REGISTER.equals(request)) {
 
                 if (args == null) {
-                    Log.e(TAG, REGISTER_OPTIONS_NULL);
+                    LOG.e(TAG, REGISTER_OPTIONS_NULL);
                     callbackContext.error(REGISTER_OPTIONS_NULL);
                     return false;
                 }
 
                 // parse args to get eventcallback name
                 if (args.isNull(0)) {
-                    Log.e(TAG, ECB_NOT_SPECIFIED);
+                    LOG.e(TAG, ECB_NOT_SPECIFIED);
                     callbackContext.error(ECB_NOT_SPECIFIED);
                     return false;
                 }
 
                 JSONObject jo = args.getJSONObject(0);
                 if (jo.getString("ecb").isEmpty()) {
-                    Log.e(TAG, ECB_NAME_NOT_SPECIFIED);
+                    LOG.e(TAG, ECB_NAME_NOT_SPECIFIED);
                     callbackContext.error(ECB_NAME_NOT_SPECIFIED);
                     return false;
                 }
                 callbackContext.success(REGISTRATION_SUCCESS_RESPONSE);
                 notificationHandlerCallBack = jo.getString(ECB);
                 String regId = adm.getRegistrationId();
-                Log.d(TAG, "regId = " + regId);
+                LOG.d(TAG, "regId = " + regId);
                 if (regId == null) {
                     adm.startRegister();
                 } else {
@@ -185,23 +185,16 @@ public class PushPlugin extends CordovaPlugin {
 
                 // see if there are any messages while app was in background and
                 // launched via app icon
-                if (cachedExtrasAvailable()) {
-                    Log.v(TAG, "sending cached extras");
-                    sendExtras(gCachedExtras);
-                    gCachedExtras = null;
-                } else {
-                    deliverOfflineMessages();
-                }
-                // Clear the notification if any exists
-                ADMMessageHandler.cancelNotification(activity);
+                LOG.d(TAG,"checking for offline message..");
+                deliverPendingMessageAndCancelNotifiation();
                 return true;
 
             } else if (UNREGISTER.equals(request)) {
                 adm.startUnregister();
                 callbackContext.success(UNREGISTRATION_SUCCESS_RESPONSE);
                 return true;
-            } else {
-                Log.e(TAG, "Invalid action : " + request);
+            } else {                
+                LOG.e(TAG, "Invalid action : " + request);
                 callbackContext.error("Invalid action : " + request);
                 return false;
             }
@@ -243,33 +236,38 @@ public class PushPlugin extends CordovaPlugin {
      * Checks if offline message was pending to be delivered from notificationIntent. Sends it to webView(JS) if it is
      * and also clears notification from the NotificaitonCenter.
      */
-    private void deliverOfflineMessages() {
+    private boolean deliverOfflineMessages() {
+        LOG.d(TAG,"deliverOfflineMessages()");
         Bundle pushBundle = ADMMessageHandler.getOfflineMessage();
         if (pushBundle != null) {
-            Log.d(TAG,"Sending offline message...");
+            LOG.d(TAG,"Sending offline message...");
             sendExtras(pushBundle);
             ADMMessageHandler.cleanupNotificationIntent();
+            return true;
         }
+        return false;
     }
 
     // lifecyle callback to set the isForeground
     @Override
     public void onPause(boolean multitasking) {
-        Log.d(TAG, "onPause");
+        LOG.d(TAG, "onPause");
         super.onPause(multitasking);
         isForeground = false;
     }
 
     @Override
     public void onResume(boolean multitasking) {
-        Log.d(TAG, "onResume");
+        LOG.d(TAG, "onResume");
         super.onResume(multitasking);
         isForeground = true;
+        //Check if there are any offline messages?
+        deliverPendingMessageAndCancelNotifiation();
     }
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, "onDestroy");
+        LOG.d(TAG, "onDestroy");
         super.onDestroy();
         isForeground = false;
         webview = null;
@@ -294,6 +292,27 @@ public class PushPlugin extends CordovaPlugin {
         return webview != null;
     }
 
+    /**
+     * Delivers pending/offline messages if any
+     * 
+     * @return returns true if there were any pending messages otherwise false.
+     */
+    public boolean deliverPendingMessageAndCancelNotifiation() {
+        boolean delivered = false;
+        LOG.d(TAG,"deliverPendingMessages()");
+        if (cachedExtrasAvailable()) {
+            LOG.v(TAG, "sending cached extras");
+            sendExtras(gCachedExtras);
+            gCachedExtras = null;
+            delivered = true;
+        } else {
+            delivered = deliverOfflineMessages();
+        }
+        // Clear the notification if any exists
+        ADMMessageHandler.cancelNotification(activity);
+        
+        return delivered;
+    }
     /**
      * Sends register/unregiste events to JS
      * 
@@ -325,14 +344,14 @@ public class PushPlugin extends CordovaPlugin {
      */
     public static boolean sendJavascript(JSONObject json) {
         if (json == null) {
-            Log.i(TAG, "JSON object is empty. Nothing to send to JS.");
+            LOG.i(TAG, "JSON object is empty. Nothing to send to JS.");
             return true;
         }
 
         if (notificationHandlerCallBack != null && webview != null) {
             String jsToSend = "javascript:" + notificationHandlerCallBack + "("
                 + json.toString() + ")";
-            Log.v(TAG, "sendJavascript: " + jsToSend);
+            LOG.v(TAG, "sendJavascript: " + jsToSend);
             webview.sendJavascript(jsToSend);
             return true;
         }
@@ -346,7 +365,7 @@ public class PushPlugin extends CordovaPlugin {
     public static void sendExtras(Bundle extras) {
         if (extras != null) {
             if (!sendJavascript(convertBundleToJson(extras))) {
-                Log.v(TAG,
+                LOG.v(TAG,
                     "sendExtras: could not send to JS. Caching extras to send at a later time.");
                 gCachedExtras = extras;
             }
@@ -408,11 +427,11 @@ public class PushPlugin extends CordovaPlugin {
                 } // while
             }
             json.put(PAYLOAD, jsondata);
-            Log.v(TAG, "extrasToJSON: " + json.toString());
+            LOG.v(TAG, "extrasToJSON: " + json.toString());
 
             return json;
         } catch (JSONException e) {
-            Log.e(TAG, "extrasToJSON: JSON exception");
+            LOG.e(TAG, "extrasToJSON: JSON exception");
         }
         return null;
     }
