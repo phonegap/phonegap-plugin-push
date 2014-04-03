@@ -50,10 +50,9 @@ public class PushPlugin extends CordovaPlugin {
     private static CordovaWebView webview = null;
     private static String notificationHandlerCallBack;
     private static boolean isForeground = false;
-    private static boolean showOfflineMessage = false;
-    private static String defaultOfflineMessage = null;
     private static Bundle gCachedExtras = null;
-
+   
+    
     public static final String REGISTER = "register";
     public static final String UNREGISTER = "unregister";
     public static final String MESSAGE = "message";
@@ -93,12 +92,7 @@ public class PushPlugin extends CordovaPlugin {
             activity = (CordovaActivity) cordova.getActivity();
             webview = this.webView;
             isForeground = true;
-            if (activity != null) {
-                showOfflineMessage = ((CordovaActivity) activity)
-                    .getBooleanProperty("showmessageinnotification", false);
-                defaultOfflineMessage = ((CordovaActivity) activity)
-                    .getStringProperty("defaultnotificationmessage", null);
-            }
+            ADMMessageHandler.saveConfigOptions(activity);
         } else {
             LOG.e(TAG, NON_AMAZON_DEVICE_ERROR);
         }
@@ -203,24 +197,6 @@ public class PushPlugin extends CordovaPlugin {
         }
 
         return false;
-    }
-
-    /**
-     * Gets "shownotificationmessage" config option
-     * 
-     * @return returns boolean- true is shownotificationmessage is set to true in config.xml otherwise false
-     */
-    public static boolean showMessageInNotificationCenter() {
-        return showOfflineMessage;
-    }
-
-    /**
-     * Gets "defaultnotificationmessage" config option
-     * 
-     * @return returns default message provided by user in cofing.xml
-     */
-    public static String defaultNotificationMessage() {
-        return defaultOfflineMessage;
     }
 
     /**

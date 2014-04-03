@@ -16,13 +16,16 @@
 
 package com.amazon.cordova.plugin;
 
+import org.apache.cordova.CordovaActivity;
 import org.json.JSONObject;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.app.Notification.Builder;
 
@@ -35,10 +38,16 @@ import com.amazon.device.messaging.ADMMessageReceiver;
 
 public class ADMMessageHandler extends ADMMessageHandlerBase {
 
-    private static final String TAG = "ADMMessageHandler";
     private static final String ERROR_EVENT = "error";
     public static final String PUSH_BUNDLE = "pushBundle";
-
+    public static final String ERROR_MSG = "msg";
+    private static final String SHOW_MESSAGE_PREF = "showmessageinnotification";
+    private static final String DEFAULT_MESSAGE_PREF = "defaultnotificationmessage";
+    private static boolean shouldShowOfflineMessage = false;
+    private static String defaultOfflineMessage = null;
+    private static final String PREFS_NAME = "PushPluginPrefs";
+    private static final String DEFAULT_MESSAGE_TEXT = "You have a new message.";
+    
     // An identifier for ADM notification unique within your application
     // It allows you to update the same notification later on
     public static final int NOTIFICATION_ID = 519;
@@ -108,7 +117,7 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
         try {
             JSONObject json;
             json = new JSONObject().put(PushPlugin.EVENT, ERROR_EVENT);
-            json.put(PushPlugin.REG_ID, errorId);
+            json.put(ADMMessageHandler.ERROR_MSG, errorId);
 
             PushPlugin.sendJavascript(json);
         } catch (Exception e) {
@@ -164,10 +173,10 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
             .setWhen(System.currentTimeMillis())
             .setContentIntent(contentIntent);
 
-        if (PushPlugin.showMessageInNotificationCenter()) {
-            notificationBuilder.setContentText(extras.getString("message"));
+        if (this.shouldShowMessageInNotification()) {
+            notificationBuilder.setContentText(extras.getString(PushPlugin.MESSAGE));
         } else {
-            notificationBuilder.setContentText(PushPlugin.defaultNotificationMessage());
+            notificationBuilder.setContentText(this.defaultMessageTextInNotification());
         }
 
         String title = appName;
@@ -214,4 +223,60 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
         return pushBundle;
     }
 
+    /**
+     * Reads "shownotificationmessage" & "defaultnotificationmessage" config options
+     * If this is first-time it saves them to sharedPreferences so they can be read
+     * when app is forced-stop or killed
+     */
+    public static void saveConfigOptions(Context context) {
+        if (context != null && TextUtils.isEmpty(defaultOfflineMessage)) {
+            // read config options from config.xml
+            shouldShowOfflineMessage = ((CordovaActivity) context)
+                .getBooleanProperty(SHOW_MESSAGE_PREF, false);
+            defaultOfflineMessage = ((CordovaActivity) context)
+                .getStringProperty(DEFAULT_MESSAGE_PREF, null);
+
+            // save them to sharedPreferences if necessary
+            SharedPreferences config = context.getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
+            SharedPreferences.Editor editor = config.edit();
+            editor.putBoolean(SHOW_MESSAGE_PREF, shouldShowOfflineMessage);
+            editor.putString(DEFAULT_MESSAGE_PREF, defaultOfflineMessage);
+            // save prefs to disk
+            editor.commit();
+        }
+
+    }
+    
+    /**
+     * Gets "shownotificationmessage" config option
+     * 
+     * @return returns boolean- true is shownotificationmessage is set to true in config.xml/sharedPreferences otherwise false
+     */
+    private boolean shouldShowMessageInNotification() {
+        //check if have cached copy of this option
+        if (TextUtils.isEmpty(defaultOfflineMessage)) {
+            //need to read it from sharedPreferences
+            SharedPreferences config = this.getApplicationContext().getSharedPreferences(PREFS_NAME,0);
+            if (config != null) {
+                shouldShowOfflineMessage = config.getBoolean(SHOW_MESSAGE_PREF, true);
+            }
+        }
+        return shouldShowOfflineMessage;
+    }
+    
+    /**
+     * Gets "defaultnotificationmessage" config option
+     * 
+     * @return returns default message provided by user in cofing.xml/sharedPreferences
+     */
+    private String defaultMessageTextInNotification() {
+      //check if have cached copy of this option
+        if (TextUtils.isEmpty(defaultOfflineMessage)) {
+            SharedPreferences config = this.getApplicationContext().getSharedPreferences(PREFS_NAME,0);
+            if (config != null) {
+                defaultOfflineMessage = config.getString(DEFAULT_MESSAGE_PREF, DEFAULT_MESSAGE_TEXT);
+            }
+        }
+        return defaultOfflineMessage;
+    }
 }
