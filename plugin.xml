@@ -72,7 +72,7 @@
 				<param name="android-package" value="com.amazon.cordova.plugin.PushPlugin"/>
 			</feature>
             <preference name="showmessageinnotification" value="true" />
-            <preference name="defaultnotificationmessage" value="New message has arrived!" />
+            <preference name="defaultnotificationmessage" value="You have a new message." />
 		</config-file>
         
         <config-file target="AndroidManifest.xml" parent="/manifest">
