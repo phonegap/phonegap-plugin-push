@@ -63,13 +63,15 @@ public class PushPlugin extends CordovaPlugin {
     public static final String REG_ID = "regid";
     public static final String COLDSTART = "coldstart";
 
-    private static final String NON_AMAZON_DEVICE_ERROR = "PushNotifications using Amazon Device Messaging is only supported on Kindle Fire devices.";
+    private static final String NON_AMAZON_DEVICE_ERROR = "PushNotifications using Amazon Device Messaging is only supported on Kindle Fire devices (2nd Generation and Later only).";
     private static final String ADM_NOT_SUPPORTED_ERROR = "Amazon Device Messaging is not supported on this device.";
     private static final String REGISTER_OPTIONS_NULL = "Register options are not specified.";
     private static final String ECB_NOT_SPECIFIED = "ecb(eventcallback) option is not specified in register().";
     private static final String ECB_NAME_NOT_SPECIFIED = "ecb(eventcallback) value is missing in options for register().";
     private static final String REGISTRATION_SUCCESS_RESPONSE = "Registration started...";
     private static final String UNREGISTRATION_SUCCESS_RESPONSE = "Unregistration started...";
+    
+    private static final String MODEL_FIRST_GEN = "Kindle Fire";
 
     public enum ADMReadiness {
         INITIALIZED, NON_AMAZON_DEVICE, ADM_NOT_SUPPORTED
@@ -87,7 +89,8 @@ public class PushPlugin extends CordovaPlugin {
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
-        if (this.isAmazonDevice()) {
+        // Initialize only for Amazon devices 2nd Generation and later
+        if (this.isAmazonDevice() && !isFirstGenKindleFireDevice()) {
             adm = new ADM(cordova.getActivity());
             activity = (CordovaActivity) cordova.getActivity();
             webview = this.webView;
@@ -107,7 +110,15 @@ public class PushPlugin extends CordovaPlugin {
         String deviceMaker = android.os.Build.MANUFACTURER;
         return deviceMaker.equalsIgnoreCase("Amazon");
     }
-
+    
+    /** 
+     * Check if device is First generation Kindle
+     * 
+     * @return if device is First generation Kindle
+     */
+    private static boolean isFirstGenKindleFireDevice() {
+        return android.os.Build.MODEL.equals(MODEL_FIRST_GEN);
+    }
     /**
      * Checks if ADM is available and supported - could be one of three 1. Non Amazon device, hence no ADM support 2.
      * ADM is not supported on this Kindle device (1st generation) 3. ADM is successfully initialized and ready to be
@@ -413,3 +424,4 @@ public class PushPlugin extends CordovaPlugin {
     }
 
 }
+
