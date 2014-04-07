@@ -1,11 +1,13 @@
-using Microsoft.Phone.Controls;
-using Microsoft.Phone.Notification;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Windows;
-using WPCordovaClassLib.Cordova.JSON;
+using Microsoft.Phone.Controls;
+using Microsoft.Phone.Notification;
+using Microsoft.Phone.Shell;
+using Newtonsoft.Json;
 
 namespace WPCordovaClassLib.Cordova.Commands
 {
@@ -27,7 +29,7 @@ namespace WPCordovaClassLib.Cordova.Commands
             if (pushChannel == null)
             {
                 pushChannel = new HttpNotificationChannel(this.pushOptions.ChannelName);
-                SubscribePushChannelEvents(pushChannel);
+
                 try
                 {
                     pushChannel.Open();
@@ -42,6 +44,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                 pushChannel.BindToShellTile();
             }
 
+            SubscribePushChannelEvents(pushChannel);
             var result = new RegisterResult
             {
                 ChannelName = this.pushOptions.ChannelName,
@@ -74,6 +77,18 @@ namespace WPCordovaClassLib.Cordova.Commands
             }
         }
 
+        public void showToastNotification(string options)
+        {
+            ShellToast toast;
+            if (!TryDeserializeOptions(options, out toast))
+            {
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
+                return;
+            }
+
+            Deployment.Current.Dispatcher.BeginInvoke(toast.Show);
+        }
+
         void PushChannel_ChannelUriUpdated(object sender, NotificationChannelUriEventArgs e)
         {
             // return uri to js
@@ -82,7 +97,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                 ChannelName = this.pushOptions.ChannelName,
                 Uri = e.ChannelUri.ToString()
             };
-            this.ExecuteCallback(this.pushOptions.UriChangedCallback, JsonHelper.Serialize(result));
+            this.ExecuteCallback(this.pushOptions.UriChangedCallback, JsonConvert.SerializeObject(result));
         }
 
         void PushChannel_ErrorOccurred(object sender, NotificationChannelErrorEventArgs e)
@@ -93,32 +108,40 @@ namespace WPCordovaClassLib.Cordova.Commands
                 Code = e.ErrorCode.ToString(),
                 Message = e.Message
             };
-            this.ExecuteCallback(this.pushOptions.ErrorCallback, JsonHelper.Serialize(err));
+			this.ExecuteCallback(this.pushOptions.ErrorCallback, JsonConvert.SerializeObject(err));
         }
 
         void PushChannel_ShellToastNotificationReceived(object sender, NotificationEventArgs e)
         {
-            StringBuilder message = new StringBuilder();
-            string relativeUri = string.Empty;
+            var toast = new PushNotification
+            {
+                Type = "toast"
+            };
 
-            Toast toast = new Toast();
-            if (e.Collection.ContainsKey("wp:Text1"))
+            foreach (var item in e.Collection)
             {
-                toast.Title = e.Collection["wp:Text1"];
-            }
-            if (e.Collection.ContainsKey("wp:Text2"))
-            {
-                toast.Subtitle = e.Collection["wp:Text2"];
-            }
-            if (e.Collection.ContainsKey("wp:Param"))
-            {
-                toast.Param = e.Collection["wp:Param"];
+                toast.JsonContent.Add(item.Key, item.Value);
             }
 
-            this.ExecuteCallback(this.pushOptions.NotificationCallback, JsonHelper.Serialize(toast));
+            this.ExecuteCallback(this.pushOptions.NotificationCallback, JsonConvert.SerializeObject(toast));
         }
 
-        private void ExecuteCallback(string callback, string callbackResult)
+        void PushChannel_HttpNotificationReceived(object sender, HttpNotificationEventArgs e)
+        {
+            var raw = new PushNotification
+            {
+                Type = "raw"
+            };
+
+            using (var reader = new StreamReader(e.Notification.Body))
+            {
+                raw.JsonContent.Add("Body", reader.ReadToEnd());
+            }
+
+			this.ExecuteCallback(this.pushOptions.NotificationCallback, JsonConvert.SerializeObject(raw));
+        }
+
+        void ExecuteCallback(string callback, string callbackResult)
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
@@ -145,13 +168,13 @@ namespace WPCordovaClassLib.Cordova.Commands
             });
         }
 
-        private static bool TryDeserializeOptions<T>(string options, out T result) where T : class
+        static bool TryDeserializeOptions<T>(string options, out T result) where T : class
         {
             result = null;
             try
             {
-                var args = JsonHelper.Deserialize<string[]>(options);
-                result = JsonHelper.Deserialize<T>(args[0]);
+                var args = JsonConvert.DeserializeObject<string[]>(options);
+                result = JsonConvert.DeserializeObject<T>(args[0]);
                 return true;
             }
             catch
@@ -160,30 +183,18 @@ namespace WPCordovaClassLib.Cordova.Commands
             }
         }
 
-        private static bool TryCast<T>(object obj, out T result) where T : class
+        static bool TryCast<T>(object obj, out T result) where T : class
         {
             result = obj as T;
             return result != null;
         }
 
-        private void SubscribePushChannelEvents(HttpNotificationChannel channel)
+        void SubscribePushChannelEvents(HttpNotificationChannel channel)
         {
             channel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
             channel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
             channel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
-        }
-
-        [DataContract]
-        public class Toast
-        {
-            [DataMember(Name = "text1", IsRequired = false)]
-            public string Title { get; set; }
-
-            [DataMember(Name = "text2", IsRequired = false)]
-            public string Subtitle { get; set; }
-
-            [DataMember(Name = "param", IsRequired = false)]
-            public string Param { get; set; }
+            channel.HttpNotificationReceived += new EventHandler<HttpNotificationEventArgs>(PushChannel_HttpNotificationReceived);
         }
 
         [DataContract]
@@ -210,6 +221,21 @@ namespace WPCordovaClassLib.Cordova.Commands
 
             [DataMember(Name = "channel", IsRequired = true)]
             public string ChannelName { get; set; }
+        }
+
+        [DataContract]
+        public class PushNotification
+        {
+            public PushNotification()
+            {
+                this.JsonContent = new Dictionary<string, object>();
+            }
+
+            [DataMember(Name = "jsonContent", IsRequired = true)]
+            public IDictionary<string, object> JsonContent { get; set; }
+
+            [DataMember(Name = "type", IsRequired = true)]
+            public string Type { get; set; }
         }
 
         [DataContract]
