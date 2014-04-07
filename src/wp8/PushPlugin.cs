@@ -11,61 +11,67 @@ namespace WPCordovaClassLib.Cordova.Commands
 {
     public class PushPlugin : BaseCommand
     {
+        private const string InvalidRegistrationError = "Unable to open a channel with the specified name. The most probable cause is that you have already registered a channel with a different name.";
+
+        private Options pushOptions;
         private HttpNotificationChannel pushChannel;
-        private string channelName;
-        private string toastCallback;
 
         public void register(string options)
         {
-            Options pushOptions;
-
-            if (!TryDeserializeOptions(options, out pushOptions))
+            if (!TryDeserializeOptions(options, out this.pushOptions))
             {
                 this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                 return;
             }
 
-            this.toastCallback = pushOptions.NotificationCallback;
-            channelName = pushOptions.ChannelName;
-            pushChannel = HttpNotificationChannel.Find(channelName);
+            pushChannel = HttpNotificationChannel.Find(this.pushOptions.ChannelName);
             if (pushChannel == null)
             {
-                pushChannel = new HttpNotificationChannel(channelName);
-                pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
-                pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-                pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
-                pushChannel.Open();
-                pushChannel.BindToShellToast();
-            }
-            else
-            {
-                pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
-                pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-                pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
+                pushChannel = new HttpNotificationChannel(this.pushOptions.ChannelName);
+                SubscribePushChannelEvents(pushChannel);
+                try
+                {
+                    pushChannel.Open();
+                }
+                catch (InvalidOperationException)
+                {
+                    this.DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, InvalidRegistrationError));
+                    return;
+                }
 
-                RegisterResult result = new RegisterResult();
-                result.ChannelName = this.channelName;
-                result.Uri = pushChannel.ChannelUri.ToString();
-                this.DispatchCommandResult(new PluginResult(PluginResult.Status.OK, result));
+                pushChannel.BindToShellToast();
+                pushChannel.BindToShellTile();
             }
+
+            var result = new RegisterResult
+            {
+                ChannelName = this.pushOptions.ChannelName,
+                Uri = pushChannel.ChannelUri == null ? string.Empty : pushChannel.ChannelUri.ToString()
+            };
+
+            this.DispatchCommandResult(new PluginResult(PluginResult.Status.OK, result));
         }
 
         void PushChannel_ChannelUriUpdated(object sender, NotificationChannelUriEventArgs e)
         {
             // return uri to js
-            RegisterResult result = new RegisterResult();
-            result.ChannelName = this.channelName;
-            result.Uri = pushChannel.ChannelUri.ToString();
-            this.DispatchCommandResult(new PluginResult(PluginResult.Status.OK, result));
+            var result = new RegisterResult
+            {
+                ChannelName = this.pushOptions.ChannelName,
+                Uri = e.ChannelUri.ToString()
+            };
+            this.ExecuteCallback(this.pushOptions.UriChangedCallback, JsonHelper.Serialize(result));
         }
 
         void PushChannel_ErrorOccurred(object sender, NotificationChannelErrorEventArgs e)
         {
             // call error handler and return uri
-            RegisterError err = new RegisterError();
-            err.Code = e.ErrorCode.ToString();
-            err.Message = e.Message;
-            this.DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, err));
+            var err = new RegisterError
+            {
+                Code = e.ErrorCode.ToString(),
+                Message = e.Message
+            };
+            this.ExecuteCallback(this.pushOptions.ErrorCallback, JsonHelper.Serialize(err));
         }
 
         void PushChannel_ShellToastNotificationReceived(object sender, NotificationEventArgs e)
@@ -87,8 +93,11 @@ namespace WPCordovaClassLib.Cordova.Commands
                 toast.Param = e.Collection["wp:Param"];
             }
 
-            PluginResult result = new PluginResult(PluginResult.Status.OK, toast);
+            this.ExecuteCallback(this.pushOptions.NotificationCallback, JsonHelper.Serialize(toast));
+        }
 
+        private void ExecuteCallback(string callback, string callbackResult)
+        {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 PhoneApplicationFrame frame;
@@ -103,7 +112,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                     {
                         try
                         {
-                            cView.Browser.InvokeScript("execScript", this.toastCallback + "(" + result.Message + ")");
+                            cView.Browser.InvokeScript("execScript", callback + "(" + callbackResult + ")");
                         }
                         catch (Exception ex)
                         {
@@ -114,7 +123,7 @@ namespace WPCordovaClassLib.Cordova.Commands
             });
         }
 
-         private static bool TryDeserializeOptions<T>(string options, out T result) where T : class
+        private static bool TryDeserializeOptions<T>(string options, out T result) where T : class
         {
             result = null;
             try
@@ -133,6 +142,13 @@ namespace WPCordovaClassLib.Cordova.Commands
         {
             result = obj as T;
             return result != null;
+        }
+
+        private void SubscribePushChannelEvents(HttpNotificationChannel channel)
+        {
+            channel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
+            channel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
+            channel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
         }
 
         [DataContract]
@@ -156,6 +172,12 @@ namespace WPCordovaClassLib.Cordova.Commands
 
             [DataMember(Name = "ecb", IsRequired = false)]
             public string NotificationCallback { get; set; }
+
+            [DataMember(Name = "errcb", IsRequired = false)]
+            public string ErrorCallback { get; set; }
+
+            [DataMember(Name = "uccb", IsRequired = false)]
+            public string UriChangedCallback { get; set; }
         }
 
         [DataContract]
