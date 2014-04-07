@@ -11,10 +11,9 @@ namespace WPCordovaClassLib.Cordova.Commands
 {
     public class PushPlugin : BaseCommand
     {
-        private const string InvalidRegistrationError = "Unable to open a channel with the specified name. The most probable cause is that you have already registered a channel with a different name.";
-
+        private const string InvalidRegistrationError = "Unable to open a channel with the specified name. The most probable cause is that you have already registered a channel with a different name. Call unregister(old-channel-name) or uninstall and redeploy your application.";
+        private const string MissingChannelError = "Couldn't find a channel with the specified name.";
         private Options pushOptions;
-        private HttpNotificationChannel pushChannel;
 
         public void register(string options)
         {
@@ -24,7 +23,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                 return;
             }
 
-            pushChannel = HttpNotificationChannel.Find(this.pushOptions.ChannelName);
+            var pushChannel = HttpNotificationChannel.Find(this.pushOptions.ChannelName);
             if (pushChannel == null)
             {
                 pushChannel = new HttpNotificationChannel(this.pushOptions.ChannelName);
@@ -50,6 +49,29 @@ namespace WPCordovaClassLib.Cordova.Commands
             };
 
             this.DispatchCommandResult(new PluginResult(PluginResult.Status.OK, result));
+        }
+
+        public void unregister(string options)
+        {
+            Options unregisterOptions;
+            if (!TryDeserializeOptions(options, out unregisterOptions))
+            {
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
+                return;
+            }
+            var pushChannel = HttpNotificationChannel.Find(unregisterOptions.ChannelName);
+            if (pushChannel != null)
+            {
+                pushChannel.UnbindToShellTile();
+                pushChannel.UnbindToShellToast();
+                pushChannel.Close();
+                pushChannel.Dispose();
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.OK, "Channel " + unregisterOptions.ChannelName + " is closed!"));
+            }
+            else
+            {
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, MissingChannelError));
+            }
         }
 
         void PushChannel_ChannelUriUpdated(object sender, NotificationChannelUriEventArgs e)
