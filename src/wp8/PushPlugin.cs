@@ -3,9 +3,9 @@ using Microsoft.Phone.Notification;
 using System;
 using System.Diagnostics;
 using System.Text;
-using System.Threading;
 using System.Runtime.Serialization;
 using System.Windows;
+using WPCordovaClassLib.Cordova.JSON;
 
 namespace WPCordovaClassLib.Cordova.Commands
 {
@@ -19,19 +19,14 @@ namespace WPCordovaClassLib.Cordova.Commands
         {
             Options pushOptions;
 
-            try
+            if (!TryDeserializeOptions(options, out pushOptions))
             {
-                string[] args = JSON.JsonHelper.Deserialize<string[]>(options);
-                pushOptions = JSON.JsonHelper.Deserialize<Options>(args[0]);
-                this.channelName = pushOptions.ChannelName;
-                this.toastCallback = pushOptions.NotificationCallback;
-            }
-            catch (Exception)
-            {
-                DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
+                this.DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
                 return;
             }
 
+            this.toastCallback = pushOptions.NotificationCallback;
+            channelName = pushOptions.ChannelName;
             pushChannel = HttpNotificationChannel.Find(channelName);
             if (pushChannel == null)
             {
@@ -96,31 +91,48 @@ namespace WPCordovaClassLib.Cordova.Commands
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                PhoneApplicationFrame frame = Application.Current.RootVisual as PhoneApplicationFrame;
-                if (frame != null)
-                {
-                    PhoneApplicationPage page = frame.Content as PhoneApplicationPage;
-                    if (page != null)
-                    {
-                        CordovaView cView = page.FindName("CordovaView") as CordovaView; // was: PGView
-                        if (cView != null)
-                        {
-                            cView.Browser.Dispatcher.BeginInvoke((ThreadStart)delegate()
-                            {
-                                try
-                                {
-                                    cView.Browser.InvokeScript("execScript", this.toastCallback + "(" + result.Message + ")");
-                                }
-                                catch (Exception ex)
-                                {
-                                    Debug.WriteLine("ERROR: Exception in InvokeScriptCallback :: " + ex.Message);
-                                }
+                PhoneApplicationFrame frame;
+                PhoneApplicationPage page;
+                CordovaView cView;
 
-                            });
+                if (TryCast(Application.Current.RootVisual, out frame) &&
+                    TryCast(frame.Content, out page) &&
+                    TryCast(page.FindName("CordovaView"), out cView))
+                {
+                    cView.Browser.Dispatcher.BeginInvoke(() =>
+                    {
+                        try
+                        {
+                            cView.Browser.InvokeScript("execScript", this.toastCallback + "(" + result.Message + ")");
                         }
-                    }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("ERROR: Exception in InvokeScriptCallback :: " + ex.Message);
+                        }
+                    });
                 }
             });
+        }
+
+         private static bool TryDeserializeOptions<T>(string options, out T result) where T : class
+        {
+            result = null;
+            try
+            {
+                var args = JsonHelper.Deserialize<string[]>(options);
+                result = JsonHelper.Deserialize<T>(args[0]);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static bool TryCast<T>(object obj, out T result) where T : class
+        {
+            result = obj as T;
+            return result != null;
         }
 
         [DataContract]
