@@ -108,7 +108,7 @@ namespace WPCordovaClassLib.Cordova.Commands
                 Code = e.ErrorCode.ToString(),
                 Message = e.Message
             };
-			this.ExecuteCallback(this.pushOptions.ErrorCallback, JsonConvert.SerializeObject(err));
+            this.ExecuteCallback(this.pushOptions.ErrorCallback, JsonConvert.SerializeObject(err));
         }
 
         void PushChannel_ShellToastNotificationReceived(object sender, NotificationEventArgs e)

@@ -5,8 +5,9 @@
 ## DESCRIPTION
 
 This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and allows your application to receive push notifications on Amazon Fire OS, Android and iOS devices. The Amazon Fire OS implementation uses [Amazon's ADM(Amazon Device Messaging) service](https://developer.amazon.com/sdk/adm.html), Android implementation uses [Google's GCM (Google Cloud Messaging) service](http://developer.android.com/guide/google/gcm/index.html) and the iOS version is based on [Apple APNS Notifications](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/ApplePushService/ApplePushService.html)
+This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and allows your application to receive push notifications on Android, iOS and WP8 devices. The Android implementation uses [Google's GCM (Google Cloud Messaging) service](http://developer.android.com/guide/google/gcm/index.html), whereas the iOS version is based on [Apple APNS Notifications](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/ApplePushService/ApplePushService.html). The WP8 implementation is based on [MPNS](http://msdn.microsoft.com/en-us/library/windowsphone/develop/ff402558(v=vs.105).aspx).
 
-**Important** - Push notifications are intended for real devices. The registration process will fail on the iOS simulator. Notifications can be made to work on the Android Emulator. However, doing so requires installation of some helper libraries, as outlined [here,](http://www.androidhive.info/2012/10/android-push-notifications-using-google-cloud-messaging-gcm-php-and-mysql/) under the section titled "Installing helper libraries and setting up the Emulator".
+**Important** - Push notifications are intended for real devices. They are not tested for WP8 Emulator. The registration process will fail on the iOS simulator. Notifications can be made to work on the Android Emulator. However, doing so requires installation of some helper libraries, as outlined [here,](http://www.androidhive.info/2012/10/android-push-notifications-using-google-cloud-messaging-gcm-php-and-mysql/) under the section titled "Installing helper libraries and setting up the Emulator".
 
 ## LICENSE
 
@@ -134,6 +135,7 @@ xmlns:amazon="http://schemas.amazon.com/apk/res/android"
 <service android:name="com.plugin.gcm.GCMIntentService" />
 ```
 
+
 4) Modify your **res/xml/config.xml** to include the following line in order to tell Cordova to include this plugin and where it can be found: (See the Sample_config.xml file in the Example folder)
 
 ```xml
@@ -190,9 +192,18 @@ Add a reference to this plugin in **config.xml**:
 ```
 
 Add the **PushNotification.js** script to your assets/www folder (or javascripts folder, wherever you want really) and reference it in your main index.html file.
+
 ```html
 <script type="text/javascript" charset="utf-8" src="PushNotification.js"></script>
 ```
+
+Do not forget to reference the **cordova.js** as well.
+
+<script  type="text/javascript" charset="utf-8" src="cordova.js"></script>
+
+In your Visual Studio project add reference to the **Newtonsoft.Json.dll** as well - it is needed for serialization and deserialization of the objects.
+
+Also you need to enable the **"ID_CAP_PUSH_NOTIFICATION"** capability in **Properties->WMAppManifest.xml** of your project.
 
 ## Automatic Installation
 This plugin is based on [plugman](https://github.com/apache/cordova-plugman). to install it to your app,
@@ -202,26 +213,25 @@ simply execute plugman as follows;
 plugman install --platform [PLATFORM] --project [TARGET-PATH] --plugin [PLUGIN-PATH]
 
 where
-	[PLATFORM] = ios or android
+	[PLATFORM] = ios, android or wp8
 	[TARGET-PATH] = path to folder containing your phonegap project
 	[PLUGIN-PATH] = path to folder containing this plugin
 ```
 
 Alternatively this plugin can be installed using the Phonegap CLI:
 
+1) Navigate to the root folder for your phonegap project.
+2) Run the command.
 ```sh
 phonegap local plugin add https://github.com/phonegap-build/PushPlugin.git
-
 ```
-
 or the Cordova CLI:
-
 ```sh
 cordova plugin add https://github.com/phonegap-build/PushPlugin.git
 
 ```
 
-For additional info, take a look at the [Plugman Documentation](https://github.com/apache/cordova-plugman/blob/master/README.md)
+For additional info, take a look at the [Plugman Documentation](https://github.com/apache/cordova-plugman/blob/master/README.md) and [Cordova Plugin Specification](https://github.com/alunny/cordova-plugin-spec)
 
 Note: For Amazon Fire OS, you will have to follow 2 steps below after automatic installation:
 
@@ -250,7 +260,7 @@ pushNotification = window.plugins.pushNotification;
 ```
 
 #### register
-This should be called as soon as the device becomes ready. On success, you will get a call to tokenHandler (iOS), or  onNotificationGCM (Amazon Fire OS or Android), allowing you to obtain the device token or registration ID, respectively. Those values will typically get posted to your intermediary push server so it knows who it can send notifications to.
+This should be called as soon as the device becomes ready. On success, you will get a call to tokenHandler (iOS), or onNotificationGCM (Amazon Fire OS and Android), or onNotificationWP8 (WP8), allowing you to obtain the device token or registration ID, or push channel name and Uri respectively. Those values will typically get posted to your intermediary push server so it knows who it can send notifications to.
 
 For Amazon Fire OS, if you have not already registered with Amazon developer portal,you will have to obtain credentials and api_key for your app. This is described more in detail in the **Registering your app for Amazon Device Messaging(ADM)** section below.
 
@@ -367,10 +377,12 @@ function onNotificationGCM(e) {
 			if ( e.coldstart )
 			{
 				$("#app-status-ul").append('<li>--COLDSTART NOTIFICATION--' + '</li>');
+
 			}
 			else
 			{
 				$("#app-status-ul").append('<li>--BACKGROUND NOTIFICATION--' + '</li>');
+
 			}
 		}
 
@@ -398,12 +410,88 @@ For Amazon Fire OS platform, offline message can also be received when app is la
 
 Also make note of the **payload** object. Since the Android notification data model is much more flexible than that of iOS, there may be additional elements beyond **message**, **soundname**, and **msgcnt**. You can access those elements and any additional ones via the **payload** element. This means that if your data model should change in the future, there will be no need to change and recompile the plugin.
 
+**channelHandler (WP8 only)** - Called after a push notification channel is opened and push notification URI is returned. [The application is now set to receive notifications.](http://msdn.microsoft.com/en-us/library/windowsphone/develop/hh202940(v=vs.105).aspx)
+
+
+##### wp8
+Register as
+
+```js
+pushNotification = window.plugins.pushNotification;
+pushNotification.register(channelHandler, errorHandler, { "channelName": channelName, "ecb": "onNotificationWP8", "uccb": "channelHandler", "errcb": "jsonErrorHandler" });
+
+function successHandler(result) {
+  console.log('registered###' + result.uri);
+  // send uri to your notification server
+}
+```
+
+**onNotificationWP8** is fired if the app is running when you receive the toast notification, or raw notification.
+
+```js
+//handle MPNS notifications for WP8
+function onNotificationWP8(e) {
+
+	if (e.type == "toast" && e.jsonContent) {
+		pushNotification.showToastNotification(successHandler, errorHandler,
+		{
+			"Title": e.jsonContent["wp:Text1"], "Subtitle": e.jsonContent["wp:Text2"], "NavigationUri": e.jsonContent["wp:Param"]
+		});
+		}
+
+	if (e.type == "raw" && e.jsonContent) {
+		alert(e.jsonContent.Body);
+	}
+}
+
+**uccb** - event callback that gets called when the channel you have opened gets its Uri updated. This function is needed in case the MPNS updates the opened channel Uri. This function will take care of showing updated Uri.
+
+**errcb** - event callback that gets called when server error occurs when receiving notification from the MPNS server. **jsonErrorHandler** is fired by the plugin if server error occurs while receiving notification (for example invalid format of the notification)
+
+	function jsonErrorHandler(error) {
+			$("#app-status-ul").append('<li style="color:red;">error:' + error.code + '</li>');
+			$("#app-status-ul").append('<li style="color:red;">error:' + error.message + '</li>');
+		}
+
+To control the launch page when the user taps on your toast notification when the app is not running, add the following code to your mainpage.xaml.cs
+
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            try
+            {
+                if (this.NavigationContext.QueryString["NavigatedFrom"] == "toast") // this is set on the server
+                {
+                    this.PGView.StartPageUri = new Uri("//www/index.html#notification-page", UriKind.Relative);
+                }
+            }
+            catch (KeyNotFoundException)
+            {
+            }
+        }
+Or you can add another **Page2.xaml** just for testing toast navigate url. Like the [MSDN Toast Sample](http://msdn.microsoft.com/en-us/library/windowsphone/develop/hh202967(v=vs.105).aspx)
+
+To test the tile notification, you will need to add tile images like the [MSDN Tile Sample](http://msdn.microsoft.com/en-us/library/windowsphone/develop/hh202970(v=vs.105).aspx#BKMK_CreatingaPushClienttoReceiveTileNotifications)
+
 #### unregister
+##### android and iOS
 You will typically call this when your app is exiting, to cleanup any used resources. Its not strictly necessary to call it, and indeed it may be desireable to NOT call it if you are debugging your intermediarry push server. When you call unregister(), the current token for a particular device will get invalidated, and the next call to register() will return a new token. If you do NOT call unregister(), the last token will remain in effect until it is invalidated for some reason at the GCM side. Since such invalidations are beyond your control, its recommended that, in a production environment, that you have a matching unregister() call, for every call to register(), and that your server updates the devices' records each time.
 
 ```js
-pushNotification.unregister(successHandler, errorHandler);
+pushNotification.unregister(successHandler, errorHandler, options);
 ```
+For Android and iOS you may emit the options as they are not used by the plugin.
+##### wp8
+When using the plugin for wp8 you will need to unregister the push channel you have register in case you would want to open another one. You need to know the name of the channel you have opened in order to close it. Please keep in mind that one application can have only one opened channel at time and in order to open another you will have to close any already opened channel.
+
+		function unregister() {
+			var channelName = $("#channel-btn").val();
+			pushNotification.unregister(
+				successHandler, errorHandler,
+					{
+						"channelName": channelName
+					});
+		}
 
 You'll probably want to trap on the **backbutton** event and only call this when the home page is showing. Remember, the back button on android is not the same as the Home button. When you hit the back button from the home page, your activity gets dismissed. Here is an example of how to trap the backbutton event;
 
@@ -427,7 +515,7 @@ function onDeviceReady() {
 		}
 	}, false);
 
-	// aditional onDeviceReady work…
+	// aditional onDeviceReady work...
 }
 ```
 
@@ -452,6 +540,10 @@ pushNotification.setApplicationIconBadgeNumber(successCallback, errorCallback, b
 
 **badgeCount** -  an integer indicating what number should show up in the badge. Passing 0 will clear the badge.
 
+#### showToastNotification (WP8 only)
+Show toast notification if app is deactivated. The toast notification's properties are set explicitly using json. They can be get in onNotificationWP8 and used for whatever purposes needed.
+
+	pushNotification.showToastNotification(successCallback, errorCallback, options);
 
 ## Test Environment
 The notification system consists of several interdependent components.
@@ -467,7 +559,6 @@ This plugin and its target Cordova application comprise the client application.T
 - Ruby gems is installed and working.
 
 - You have successfully built a client with this plugin, on both iOS and Android and have installed them on a device.
-
 
 #### 1) [Get the gem](https://github.com/NicosKaralis/pushmeup)
 	$ sudo gem install pushmeup
@@ -525,6 +616,16 @@ If you're not up to building and maintaining your own intermediary push server, 
 [kony](http://www.kony.com/push-notification-services) and many others.
 
 [Amazon Simple Notification Service](https://aws.amazon.com/sns/)
+#### 4) Send MPNS Notification for WP8
+The simplest way to test the plugin is to create create an ASP.NET webpage that sends different notifications by using the URI that is returned when the push channel is created on the device.
+
+You can see how to create one from MSDN Samples:
+
+[Send Toast Notifications (MSDN Sample)](http://msdn.microsoft.com/en-us/library/windowsphone/develop/hh202967(v=vs.105).aspx#BKMK_SendingaToastNotification)
+
+[Send Tile Notification (MSDN Sample)](http://msdn.microsoft.com/en-us/library/windowsphone/develop/hh202970(v=vs.105).aspx#BKMK_SendingaTileNotification)
+
+[Send Raw Notification (MSDN Sample)](http://msdn.microsoft.com/en-us/library/windowsphone/develop/hh202977(v=vs.105).aspx#BKMK_RunningtheRawNotificationSample)
 
 ## Notes
 
