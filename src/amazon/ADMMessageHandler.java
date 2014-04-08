@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.app.Notification.Builder;
@@ -133,7 +134,7 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
 
         // Extract the payload from the message
         Bundle extras = intent.getExtras();
-        if (extras != null) {
+        if (extras != null && (extras.getString(PushPlugin.MESSAGE) != null)) {
             // if we are in the foreground, just surface the payload, else post
             // it to the statusbar
             if (PushPlugin.isInForeground()) {
@@ -174,7 +175,8 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
             .setContentIntent(contentIntent);
 
         if (this.shouldShowMessageInNotification()) {
-            notificationBuilder.setContentText(extras.getString(PushPlugin.MESSAGE));
+            String message = extras.getString(PushPlugin.MESSAGE);
+            notificationBuilder.setContentText(Html.fromHtml(message).toString());
         } else {
             notificationBuilder.setContentText(this.defaultMessageTextInNotification());
         }
