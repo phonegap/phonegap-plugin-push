@@ -36,8 +36,9 @@
 				try 
 				{ 
                 	pushNotification = window.plugins.pushNotification;
-                	if (device.platform == 'android' || device.platform == 'Android') {
-						$("#app-status-ul").append('<li>registering android</li>');
+                	if (device.platform == 'android' || device.platform == 'Android' ||
+                            device.platform == 'amazon-fireos' ) {
+						$("#app-status-ul").append('<li>registering ' + device.platform + '</li>');
                     	pushNotification.register(successHandler, errorHandler, {"senderID":"661780372179","ecb":"onNotificationGCM"});		// required!
 					} else {
 						$("#app-status-ul").append('<li>registering iOS</li>');
@@ -105,7 +106,10 @@
 						}
 							
 						$("#app-status-ul").append('<li>MESSAGE -> MSG: ' + e.payload.message + '</li>');
+                        //android only
 						$("#app-status-ul").append('<li>MESSAGE -> MSGCNT: ' + e.payload.msgcnt + '</li>');
+                        //amazon-fireos only
+                        $("#app-status-ul").append('<li>MESSAGE -> TIMESTAMP: ' + e.payload.timeStamp + '</li>');
                     break;
                     
                     case 'error':

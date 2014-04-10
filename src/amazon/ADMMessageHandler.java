@@ -96,7 +96,7 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
 
         // we fire the register event in the web app, register handler should
         // fire to send the registration ID to your server via a header key/value pair over HTTP.(AJAX)
-        PushPlugin.sendRegistrationIdWithEvent(PushPlugin.REGISTER,
+        PushPlugin.sendRegistrationIdWithEvent(PushPlugin.REGISTER_EVENT,
             newRegistrationId);
     }
 
@@ -105,7 +105,7 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
     protected void onUnregistered(final String registrationId) {
         // If your app is unregistered on this device, inform your server that
         // this app instance is no longer a valid target for messages.
-        PushPlugin.sendRegistrationIdWithEvent(PushPlugin.UNREGISTER,
+        PushPlugin.sendRegistrationIdWithEvent(PushPlugin.UNREGISTER_EVENT,
             registrationId);
     }
 
