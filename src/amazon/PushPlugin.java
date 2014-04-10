@@ -55,6 +55,8 @@ public class PushPlugin extends CordovaPlugin {
     
     public static final String REGISTER = "register";
     public static final String UNREGISTER = "unregister";
+    public static final String REGISTER_EVENT = "registered";
+    public static final String UNREGISTER_EVENT = "unregistered";
     public static final String MESSAGE = "message";
     public static final String ECB = "ecb";
     public static final String EVENT = "event";
@@ -185,7 +187,7 @@ public class PushPlugin extends CordovaPlugin {
                 if (regId == null) {
                     adm.startRegister();
                 } else {
-                    sendRegistrationIdWithEvent(REGISTER, regId);
+                    sendRegistrationIdWithEvent(REGISTER_EVENT, regId);
                 }
 
                 // see if there are any messages while app was in background and
