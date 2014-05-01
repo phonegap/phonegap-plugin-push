@@ -87,7 +87,7 @@
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
             <!-- You must explicitly enable ADM and declare whether your app cannot work without ADM (android:required="true") or can work without ADM (android:required="false").
-        I   f you specify android:required="false", your app must degrade gracefully if ADM
+            If you specify android:required="false", your app must degrade gracefully if ADM
             is unavailable. -->
             <amazon:enable-feature android:name="com.amazon.device.messaging" android:required="true"/>
 			<service android:exported="false" android:name="com.amazon.cordova.plugin.ADMMessageHandler" />
