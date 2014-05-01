@@ -4,8 +4,7 @@
 
 ## DESCRIPTION
 
-This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and allows your application to receive push notifications on Amazon Fire OS, Android and iOS devices. The Amazon Fire OS implementation uses [Amazon's ADM(Amazon Device Messaging) service](https://developer.amazon.com/sdk/adm.html), Android implementation uses [Google's GCM (Google Cloud Messaging) service](http://developer.android.com/guide/google/gcm/index.html) and the iOS version is based on [Apple APNS Notifications](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/ApplePushService/ApplePushService.html)
-This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and allows your application to receive push notifications on Android, iOS and WP8 devices. The Android implementation uses [Google's GCM (Google Cloud Messaging) service](http://developer.android.com/guide/google/gcm/index.html), whereas the iOS version is based on [Apple APNS Notifications](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/ApplePushService/ApplePushService.html). The WP8 implementation is based on [MPNS](http://msdn.microsoft.com/en-us/library/windowsphone/develop/ff402558(v=vs.105).aspx).
+This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and allows your application to receive push notifications on Amazon Fire OS, Android, iOS and WP8 devices. The Amazon Fire OS implementation uses [Amazon's ADM(Amazon Device Messaging) service](https://developer.amazon.com/sdk/adm.html), the Android implementation uses [Google's GCM (Google Cloud Messaging) service](http://developer.android.com/guide/google/gcm/index.html), whereas the iOS version is based on [Apple APNS Notifications](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/ApplePushService/ApplePushService.html). The WP8 implementation is based on [MPNS](http://msdn.microsoft.com/en-us/library/windowsphone/develop/ff402558(v=vs.105).aspx).
 
 **Important** - Push notifications are intended for real devices. They are not tested for WP8 Emulator. The registration process will fail on the iOS simulator. Notifications can be made to work on the Android Emulator. However, doing so requires installation of some helper libraries, as outlined [here,](http://www.androidhive.info/2012/10/android-push-notifications-using-google-cloud-messaging-gcm-php-and-mysql/) under the section titled "Installing helper libraries and setting up the Emulator".
 
@@ -135,7 +134,6 @@ xmlns:amazon="http://schemas.amazon.com/apk/res/android"
 <service android:name="com.plugin.gcm.GCMIntentService" />
 ```
 
-
 4) Modify your **res/xml/config.xml** to include the following line in order to tell Cordova to include this plugin and where it can be found: (See the Sample_config.xml file in the Example folder)
 
 ```xml
@@ -192,7 +190,6 @@ Add a reference to this plugin in **config.xml**:
 ```
 
 Add the **PushNotification.js** script to your assets/www folder (or javascripts folder, wherever you want really) and reference it in your main index.html file.
-
 ```html
 <script type="text/javascript" charset="utf-8" src="PushNotification.js"></script>
 ```
@@ -377,12 +374,10 @@ function onNotificationGCM(e) {
 			if ( e.coldstart )
 			{
 				$("#app-status-ul").append('<li>--COLDSTART NOTIFICATION--' + '</li>');
-
 			}
 			else
 			{
 				$("#app-status-ul").append('<li>--BACKGROUND NOTIFICATION--' + '</li>');
-
 			}
 		}
 
@@ -411,7 +406,6 @@ For Amazon Fire OS platform, offline message can also be received when app is la
 Also make note of the **payload** object. Since the Android notification data model is much more flexible than that of iOS, there may be additional elements beyond **message**, **soundname**, and **msgcnt**. You can access those elements and any additional ones via the **payload** element. This means that if your data model should change in the future, there will be no need to change and recompile the plugin.
 
 **channelHandler (WP8 only)** - Called after a push notification channel is opened and push notification URI is returned. [The application is now set to receive notifications.](http://msdn.microsoft.com/en-us/library/windowsphone/develop/hh202940(v=vs.105).aspx)
-
 
 ##### wp8
 Register as
@@ -515,7 +509,7 @@ function onDeviceReady() {
 		}
 	}, false);
 
-	// aditional onDeviceReady work...
+	// additional onDeviceReady work...
 }
 ```
 
@@ -616,8 +610,9 @@ If you're not up to building and maintaining your own intermediary push server, 
 [kony](http://www.kony.com/push-notification-services) and many others.
 
 [Amazon Simple Notification Service](https://aws.amazon.com/sns/)
+
 #### 4) Send MPNS Notification for WP8
-The simplest way to test the plugin is to create create an ASP.NET webpage that sends different notifications by using the URI that is returned when the push channel is created on the device.
+The simplest way to test the plugin is to create an ASP.NET webpage that sends different notifications by using the URI that is returned when the push channel is created on the device.
 
 You can see how to create one from MSDN Samples:
 
