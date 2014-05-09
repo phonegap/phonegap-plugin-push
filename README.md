@@ -437,6 +437,7 @@ function onNotificationWP8(e) {
 		alert(e.jsonContent.Body);
 	}
 }
+```
 
 **uccb** - event callback that gets called when the channel you have opened gets its Uri updated. This function is needed in case the MPNS updates the opened channel Uri. This function will take care of showing updated Uri.
 
