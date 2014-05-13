@@ -4,7 +4,17 @@
         <title>com.PhoneGap.c2dm</title>
     </head>
     <body>
-        
+
+/*
+NOTE:
+    This demo uses these plugins:
+        Cordova Device Plugin: http://plugins.cordova.io/#/package/org.apache.cordova.device
+        Cordova Media Plugin: http://plugins.cordova.io/#/package/org.apache.cordova.media
+
+    To add them via the CLI:
+        $ cordova plugin add org.apache.cordova.device
+        $ cordova plugin add org.apache.cordova.media
+*/       
         <!--<script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>-->
         <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
         <script type="text/javascript" charset="utf-8" src="jquery_1.5.2.min.js"></script>
@@ -36,12 +46,11 @@
 				try 
 				{ 
                 	pushNotification = window.plugins.pushNotification;
+		      $("#app-status-ul").append('<li>registering ' + device.platform + '</li>');
                 	if (device.platform == 'android' || device.platform == 'Android' ||
                             device.platform == 'amazon-fireos' ) {
-						$("#app-status-ul").append('<li>registering ' + device.platform + '</li>');
-                    	pushNotification.register(successHandler, errorHandler, {"senderID":"661780372179","ecb":"onNotificationGCM"});		// required!
+			pushNotification.register(successHandler, errorHandler, {"senderID":"661780372179","ecb":"onNotification"});		// required!
 					} else {
-						$("#app-status-ul").append('<li>registering iOS</li>');
                     	pushNotification.register(tokenHandler, errorHandler, {"badge":"true","sound":"true","alert":"true","ecb":"onNotificationAPN"});	// required!
                 	}
                 }
@@ -71,7 +80,7 @@
             }
             
             // handle GCM notifications for Android
-            function onNotificationGCM(e) {
+            function onNotification(e) {
                 $("#app-status-ul").append('<li>EVENT -> RECEIVED:' + e.event + '</li>');
                 
                 switch( e.event )
