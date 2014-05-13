@@ -48,6 +48,7 @@ public class ADMHandlerActivity extends Activity {
         if (extras != null) {
             Bundle originalExtras = extras
                 .getBundle(ADMMessageHandler.PUSH_BUNDLE);
+            originalExtras.putBoolean(PushPlugin.COLDSTART, !isCordovaActive);
             ADMMessageHandler.cancelNotification(this);
             PushPlugin.sendExtras(originalExtras);
             // clean up the noticiationIntent extra
