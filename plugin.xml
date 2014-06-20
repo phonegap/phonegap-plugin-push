@@ -2,6 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads"
+    xmlns:rim="http://www.blackberry.com/ns/widgets"
     id="com.phonegap.plugins.PushPlugin"
     version="2.3.1">
 
@@ -76,7 +77,7 @@
             <preference name="showmessageinnotification" value="true" />
             <preference name="defaultnotificationmessage" value="You have a new message." />
 		</config-file>
-        
+
         <config-file target="AndroidManifest.xml" parent="/manifest">
             <!-- This permission ensures that no other application can intercept your ADM messages. "[YOUR PACKAGE NAME]" is your package name as defined in your <manifest> tag. -->
             <permission android:name="$PACKAGE_NAME.permission.RECEIVE_ADM_MESSAGE" android:protectionLevel="signature" />
@@ -100,13 +101,13 @@
                     <action android:name="com.amazon.device.messaging.intent.RECEIVE" />
                     <category android:name="$PACKAGE_NAME" />
                 </intent-filter>
-            </receiver>		
+            </receiver>
         </config-file>
-        
+
         <source-file src="src/amazon/PushPlugin.java" target-dir="src/com/amazon/cordova/plugin" />
         <source-file src="src/amazon/ADMMessageHandler.java" target-dir="src/com/amazon/cordova/plugin" />
         <source-file src="src/amazon/ADMHandlerActivity.java" target-dir="src/com/amazon/cordova/plugin" />
-       		
+
 	</platform>
 
 	<!-- ios -->
@@ -126,8 +127,20 @@
 
 	</platform>
 
-  <!-- wp8 -->
-  <platform name="wp8">
+    <!-- blackberry10 -->
+    <platform name="blackberry10">
+        <dependency id="com.blackberry.push" />
+        <dependency id="com.blackberry.invoked" />
+        <config-file target="www/config.xml" parent="/widget">
+            <feature name="PushPlugin" value="PushPlugin" />
+        </config-file>
+        <js-module src="www/blackberry10/PushPluginProxy.js" name="PushPluginProxy" >
+            <runs />
+        </js-module>
+    </platform>
+
+    <!-- wp8 -->
+    <platform name="wp8">
 
     <config-file target="config.xml" parent="/*">
       <feature name="PushPlugin">
