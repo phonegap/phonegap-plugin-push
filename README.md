@@ -163,7 +163,15 @@ The final hierarchy will likely look something like this:
 <service android:name="com.plugin.gcm.GCMIntentService" />
 ```
 
-4) Modify your `res/xml/config.xml` to include the following line in order to tell Cordova to include this plugin and where it can be found: (See the Sample_config.xml file in the Example folder)
+4) Check that the launch mode for the main Cordova Activity is one of the **[singleXXX](http://developer.android.com/guide/topics/manifest/activity-element.html#lmode)** options in **AndroidManifest.xml**.
+
+```xml
+<activity ... android:launchMode="singleTop">
+```
+
+Otherwise a new activity instance, with a new webview, will be created when activating the notifications.
+
+5) Modify your `res/xml/config.xml` to include the following line in order to tell Cordova to include this plugin and where it can be found: (See the Sample_config.xml file in the Example folder)
 
 ```xml
 <feature name="PushPlugin">
@@ -171,7 +179,7 @@ The final hierarchy will likely look something like this:
 </feature>
 ```
 
-5) Add the `PushNotification.js` script to your assets/www folder (or javascripts folder, wherever you want really) and reference it in your main index.html file. This file's usage is described in the **Plugin API** section below.
+6) Add the `PushNotification.js` script to your assets/www folder (or javascripts folder, wherever you want really) and reference it in your main index.html file. This file's usage is described in the **Plugin API** section below.
 
 ```html
 <script type="text/javascript" charset="utf-8" src="PushNotification.js"></script>
