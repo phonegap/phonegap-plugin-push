@@ -45,7 +45,7 @@
 		</config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
-			<activity android:name="com.plugin.gcm.PushHandlerActivity"/>
+			<activity android:name="com.plugin.gcm.PushHandlerActivity" android:exported="true"/>
 			<receiver android:name="com.plugin.gcm.CordovaGCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
 				<intent-filter>
 					<action android:name="com.google.android.c2dm.intent.RECEIVE" />
