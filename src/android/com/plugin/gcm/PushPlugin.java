@@ -139,6 +139,7 @@ public class PushPlugin extends CordovaPlugin {
     public void onResume(boolean multitasking) {
         super.onResume(multitasking);
         gForeground = true;
+        GCMIntentService.cancelNotification(getApplicationContext());
     }
 
     @Override
