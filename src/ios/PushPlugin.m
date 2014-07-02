@@ -219,9 +219,11 @@
 }
 -(void)successWithMessage:(NSString *)message
 {
-    CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message];
-    
-    [self.commandDelegate sendPluginResult:commandResult callbackId:self.callbackId];
+    if (self.callbackId != nil)
+    {
+        CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message];
+        [self.commandDelegate sendPluginResult:commandResult callbackId:self.callbackId];
+    }
 }
 
 -(void)failWithMessage:(NSString *)message withError:(NSError *)error
