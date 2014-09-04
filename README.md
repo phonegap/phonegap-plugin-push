@@ -244,6 +244,18 @@ In your Visual Studio project add reference to the `Newtonsoft.Json.dll` as well
 
 Also you need to enable the **"ID_CAP_PUSH_NOTIFICATION"** capability in **Properties->WMAppManifest.xml** of your project.
 
+### Manual Installation for Windows8
+
+Add the `src/windows8/PushPluginProxy.js` script to your `www` folder and reference it in your main index.html file.
+```html
+<script type="text/javascript" charset="utf-8" src="PushPluginProxy.js"></script>
+```
+
+Do not forget to reference the `cordova.js` as well.
+
+<script  type="text/javascript" charset="utf-8" src="cordova.js"></script>
+
+To receive toast notifications additional [toastCapable=’true’](http://msdn.microsoft.com/en-us/library/windows/apps/hh781238.aspx) attribute is required to be manually added in manifest file.
 
 
 
@@ -627,7 +639,7 @@ For the above to work, make sure the content for your home page is wrapped in an
 </div>
 ```
 
-#### windows8
+### windows8
 Sample usage is showed below. **Note**. To be able to receive toast notifications additional [toastCapable=’true’](http://msdn.microsoft.com/en-us/library/windows/apps/hh781238.aspx) attribute is required in manifest file.
 
 ```js
@@ -635,7 +647,7 @@ Sample usage is showed below. **Note**. To be able to receive toast notification
 window.onNotification = function (e) {
     navigator.notification.alert('Notification received: ' + JSON.stringify(e));
 }  
-pushNotification = window.plugins.pushNotification;
+var pushNotification = window.plugins.pushNotification;
 pushNotification.register(successHandler, errorHandler, {"channelName":"your_channel_name","ecb":"onNotification"});
 
 function successHandler(result) {
