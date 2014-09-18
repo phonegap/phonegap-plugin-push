@@ -9,10 +9,11 @@
 	<author>Bob Easterday</author>
 
 	<description>
-		This plugin allows your application to receive push notifications on Android, iOS and WP8 devices.
+		This plugin allows your application to receive push notifications on Android, iOS, WP8 and Windows8 devices.
     Android uses Google Cloud Messaging.
     iOS uses Apple APNS Notifications.
     WP8 uses Microsoft MPNS Notifications.
+    Windows8 uses Microsoft WNS Notifications.
 	</description>
 
 	<license>MIT</license>
@@ -141,6 +142,13 @@
     <source-file src="src/wp8/PushPlugin.cs" />
     <framework src="src/wp8/Newtonsoft.Json.dll" custom="true" />
 
+  </platform>
+
+  <!-- windows8 -->
+  <platform name="windows8">
+    <js-module src="src/windows8/PushPluginProxy.js" name="PushPlugin">
+      <merges target="" />
+    </js-module>
   </platform>
 
 </plugin>

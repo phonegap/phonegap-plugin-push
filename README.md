@@ -1,10 +1,15 @@
-# Cordova Push Notifications Plugin for Android, iOS, WP8 and Amazon Fire OS
+# Cordova Push Notifications Plugin for Android, iOS, WP8, Windows8 and Amazon Fire OS
 
 ---
 
 ## DESCRIPTION
 
-This plugin is for use with [Cordova](http://cordova.apache.org/), and allows your application to receive push notifications on Amazon Fire OS, Android, iOS and WP8 devices. The Amazon Fire OS implementation uses [Amazon's ADM (Amazon Device Messaging) service](https://developer.amazon.com/sdk/adm.html), the Android implementation uses [Google's GCM (Google Cloud Messaging) service](http://developer.android.com/guide/google/gcm/index.html), whereas the iOS version is based on [Apple APNS Notifications](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/ApplePushService/ApplePushService.html). The WP8 implementation is based on [MPNS](http://msdn.microsoft.com/en-us/library/windowsphone/develop/ff402558(v=vs.105).aspx).
+This plugin is for use with [Cordova](http://incubator.apache.org/cordova/), and allows your application to receive push notifications on Amazon Fire OS, Android, iOS, Windows Phone and Windows8 devices.
+* The Amazon Fire OS implementation uses [Amazon's ADM(Amazon Device Messaging) service](https://developer.amazon.com/sdk/adm.html).
+* The Android implementation uses [Google's GCM (Google Cloud Messaging) service](http://developer.android.com/guide/google/gcm/index.html).
+* The iOS version is based on [Apple APNS Notifications](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/ApplePushService/ApplePushService.html).
+* The WP8 implementation is based on [MPNS](http://msdn.microsoft.com/en-us/library/windowsphone/develop/ff402558(v=vs.105).aspx).
+* Windows8 uses [Microsoft WNS Notifications](http://msdn.microsoft.com/en-us/library/windows/apps/hh913756.aspx).
 
 **Important** - Push notifications are intended for real devices. They are not tested for WP8 Emulator. The registration process will fail on the iOS simulator. Notifications can be made to work on the Android Emulator, however doing so requires installation of some helper libraries, as outlined [here,](http://www.androidhive.info/2012/10/android-push-notifications-using-google-cloud-messaging-gcm-php-and-mysql/) under the section titled "Installing helper libraries and setting up the Emulator".
 
@@ -239,6 +244,18 @@ In your Visual Studio project add reference to the `Newtonsoft.Json.dll` as well
 
 Also you need to enable the **"ID_CAP_PUSH_NOTIFICATION"** capability in **Properties->WMAppManifest.xml** of your project.
 
+### Manual Installation for Windows8
+
+Add the `src/windows8/PushPluginProxy.js` script to your `www` folder and reference it in your main index.html file.
+```html
+<script type="text/javascript" charset="utf-8" src="PushPluginProxy.js"></script>
+```
+
+Do not forget to reference the `cordova.js` as well.
+
+<script  type="text/javascript" charset="utf-8" src="cordova.js"></script>
+
+To receive toast notifications additional [toastCapable=’true’](http://msdn.microsoft.com/en-us/library/windows/apps/hh781238.aspx) attribute is required to be manually added in manifest file.
 
 
 
@@ -276,7 +293,7 @@ The plugin is based on [plugman](https://github.com/apache/cordova-plugman) and 
 plugman install --platform [PLATFORM] --project [TARGET-PATH] --plugin [PLUGIN-PATH]
 
 where
-	[PLATFORM] = ios, amazon-fireos, android or wp8
+	[PLATFORM] = ios, amazon-fireos, android wp8 or windows8
 	[TARGET-PATH] = path to folder containing your phonegap project
 	[PLUGIN-PATH] = path to folder containing this plugin
 ```
@@ -569,8 +586,6 @@ Or you can add another `Page2.xaml` just for testing toast navigate url. Like th
 
 To test the tile notification, you will need to add tile images like the [MSDN Tile Sample](http://msdn.microsoft.com/en-us/library/windowsphone/develop/hh202970(v=vs.105).aspx#BKMK_CreatingaPushClienttoReceiveTileNotifications)
 
-
-
 #### unregister (WP8 Only)
 
 When using the plugin for wp8 you will need to unregister the push channel you have register in case you would want to open another one. You need to know the name of the channel you have opened in order to close it. Please keep in mind that one application can have only one opened channel at time and in order to open another you will have to close any already opened channel.
@@ -624,6 +639,26 @@ For the above to work, make sure the content for your home page is wrapped in an
 </div>
 ```
 
+### windows8
+Sample usage is showed below. **Note**. To be able to receive toast notifications additional [toastCapable=’true’](http://msdn.microsoft.com/en-us/library/windows/apps/hh781238.aspx) attribute is required in manifest file.
+
+```js
+// fired when push notification is received
+window.onNotification = function (e) {
+    navigator.notification.alert('Notification received: ' + JSON.stringify(e));
+}  
+var pushNotification = window.plugins.pushNotification;
+pushNotification.register(successHandler, errorHandler, {"channelName":"your_channel_name","ecb":"onNotification"});
+
+function successHandler(result) {
+    console.log('registered###' + result.uri);
+    // send uri to your notification server
+}
+function errorHandler(error) {
+    console.log('error###' + error);
+}
+```
+See [Sending push notifications with WNS](http://msdn.microsoft.com/en-us/library/windows/apps/hh465460.aspx) to send test push notification.
 
 
 
