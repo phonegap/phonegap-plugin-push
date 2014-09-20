@@ -49,6 +49,7 @@
 
     NSMutableDictionary* options = [command.arguments objectAtIndex:0];
 
+    UIUserNotificationType UserNotificationTypes = UIUserNotificationTypeNone;
     UIRemoteNotificationType notificationTypes = UIRemoteNotificationTypeNone;
     
     id badgeArg = [options objectForKey:@"badge"];
@@ -59,73 +60,40 @@
     {
         if ([badgeArg isEqualToString:@"true"]) {
             notificationTypes |= UIRemoteNotificationTypeBadge;
-        }
-    }
-    else if ([badgeArg boolValue]) {
-        notificationTypes |= UIRemoteNotificationTypeBadge;
-    }
-    
-    if ([soundArg isKindOfClass:[NSString class]])
-    {
-        if ([soundArg isEqualToString:@"true"]) {
-            notificationTypes |= UIRemoteNotificationTypeSound;
-    }
-    }
-    else if ([soundArg boolValue]) {
-        notificationTypes |= UIRemoteNotificationTypeSound;
-    }
-    
-    if ([alertArg isKindOfClass:[NSString class]])
-    {
-        if ([alertArg isEqualToString:@"true"]) {
-            notificationTypes |= UIRemoteNotificationTypeAlert;
-    }
-    }
-    else if ([alertArg boolValue]) {
-        notificationTypes |= UIRemoteNotificationTypeAlert;
-    }
-    
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-    
-    UIUserNotificationType UserNotificationTypes = UIUserNotificationTypeNone;
-    
-    if ([badgeArg isKindOfClass:[NSString class]])
-    {
-        if ([badgeArg isEqualToString:@"true"]) {
             UserNotificationTypes |= UIUserNotificationTypeBadge;
         }
     }
     else if ([badgeArg boolValue]) {
+        notificationTypes |= UIRemoteNotificationTypeBadge;
         UserNotificationTypes |= UIUserNotificationTypeBadge;
     }
     
     if ([soundArg isKindOfClass:[NSString class]])
     {
         if ([soundArg isEqualToString:@"true"]) {
+            notificationTypes |= UIRemoteNotificationTypeSound;
             UserNotificationTypes |= UIUserNotificationTypeSound;
-        }
+    }
     }
     else if ([soundArg boolValue]) {
+        notificationTypes |= UIRemoteNotificationTypeSound;
         UserNotificationTypes |= UIUserNotificationTypeSound;
     }
     
     if ([alertArg isKindOfClass:[NSString class]])
     {
         if ([alertArg isEqualToString:@"true"]) {
+            notificationTypes |= UIRemoteNotificationTypeAlert;
             UserNotificationTypes |= UIUserNotificationTypeAlert;
-        }
+    }
     }
     else if ([alertArg boolValue]) {
+        notificationTypes |= UIRemoteNotificationTypeAlert;
         UserNotificationTypes |= UIUserNotificationTypeAlert;
     }
     
     notificationTypes |= UIRemoteNotificationTypeNewsstandContentAvailability;
     UserNotificationTypes |= UIUserNotificationActivationModeBackground;
-    
-    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UserNotificationTypes categories:nil];
-    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-    [[UIApplication sharedApplication] registerForRemoteNotifications];
-#endif
     
     self.callback = [options objectForKey:@"ecb"];
 
@@ -134,6 +102,14 @@
 
     isInline = NO;
 
+    if ([[UIApplication sharedApplication]respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UserNotificationTypes categories:nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+    } else {
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:notificationTypes];
+    }
+	
 	if (notificationMessage)			// if there is a pending startup notification
 		[self notificationReceived];	// go ahead and process it
 }
