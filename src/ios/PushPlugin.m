@@ -51,11 +51,11 @@
 
     UIUserNotificationType UserNotificationTypes = UIUserNotificationTypeNone;
     UIRemoteNotificationType notificationTypes = UIRemoteNotificationTypeNone;
-    
+
     id badgeArg = [options objectForKey:@"badge"];
     id soundArg = [options objectForKey:@"sound"];
     id alertArg = [options objectForKey:@"alert"];
-    
+
     if ([badgeArg isKindOfClass:[NSString class]])
     {
         if ([badgeArg isEqualToString:@"true"]) {
@@ -67,7 +67,7 @@
         notificationTypes |= UIRemoteNotificationTypeBadge;
         UserNotificationTypes |= UIUserNotificationTypeBadge;
     }
-    
+
     if ([soundArg isKindOfClass:[NSString class]])
     {
         if ([soundArg isEqualToString:@"true"]) {
@@ -79,7 +79,7 @@
         notificationTypes |= UIRemoteNotificationTypeSound;
         UserNotificationTypes |= UIUserNotificationTypeSound;
     }
-    
+
     if ([alertArg isKindOfClass:[NSString class]])
     {
         if ([alertArg isEqualToString:@"true"]) {
@@ -91,10 +91,10 @@
         notificationTypes |= UIRemoteNotificationTypeAlert;
         UserNotificationTypes |= UIUserNotificationTypeAlert;
     }
-    
+
     notificationTypes |= UIRemoteNotificationTypeNewsstandContentAvailability;
     UserNotificationTypes |= UIUserNotificationActivationModeBackground;
-    
+
     self.callback = [options objectForKey:@"ecb"];
 
     if (notificationTypes == UIRemoteNotificationTypeNone)
@@ -102,14 +102,18 @@
 
     isInline = NO;
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
     if ([[UIApplication sharedApplication]respondsToSelector:@selector(registerUserNotificationSettings:)]) {
         UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UserNotificationTypes categories:nil];
         [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
         [[UIApplication sharedApplication] registerForRemoteNotifications];
     } else {
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:notificationTypes];
+    		[[UIApplication sharedApplication] registerForRemoteNotificationTypes:notificationTypes];
     }
-	
+#else
+		[[UIApplication sharedApplication] registerForRemoteNotificationTypes:notificationTypes];
+#endif
+
 	if (notificationMessage)			// if there is a pending startup notification
 		[self notificationReceived];	// go ahead and process it
 }
@@ -129,12 +133,12 @@
                         stringByReplacingOccurrencesOfString:@">" withString:@""]
                        stringByReplacingOccurrencesOfString: @" " withString: @""];
     [results setValue:token forKey:@"deviceToken"];
-    
+
     #if !TARGET_IPHONE_SIMULATOR
         // Get Bundle Info for Remote Registration (handy if you have more than one app)
         [results setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"] forKey:@"appName"];
         [results setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"appVersion"];
-        
+
         // Check what Notifications the user has turned on.  We registered for all three, but they may have manually disabled some or all of them.
         NSUInteger rntypes = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
 
@@ -192,14 +196,14 @@
         }
 		else
             [jsonStr appendFormat:@"foreground:\"%d\"", 0];
-        
+
         [jsonStr appendString:@"}"];
 
         NSLog(@"Msg: %@", jsonStr);
 
         NSString * jsCallBack = [NSString stringWithFormat:@"%@(%@);", self.callback, jsonStr];
         [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
-        
+
         self.notificationMessage = nil;
     }
 }
@@ -209,11 +213,11 @@
 {
     NSArray         *keys = [inDictionary allKeys];
     NSString        *key;
-    
+
     for (key in keys)
     {
         id thisObject = [inDictionary objectForKey:key];
-    
+
         if ([thisObject isKindOfClass:[NSDictionary class]])
             [self parseDictionary:thisObject intoJSON:jsonString];
         else if ([thisObject isKindOfClass:[NSString class]])
@@ -253,7 +257,7 @@
 {
     NSString        *errorMessage = (error) ? [NSString stringWithFormat:@"%@ - %@", message, [error localizedDescription]] : message;
     CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:errorMessage];
-    
+
     [self.commandDelegate sendPluginResult:commandResult callbackId:self.callbackId];
 }
 
