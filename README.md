@@ -121,7 +121,6 @@ push.on('error', function(e) {
     // e.message
 });
 ```
-```
 
 ## Native Requirements
 
