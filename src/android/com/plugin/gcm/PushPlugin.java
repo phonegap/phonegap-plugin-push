@@ -31,7 +31,7 @@ public class PushPlugin extends CordovaPlugin {
 
 	private static CallbackContext pushContext;
 	private static CordovaWebView gWebView;
-	private static String gECB;
+	//private static String gECB;
 	private static String gSenderID;
 	private static Bundle gCachedExtras = null;
     private static boolean gForeground = false;
@@ -62,10 +62,9 @@ public class PushPlugin extends CordovaPlugin {
 				gWebView = this.webView;
 				Log.v(LOG_TAG, "execute: jo=" + jo.toString());
 
-				//gECB = (String) jo.get("ecb");
-				gSenderID = (String) jo.get("senderID");
+				gSenderID = jo.getString("senderID");
 
-				Log.v(LOG_TAG, "execute: ECB=" + gECB + " senderID=" + gSenderID);
+				Log.v(LOG_TAG, "execute: senderID=" + gSenderID);
 
 				GCMRegistrar.register(getApplicationContext(), gSenderID);
 				result = true;
@@ -97,33 +96,20 @@ public class PushPlugin extends CordovaPlugin {
 		return result;
 	}
 
-	public static void sendRegistrationEvent(JSONObject _json) {
+	public static void sendEvent(JSONObject _json) {
         PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, _json);
         pluginResult.setKeepCallback(true);
         pushContext.sendPluginResult(pluginResult);
-	}
-	
-	/*
-	 * Sends a json object to the client as parameter to a method which is defined in gECB.
-	 */
-	public static void sendJavascript(JSONObject _json) {
-		String _d = "javascript:" + gECB + "(" + _json.toString() + ")";
-		Log.v(LOG_TAG, "sendJavascript: " + _d);
-
-		if (gECB != null && gWebView != null) {
-			gWebView.sendJavascript(_d);
-		}
 	}
 
 	/*
 	 * Sends the pushbundle extras to the client application.
 	 * If the client application isn't currently active, it is cached for later processing.
 	 */
-	public static void sendExtras(Bundle extras)
-	{
+	public static void sendExtras(Bundle extras) {
 		if (extras != null) {
-			if (gECB != null && gWebView != null) {
-				sendJavascript(convertBundleToJson(extras));
+			if (gWebView != null) {
+				sendEvent(convertBundleToJson(extras));
 			} else {
 				Log.v(LOG_TAG, "sendExtras: caching extras to send at a later time.");
 				gCachedExtras = extras;
@@ -155,7 +141,6 @@ public class PushPlugin extends CordovaPlugin {
     public void onDestroy() {
         super.onDestroy();
         gForeground = false;
-		gECB = null;
 		gWebView = null;
     }
 
@@ -164,39 +149,35 @@ public class PushPlugin extends CordovaPlugin {
      */
     private static JSONObject convertBundleToJson(Bundle extras)
     {
-		try
-		{
-			JSONObject json;
-			json = new JSONObject().put("event", "message");
-
-			JSONObject jsondata = new JSONObject();
+		try {
+			JSONObject json = new JSONObject();
+			JSONObject additionalData = new JSONObject();
 			Iterator<String> it = extras.keySet().iterator();
 			while (it.hasNext())
 			{
 				String key = it.next();
 				Object value = extras.get(key);
+				 
+				Log.d(LOG_TAG, "key = " + key);
 
 				// System data from Android
-				if (key.equals("from") || key.equals("collapse_key"))
-				{
+				if (key.equals("from") || key.equals("collapse_key")) {
+					additionalData.put(key, value);
+				}
+				else if (key.equals("foreground")) {
+					additionalData.put(key, extras.getBoolean("foreground"));
+				}
+				else if (key.equals("coldstart")){
+					additionalData.put(key, extras.getBoolean("coldstart"));
+				} else if (key.equals("message") || key.equals("title")) {
 					json.put(key, value);
+				} else if (key.equals("msgcnt")) {
+					json.put("count", value);
+				} else if (key.equals("soundname")) {
+					json.put("sound", value);
 				}
-				else if (key.equals("foreground"))
+				else 
 				{
-					json.put(key, extras.getBoolean("foreground"));
-				}
-				else if (key.equals("coldstart"))
-				{
-					json.put(key, extras.getBoolean("coldstart"));
-				}
-				else
-				{
-					// Maintain backwards compatibility
-					if (key.equals("message") || key.equals("msgcnt") || key.equals("soundname"))
-					{
-						json.put(key, value);
-					}
-
 					if ( value instanceof String ) {
 					// Try to figure out if the value is another JSON object
 
@@ -204,10 +185,10 @@ public class PushPlugin extends CordovaPlugin {
 						if (strValue.startsWith("{")) {
 							try {
 								JSONObject json2 = new JSONObject(strValue);
-								jsondata.put(key, json2);
+								additionalData.put(key, json2);
 							}
 							catch (Exception e) {
-								jsondata.put(key, value);
+								additionalData.put(key, value);
 							}
 							// Try to figure out if the value is another JSON array
 						}
@@ -216,21 +197,21 @@ public class PushPlugin extends CordovaPlugin {
 							try
 							{
 								JSONArray json2 = new JSONArray(strValue);
-								jsondata.put(key, json2);
+								additionalData.put(key, json2);
 							}
 							catch (Exception e)
 							{
-								jsondata.put(key, value);
+								additionalData.put(key, value);
 							}
 						}
 						else
 						{
-							jsondata.put(key, value);
+							additionalData.put(key, value);
 						}
 					}
 				}
 			} // while
-			json.put("payload", jsondata);
+			json.put("additionalData", additionalData);
 
 			Log.v(LOG_TAG, "extrasToJSON: " + json.toString());
 

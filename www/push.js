@@ -33,7 +33,7 @@ var PushNotification = function(options) {
     var success = function(result) {
         if (result && typeof result.registrationId !== 'undefined') {
             that.emit('registration', result);
-        } else if (result && typeof result.notification !== 'undefined') {
+        } else if (result && typeof result.message !== 'undefined') {
             that.emit('notification', result);
         }
     };

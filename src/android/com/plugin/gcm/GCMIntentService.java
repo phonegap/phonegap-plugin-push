@@ -18,7 +18,7 @@ import com.google.android.gcm.GCMBaseIntentService;
 @SuppressLint("NewApi")
 public class GCMIntentService extends GCMBaseIntentService {
 
-	private static final String TAG = "GCMIntentService";
+	private static final String LOG_TAG = "PushPlugin_GCMIntentService";
 	
 	public GCMIntentService() {
 		super("GCMIntentService");
@@ -27,7 +27,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	@Override
 	public void onRegistered(Context context, String regId) {
 
-		Log.v(TAG, "onRegistered: "+ regId);
+		Log.v(LOG_TAG, "onRegistered: "+ regId);
 
 		JSONObject json;
 
@@ -35,25 +35,25 @@ public class GCMIntentService extends GCMBaseIntentService {
 			json = new JSONObject();
 			json.put("registrationId", regId);
 
-			Log.v(TAG, "onRegistered: " + json.toString());
+			Log.v(LOG_TAG, "onRegistered: " + json.toString());
 
-			PushPlugin.sendRegistrationEvent( json );
+			PushPlugin.sendEvent( json );
 		}
 		catch( JSONException e)
 		{
 			// No message to the user is sent, JSON failed
-			Log.e(TAG, "onRegistered: JSON exception");
+			Log.e(LOG_TAG, "onRegistered: JSON exception");
 		}
 	}
 
 	@Override
 	public void onUnregistered(Context context, String regId) {
-		Log.d(TAG, "onUnregistered - regId: " + regId);
+		Log.d(LOG_TAG, "onUnregistered - regId: " + regId);
 	}
 
 	@Override
 	protected void onMessage(Context context, Intent intent) {
-		Log.d(TAG, "onMessage - context: " + context);
+		Log.d(LOG_TAG, "onMessage - context: " + context);
 
 		// Extract the payload from the message
 		Bundle extras = intent.getExtras();
@@ -122,10 +122,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 			notId = Integer.parseInt(extras.getString("notId"));
 		}
 		catch(NumberFormatException e) {
-			Log.e(TAG, "Number format exception - Error parsing Notification ID: " + e.getMessage());
+			Log.e(LOG_TAG, "Number format exception - Error parsing Notification ID: " + e.getMessage());
 		}
 		catch(Exception e) {
-			Log.e(TAG, "Number format exception - Error parsing Notification ID" + e.getMessage());
+			Log.e(LOG_TAG, "Number format exception - Error parsing Notification ID" + e.getMessage());
 		}
 		
 		mNotificationManager.notify((String) appName, notId, mBuilder.build());
@@ -143,7 +143,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	
 	@Override
 	public void onError(Context context, String errorId) {
-		Log.e(TAG, "onError - errorId: " + errorId);
+		Log.e(LOG_TAG, "onError - errorId: " + errorId);
 	}
 
 }

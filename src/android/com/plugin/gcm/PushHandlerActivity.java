@@ -10,7 +10,7 @@ import android.util.Log;
 
 public class PushHandlerActivity extends Activity
 {
-	private static String TAG = "PushHandlerActivity"; 
+	private static String LOG_TAG = "PushPlugin_PushHandlerActivity"; 
 
 	/*
 	 * this activity will be started if the user touches a notification that we own. 
@@ -22,7 +22,7 @@ public class PushHandlerActivity extends Activity
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		Log.v(TAG, "onCreate");
+		Log.v(LOG_TAG, "onCreate");
 
 		boolean isPushPluginActive = PushPlugin.isActive();
 		processPushBundle(isPushPluginActive);
