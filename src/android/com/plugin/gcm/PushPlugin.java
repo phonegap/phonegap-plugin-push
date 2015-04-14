@@ -4,11 +4,14 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+
 import com.google.android.gcm.GCMRegistrar;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,12 +23,13 @@ import java.util.Iterator;
  */
 
 public class PushPlugin extends CordovaPlugin {
-	public static final String TAG = "PushPlugin";
+	public static final String LOG_TAG = "PushPlugin";
 
-	public static final String REGISTER = "register";
+	public static final String INITIALIZE = "init";
 	public static final String UNREGISTER = "unregister";
 	public static final String EXIT = "exit";
 
+	private static CallbackContext pushContext;
 	private static CordovaWebView gWebView;
 	private static String gECB;
 	private static String gSenderID;
@@ -45,34 +49,34 @@ public class PushPlugin extends CordovaPlugin {
 
 		boolean result = false;
 
-		Log.v(TAG, "execute: action=" + action);
+		Log.v(LOG_TAG, "execute: action=" + action);
 
-		if (REGISTER.equals(action)) {
+		if (INITIALIZE.equals(action)) {
+			pushContext = callbackContext;
 
-			Log.v(TAG, "execute: data=" + data.toString());
+			Log.v(LOG_TAG, "execute: data=" + data.toString());
 
 			try {
-				JSONObject jo = data.getJSONObject(0);
+				JSONObject jo = data.getJSONObject(0).getJSONObject("android");
 
 				gWebView = this.webView;
-				Log.v(TAG, "execute: jo=" + jo.toString());
+				Log.v(LOG_TAG, "execute: jo=" + jo.toString());
 
-				gECB = (String) jo.get("ecb");
+				//gECB = (String) jo.get("ecb");
 				gSenderID = (String) jo.get("senderID");
 
-				Log.v(TAG, "execute: ECB=" + gECB + " senderID=" + gSenderID);
+				Log.v(LOG_TAG, "execute: ECB=" + gECB + " senderID=" + gSenderID);
 
 				GCMRegistrar.register(getApplicationContext(), gSenderID);
 				result = true;
-				callbackContext.success();
 			} catch (JSONException e) {
-				Log.e(TAG, "execute: Got JSON Exception " + e.getMessage());
+				Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
 				result = false;
 				callbackContext.error(e.getMessage());
 			}
 
 			if ( gCachedExtras != null) {
-				Log.v(TAG, "sending cached extras");
+				Log.v(LOG_TAG, "sending cached extras");
 				sendExtras(gCachedExtras);
 				gCachedExtras = null;
 			}
@@ -81,24 +85,30 @@ public class PushPlugin extends CordovaPlugin {
 
 			GCMRegistrar.unregister(getApplicationContext());
 
-			Log.v(TAG, "UNREGISTER");
+			Log.v(LOG_TAG, "UNREGISTER");
 			result = true;
 			callbackContext.success();
 		} else {
 			result = false;
-			Log.e(TAG, "Invalid action : " + action);
+			Log.e(LOG_TAG, "Invalid action : " + action);
 			callbackContext.error("Invalid action : " + action);
 		}
 
 		return result;
 	}
 
+	public static void sendRegistrationEvent(JSONObject _json) {
+        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, _json);
+        pluginResult.setKeepCallback(true);
+        pushContext.sendPluginResult(pluginResult);
+	}
+	
 	/*
 	 * Sends a json object to the client as parameter to a method which is defined in gECB.
 	 */
 	public static void sendJavascript(JSONObject _json) {
 		String _d = "javascript:" + gECB + "(" + _json.toString() + ")";
-		Log.v(TAG, "sendJavascript: " + _d);
+		Log.v(LOG_TAG, "sendJavascript: " + _d);
 
 		if (gECB != null && gWebView != null) {
 			gWebView.sendJavascript(_d);
@@ -115,7 +125,7 @@ public class PushPlugin extends CordovaPlugin {
 			if (gECB != null && gWebView != null) {
 				sendJavascript(convertBundleToJson(extras));
 			} else {
-				Log.v(TAG, "sendExtras: caching extras to send at a later time.");
+				Log.v(LOG_TAG, "sendExtras: caching extras to send at a later time.");
 				gCachedExtras = extras;
 			}
 		}
@@ -222,13 +232,13 @@ public class PushPlugin extends CordovaPlugin {
 			} // while
 			json.put("payload", jsondata);
 
-			Log.v(TAG, "extrasToJSON: " + json.toString());
+			Log.v(LOG_TAG, "extrasToJSON: " + json.toString());
 
 			return json;
 		}
 		catch( JSONException e)
 		{
-			Log.e(TAG, "extrasToJSON: JSON exception");
+			Log.e(LOG_TAG, "extrasToJSON: JSON exception");
 		}
 		return null;
     }

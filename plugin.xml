@@ -31,7 +31,7 @@
 	<platform name="android">
 
 		<config-file target="res/xml/config.xml" parent="/*">
-			<feature name="PushPlugin" >
+			<feature name="PushNotification" >
 				<param name="android-package" value="com.plugin.gcm.PushPlugin"/>
 			</feature>
 		</config-file>
