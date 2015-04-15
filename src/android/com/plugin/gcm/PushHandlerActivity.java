@@ -1,4 +1,4 @@
-package com.plugin.gcm;
+package com.adobe.phonegap.push;
 
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -19,8 +19,7 @@ public class PushHandlerActivity extends Activity
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.v(LOG_TAG, "onCreate");
 
@@ -38,8 +37,7 @@ public class PushHandlerActivity extends Activity
 	 * Takes the pushBundle extras from the intent, 
 	 * and sends it through to the PushPlugin for processing.
 	 */
-	private void processPushBundle(boolean isPushPluginActive)
-	{
+	private void processPushBundle(boolean isPushPluginActive) {
 		Bundle extras = getIntent().getExtras();
 
 		if (extras != null)	{
@@ -55,18 +53,16 @@ public class PushHandlerActivity extends Activity
 	/**
 	 * Forces the main activity to re-launch if it's unloaded.
 	 */
-	private void forceMainActivityReload()
-	{
+	private void forceMainActivityReload() {
 		PackageManager pm = getPackageManager();
 		Intent launchIntent = pm.getLaunchIntentForPackage(getApplicationContext().getPackageName());    		
 		startActivity(launchIntent);
 	}
 
-  @Override
-  protected void onResume() {
-    super.onResume();
-    final NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-    notificationManager.cancelAll();
-  }
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        final NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+    }
 }

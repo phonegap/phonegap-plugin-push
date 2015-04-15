@@ -1,4 +1,4 @@
-package com.plugin.gcm;
+package com.adobe.phonegap.push;
 
 import android.content.Context;
 
@@ -13,7 +13,7 @@ public class CordovaGCMBroadcastReceiver extends GCMBroadcastReceiver {
 	
 	@Override
 	protected String getGCMIntentServiceClassName(Context context) {
-    	return "com.plugin.gcm" + DEFAULT_INTENT_SERVICE_CLASS_NAME;
+    	return "com.adobe.phonegap.push" + DEFAULT_INTENT_SERVICE_CLASS_NAME;
     }
 	
 }

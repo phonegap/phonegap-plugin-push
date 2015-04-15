@@ -1,4 +1,4 @@
-package com.plugin.gcm;
+package com.adobe.phonegap.push;
 
 import android.app.NotificationManager;
 import android.content.Context;

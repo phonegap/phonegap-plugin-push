@@ -1,4 +1,4 @@
-package com.plugin.gcm;
+package com.adobe.phonegap.push;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,18 +29,14 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		Log.v(LOG_TAG, "onRegistered: "+ regId);
 
-		JSONObject json;
-
 		try {
-			json = new JSONObject();
-			json.put("registrationId", regId);
+	        JSONObject json = new JSONObject().put("registrationId", regId);
 
 			Log.v(LOG_TAG, "onRegistered: " + json.toString());
 
 			PushPlugin.sendEvent( json );
 		}
-		catch( JSONException e)
-		{
+		catch(JSONException e) {
 			// No message to the user is sent, JSON failed
 			Log.e(LOG_TAG, "onRegistered: JSON exception");
 		}
@@ -57,8 +53,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		// Extract the payload from the message
 		Bundle extras = intent.getExtras();
-		if (extras != null)
-		{
+		if (extras != null) {
 			// if we are in the foreground, just surface the payload, else post it to the statusbar
             if (PushPlugin.isInForeground()) {
 				extras.putBoolean("foreground", true);
@@ -75,8 +70,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         }
 	}
 
-	public void createNotification(Context context, Bundle extras)
-	{
+	public void createNotification(Context context, Bundle extras) {
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		String appName = getAppName(this);
 
@@ -131,13 +125,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 		mNotificationManager.notify((String) appName, notId, mBuilder.build());
 	}
 	
-	private static String getAppName(Context context)
-	{
-		CharSequence appName = 
-				context
-					.getPackageManager()
-					.getApplicationLabel(context.getApplicationInfo());
-		
+	private static String getAppName(Context context) {
+		CharSequence appName =  context.getPackageManager().getApplicationLabel(context.getApplicationInfo());
 		return (String)appName;
 	}
 	
