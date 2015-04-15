@@ -18,10 +18,6 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 
-/**
- * @author awysocki
- */
-
 public class PushPlugin extends CordovaPlugin {
 	public static final String LOG_TAG = "PushPlugin";
 
@@ -31,7 +27,6 @@ public class PushPlugin extends CordovaPlugin {
 
 	private static CallbackContext pushContext;
 	private static CordovaWebView gWebView;
-	//private static String gECB;
 	private static String gSenderID;
 	private static Bundle gCachedExtras = null;
     private static boolean gForeground = false;
@@ -90,7 +85,7 @@ public class PushPlugin extends CordovaPlugin {
 		} else {
 			result = false;
 			Log.e(LOG_TAG, "Invalid action : " + action);
-			callbackContext.error("Invalid action : " + action);
+			callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
 		}
 
 		return result;
@@ -147,14 +142,12 @@ public class PushPlugin extends CordovaPlugin {
     /*
      * serializes a bundle to JSON.
      */
-    private static JSONObject convertBundleToJson(Bundle extras)
-    {
+    private static JSONObject convertBundleToJson(Bundle extras) {
 		try {
 			JSONObject json = new JSONObject();
 			JSONObject additionalData = new JSONObject();
 			Iterator<String> it = extras.keySet().iterator();
-			while (it.hasNext())
-			{
+			while (it.hasNext()) {
 				String key = it.next();
 				Object value = extras.get(key);
 				 
@@ -176,61 +169,42 @@ public class PushPlugin extends CordovaPlugin {
 				} else if (key.equals("soundname")) {
 					json.put("sound", value);
 				}
-				else 
-				{
-					if ( value instanceof String ) {
-					// Try to figure out if the value is another JSON object
-
-						String strValue = (String)value;
-						if (strValue.startsWith("{")) {
-							try {
-								JSONObject json2 = new JSONObject(strValue);
-								additionalData.put(key, json2);
-							}
-							catch (Exception e) {
-								additionalData.put(key, value);
-							}
-							// Try to figure out if the value is another JSON array
-						}
-						else if (strValue.startsWith("["))
-						{
-							try
-							{
-								JSONArray json2 = new JSONArray(strValue);
-								additionalData.put(key, json2);
-							}
-							catch (Exception e)
-							{
-								additionalData.put(key, value);
-							}
-						}
-						else
-						{
-							additionalData.put(key, value);
-						}
-					}
+				else if ( value instanceof String ) {
+					String strValue = (String)value;
+					try {
+	                    // Try to figure out if the value is another JSON object
+	                    if (strValue.startsWith("{")) {
+	                        additionalData.put(key, new JSONObject(strValue));
+	                    }
+	                    // Try to figure out if the value is another JSON array
+	                    else if (strValue.startsWith("[")) {
+	                        additionalData.put(key, new JSONArray(strValue));
+	                    }
+	                    else {
+	                        additionalData.put(key, value);
+	                    }					    
+					} catch (Exception e) {
+                        additionalData.put(key, value);
+                    }
 				}
 			} // while
+			
 			json.put("additionalData", additionalData);
-
 			Log.v(LOG_TAG, "extrasToJSON: " + json.toString());
 
 			return json;
 		}
-		catch( JSONException e)
-		{
+		catch( JSONException e) {
 			Log.e(LOG_TAG, "extrasToJSON: JSON exception");
 		}
 		return null;
     }
 
-    public static boolean isInForeground()
-    {
+    public static boolean isInForeground() {
       return gForeground;
     }
 
-    public static boolean isActive()
-    {
+    public static boolean isActive() {
     	return gWebView != null;
     }
 }
