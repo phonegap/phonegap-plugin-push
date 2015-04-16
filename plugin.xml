@@ -114,7 +114,7 @@
 	<platform name="ios">
 
 		<config-file target="config.xml" parent="/*">
-			<feature name="PushPlugin">
+			<feature name="PushNotification">
 				<param name="ios-package" value="PushPlugin"/>
 			</feature>
 		</config-file>
