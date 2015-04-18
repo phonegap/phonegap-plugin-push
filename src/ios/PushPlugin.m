@@ -207,8 +207,28 @@
 - (void)notificationReceived {
     NSLog(@"Notification received");
 
-    if (notificationMessage && self.callback)
+    if (notificationMessage)
     {
+        NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:4];
+//        [message setObject:token forKey:@"registrationId"];
+
+        for(id key in notificationMessage) {
+            id value = [myDict objectForKey:key];
+            if ([value isEqualToString:@"alert"]) {
+                [message setObject:value forKey:@"alert"];
+            }
+            if ([value isEqualToString:@"title"]) {
+                [message setObject:value forKey:@"title"];
+            }
+            if ([value isEqualToString:@"badge"]) {
+                [message setObject:value forKey:@"badge"];
+            }
+            if ([value isEqualToString:@"sound"]) {
+                [message setObject:value forKey:@"sound"];
+            }
+        }
+        
+        /*
         NSMutableString *jsonStr = [NSMutableString stringWithString:@"{"];
 
         [self parseDictionary:notificationMessage intoJSON:jsonStr];
@@ -227,7 +247,13 @@
 
         NSString * jsCallBack = [NSString stringWithFormat:@"%@(%@);", self.callback, jsonStr];
         [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
-
+         */
+        
+        // send notification message
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
+        [pluginResult setKeepCallbackAsBool:YES];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
+        
         self.notificationMessage = nil;
     }
 }
