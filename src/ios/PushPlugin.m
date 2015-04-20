@@ -213,7 +213,7 @@
 //        [message setObject:token forKey:@"registrationId"];
 
         for(id key in notificationMessage) {
-            id value = [myDict objectForKey:key];
+            id value = [notificationMessage objectForKey:key];
             if ([value isEqualToString:@"alert"]) {
                 [message setObject:value forKey:@"alert"];
             }
