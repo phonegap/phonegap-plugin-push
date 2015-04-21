@@ -210,44 +210,26 @@
     if (notificationMessage)
     {
         NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:4];
-//        [message setObject:token forKey:@"registrationId"];
+        
+        id aps = [notificationMessage objectForKey:@"aps"];
 
-        for(id key in notificationMessage) {
-            id value = [notificationMessage objectForKey:key];
-            if ([value isEqualToString:@"alert"]) {
-                [message setObject:value forKey:@"alert"];
+        for(id key in aps) {
+            NSLog(@"Push Plugin key: %@", key);
+            id value = [aps objectForKey:key];
+            
+            if ([key isEqualToString:@"alert"]) {
+                [message setObject:value forKey:@"message"];
             }
-            if ([value isEqualToString:@"title"]) {
+            if ([key isEqualToString:@"title"]) {
                 [message setObject:value forKey:@"title"];
             }
-            if ([value isEqualToString:@"badge"]) {
-                [message setObject:value forKey:@"badge"];
+            if ([key isEqualToString:@"badge"]) {
+                [message setObject:value forKey:@"count"];
             }
-            if ([value isEqualToString:@"sound"]) {
+            if ([key isEqualToString:@"sound"]) {
                 [message setObject:value forKey:@"sound"];
             }
         }
-        
-        /*
-        NSMutableString *jsonStr = [NSMutableString stringWithString:@"{"];
-
-        [self parseDictionary:notificationMessage intoJSON:jsonStr];
-
-        if (isInline)
-        {
-            [jsonStr appendFormat:@"foreground:\"%d\"", 1];
-            isInline = NO;
-        }
-		else
-            [jsonStr appendFormat:@"foreground:\"%d\"", 0];
-
-        [jsonStr appendString:@"}"];
-
-        NSLog(@"Msg: %@", jsonStr);
-
-        NSString * jsCallBack = [NSString stringWithFormat:@"%@(%@);", self.callback, jsonStr];
-        [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
-         */
         
         // send notification message
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
