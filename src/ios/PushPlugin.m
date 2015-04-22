@@ -210,6 +210,7 @@
     if (notificationMessage)
     {
         NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:4];
+        NSMutableDictionary* additionalData = [NSMutableDictionary dictionaryWithCapacity:4];
         
         id aps = [notificationMessage objectForKey:@"aps"];
 
@@ -218,18 +219,32 @@
             id value = [aps objectForKey:key];
             
             if ([key isEqualToString:@"alert"]) {
-                [message setObject:value forKey:@"message"];
-            }
-            if ([key isEqualToString:@"title"]) {
+                if ([value isKindOfClass:[NSDictionary class]]) {
+                    for (id messageKey in value) {
+                        id messageValue = [value objectForKey:messageKey];
+                        if ([messageKey isEqualToString:@"body"]) {
+                            [message setObject:messageValue forKey:@"message"];
+                        } else if ([messageKey isEqualToString:@"title"]) {
+                            [message setObject:messageValue forKey:@"title"];
+                        } else {
+                            [additionalData setObject:messageValue forKey:messageKey];
+                        }
+                    }
+                }
+                else {
+                    [message setObject:value forKey:@"message"];
+                }
+            } else if ([key isEqualToString:@"title"]) {
                 [message setObject:value forKey:@"title"];
-            }
-            if ([key isEqualToString:@"badge"]) {
+            } else if ([key isEqualToString:@"badge"]) {
                 [message setObject:value forKey:@"count"];
-            }
-            if ([key isEqualToString:@"sound"]) {
+            } else if ([key isEqualToString:@"sound"]) {
                 [message setObject:value forKey:@"sound"];
+            } else {
+                [additionalData setObject:value forKey:key];
             }
         }
+        [message setObject:additionalData forKey:@"additionalData"];
         
         // send notification message
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
