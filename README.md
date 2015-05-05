@@ -122,6 +122,16 @@ push.on('error', function(e) {
 });
 ```
 
+### push.unregister(successHandler, errorHandler)
+
+The unregister method is used when the application no longer wants to receive push notifications.
+
+#### Example
+
+```javascript
+push.unregister(successHandler, errorHandler);
+```
+
 ## Native Requirements
 
 - There should be no dependency on any other plugins.

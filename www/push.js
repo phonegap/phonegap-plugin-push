@@ -51,6 +51,26 @@ var PushNotification = function(options) {
 };
 
 /**
+ * Unregister from push notifications
+ */
+
+PushNotification.prototype.unregister = function(successCallback, errorCallback, options) {
+    if (errorCallback == null) { errorCallback = function() {}}
+
+    if (typeof errorCallback != "function")  {
+        console.log("PushNotification.unregister failure: failure parameter not a function");
+        return
+    }
+
+    if (typeof successCallback != "function") {
+        console.log("PushNotification.unregister failure: success callback parameter must be a function");
+        return
+    }
+
+    exec(successCallback, errorCallback, "PushNotification", "unregister", [options]);
+};
+
+/**
  * Listen for an event.
  *
  * The following events are supported:
