@@ -2,8 +2,6 @@
 
 > Register and receive push notifications
 
-_This plugin is a work in progress and it is not production ready._
-
 ## Installation
 
 ```
@@ -14,8 +12,10 @@ phonegap plugin add https://github.com/phonegap/phonegap-plugin-push
 
 - Android
 - iOS
-- WP8
 
+## Platforms Under Development
+
+- WP8
 
 ## Quick Example
 
