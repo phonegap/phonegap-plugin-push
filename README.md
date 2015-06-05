@@ -1,4 +1,4 @@
-#phonegap-plugin-push
+#phonegap-plugin-push [![Build Status][travis-ci-img]][travis-ci-url]
 
 > Register and receive push notifications
 
