@@ -4,6 +4,14 @@
 
 ## Installation
 
+This requires phonegap 5.0+ ( current stable v1.0.0 )
+
+```
+phonegap plugin add phonegap-plugin-push
+```
+
+It is also possible to install via repo url directly ( unstable )
+
 ```
 phonegap plugin add https://github.com/phonegap/phonegap-plugin-push
 ```
