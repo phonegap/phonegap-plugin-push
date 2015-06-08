@@ -4,7 +4,7 @@
     xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads"
     xmlns:rim="http://www.blackberry.com/ns/widgets"
     id="phonegap-plugin-push"
-    version="1.0.0">
+    version="1.0.1">
 
   <name>PushPlugin</name>
 	<author>Bob Easterday</author>
@@ -67,49 +67,6 @@
 
 	</platform>
 
-    <!-- amazon-fireos -->
-	<platform name="amazon-fireos">
-
-		<config-file target="res/xml/config.xml" parent="/*">
-			<feature name="PushPlugin" >
-				<param name="android-package" value="com.amazon.cordova.plugin.PushPlugin"/>
-			</feature>
-            <preference name="showmessageinnotification" value="true" />
-            <preference name="defaultnotificationmessage" value="You have a new message." />
-		</config-file>
-
-        <config-file target="AndroidManifest.xml" parent="/manifest">
-            <!-- This permission ensures that no other application can intercept your ADM messages. "[YOUR PACKAGE NAME]" is your package name as defined in your <manifest> tag. -->
-            <permission android:name="$PACKAGE_NAME.permission.RECEIVE_ADM_MESSAGE" android:protectionLevel="signature" />
-            <uses-permission android:name="$PACKAGE_NAME.permission.RECEIVE_ADM_MESSAGE" />
-            <!-- This permission allows your app access to receive push notifications from ADM. -->
-            <uses-permission android:name="com.amazon.device.messaging.permission.RECEIVE" />
-            <!-- ADM uses WAKE_LOCK to keep the processor from sleeping when a message is received. -->
-            <uses-permission android:name="android.permission.WAKE_LOCK" />
-		</config-file>
-
-		<config-file target="AndroidManifest.xml" parent="/manifest/application">
-            <!-- You must explicitly enable ADM and declare whether your app cannot work without ADM (android:required="true") or can work without ADM (android:required="false").
-            If you specify android:required="false", your app must degrade gracefully if ADM
-            is unavailable. -->
-            <amazon:enable-feature android:name="com.amazon.device.messaging" android:required="true"/>
-			<service android:exported="false" android:name="com.amazon.cordova.plugin.ADMMessageHandler" />
-            <activity android:exported="true" android:name="com.amazon.cordova.plugin.ADMHandlerActivity" />
-            <receiver android:name="com.amazon.cordova.plugin.ADMMessageHandler$Receiver" android:permission="com.amazon.device.messaging.permission.SEND">
-                <intent-filter>
-                    <action android:name="com.amazon.device.messaging.intent.REGISTRATION" />
-                    <action android:name="com.amazon.device.messaging.intent.RECEIVE" />
-                    <category android:name="$PACKAGE_NAME" />
-                </intent-filter>
-            </receiver>
-        </config-file>
-
-        <source-file src="src/amazon/PushPlugin.java" target-dir="src/com/amazon/cordova/plugin" />
-        <source-file src="src/amazon/ADMMessageHandler.java" target-dir="src/com/amazon/cordova/plugin" />
-        <source-file src="src/amazon/ADMHandlerActivity.java" target-dir="src/com/amazon/cordova/plugin" />
-
-	</platform>
-
 	<!-- ios -->
 	<platform name="ios">
 
@@ -126,42 +83,5 @@
 		<header-file src="src/ios/PushPlugin.h" />
 
 	</platform>
-
-    <!-- blackberry10 -->
-    <platform name="blackberry10">
-        <dependency id="com.blackberry.push" />
-        <dependency id="com.blackberry.invoked" />
-        <config-file target="www/config.xml" parent="/widget">
-            <feature name="PushPlugin" value="PushPlugin" />
-        </config-file>
-        <js-module src="www/blackberry10/PushPluginProxy.js" name="PushPluginProxy" >
-            <runs />
-        </js-module>
-    </platform>
-
-    <!-- wp8 -->
-    <platform name="wp8">
-
-    <config-file target="config.xml" parent="/*">
-      <feature name="PushPlugin">
-        <param name="wp-package" value="PushPlugin"/>
-      </feature>
-    </config-file>
-
-    <config-file target="Properties/WMAppManifest.xml" parent="/Deployment/App/Capabilities">
-      <Capability Name="ID_CAP_PUSH_NOTIFICATION"/>
-    </config-file>
-
-    <source-file src="src/wp8/PushPlugin.cs" />
-    <framework src="src/wp8/Newtonsoft.Json.dll" custom="true" />
-
-  </platform>
-
-  <!-- windows8 -->
-  <platform name="windows8">
-    <js-module src="src/windows8/PushPluginProxy.js" name="PushPlugin">
-      <merges target="" />
-    </js-module>
-  </platform>
 
 </plugin>
