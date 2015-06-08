@@ -28,7 +28,7 @@ phonegap plugin add https://github.com/phonegap/phonegap-plugin-push
 ## Quick Example
 
 ```
-    var push = PushNotification.init({ "android": {"senderId": "12345679"},
+    var push = PushNotification.init({ "android": {"senderID": "12345679"},
     	 "ios": {}, "wp": {"channelName": "12345679"} } );
 
     push.on('registration', function(data) {
@@ -63,7 +63,7 @@ Parameter | Description
 #### Example
 
 ```javascript
-    var push = PushNotification.init({ "android": {"senderId": "12345679"},
+    var push = PushNotification.init({ "android": {"senderID": "12345679"},
     	 "ios": {}, "wp": {"channelName": "12345679"} } );
 ```
 
