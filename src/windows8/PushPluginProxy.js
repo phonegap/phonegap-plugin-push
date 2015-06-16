@@ -1,18 +1,68 @@
-// Copyright (c) Microsoft Open Technologies, Inc.  Licensed under the MIT license. 
+cordova.define("com.adobe.phonegap.push.PushPlugin", function (require, exports, module) {
+    var myApp = {};
+    var pushNotifications = Windows.Networking.PushNotifications;
 
-module.exports = {
-    register: function (success, fail, args) {
-        try {
-            var onNotificationReceived = window[args[0].ecb];
+    var createNotificationJSON = function (e) {
+        var result = {};
+        var notificationPayload;
 
-            Windows.Networking.PushNotifications.PushNotificationChannelManager.createPushNotificationChannelForApplicationAsync().then(
-                function (channel) {
-                    channel.addEventListener("pushnotificationreceived", onNotificationReceived);
-                    success(channel);
-            }, fail);
-        } catch(ex) {
-            fail(ex);
+        switch (e.notificationType) {
+            case pushNotifications.PushNotificationType.toast:
+                notificationPayload = e.toastNotification.content.getXml();
+                break;
+
+            case pushNotifications.PushNotificationType.tile:
+                notificationPayload = e.tileNotification.content.getXml();
+                break;
+
+            case pushNotifications.PushNotificationType.badge:
+                notificationPayload = e.badgeNotification.content.getXml();
+                break;
+
+            case pushNotifications.PushNotificationType.raw:
+                notificationPayload = e.rawNotification.content;
+                break;
         }
+        result.message = "";
+        result.xmlContent = notificationPayload;
+        result.objectReference = e;
+        return result;
     }
-};
-require("cordova/windows8/commandProxy").add("PushPlugin", module.exports);
+
+    module.exports = {
+        init: function (onSuccess, onFail, args) {
+
+            var onNotificationReceived = function (e) {
+                var result = createNotificationJSON(e);
+                onSuccess(result, { keepCallback: true });
+            }
+
+            try {
+                pushNotifications.PushNotificationChannelManager.createPushNotificationChannelForApplicationAsync().done(
+                    function (channel) {
+                        var result = {};
+                        result.registrationId = channel.uri;
+                        myApp.channel = channel;
+                        channel.addEventListener("pushnotificationreceived", onNotificationReceived);
+                        myApp.notificationEvent = onNotificationReceived;
+                        onSuccess(result, { keepCallback: true });
+                    }, function (error) {
+                        onFail(error);
+                    });
+            } catch (ex) {
+                onFail(ex);
+            }
+        },
+        unregister: function (onSuccess, onFail, args) {
+            try {
+                myApp.channel.removeEventListener("pushnotificationreceived", myApp.notificationEvent);
+                myApp.channel.close();
+                onSuccess();
+            } catch(ex) {
+                onFail(ex);
+            }
+        }
+    };
+require("cordova/exec/proxy").add("PushNotification", module.exports);
+
+});
