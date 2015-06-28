@@ -71,6 +71,26 @@ PushNotification.prototype.unregister = function(successCallback, errorCallback,
 };
 
 /**
+ * Call this to set the application icon badge
+ */
+
+PushNotification.prototype.setApplicationIconBadgeNumber = function(successCallback, errorCallback, badge) {
+    if (errorCallback == null) { errorCallback = function() {}}
+
+    if (typeof errorCallback != "function")  {
+        console.log("PushNotification.setApplicationIconBadgeNumber failure: failure parameter not a function");
+        return
+    }
+
+    if (typeof successCallback != "function") {
+        console.log("PushNotification.setApplicationIconBadgeNumber failure: success callback parameter must be a function");
+        return
+    }
+
+    cordova.exec(successCallback, errorCallback, "PushNotification", "setApplicationIconBadgeNumber", [{badge: badge}]);
+};
+
+/**
  * Listen for an event.
  *
  * The following events are supported:
