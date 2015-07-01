@@ -239,6 +239,19 @@ Produces the following notification.
 
 ![2015-07-24 02 17 55](https://cloud.githubusercontent.com/assets/353180/8866900/2df0ab06-3190-11e5-9a81-fdb85bb0f5a4.png)
 
+### Sound
+
+In order for your your notification to play a custom sound you will need to add the files to your Android project's `res/raw` directory. Then send the follow JSON from GCM:
+
+```javascript
+{
+	title:"Sound Test", 
+	message: "Loaded res/raw", 
+	soundname: "test"
+}
+```
+
+*Note:* when you specify the custom sound file name omit the file's extension.
 
 ### Stacking
 
@@ -246,7 +259,7 @@ By default when using this plugin on Android each notification that your app rec
 
 If you want to see multiple notifications in the shade you will need to provide a notification ID as part of the push data sent to the app. For instance if you send:
 
-```
+```javascript
 { 
   title: "Test Push",
   message: "Push number 1"
@@ -255,7 +268,7 @@ If you want to see multiple notifications in the shade you will need to provide 
 
 Followed by:
 
-```
+```javascript
 { 
   title: "Test Push",
   message: "Push number 2"
@@ -264,7 +277,7 @@ Followed by:
 
 You will only see "Push number 2" in the shade. However, if you send:
 
-```
+```javascript
 { 
   title: "Test Push",
   message: "Push number 1",
@@ -274,7 +287,7 @@ You will only see "Push number 2" in the shade. However, if you send:
 
 and:
 
-```
+```javascript
 { 
   title: "Test Push",
   message: "Push number 2",
@@ -284,7 +297,26 @@ and:
 
 You will only see both "Push number 1" and "Push number 2" in the shade.
 
-## Windows Notifications
+## iOS Behaviour
+
+### Sound
+
+In order for your your notification to play a custom sound you will need to add the files to root of your iOS project. The files must be in the proper format. See the [Local and Remote Notification Programming Guide](https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/IPhoneOSClientImp.html#//apple_ref/doc/uid/TP40008194-CH103-SW6) for more info on proper file formats and how to convert existing sound files.
+
+Then send the follow JSON from APNS:
+
+```javascript
+{
+    "aps": {
+        "alert": "Test sound", 
+        "sound": "sub.caf"
+    }
+}
+```
+
+## Windows Behaviour
+
+###Notifications
 
 The plugin supports all types of windows platform notifications namely [Tile, Toast, Badge and Raw](https://msdn.microsoft.com/en-us/library/windows/apps/Hh779725.aspx). The API supports the basic cases of the notification templates with title corresponding to the first text element and message corresponding to the second if title is present else the first one. The image corresponds to the first image element of the notification xml.
 
@@ -292,7 +324,7 @@ The count is present only for the badge notification in which it represent the v
 
 For advanced templates and usage, the notification object is included in [`data.additionalData.pushNotificationReceivedEventArgs`](https://msdn.microsoft.com/en-us/library/windows/apps/windows.networking.pushnotifications.pushnotificationreceivedeventargs).
 
-## Setting Toast Capable Option for Windows
+### Setting Toast Capable Option for Windows
 
 For your app to communicate through a toast notification, you must declare that it is Toast Capable in your app's manifest file. Cordova-windows 4.0.0 release adds this property to config.xml. You can use:
 `<preference name="WindowsToastCapable" value="true" />` in config.xml. However, you will need Cordova 5.1.1 which pins Cordova-windows 4.0.0.
