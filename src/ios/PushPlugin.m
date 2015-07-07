@@ -100,10 +100,12 @@
         [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
         [[UIApplication sharedApplication] registerForRemoteNotifications];
     } else {
-    		[[UIApplication sharedApplication] registerForRemoteNotificationTypes:notificationTypes];
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+         (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
     }
 #else
-		[[UIApplication sharedApplication] registerForRemoteNotificationTypes:notificationTypes];
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 #endif
 
 	if (notificationMessage)			// if there is a pending startup notification
