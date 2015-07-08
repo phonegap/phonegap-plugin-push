@@ -3,28 +3,48 @@ var pushNotifications = Windows.Networking.PushNotifications;
 
 var createNotificationJSON = function (e) {
     var result = {};
+    result.message = '';         //Added to identify callback as notification type in the API in case where notification has no message
     var notificationPayload;
 
     switch (e.notificationType) {
         case pushNotifications.PushNotificationType.toast:
-        notificationPayload = e.toastNotification.content.getXml();
-        break;
-
         case pushNotifications.PushNotificationType.tile:
-        notificationPayload = e.tileNotification.content.getXml();
-        break;
+            if (e.notificationType === pushNotifications.PushNotificationType.toast) {
+                notificationPayload = e.toastNotification.content;
+            }
+            else {
+                notificationPayload = e.tileNotification.content;
+            }
+            var texts = notificationPayload.getElementsByTagName("text");
+            if (texts.length > 1) {
+                result.title = texts[0].innerText;
+                result.message = texts[1].innerText;
+            }
+            else if(texts.length === 1) {
+                result.message = texts[0].innerText;
+            }
+            var images = notificationPayload.getElementsByTagName("image");
+            if (images.length > 0) {
+                result.image = images[0].getAttribute("src");
+            }
+            var soundFile = notificationPayload.getElementsByTagName("audio");
+            if (soundFile.length > 0) {
+                result.sound = soundFile[0].getAttribute("src");
+            }
+            break;
 
         case pushNotifications.PushNotificationType.badge:
-        notificationPayload = e.badgeNotification.content.getXml();
-        break;
+            notificationPayload = e.badgeNotification.content;
+            result.count = notificationPayload.getElementsByTagName("badge")[0].getAttribute("value");
+            break;
 
         case pushNotifications.PushNotificationType.raw:
-        notificationPayload = e.rawNotification.content;
-        break;
+            result.message = e.rawNotification.content;
+            break;
     }
-    result.message = "";
-    result.xmlContent = notificationPayload;
-    result.objectReference = e;
+
+    result.additionalData = {};
+    result.additionalData.pushNotificationReceivedEventArgs = e;
     return result;
 }
 
