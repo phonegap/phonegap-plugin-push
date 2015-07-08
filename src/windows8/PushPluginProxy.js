@@ -7,24 +7,44 @@ var createNotificationJSON = function (e) {
 
     switch (e.notificationType) {
         case pushNotifications.PushNotificationType.toast:
-        notificationPayload = e.toastNotification.content.getXml();
-        break;
+            notificationPayload = e.toastNotification.content;
+            break;
 
         case pushNotifications.PushNotificationType.tile:
-        notificationPayload = e.tileNotification.content.getXml();
-        break;
+            notificationPayload = e.tileNotification.content;
+            break;
 
         case pushNotifications.PushNotificationType.badge:
-        notificationPayload = e.badgeNotification.content.getXml();
-        break;
+            notificationPayload = e.badgeNotification.content;
+            result.message = '';
+            result.count = notificationPayload.getElementsByTagName("badge")[0].getAttribute("value");
+            break;
 
         case pushNotifications.PushNotificationType.raw:
-        notificationPayload = e.rawNotification.content;
-        break;
+            result.message = e.rawNotification.content;
+            break;
     }
-    result.message = "";
-    result.xmlContent = notificationPayload;
-    result.objectReference = e;
+    
+    if (e.notificationType === pushNotifications.PushNotificationType.toast || e.notificationType === pushNotifications.PushNotificationType.tile) {
+        var texts = notificationPayload.getElementsByTagName("text");
+        if (texts.length > 1) {
+            result.title = texts[0].innerText;
+            result.message = texts[1].innerText;
+        }
+        else {
+            result.message = texts[0].innerText;
+        }
+        var images = notificationPayload.getElementsByTagName("image");
+        if (images.length > 0) {
+            result.image = images[0].getAttribute("src");
+        }
+        var soundFile = notificationPayload.getElementsByTagName("audio");
+        if (soundFile.length > 0) {
+            result.sound = soundFile[0].getAttribute("src");
+        }
+    }
+    result.additionalData = {};
+    result.additionalData.objectReference = e;
     return result;
 }
 
