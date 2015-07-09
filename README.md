@@ -27,7 +27,7 @@ phonegap plugin add https://github.com/phonegap/phonegap-plugin-push
 
 ## Quick Example
 
-```
+```javascript
     var push = PushNotification.init({ "android": {"senderID": "12345679"},
     	 "ios": {}, "wp": {"channelName": "12345679"} } );
 
@@ -55,6 +55,11 @@ phonegap plugin add https://github.com/phonegap/phonegap-plugin-push
 Parameter | Description
 --------- | ------------
 `options` | `JSON Object` platform specific initialization options.
+`options.android` | `JSON Object` Android specific initialization options.
+`options.android.senderID` | `String` Maps to the project number in the Google Developer Console.
+`options.ios` | `JSON Object` iOS specific initialization options.
+`options.wp` | `JSON Object` Windows specific initialization options.
+`options.wp.channelName` | `String` Channel URI from Microsoft.
 
 #### Returns
 
@@ -151,6 +156,50 @@ The `count` is an integer indicating what number should show up in the badge. Pa
 ```javascript
 push.setApplicationIconBadgeNumber(successHandler, errorHandler, count);
 ```
+
+## Android Behaviour
+
+By default when using this plugin on Android each notification that your app receives will replace the previous notification in the shade. 
+
+If you want to see multiple notifications in the shade you will need to provide a notification ID as part of the push data sent to the app. For instance if you send:
+
+```
+{ 
+  title: "Test Push",
+  message: "Push number 1"
+}
+```
+
+Followed by:
+
+```
+{ 
+  title: "Test Push",
+  message: "Push number 2"
+}
+```
+
+You will only see "Push number 2" in the shade. However, if you send:
+
+```
+{ 
+  title: "Test Push",
+  message: "Push number 1",
+  nodId: 1
+}
+```
+
+and:
+
+```
+{ 
+  title: "Test Push",
+  message: "Push number 2",
+  nodId: 2
+}
+```
+
+You will only see both "Push number 1" and "Push number 2" in the shade.
 
 ## Native Requirements
 
