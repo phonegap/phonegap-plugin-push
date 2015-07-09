@@ -188,38 +188,46 @@
         NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:4];
         NSMutableDictionary* additionalData = [NSMutableDictionary dictionaryWithCapacity:4];
         
-        id aps = [notificationMessage objectForKey:@"aps"];
+        
+        for (id key in notificationMessage) {
+            if ([key isEqualToString:@"aps"]) {
+                id aps = [notificationMessage objectForKey:@"aps"];
 
-        for(id key in aps) {
-            NSLog(@"Push Plugin key: %@", key);
-            id value = [aps objectForKey:key];
-            
-            if ([key isEqualToString:@"alert"]) {
-                if ([value isKindOfClass:[NSDictionary class]]) {
-                    for (id messageKey in value) {
-                        id messageValue = [value objectForKey:messageKey];
-                        if ([messageKey isEqualToString:@"body"]) {
-                            [message setObject:messageValue forKey:@"message"];
-                        } else if ([messageKey isEqualToString:@"title"]) {
-                            [message setObject:messageValue forKey:@"title"];
-                        } else {
-                            [additionalData setObject:messageValue forKey:messageKey];
+                for(id key in aps) {
+                    NSLog(@"Push Plugin key: %@", key);
+                    id value = [aps objectForKey:key];
+                    
+                    if ([key isEqualToString:@"alert"]) {
+                        if ([value isKindOfClass:[NSDictionary class]]) {
+                            for (id messageKey in value) {
+                                id messageValue = [value objectForKey:messageKey];
+                                if ([messageKey isEqualToString:@"body"]) {
+                                    [message setObject:messageValue forKey:@"message"];
+                                } else if ([messageKey isEqualToString:@"title"]) {
+                                    [message setObject:messageValue forKey:@"title"];
+                                } else {
+                                    [additionalData setObject:messageValue forKey:messageKey];
+                                }
+                            }
                         }
+                        else {
+                            [message setObject:value forKey:@"message"];
+                        }
+                    } else if ([key isEqualToString:@"title"]) {
+                        [message setObject:value forKey:@"title"];
+                    } else if ([key isEqualToString:@"badge"]) {
+                        [message setObject:value forKey:@"count"];
+                    } else if ([key isEqualToString:@"sound"]) {
+                        [message setObject:value forKey:@"sound"];
+                    } else {
+                        [additionalData setObject:value forKey:key];
                     }
                 }
-                else {
-                    [message setObject:value forKey:@"message"];
-                }
-            } else if ([key isEqualToString:@"title"]) {
-                [message setObject:value forKey:@"title"];
-            } else if ([key isEqualToString:@"badge"]) {
-                [message setObject:value forKey:@"count"];
-            } else if ([key isEqualToString:@"sound"]) {
-                [message setObject:value forKey:@"sound"];
             } else {
-                [additionalData setObject:value forKey:key];
+                [additionalData setObject:[notificationMessage objectForKey:key] forKey:key];
             }
         }
+        
         [message setObject:additionalData forKey:@"additionalData"];
         
         // send notification message
