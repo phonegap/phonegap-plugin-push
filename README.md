@@ -140,6 +140,18 @@ The unregister method is used when the application no longer wants to receive pu
 push.unregister(successHandler, errorHandler);
 ```
 
+### push.setApplicationIconBadgeNumber(successHandler, errorHandler, count) - iOS only
+
+Set the badge count visible when the app is not running
+
+The `count` is an integer indicating what number should show up in the badge. Passing 0 will clear the badge. Each `notification` event contains a `data.count` value which can be used to set the badge to correct number.
+
+#### Example
+
+```javascript
+push.setApplicationIconBadgeNumber(successHandler, errorHandler, count);
+```
+
 ## Native Requirements
 
 - There should be no dependency on any other plugins.
