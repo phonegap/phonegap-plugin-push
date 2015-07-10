@@ -30,7 +30,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Log.v(LOG_TAG, "onRegistered: "+ regId);
 
 		try {
-	        JSONObject json = new JSONObject().put("registrationId", regId);
+			JSONObject json = new JSONObject().put("registrationId", regId);
 
 			Log.v(LOG_TAG, "onRegistered: " + json.toString());
 
@@ -55,19 +55,19 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Bundle extras = intent.getExtras();
 		if (extras != null) {
 			// if we are in the foreground, just surface the payload, else post it to the statusbar
-            if (PushPlugin.isInForeground()) {
+			if (PushPlugin.isInForeground()) {
 				extras.putBoolean("foreground", true);
-                PushPlugin.sendExtras(extras);
+				PushPlugin.sendExtras(extras);
 			}
 			else {
 				extras.putBoolean("foreground", false);
 
-                // Send a notification if there is a message
-                if (extras.getString("message") != null && extras.getString("message").length() != 0) {
-                    createNotification(context, extras);
-                }
-            }
-        }
+				// Send a notification if there is a message
+				if (extras.getString("message") != null && extras.getString("message").length() != 0) {
+					createNotification(context, extras);
+				}
+			}
+		}
 	}
 
 	public void createNotification(Context context, Bundle extras) {
@@ -98,9 +98,22 @@ public class GCMIntentService extends GCMBaseIntentService {
 				.setContentIntent(contentIntent)
 				.setAutoCancel(true);
 
+		NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();  
+
 		String message = extras.getString("message");
+		String summaryText = extras.getString("summaryText");
 		if (message != null) {
 			mBuilder.setContentText(message);
+
+			bigText.bigText(message);
+			bigText.setBigContentTitle(extras.getString("title"));
+
+			if (summaryText != null)
+				bigText.setSummaryText(summaryText);
+			else
+				bigText.setSummaryText(extras.getString("title"));
+
+			mBuilder.setStyle(bigText);
 		} else {
 			mBuilder.setContentText("<missing message content>");
 		}
@@ -126,7 +139,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	}
 	
 	private static String getAppName(Context context) {
-		CharSequence appName =  context.getPackageManager().getApplicationLabel(context.getApplicationInfo());
+		CharSequence appName =	context.getPackageManager().getApplicationLabel(context.getApplicationInfo());
 		return (String)appName;
 	}
 	
