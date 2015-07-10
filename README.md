@@ -20,16 +20,13 @@ phonegap plugin add https://github.com/phonegap/phonegap-plugin-push
 
 - Android
 - iOS
-
-## Platforms Under Development
-
-- WP8
+- Windows Universal
 
 ## Quick Example
 
 ```javascript
     var push = PushNotification.init({ "android": {"senderID": "12345679"},
-    	 "ios": {}, "wp": {"channelName": "12345679"} } );
+         "ios": {}, "windows": {} } );
 
     push.on('registration', function(data) {
         // data.registrationId
@@ -40,6 +37,7 @@ phonegap plugin add https://github.com/phonegap/phonegap-plugin-push
         // data.title,
         // data.count,
         // data.sound,
+        // data.image, 
         // data.additionalData
     });
 
@@ -58,8 +56,7 @@ Parameter | Description
 `options.android` | `JSON Object` Android specific initialization options.
 `options.android.senderID` | `String` Maps to the project number in the Google Developer Console.
 `options.ios` | `JSON Object` iOS specific initialization options.
-`options.wp` | `JSON Object` Windows specific initialization options.
-`options.wp.channelName` | `String` Channel URI from Microsoft.
+`options.windows` | `JSON Object` Windows specific initialization options.
 
 #### Returns
 
@@ -69,7 +66,7 @@ Parameter | Description
 
 ```javascript
     var push = PushNotification.init({ "android": {"senderID": "12345679"},
-    	 "ios": {}, "wp": {"channelName": "12345679"} } );
+         "ios": {}, "windows": {} } );
 ```
 
 ### push.on(event, callback)
@@ -103,8 +100,9 @@ Callback Parameter | Description
 ------------------ | -----------
 `data.message` | `String` The text of the push message sent from the 3rd party service.
 `data.title` | `String` The optional title of the push message sent from the 3rd party service.
-`data.count` | `Integer` The number of messages to be displayed in the badge iOS or message count in the notification shade in Android.
+`data.count` | `String` The number of messages to be displayed in the badge iOS or message count in the notification shade in Android. For windows, it represents the value in the badge notification which could be a number or a status glyph.
 `data.sound` | `String` The name of the sound file to be played upon receipt of the notification.
+`data.image (windows only)` | `String` The path of the image file to be displayed in the notification.
 `data.additionalData` | `JSON Object` An optional collection of data sent by the 3rd party push service that does not fit in the above properties.
 
 #### Example
@@ -115,6 +113,7 @@ Callback Parameter | Description
         // data.title,
         // data.count,
         // data.sound,
+        // data.image,
         // data.additionalData
     });
 ```
@@ -200,6 +199,14 @@ and:
 ```
 
 You will only see both "Push number 1" and "Push number 2" in the shade.
+
+## Windows Notifications
+
+The plugin supports all types of windows platform notifications namely Tile, Toast, Badge and Raw. The API supports the basic cases of the notification templates with title corresponding to the first text element and message corresponding to the second if title is present else the first one. The image corresponds to the first image element of the notification xml.
+
+The count is present only for the badge notification in which it represent the value of the notification which could be a number from 0-99 or a status glyph.
+
+For advanced templates and usage, the notification object is included in data.additionalData.pushNotificationReceivedEventArgs.
 
 ## Native Requirements
 
