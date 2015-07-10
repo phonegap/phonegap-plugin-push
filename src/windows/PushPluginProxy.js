@@ -2,8 +2,7 @@ var myApp = {};
 var pushNotifications = Windows.Networking.PushNotifications;
 
 var createNotificationJSON = function (e) {
-    var result = {};
-    result.message = '';         //Added to identify callback as notification type in the API in case where notification has no message
+    var result = { message: '' };       //Added to identify callback as notification type in the API in case where notification has no message
     var notificationPayload;
 
     switch (e.notificationType) {
