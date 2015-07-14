@@ -202,11 +202,11 @@ You will only see both "Push number 1" and "Push number 2" in the shade.
 
 ## Windows Notifications
 
-The plugin supports all types of windows platform notifications namely Tile, Toast, Badge and Raw. The API supports the basic cases of the notification templates with title corresponding to the first text element and message corresponding to the second if title is present else the first one. The image corresponds to the first image element of the notification xml.
+The plugin supports all types of windows platform notifications namely [Tile, Toast, Badge and Raw](https://msdn.microsoft.com/en-us/library/windows/apps/Hh779725.aspx). The API supports the basic cases of the notification templates with title corresponding to the first text element and message corresponding to the second if title is present else the first one. The image corresponds to the first image element of the notification xml.
 
 The count is present only for the badge notification in which it represent the value of the notification which could be a number from 0-99 or a status glyph.
 
-For advanced templates and usage, the notification object is included in data.additionalData.pushNotificationReceivedEventArgs.
+For advanced templates and usage, the notification object is included in [`data.additionalData.pushNotificationReceivedEventArgs`](https://msdn.microsoft.com/en-us/library/windows/apps/windows.networking.pushnotifications.pushnotificationreceivedeventargs).
 
 ## Native Requirements
 
