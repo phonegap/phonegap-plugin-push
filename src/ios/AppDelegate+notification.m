@@ -91,7 +91,7 @@ static char launchNotificationKey;
 
     if (self.launchNotification) {
         PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
-
+        pushHandler.isInline = NO;
         pushHandler.notificationMessage = self.launchNotification;
         self.launchNotification = nil;
         [pushHandler performSelectorOnMainThread:@selector(notificationReceived) withObject:pushHandler waitUntilDone:NO];
