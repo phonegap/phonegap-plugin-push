@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -106,10 +107,30 @@ public class GCMIntentService extends GCMBaseIntentService {
 		
  		SharedPreferences prefs = context.getSharedPreferences("com.adobe.phonegap.push", Context.MODE_PRIVATE);
  		String localIcon = prefs.getString("icon", null);
+ 		String localIconColor = prefs.getString("iconColor", null);
 		String localLargeIcon = prefs.getString("largeIcon", null);
  		Log.d(LOG_TAG, "stored icon=" + localIcon);
+ 		Log.d(LOG_TAG, "stored iconColor=" + localIconColor);
 		Log.d(LOG_TAG, "stored largeIcon=" + localLargeIcon);
 
+		/*
+ 		 * Notification Icon Color
+ 		 *
+ 		 * Sets the small-icon background color of the notification.
+ 		 * To use, add the `iconColor` key to plugin android options
+ 		 *
+ 		 */
+		int iconColor = 0;
+		if (localIconColor != null) {
+			try {
+				iconColor = Color.parseColor(localIconColor);
+			} catch (IllegalArgumentException e) {
+				Log.e(LOG_TAG, "couldnt parse color from android options");
+			}
+		}
+		if (iconColor != 0) {
+			mBuilder.setColor(iconColor);
+		}
 
  		/*
  		 * Notification Icon

@@ -80,6 +80,11 @@ public class PushPlugin extends CordovaPlugin {
                     Log.d(LOG_TAG, "no icon option");
                 }
                 try {
+                    editor.putString("iconColor", jo.getString("iconColor"));
+                } catch (JSONException e) {
+                    Log.d(LOG_TAG, "no iconColor option");
+                }
+                try {
                     editor.putString("largeIcon", jo.getString("largeIcon"));
                 } catch (JSONException e) {
                     Log.d(LOG_TAG, "no largeIcon option");
