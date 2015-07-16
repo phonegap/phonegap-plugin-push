@@ -55,6 +55,8 @@ Parameter | Description
 `options` | `JSON Object` platform specific initialization options.
 `options.android` | `JSON Object` Android specific initialization options.
 `options.android.senderID` | `String` Maps to the project number in the Google Developer Console.
+`options.android.icon` | `String` Optional. The name of a drawable resource to use as the small-icon. You can also override this option server-side by sending a `icon` key on the gcm data.
+`options.android.largeIcon` | `String` Optional. The name of a drawable resource to use as the large-icon. You can also override this option server-side by sending a `largeIcon` key on the gcm data.
 `options.ios` | `JSON Object` iOS specific initialization options.
 `options.windows` | `JSON Object` Windows specific initialization options.
 
@@ -104,6 +106,7 @@ Callback Parameter | Description
 `data.sound` | `String` The name of the sound file to be played upon receipt of the notification.
 `data.image (windows only)` | `String` The path of the image file to be displayed in the notification.
 `data.additionalData` | `JSON Object` An optional collection of data sent by the 3rd party push service that does not fit in the above properties.
+`data.additionalData.foreground` | `Boolean` Whether the notification was received while the app was in the foreground
 
 #### Example
 
