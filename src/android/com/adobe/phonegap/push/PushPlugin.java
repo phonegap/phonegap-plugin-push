@@ -2,6 +2,7 @@ package com.adobe.phonegap.push;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -48,11 +49,12 @@ public class PushPlugin extends CordovaPlugin {
 
 		if (INITIALIZE.equals(action)) {
 			pushContext = callbackContext;
+            JSONObject jo = null;
 
 			Log.v(LOG_TAG, "execute: data=" + data.toString());
 
 			try {
-				JSONObject jo = data.getJSONObject(0).getJSONObject("android");
+				jo = data.getJSONObject(0).getJSONObject("android");
 
 				gWebView = this.webView;
 				Log.v(LOG_TAG, "execute: jo=" + jo.toString());
@@ -68,6 +70,22 @@ public class PushPlugin extends CordovaPlugin {
 				result = false;
 				callbackContext.error(e.getMessage());
 			}
+
+            if (jo != null) {
+                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("com.adobe.phonegap.push", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                try {
+                    editor.putString("icon", jo.getString("icon"));
+                } catch (JSONException e) {
+                    Log.d(LOG_TAG, "no icon option");
+                }
+                try {
+                    editor.putString("largeIcon", jo.getString("largeIcon"));
+                } catch (JSONException e) {
+                    Log.d(LOG_TAG, "no largeIcon option");
+                }
+                editor.commit();
+            }
 
 			if ( gCachedExtras != null) {
 				Log.v(LOG_TAG, "sending cached extras");
