@@ -227,6 +227,10 @@
                 [additionalData setObject:[notificationMessage objectForKey:key] forKey:key];
             }
         }
+
+        if (isInline) {
+            [additionalData setObject:[NSNumber numberWithBool:YES] forKey:@"foreground"];
+        }
         
         [message setObject:additionalData forKey:@"additionalData"];
         

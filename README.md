@@ -104,6 +104,7 @@ Callback Parameter | Description
 `data.sound` | `String` The name of the sound file to be played upon receipt of the notification.
 `data.image (windows only)` | `String` The path of the image file to be displayed in the notification.
 `data.additionalData` | `JSON Object` An optional collection of data sent by the 3rd party push service that does not fit in the above properties.
+`data.additionalData.foreground` | `Boolean` Whether the notification was received while the app was in the foreground
 
 #### Example
 
