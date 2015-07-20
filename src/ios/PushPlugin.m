@@ -230,6 +230,8 @@
 
         if (isInline) {
             [additionalData setObject:[NSNumber numberWithBool:YES] forKey:@"foreground"];
+        } else {
+            [additionalData setObject:[NSNumber numberWithBool:NO] forKey:@"foreground"];
         }
         
         [message setObject:additionalData forKey:@"additionalData"];
