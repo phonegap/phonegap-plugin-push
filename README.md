@@ -209,6 +209,11 @@ The count is present only for the badge notification in which it represent the v
 
 For advanced templates and usage, the notification object is included in [`data.additionalData.pushNotificationReceivedEventArgs`](https://msdn.microsoft.com/en-us/library/windows/apps/windows.networking.pushnotifications.pushnotificationreceivedeventargs).
 
+## Setting Toast Capable Option for Windows
+
+For your app to communicate through a toast notification, you must declare that it is Toast Capable in your app's manifest file. Cordova-windows 4.0.0 release adds this property to config.xml. You can use:
+`<preference name="WindowsToastCapable" value="true" />` in config.xml. However, you will need Cordova 5.1.1 which pins Cordova-windows 4.0.0.
+
 ## Native Requirements
 
 - There should be no dependency on any other plugins.
