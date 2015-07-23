@@ -55,6 +55,9 @@ Parameter | Description
 `options` | `JSON Object` platform specific initialization options.
 `options.android` | `JSON Object` Android specific initialization options.
 `options.android.senderID` | `String` Maps to the project number in the Google Developer Console.
+`options.android.icon` | `String` Optional. The name of a drawable resource to use as the small-icon. You can also override this option server-side by sending a `icon` key on the gcm data.
+`options.android.iconColor` | `String` Optional. Sets the background color of the small icon. [Supported Formats](http://developer.android.com/reference/android/graphics/Color.html#parseColor(java.lang.String))
+`options.android.largeIcon` | `String` Optional. The name of a drawable resource to use as the large-icon. You can also override this option server-side by sending a `largeIcon` key on the gcm data.
 `options.ios` | `JSON Object` iOS specific initialization options.
 `options.windows` | `JSON Object` Windows specific initialization options.
 
