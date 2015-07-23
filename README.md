@@ -55,9 +55,8 @@ Parameter | Description
 `options` | `JSON Object` platform specific initialization options.
 `options.android` | `JSON Object` Android specific initialization options.
 `options.android.senderID` | `String` Maps to the project number in the Google Developer Console.
-`options.android.icon` | `String` Optional. The name of a drawable resource to use as the small-icon. You can also override this option server-side by sending a `icon` key on the gcm data.
+`options.android.icon` | `String` Optional. The name of a drawable resource to use as the small-icon.
 `options.android.iconColor` | `String` Optional. Sets the background color of the small icon. [Supported Formats](http://developer.android.com/reference/android/graphics/Color.html#parseColor(java.lang.String))
-`options.android.largeIcon` | `String` Optional. The name of a drawable resource to use as the large-icon. You can also override this option server-side by sending a `largeIcon` key on the gcm data.
 `options.ios` | `JSON Object` iOS specific initialization options.
 `options.windows` | `JSON Object` Windows specific initialization options.
 
@@ -105,7 +104,7 @@ Callback Parameter | Description
 `data.title` | `String` The optional title of the push message sent from the 3rd party service.
 `data.count` | `String` The number of messages to be displayed in the badge iOS or message count in the notification shade in Android. For windows, it represents the value in the badge notification which could be a number or a status glyph.
 `data.sound` | `String` The name of the sound file to be played upon receipt of the notification.
-`data.image (windows only)` | `String` The path of the image file to be displayed in the notification.
+`data.image (android/windows only)` | `String` The path of the image file to be displayed in the notification.
 `data.additionalData` | `JSON Object` An optional collection of data sent by the 3rd party push service that does not fit in the above properties.
 `data.additionalData.foreground` | `Boolean` Whether the notification was received while the app was in the foreground
 

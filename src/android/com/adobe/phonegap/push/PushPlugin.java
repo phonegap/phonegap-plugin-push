@@ -84,11 +84,6 @@ public class PushPlugin extends CordovaPlugin {
                 } catch (JSONException e) {
                     Log.d(LOG_TAG, "no iconColor option");
                 }
-                try {
-                    editor.putString("largeIcon", jo.getString("largeIcon"));
-                } catch (JSONException e) {
-                    Log.d(LOG_TAG, "no largeIcon option");
-                }
                 editor.commit();
             }
 
@@ -191,6 +186,8 @@ public class PushPlugin extends CordovaPlugin {
 					json.put("count", value);
 				} else if (key.equals("soundname")) {
 					json.put("sound", value);
+				} else if (key.equals("image")) {
+				    json.put("image", value);
 				}
 				else if ( value instanceof String ) {
 					String strValue = (String)value;
