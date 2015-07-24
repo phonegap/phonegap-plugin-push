@@ -161,6 +161,87 @@ push.setApplicationIconBadgeNumber(successHandler, errorHandler, count);
 
 ## Android Behaviour
 
+### Images
+
+By default the icon displayed in your push notification will be your apps icon. So when you initialize the plugin like this:
+
+```javascript
+    var push = PushNotification.init({ "android": {"senderID": "12345679"},
+         "ios": {}, "windows": {} } );
+```
+
+The result will look much like this:
+
+![2015-07-24 02 52 00](https://cloud.githubusercontent.com/assets/353180/8866899/2df00c3c-3190-11e5-8552-96201fb4424b.png)
+
+This is because Android now uses Material design and the default icon for push will be completely white.
+
+In order to get a better user experience you can specify an alternate icon and background color to be shown when receiving a push notification. The code would look like this:
+
+```javascript
+	var push = PushNotification.init({ 
+		"android": { 
+			"senderID": "123456789", "icon": "phonegap", "iconColor": "blue"}, 
+		"ios": {}, "windows": {} 
+	});
+```
+
+Where *icon* is the name of an image in the Android *drawables* folder. Writing a hook to describe how to copy an image to the Android *drawables* folder is out of scope for this README but there is an [excellent tutorial](http://devgirl.org/2013/11/12/three-hooks-your-cordovaphonegap-project-needs/) that you can copy.
+
+*iconColor* is one of the supported formats #RRGGBB or #AARRGGBB or one of the following names: 'red', 'blue', 'green', 'black', 'white', 'gray', 'cyan', 'magenta', 'yellow', 'lightgray', 'darkgray', 'grey', 'lightgrey', 'darkgrey', 'aqua', 'fuchsia', 'lime', 'maroon', 'navy', 'olive', 'purple', 'silver', 'teal'. 
+
+Please follow the [Android icon design guidelines](https://www.google.com/design/spec/style/icons.html#) when creating your icon.
+
+![2015-07-24 02 46 58](https://cloud.githubusercontent.com/assets/353180/8866902/2df3276e-3190-11e5-842a-c8cd95615ab0.png)
+
+Additionally, each push can include a large icon which is used to personalize each push. The location of the image may one of three types.
+
+The first is the *drawables* folder in your app. This JSON sent from GCM:
+
+```javascript
+{
+	title:"Large Icon", 
+	message: "Loaded from drawables folder", 
+	image: "twitter"
+}
+```
+
+Would look for the *twitter* image in the drawables folder and produce the following notification.
+
+![2015-07-24 02 34 41](https://cloud.githubusercontent.com/assets/353180/8866903/2df48028-3190-11e5-8176-fe8b3f7c5aab.png)
+
+The second is the *assets* folder in your app. This JSON sent from GCM:
+
+```javascript
+{
+	title:"Large Icon", 
+	message: "Loaded from assets folder", 
+	image: "www/image/logo.png"
+}
+```
+
+Would look for the *logo.png* file in the assets/www/img folder. Since your apps www folder gets copied into the Android assets folder it is an excellent spot to store the images without needing to write a hook to copy them to the *drawables* folder. It produces the following notification.
+
+![2015-07-24 02 20 02](https://cloud.githubusercontent.com/assets/353180/8866901/2df19052-3190-11e5-8c16-a355c59209f3.png)
+
+
+The third is the remote *URL*. This JSON sent from GCM:
+
+```javascript
+{
+	title:"Large Icon", 
+	message: "Loaded from URL", 
+	image: "https://dl.dropboxusercontent.com/u/887989/antshot.png"
+}
+```
+
+Produces the following notification.
+
+![2015-07-24 02 17 55](https://cloud.githubusercontent.com/assets/353180/8866900/2df0ab06-3190-11e5-9a81-fdb85bb0f5a4.png)
+
+
+### Stacking
+
 By default when using this plugin on Android each notification that your app receives will replace the previous notification in the shade. 
 
 If you want to see multiple notifications in the shade you will need to provide a notification ID as part of the push data sent to the app. For instance if you send:
