@@ -174,7 +174,7 @@ public class GCMIntentService extends GCMBaseIntentService {
          */
         String gcmLargeIcon = extras.getString("image"); // from gcm
         if (gcmLargeIcon != null) {
-            if (gcmLargeIcon.startsWith("http://")) {
+            if (gcmLargeIcon.startsWith("http://") || gcmLargeIcon.startsWith("https://")) {
                 mBuilder.setLargeIcon(getBitmapFromURL(gcmLargeIcon));                
                 Log.d(LOG_TAG, "using remote large-icon from gcm");    
             } else {

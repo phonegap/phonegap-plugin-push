@@ -20,6 +20,8 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 public class PushPlugin extends CordovaPlugin {
+    private static final String COM_ADOBE_PHONEGAP_PUSH = "com.adobe.phonegap.push";
+
     public static final String LOG_TAG = "PushPlugin";
 
     public static final String INITIALIZE = "init";
@@ -72,7 +74,7 @@ public class PushPlugin extends CordovaPlugin {
             }
 
             if (jo != null) {
-                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("com.adobe.phonegap.push", Context.MODE_PRIVATE);
+                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 try {
                     editor.putString("icon", jo.getString("icon"));
