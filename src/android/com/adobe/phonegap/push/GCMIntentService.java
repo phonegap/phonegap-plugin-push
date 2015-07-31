@@ -207,6 +207,8 @@ public class GCMIntentService extends GCMBaseIntentService {
                         + "://" + context.getPackageName() + "/raw/" + soundname);
             Log.d(LOG_TAG, sound.toString());
             mBuilder.setSound(sound);
+        } else {
+            mBuilder.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI);
         }
         
         String message = extras.getString("message");
