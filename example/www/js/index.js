@@ -34,13 +34,11 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         var push = PushNotification.init({
-        	"android": {
-        		"senderID": "741175631277"
-        	},
+            "android": {
+                "senderID": "741175631277"
+            },
             "ios": {}, 
-            "wp": {
-            	"channelName": "12345679"
-            } 
+            "windows": {} 
         });
         
         push.on('registration', function(data) {
