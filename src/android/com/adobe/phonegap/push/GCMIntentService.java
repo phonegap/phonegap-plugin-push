@@ -26,14 +26,27 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.text.Html;
 
 import com.google.android.gcm.GCMBaseIntentService;
+
+import java.util.ArrayList;
 
 @SuppressLint("NewApi")
 public class GCMIntentService extends GCMBaseIntentService {
 
     private static final String LOG_TAG = "PushPlugin_GCMIntentService";
-    
+    private static ArrayList messageList = new ArrayList();
+
+    public void setNotification(String message){
+
+        if(message == ""){
+            messageList.clear();
+        }else{
+            messageList.add(message);
+        }
+    }
+
     public GCMIntentService() {
         super("GCMIntentService");
     }
@@ -96,7 +109,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
         int requestCode = new Random().nextInt();
         PendingIntent contentIntent = PendingIntent.getActivity(this, requestCode, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        
+
         int defaults = Notification.DEFAULT_ALL;
 
         if (extras.getString("defaults") != null) {
@@ -104,7 +117,8 @@ public class GCMIntentService extends GCMBaseIntentService {
                 defaults = Integer.parseInt(extras.getString("defaults"));
             } catch (NumberFormatException e) {}
         }
-        
+
+
         NotificationCompat.Builder mBuilder =
             new NotificationCompat.Builder(context)
                 //.setDefaults(defaults)
@@ -113,7 +127,8 @@ public class GCMIntentService extends GCMBaseIntentService {
                 .setTicker(extras.getString("title"))
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true);
-        
+
+
         SharedPreferences prefs = context.getSharedPreferences("com.adobe.phonegap.push", Context.MODE_PRIVATE);
         String localIcon = prefs.getString("icon", null);
         String localIconColor = prefs.getString("iconColor", null);
@@ -143,9 +158,9 @@ public class GCMIntentService extends GCMBaseIntentService {
          * Notification Icon
          *
          * Sets the small-icon of the notification.
-         * 
+         *
          * - checks the plugin options for `icon` key
-         * - if none, uses the application icon 
+         * - if none, uses the application icon
          *
          * The icon value must be a string that maps to a drawable resource.
          * If no resource is found, falls
@@ -177,8 +192,8 @@ public class GCMIntentService extends GCMBaseIntentService {
         String gcmLargeIcon = extras.getString("image"); // from gcm
         if (gcmLargeIcon != null) {
             if (gcmLargeIcon.startsWith("http://") || gcmLargeIcon.startsWith("https://")) {
-                mBuilder.setLargeIcon(getBitmapFromURL(gcmLargeIcon));                
-                Log.d(LOG_TAG, "using remote large-icon from gcm");    
+                mBuilder.setLargeIcon(getBitmapFromURL(gcmLargeIcon));
+                Log.d(LOG_TAG, "using remote large-icon from gcm");
             } else {
                 AssetManager assetManager = getAssets();
                 InputStream istr;
@@ -186,16 +201,16 @@ public class GCMIntentService extends GCMBaseIntentService {
                     istr = assetManager.open(gcmLargeIcon);
                     Bitmap bitmap = BitmapFactory.decodeStream(istr);
                     mBuilder.setLargeIcon(bitmap);
-                    Log.d(LOG_TAG, "using assets large-icon from gcm");    
+                    Log.d(LOG_TAG, "using assets large-icon from gcm");
                 } catch (IOException e) {
                     int largeIconId = 0;
                     largeIconId = resources.getIdentifier(gcmLargeIcon, "drawable", packageName);
                     if (largeIconId != 0) {
                         Bitmap largeIconBitmap = BitmapFactory.decodeResource(resources, largeIconId);
                         mBuilder.setLargeIcon(largeIconBitmap);
-                        Log.d(LOG_TAG, "using resources large-icon from gcm");    
+                        Log.d(LOG_TAG, "using resources large-icon from gcm");
                     } else {
-                        Log.d(LOG_TAG, "Not setting large icon");                        
+                        Log.d(LOG_TAG, "Not setting large icon");
                     }
                 }
             }
@@ -210,10 +225,45 @@ public class GCMIntentService extends GCMBaseIntentService {
         } else {
             mBuilder.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI);
         }
-        
+
         String message = extras.getString("message");
+
+        int group = 0;
+        try {
+            group = Integer.parseInt(extras.getString("group"));
+            if(group == 1){
+                setNotification(message);
+
+                Integer sizeList = messageList.size();
+                if(sizeList > 1){
+                    String sizeListMessage = sizeList.toString();
+                    String stacking = sizeList+" more";
+                    if(extras.getString("stacking") != null){
+                        stacking = extras.getString("stacking");
+                        stacking = stacking.replace("%n%", sizeListMessage);
+                    }
+                    NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
+                                             .setBigContentTitle(extras.getString("title"))
+                                             .setSummaryText(stacking);
+
+                    for(Object noticationMensage : messageList){
+                       notificationInbox.addLine(Html.fromHtml(noticationMensage.toString()));
+                    }
+
+                    mBuilder.setStyle(notificationInbox);
+                    mBuilder.setLargeIcon(null);
+                }
+            }
+        }
+        catch(NumberFormatException e) {
+            Log.e(LOG_TAG, "Number format exception - Error parsing Group: " + e.getMessage());
+        }
+        catch(Exception e) {
+            Log.e(LOG_TAG, "Number format exception - Error parsing Group" + e.getMessage());
+        }
+
         if (message != null) {
-            mBuilder.setContentText(message);
+            mBuilder.setContentText(Html.fromHtml(message));
         } else {
             mBuilder.setContentText("<missing message content>");
         }
@@ -222,9 +272,9 @@ public class GCMIntentService extends GCMBaseIntentService {
         if (msgcnt != null) {
             mBuilder.setNumber(Integer.parseInt(msgcnt));
         }
-        
+
         int notId = 0;
-        
+
         try {
             notId = Integer.parseInt(extras.getString("notId"));
         }
@@ -234,10 +284,10 @@ public class GCMIntentService extends GCMBaseIntentService {
         catch(Exception e) {
             Log.e(LOG_TAG, "Number format exception - Error parsing Notification ID" + e.getMessage());
         }
-        
+
         mNotificationManager.notify((String) appName, notId, mBuilder.build());
     }
-    
+
     public Bitmap getBitmapFromURL(String strURL) {
         try {
             URL url = new URL(strURL);
@@ -252,12 +302,12 @@ public class GCMIntentService extends GCMBaseIntentService {
             return null;
         }
     }
-    
+
     private static String getAppName(Context context) {
         CharSequence appName =  context.getPackageManager().getApplicationLabel(context.getApplicationInfo());
         return (String)appName;
     }
-    
+
     @Override
     public void onError(Context context, String errorId) {
         Log.e(LOG_TAG, "onError - errorId: " + errorId);
