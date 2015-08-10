@@ -202,6 +202,9 @@ public class GCMIntentService extends GCMBaseIntentService {
         }
 
         String soundname = extras.getString("soundname");
+        if (soundname == null) {
+            soundname = extras.getString("sound");
+        }
         if (soundname != null) {
             Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
                         + "://" + context.getPackageName() + "/raw/" + soundname);
