@@ -295,7 +295,7 @@ You will only see "Push number 2" in the shade. However, if you send:
 { 
   title: "Test Push",
   message: "Push number 1",
-  nodId: 1
+  notId: 1
 }
 ```
 
@@ -305,7 +305,7 @@ and:
 { 
   title: "Test Push",
   message: "Push number 2",
-  nodId: 2
+  notId: 2
 }
 ```
 
