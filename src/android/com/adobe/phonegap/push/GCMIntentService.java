@@ -221,12 +221,24 @@ public class GCMIntentService extends GCMBaseIntentService {
             }
         }
         
-        String message = extras.getString("message");
-        if (message != null) {
-            mBuilder.setContentText(message);
-        } else {
-            mBuilder.setContentText("<missing message content>");
-        }
+		NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();  
+
+		String message = extras.getString("message");
+		String summaryText = extras.getString("summaryText");
+		if (message != null) {
+			mBuilder.setContentText(message);
+
+			bigText.bigText(message);
+			bigText.setBigContentTitle(extras.getString("title"));
+
+			if (summaryText != null) {
+				bigText.setSummaryText(summaryText);
+            }
+
+			mBuilder.setStyle(bigText);
+		} else {
+			mBuilder.setContentText("<missing message content>");
+		}
 
         String msgcnt = extras.getString("msgcnt");
         if (msgcnt != null) {
