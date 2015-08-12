@@ -77,7 +77,8 @@ public class GCMIntentService extends GCMBaseIntentService {
                 extras.putBoolean("foreground", false);
 
                 // Send a notification if there is a message
-                if (extras.getString("message") != null && extras.getString("message").length() != 0) {
+                String message = this.getMessageText(extras);
+                if (message != null && message.length() != 0) {
                     createNotification(context, extras);
                 }
             }
@@ -129,17 +130,7 @@ public class GCMIntentService extends GCMBaseIntentService {
          * To use, add the `iconColor` key to plugin android options
          *
          */
-        int iconColor = 0;
-        if (localIconColor != null) {
-            try {
-                iconColor = Color.parseColor(localIconColor);
-            } catch (IllegalArgumentException e) {
-                Log.e(LOG_TAG, "couldnt parse color from android options");
-            }
-        }
-        if (iconColor != 0) {
-            mBuilder.setColor(iconColor);
-        }
+        setNotificationIconColor(extras.getString("color"), mBuilder, localIconColor);
 
         /*
          * Notification Icon
@@ -153,16 +144,7 @@ public class GCMIntentService extends GCMBaseIntentService {
          * If no resource is found, falls
          *
          */
-        int iconId = 0;
-        if (localIcon != null) {
-            iconId = resources.getIdentifier(localIcon, "drawable", packageName);
-            Log.d(LOG_TAG, "using icon from plugin options");
-        }
-        if (iconId == 0) {
-            Log.d(LOG_TAG, "no icon resource found - using application icon");
-            iconId = context.getApplicationInfo().icon;
-        }
-        mBuilder.setSmallIcon(iconId);
+        setNotificationSmallIcon(context, extras, packageName, resources, mBuilder, localIcon);
 
         /*
          * Notification Large-Icon
@@ -176,74 +158,24 @@ public class GCMIntentService extends GCMBaseIntentService {
          * - if none, we don't set the large icon
          *
          */
-        String gcmLargeIcon = extras.getString("image"); // from gcm
-        if (gcmLargeIcon != null) {
-            if (gcmLargeIcon.startsWith("http://") || gcmLargeIcon.startsWith("https://")) {
-                mBuilder.setLargeIcon(getBitmapFromURL(gcmLargeIcon));                
-                Log.d(LOG_TAG, "using remote large-icon from gcm");    
-            } else {
-                AssetManager assetManager = getAssets();
-                InputStream istr;
-                try {
-                    istr = assetManager.open(gcmLargeIcon);
-                    Bitmap bitmap = BitmapFactory.decodeStream(istr);
-                    mBuilder.setLargeIcon(bitmap);
-                    Log.d(LOG_TAG, "using assets large-icon from gcm");    
-                } catch (IOException e) {
-                    int largeIconId = 0;
-                    largeIconId = resources.getIdentifier(gcmLargeIcon, "drawable", packageName);
-                    if (largeIconId != 0) {
-                        Bitmap largeIconBitmap = BitmapFactory.decodeResource(resources, largeIconId);
-                        mBuilder.setLargeIcon(largeIconBitmap);
-                        Log.d(LOG_TAG, "using resources large-icon from gcm");    
-                    } else {
-                        Log.d(LOG_TAG, "Not setting large icon");                        
-                    }
-                }
-            }
-        }
+        setNotificationLargeIcon(extras, packageName, resources, mBuilder);
 
         /*
          * Notification Sound
          */
         if (soundOption) {
-            String soundname = extras.getString("soundname");
-            if (soundname == null) {
-                soundname = extras.getString("sound");
-            }
-            if (soundname != null) {
-                Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
-                            + "://" + context.getPackageName() + "/raw/" + soundname);
-                Log.d(LOG_TAG, sound.toString());
-                mBuilder.setSound(sound);
-            } else {
-                mBuilder.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI);
-            }
+            setNotificationSound(context, extras, mBuilder);
         }
-        
-		NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();  
 
-		String message = extras.getString("message");
-		String summaryText = extras.getString("summaryText");
-		if (message != null) {
-			mBuilder.setContentText(message);
+        /*
+         * Notification message
+         */
+        setNotificationMessage(extras, mBuilder);
 
-			bigText.bigText(message);
-			bigText.setBigContentTitle(extras.getString("title"));
-
-			if (summaryText != null) {
-				bigText.setSummaryText(summaryText);
-            }
-
-			mBuilder.setStyle(bigText);
-		} else {
-			mBuilder.setContentText("<missing message content>");
-		}
-
-        String msgcnt = extras.getString("msgcnt");
-        if (msgcnt != null) {
-            mBuilder.setNumber(Integer.parseInt(msgcnt));
-        }
+        /*
+         * Notification count
+         */
+        setNotificationCount(extras, mBuilder);
         
         int notId = 0;
         
@@ -259,7 +191,129 @@ public class GCMIntentService extends GCMBaseIntentService {
         
         mNotificationManager.notify((String) appName, notId, mBuilder.build());
     }
-    
+
+    private void setNotificationCount(Bundle extras, NotificationCompat.Builder mBuilder) {
+        String msgcnt = extras.getString("msgcnt");
+        if (msgcnt == null) {
+            msgcnt = extras.getString("badge");
+        }
+        if (msgcnt != null) {
+            mBuilder.setNumber(Integer.parseInt(msgcnt));
+        }
+    }
+
+    private void setNotificationMessage(Bundle extras, NotificationCompat.Builder mBuilder) {
+        NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
+
+        String message = getMessageText(extras);
+        if (message != null) {
+            mBuilder.setContentText(message);
+
+            bigText.bigText(message);
+            bigText.setBigContentTitle(extras.getString("title"));
+
+            String summaryText = extras.getString("summaryText");
+            if (summaryText != null) {
+                bigText.setSummaryText(summaryText);
+            }
+
+            mBuilder.setStyle(bigText);
+        } else {
+            mBuilder.setContentText("<missing message content>");
+        }
+    }
+
+    private String getMessageText(Bundle extras) {
+        String message = extras.getString("message");
+        if (message == null) {
+            message = extras.getString("body");
+        }
+        return message;
+    }
+
+    private void setNotificationSound(Context context, Bundle extras, NotificationCompat.Builder mBuilder) {
+        String soundname = extras.getString("soundname");
+        if (soundname == null) {
+            soundname = extras.getString("sound");
+        }
+        if (soundname != null) {
+            Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
+                        + "://" + context.getPackageName() + "/raw/" + soundname);
+            Log.d(LOG_TAG, sound.toString());
+            mBuilder.setSound(sound);
+        } else {
+            mBuilder.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI);
+        }
+    }
+
+    private void setNotificationLargeIcon(Bundle extras, String packageName, Resources resources, NotificationCompat.Builder mBuilder) {
+        String gcmLargeIcon = extras.getString("image"); // from gcm
+        if (gcmLargeIcon != null) {
+            if (gcmLargeIcon.startsWith("http://") || gcmLargeIcon.startsWith("https://")) {
+                mBuilder.setLargeIcon(getBitmapFromURL(gcmLargeIcon));
+                Log.d(LOG_TAG, "using remote large-icon from gcm");
+            } else {
+                AssetManager assetManager = getAssets();
+                InputStream istr;
+                try {
+                    istr = assetManager.open(gcmLargeIcon);
+                    Bitmap bitmap = BitmapFactory.decodeStream(istr);
+                    mBuilder.setLargeIcon(bitmap);
+                    Log.d(LOG_TAG, "using assets large-icon from gcm");
+                } catch (IOException e) {
+                    int largeIconId = 0;
+                    largeIconId = resources.getIdentifier(gcmLargeIcon, "drawable", packageName);
+                    if (largeIconId != 0) {
+                        Bitmap largeIconBitmap = BitmapFactory.decodeResource(resources, largeIconId);
+                        mBuilder.setLargeIcon(largeIconBitmap);
+                        Log.d(LOG_TAG, "using resources large-icon from gcm");
+                    } else {
+                        Log.d(LOG_TAG, "Not setting large icon");
+                    }
+                }
+            }
+        }
+    }
+
+    private void setNotificationSmallIcon(Context context, Bundle extras, String packageName, Resources resources, NotificationCompat.Builder mBuilder, String localIcon) {
+        int iconId = 0;
+        String icon = extras.getString("icon");
+        if (icon != null) {
+            iconId = resources.getIdentifier(icon, "drawable", packageName);
+            Log.d(LOG_TAG, "using icon from plugin options");
+        }
+        else if (localIcon != null) {
+            iconId = resources.getIdentifier(localIcon, "drawable", packageName);
+            Log.d(LOG_TAG, "using icon from plugin options");
+        }
+        if (iconId == 0) {
+            Log.d(LOG_TAG, "no icon resource found - using application icon");
+            iconId = context.getApplicationInfo().icon;
+        }
+        mBuilder.setSmallIcon(iconId);
+    }
+
+    private void setNotificationIconColor(String color, NotificationCompat.Builder mBuilder, String localIconColor) {
+        int iconColor = 0;
+        if (color != null) {
+            try {
+                iconColor = Color.parseColor(color);
+            } catch (IllegalArgumentException e) {
+                Log.e(LOG_TAG, "couldnt parse color from android options");
+            }
+        }
+        else if (localIconColor != null) {
+            try {
+                iconColor = Color.parseColor(localIconColor);
+            } catch (IllegalArgumentException e) {
+                Log.e(LOG_TAG, "couldnt parse color from android options");
+            }
+        }
+        if (iconColor != 0) {
+            mBuilder.setColor(iconColor);
+        }
+    }
+
     public Bitmap getBitmapFromURL(String strURL) {
         try {
             URL url = new URL(strURL);

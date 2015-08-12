@@ -184,9 +184,11 @@ public class PushPlugin extends CordovaPlugin {
                 }
                 else if (key.equals("coldstart")){
                     additionalData.put(key, extras.getBoolean("coldstart"));
-                } else if (key.equals("message") || key.equals("title")) {
-                    json.put(key, value);
-                } else if (key.equals("msgcnt")) {
+                } else if (key.equals("message") || key.equals("body")) {
+                    json.put("message", value);
+                } else if (key.equals("title")) {
+                    json.put("title", value);
+                } else if (key.equals("msgcnt") || key.equals("badge")) {
                     json.put("count", value);
                 } else if (key.equals("soundname") || key.equals("sound")) {
                     json.put("sound", value);
