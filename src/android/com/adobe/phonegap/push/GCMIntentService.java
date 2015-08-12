@@ -97,17 +97,8 @@ public class GCMIntentService extends GCMBaseIntentService {
         int requestCode = new Random().nextInt();
         PendingIntent contentIntent = PendingIntent.getActivity(this, requestCode, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         
-        int defaults = Notification.DEFAULT_ALL;
-
-        if (extras.getString("defaults") != null) {
-            try {
-                defaults = Integer.parseInt(extras.getString("defaults"));
-            } catch (NumberFormatException e) {}
-        }
-        
         NotificationCompat.Builder mBuilder =
             new NotificationCompat.Builder(context)
-                //.setDefaults(defaults)
                 .setWhen(System.currentTimeMillis())
                 .setContentTitle(extras.getString("title"))
                 .setTicker(extras.getString("title"))
@@ -117,9 +108,20 @@ public class GCMIntentService extends GCMBaseIntentService {
         SharedPreferences prefs = context.getSharedPreferences("com.adobe.phonegap.push", Context.MODE_PRIVATE);
         String localIcon = prefs.getString("icon", null);
         String localIconColor = prefs.getString("iconColor", null);
+        boolean soundOption = prefs.getBoolean("sound", true);
+        boolean vibrateOption = prefs.getBoolean("vibrate", true);
         Log.d(LOG_TAG, "stored icon=" + localIcon);
         Log.d(LOG_TAG, "stored iconColor=" + localIconColor);
+        Log.d(LOG_TAG, "stored sound=" + soundOption);
+        Log.d(LOG_TAG, "stored vibrate=" + vibrateOption);
 
+        /*
+         * Notification Vibration
+         */
+        if (vibrateOption) {
+            mBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
+        }
+        
         /*
          * Notification Icon Color
          *
@@ -201,17 +203,22 @@ public class GCMIntentService extends GCMBaseIntentService {
             }
         }
 
-        String soundname = extras.getString("soundname");
-        if (soundname == null) {
-            soundname = extras.getString("sound");
-        }
-        if (soundname != null) {
-            Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
-                        + "://" + context.getPackageName() + "/raw/" + soundname);
-            Log.d(LOG_TAG, sound.toString());
-            mBuilder.setSound(sound);
-        } else {
-            mBuilder.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI);
+        /*
+         * Notification Sound
+         */
+        if (soundOption) {
+            String soundname = extras.getString("soundname");
+            if (soundname == null) {
+                soundname = extras.getString("sound");
+            }
+            if (soundname != null) {
+                Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
+                            + "://" + context.getPackageName() + "/raw/" + soundname);
+                Log.d(LOG_TAG, sound.toString());
+                mBuilder.setSound(sound);
+            } else {
+                mBuilder.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI);
+            }
         }
         
         String message = extras.getString("message");

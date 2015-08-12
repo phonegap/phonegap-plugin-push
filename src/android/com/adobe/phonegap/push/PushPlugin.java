@@ -86,6 +86,8 @@ public class PushPlugin extends CordovaPlugin {
                 } catch (JSONException e) {
                     Log.d(LOG_TAG, "no iconColor option");
                 }
+                editor.putBoolean("sound", jo.optBoolean("sound", true));
+                editor.putBoolean("vibrate", jo.optBoolean("vibrate", true));
                 editor.commit();
             }
 

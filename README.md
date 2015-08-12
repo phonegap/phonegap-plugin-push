@@ -57,6 +57,8 @@ Parameter | Description
 `options.android.senderID` | `String` Maps to the project number in the Google Developer Console.
 `options.android.icon` | `String` Optional. The name of a drawable resource to use as the small-icon.
 `options.android.iconColor` | `String` Optional. Sets the background color of the small icon. [Supported Formats](http://developer.android.com/reference/android/graphics/Color.html#parseColor(java.lang.String))
+`options.android.sound` | `Boolean` Optional. If `true` it plays the sound specified in the push data or the default system sound. Default is `true`.
+`options.android.vibrate` | `Boolean` Optional. If `true` the device vibrates on receipt of notification. Default is `true`.
 `options.ios` | `JSON Object` iOS specific initialization options.
 `options.windows` | `JSON Object` Windows specific initialization options.
 
