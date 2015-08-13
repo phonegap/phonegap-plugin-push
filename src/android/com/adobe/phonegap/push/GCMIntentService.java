@@ -6,6 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Random;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -176,7 +177,12 @@ public class GCMIntentService extends GCMBaseIntentService {
          * Notification count
          */
         setNotificationCount(extras, mBuilder);
-        
+
+        /*
+         * Notication add actions
+         */
+        createActions(extras, mBuilder, resources, packageName);
+
         int notId = 0;
         
         try {
@@ -190,6 +196,30 @@ public class GCMIntentService extends GCMBaseIntentService {
         }
         
         mNotificationManager.notify((String) appName, notId, mBuilder.build());
+    }
+
+    private void createActions(Bundle extras, NotificationCompat.Builder mBuilder, Resources resources, String packageName) {
+        Log.d(LOG_TAG, "create actions");
+        String actions = extras.getString("actions");
+        if (actions != null) {
+            try {
+                JSONArray actionsArray = new JSONArray(actions);
+                for (int i=0; i < actionsArray.length(); i++) {
+                    Log.d(LOG_TAG, "adding action");
+                    JSONObject action = actionsArray.getJSONObject(i);
+                    Log.d(LOG_TAG, "adding callback = " + action.getString("callback"));
+                    Intent intent = new Intent(this, PushHandlerActivity.class);
+                    intent.putExtra("callback", action.getString("callback"));
+                    intent.putExtra("pushBundle", extras);
+                    PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, 0);
+
+                    mBuilder.addAction(resources.getIdentifier(action.getString("icon"), "drawable", packageName),
+                            action.getString("title"), pIntent);
+                }
+            } catch(JSONException e) {
+                // nope
+            }
+        }
     }
 
     private void setNotificationCount(Bundle extras, NotificationCompat.Builder mBuilder) {

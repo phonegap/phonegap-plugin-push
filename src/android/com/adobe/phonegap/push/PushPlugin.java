@@ -33,6 +33,7 @@ public class PushPlugin extends CordovaPlugin {
     private static String gSenderID;
     private static Bundle gCachedExtras = null;
     private static boolean gForeground = false;
+    private static String gCallback = null;
 
     /**
      * Gets the application context from cordova's main activity.
@@ -200,6 +201,8 @@ public class PushPlugin extends CordovaPlugin {
                     json.put("sound", value);
                 } else if (key.equals("image")) {
                     json.put("image", value);
+                } else if (key.equals("callback")) {
+                    json.put("callback", value);
                 }
                 else if ( value instanceof String ) {
                     String strValue = (String)value;

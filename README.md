@@ -313,6 +313,27 @@ and:
 
 You will only see both "Push number 1" and "Push number 2" in the shade.
 
+### Action Buttons
+
+Your notification can include action buttons. If you wish to include an icon along with the button name they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from GCM:
+
+```javascript
+{
+	title:"AUX Scrum", 
+	message: "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.", 
+	actions: [
+		{ icon: "emailGuests", title: "EMAIL GUESTS", callback: "app.emailGuests"},
+		{ icon: "snooze", title: "SNOOZE", callback: "app.snooze"},
+	]
+}
+```
+
+This will produce the following notification in your tray:
+
+![action_combo](https://cloud.githubusercontent.com/assets/353180/9313435/02554d2a-44f1-11e5-8cd9-0aadd1e02b18.png)
+
+If your users clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed. In this case it is `app.emailGuests` and `app.snooze` respectively.
+
 ## iOS Behaviour
 
 ### Sound

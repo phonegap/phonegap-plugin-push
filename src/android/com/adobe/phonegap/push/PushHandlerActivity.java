@@ -23,14 +23,14 @@ public class PushHandlerActivity extends Activity
 		super.onCreate(savedInstanceState);
 		Log.v(LOG_TAG, "onCreate");
 
-		boolean isPushPluginActive = PushPlugin.isActive();
-		processPushBundle(isPushPluginActive);
+        boolean isPushPluginActive = PushPlugin.isActive();
+        processPushBundle(isPushPluginActive);
 
-		finish();
+        finish();
 
-		if (!isPushPluginActive) {
-			forceMainActivityReload();
-		}
+        if (!isPushPluginActive) {
+            forceMainActivityReload();
+        }
 	}
 
 	/**
@@ -45,6 +45,7 @@ public class PushHandlerActivity extends Activity
             
             originalExtras.putBoolean("foreground", false);
             originalExtras.putBoolean("coldstart", !isPushPluginActive);
+            originalExtras.putString("callback", getIntent().getExtras().getString("callback"));
 
 			PushPlugin.sendExtras(originalExtras);
 		}
