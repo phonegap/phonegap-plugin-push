@@ -337,6 +337,10 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     public void onError(Context context, String errorId) {
         Log.e(LOG_TAG, "onError - errorId: " + errorId);
+        // if we are in the foreground, just send the error
+        if (PushPlugin.isInForeground()) {
+            PushPlugin.sendError(errorId);
+        }
     }
 
 }

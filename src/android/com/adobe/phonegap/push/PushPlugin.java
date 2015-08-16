@@ -119,6 +119,12 @@ public class PushPlugin extends CordovaPlugin {
         pushContext.sendPluginResult(pluginResult);
     }
 
+    public static void sendError(String message) {
+        PluginResult pluginResult = new PluginResult(PluginResult.Status.ERROR, message);
+        pluginResult.setKeepCallback(true);
+        pushContext.sendPluginResult(pluginResult);
+    }
+
     /*
      * Sends the pushbundle extras to the client application.
      * If the client application isn't currently active, it is cached for later processing.
