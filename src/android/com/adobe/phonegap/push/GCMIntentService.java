@@ -106,8 +106,8 @@ public class GCMIntentService extends GCMBaseIntentService {
                 .setTicker(extras.getString("title"))
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true);
-        
-        SharedPreferences prefs = context.getSharedPreferences("com.adobe.phonegap.push", Context.MODE_PRIVATE);
+
+        SharedPreferences prefs = context.getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
         String localIcon = prefs.getString("icon", null);
         String localIconColor = prefs.getString("iconColor", null);
         boolean soundOption = prefs.getBoolean("sound", true);
@@ -329,14 +329,14 @@ public class GCMIntentService extends GCMBaseIntentService {
             try {
                 iconColor = Color.parseColor(color);
             } catch (IllegalArgumentException e) {
-                Log.e(LOG_TAG, "couldnt parse color from android options");
+                Log.e(LOG_TAG, "couldn't parse color from android options");
             }
         }
         else if (localIconColor != null) {
             try {
                 iconColor = Color.parseColor(localIconColor);
             } catch (IllegalArgumentException e) {
-                Log.e(LOG_TAG, "couldnt parse color from android options");
+                Log.e(LOG_TAG, "couldn't parse color from android options");
             }
         }
         if (iconColor != 0) {

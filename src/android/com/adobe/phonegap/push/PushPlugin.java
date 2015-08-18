@@ -20,7 +20,7 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 public class PushPlugin extends CordovaPlugin {
-    private static final String COM_ADOBE_PHONEGAP_PUSH = "com.adobe.phonegap.push";
+    public static final String COM_ADOBE_PHONEGAP_PUSH = "com.adobe.phonegap.push";
 
     public static final String LOG_TAG = "PushPlugin";
 
@@ -89,6 +89,7 @@ public class PushPlugin extends CordovaPlugin {
                 }
                 editor.putBoolean("sound", jo.optBoolean("sound", true));
                 editor.putBoolean("vibrate", jo.optBoolean("vibrate", true));
+                editor.putBoolean("clearNotifications", jo.optBoolean("clearNotifications", true));
                 editor.commit();
             }
 
@@ -151,8 +152,12 @@ public class PushPlugin extends CordovaPlugin {
     public void onPause(boolean multitasking) {
         super.onPause(multitasking);
         gForeground = false;
-        final NotificationManager notificationManager = (NotificationManager) cordova.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancelAll();
+
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
+        if (prefs.getBoolean("clearNotifications", true)) {
+            final NotificationManager notificationManager = (NotificationManager) cordova.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancelAll();
+        }
     }
 
     @Override
