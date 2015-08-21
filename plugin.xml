@@ -29,7 +29,8 @@
 
 	<!-- android -->
 	<platform name="android">
-
+		<framework src="extras/android/support/v13" />
+		
 		<config-file target="res/xml/config.xml" parent="/*">
 			<feature name="PushNotification" >
 				<param name="android-package" value="com.adobe.phonegap.push.PushPlugin"/>
@@ -58,7 +59,6 @@
 		</config-file>
 
 		<source-file src="src/android/libs/gcm.jar" target-dir="libs/" />
-		<source-file src="src/android/libs/android-support-v13.jar" target-dir="libs/" />
 		<source-file src="src/android/com/adobe/phonegap/push/CordovaGCMBroadcastReceiver.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/GCMIntentService.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/" />
