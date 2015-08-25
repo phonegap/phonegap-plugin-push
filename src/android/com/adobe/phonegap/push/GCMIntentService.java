@@ -37,7 +37,9 @@ import java.util.ArrayList;
 public class GCMIntentService extends GCMBaseIntentService {
 
     private static final String LOG_TAG = "PushPlugin_GCMIntentService";
-    private static ArrayList messageList = new ArrayList();
+    private static final String STYLE_INBOX = "inbox";
+    private static final String STYLE_TEXT = "text";
+    private static ArrayList<String> messageList = new ArrayList();
 
     public void setNotification(String message){
 
@@ -55,7 +57,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     public void onRegistered(Context context, String regId) {
 
-        Log.v(LOG_TAG, "onRegistered: "+ regId);
+        Log.v(LOG_TAG, "onRegistered: " + regId);
 
         try {
             JSONObject json = new JSONObject().put("registrationId", regId);
@@ -196,18 +198,8 @@ public class GCMIntentService extends GCMBaseIntentService {
          */
         createActions(extras, mBuilder, resources, packageName);
 
-        int notId = 0;
-        
-        try {
-            notId = Integer.parseInt(extras.getString("notId"));
-        }
-        catch(NumberFormatException e) {
-            Log.e(LOG_TAG, "Number format exception - Error parsing Notification ID: " + e.getMessage());
-        }
-        catch(Exception e) {
-            Log.e(LOG_TAG, "Number format exception - Error parsing Notification ID" + e.getMessage());
-        }
-        
+        int notId = parseInt("notId", extras);
+
         mNotificationManager.notify((String) appName, notId, mBuilder.build());
     }
 
@@ -249,54 +241,47 @@ public class GCMIntentService extends GCMBaseIntentService {
         NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
         String message = getMessageText(extras);
 
-        int group = 0;
-        try {
-            group = Integer.parseInt(extras.getString("group"));
-            if(group == 1){
-                setNotification(message);
+        String style = extras.getString("style", STYLE_TEXT);
+        if(STYLE_INBOX.equals(style)){
+            setNotification(message);
 
-                Integer sizeList = messageList.size();
-                if(sizeList > 1){
-                    String sizeListMessage = sizeList.toString();
-                    String stacking = sizeList+" more";
-                    if(extras.getString("stacking") != null){
-                        stacking = extras.getString("stacking");
-                        stacking = stacking.replace("%n%", sizeListMessage);
-                    }
-                    NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
-                        .setBigContentTitle(extras.getString("title"))
-                        .setSummaryText(stacking);
-
-                    for(Object noticationMensage : messageList){
-                       notificationInbox.addLine(Html.fromHtml(noticationMensage.toString()));
-                    }
-
-                    mBuilder.setStyle(notificationInbox);
-                    mBuilder.setLargeIcon(null);
-                }
-            }
-        }
-        catch(NumberFormatException e) {
-            Log.e(LOG_TAG, "Number format exception - Error parsing Group: " + e.getMessage());
-        }
-        catch(Exception e) {
-            Log.e(LOG_TAG, "Number format exception - Error parsing Group" + e.getMessage());
-        }
-
-        if (message != null) {
             mBuilder.setContentText(message);
 
-            bigText.bigText(message);
-            bigText.setBigContentTitle(extras.getString("title"));
+            Integer sizeList = messageList.size();
+            if(sizeList > 1){
+                String sizeListMessage = sizeList.toString();
+                String stacking = sizeList+" more";
+                if(extras.getString("summaryText") != null){
+                    stacking = extras.getString("summaryText");
+                    stacking = stacking.replace("%n%", sizeListMessage);
+                }
+                NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
+                    .setBigContentTitle(extras.getString("title"))
+                    .setSummaryText(stacking);
 
-            String summaryText = extras.getString("summaryText");
-            if (summaryText != null) {
-                bigText.setSummaryText(summaryText);
+                for (int i=messageList.size()-1; i >= 0; i--) {
+                    notificationInbox.addLine(Html.fromHtml(messageList.get(i)));
+                }
+
+                mBuilder.setStyle(notificationInbox);
             }
-
-            mBuilder.setStyle(bigText);
         } else {
-            mBuilder.setContentText("<missing message content>");
+            setNotification("");
+            if (message != null) {
+                mBuilder.setContentText(Html.fromHtml(message));
+
+                bigText.bigText(message);
+                bigText.setBigContentTitle(extras.getString("title"));
+
+                String summaryText = extras.getString("summaryText");
+                if (summaryText != null) {
+                    bigText.setSummaryText(summaryText);
+                }
+
+                mBuilder.setStyle(bigText);
+            } else {
+                mBuilder.setContentText("<missing message content>");
+            }
         }
     }
 
@@ -420,4 +405,19 @@ public class GCMIntentService extends GCMBaseIntentService {
         }
     }
 
+    private int parseInt(String value, Bundle extras) {
+        int retval = 0;
+
+        try {
+            retval = Integer.parseInt(extras.getString(value));
+        }
+        catch(NumberFormatException e) {
+            Log.e(LOG_TAG, "Number format exception - Error parsing " + value + ": " + e.getMessage());
+        }
+        catch(Exception e) {
+            Log.e(LOG_TAG, "Number format exception - Error parsing " + value + ": " + e.getMessage());
+        }
+
+        return retval;
+    }
 }

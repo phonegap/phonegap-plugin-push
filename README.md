@@ -314,6 +314,40 @@ and:
 
 You will only see both "Push number 1" and "Push number 2" in the shade.
 
+### Inbox Stacking ###
+
+A better alternative to stacking your notifications is to use the inbox style to have up to 8 lines of notification text in a single notification. If you send the following JSON from GCM you will see:
+
+```javascript
+{
+	title:"My Title", 
+	message: "My first message", 
+	style: "inbox",
+	summaryText: "There are %n% notifications"
+}
+```
+
+It will produce a normal looking notification:
+
+![2015-08-25 14 11 27](https://cloud.githubusercontent.com/assets/353180/9468840/c9c5d43a-4b11-11e5-814f-8dc995f47830.png)
+
+But, if you follow it up with subsequent notifications like:
+
+```javascript
+{
+	title:"My Title", 
+	message: "My second message", 
+	style: "inbox",
+	summaryText: "There are %n% notifications"
+}
+```
+
+You will get an inbox view so you can display multiple notifications in a single panel.
+
+![2015-08-25 14 01 35](https://cloud.githubusercontent.com/assets/353180/9468727/2d658bee-4b11-11e5-90fa-248d54c8f3f6.png)
+
+If you use `%n%` in the `summaryText` of the JSON coming down from GCM it will be replaced by the number of messages that are currently in the queue.
+
 ### Action Buttons
 
 Your notification can include action buttons. If you wish to include an icon along with the button name they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from GCM:
