@@ -27,14 +27,27 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.text.Html;
 
 import com.google.android.gcm.GCMBaseIntentService;
+
+import java.util.ArrayList;
 
 @SuppressLint("NewApi")
 public class GCMIntentService extends GCMBaseIntentService {
 
     private static final String LOG_TAG = "PushPlugin_GCMIntentService";
-    
+    private static ArrayList messageList = new ArrayList();
+
+    public void setNotification(String message){
+
+        if(message == ""){
+            messageList.clear();
+        }else{
+            messageList.add(message);
+        }
+    }
+
     public GCMIntentService() {
         super("GCMIntentService");
     }
@@ -98,7 +111,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
         int requestCode = new Random().nextInt();
         PendingIntent contentIntent = PendingIntent.getActivity(this, requestCode, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        
+
         NotificationCompat.Builder mBuilder =
             new NotificationCompat.Builder(context)
                 .setWhen(System.currentTimeMillis())
@@ -137,9 +150,9 @@ public class GCMIntentService extends GCMBaseIntentService {
          * Notification Icon
          *
          * Sets the small-icon of the notification.
-         * 
+         *
          * - checks the plugin options for `icon` key
-         * - if none, uses the application icon 
+         * - if none, uses the application icon
          *
          * The icon value must be a string that maps to a drawable resource.
          * If no resource is found, falls
@@ -234,8 +247,42 @@ public class GCMIntentService extends GCMBaseIntentService {
 
     private void setNotificationMessage(Bundle extras, NotificationCompat.Builder mBuilder) {
         NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
-
         String message = getMessageText(extras);
+
+        int group = 0;
+        try {
+            group = Integer.parseInt(extras.getString("group"));
+            if(group == 1){
+                setNotification(message);
+
+                Integer sizeList = messageList.size();
+                if(sizeList > 1){
+                    String sizeListMessage = sizeList.toString();
+                    String stacking = sizeList+" more";
+                    if(extras.getString("stacking") != null){
+                        stacking = extras.getString("stacking");
+                        stacking = stacking.replace("%n%", sizeListMessage);
+                    }
+                    NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
+                        .setBigContentTitle(extras.getString("title"))
+                        .setSummaryText(stacking);
+
+                    for(Object noticationMensage : messageList){
+                       notificationInbox.addLine(Html.fromHtml(noticationMensage.toString()));
+                    }
+
+                    mBuilder.setStyle(notificationInbox);
+                    mBuilder.setLargeIcon(null);
+                }
+            }
+        }
+        catch(NumberFormatException e) {
+            Log.e(LOG_TAG, "Number format exception - Error parsing Group: " + e.getMessage());
+        }
+        catch(Exception e) {
+            Log.e(LOG_TAG, "Number format exception - Error parsing Group" + e.getMessage());
+        }
+
         if (message != null) {
             mBuilder.setContentText(message);
 
@@ -358,12 +405,12 @@ public class GCMIntentService extends GCMBaseIntentService {
             return null;
         }
     }
-    
+
     private static String getAppName(Context context) {
         CharSequence appName =  context.getPackageManager().getApplicationLabel(context.getApplicationInfo());
         return (String)appName;
     }
-    
+
     @Override
     public void onError(Context context, String errorId) {
         Log.e(LOG_TAG, "onError - errorId: " + errorId);
