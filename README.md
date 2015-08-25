@@ -369,6 +369,23 @@ This will produce the following notification in your tray:
 
 If your users clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed. In this case it is `app.emailGuests` and `app.snooze` respectively.
 
+### Picture Messages
+
+Perhaps you want to include a large picture in the notification that you are sending to your users. Luckily you can do that too buy sending the following JSON from GCM.
+
+```javascript
+{
+	title:"Big Picture", 
+	message: "This is my big picture message", 
+	style: "picture",
+	summaryText: "The internet is built on cat pictures"
+}
+```
+
+This will produce the following notification in your tray:
+
+![2015-08-25 16 08 00](https://cloud.githubusercontent.com/assets/353180/9472260/3655fa7a-4b22-11e5-8d87-20528112de16.png)
+
 ## iOS Behaviour
 
 ### Sound

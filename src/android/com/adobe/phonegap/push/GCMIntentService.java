@@ -38,6 +38,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
     private static final String LOG_TAG = "PushPlugin_GCMIntentService";
     private static final String STYLE_INBOX = "inbox";
+    private static final String STYLE_PICTURE = "picture";
     private static final String STYLE_TEXT = "text";
     private static ArrayList<String> messageList = new ArrayList();
 
@@ -238,35 +239,49 @@ public class GCMIntentService extends GCMBaseIntentService {
     }
 
     private void setNotificationMessage(Bundle extras, NotificationCompat.Builder mBuilder) {
-        NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
         String message = getMessageText(extras);
 
         String style = extras.getString("style", STYLE_TEXT);
-        if(STYLE_INBOX.equals(style)){
+        if(STYLE_INBOX.equals(style)) {
             setNotification(message);
 
             mBuilder.setContentText(message);
 
             Integer sizeList = messageList.size();
-            if(sizeList > 1){
+            if (sizeList > 1) {
                 String sizeListMessage = sizeList.toString();
-                String stacking = sizeList+" more";
-                if(extras.getString("summaryText") != null){
+                String stacking = sizeList + " more";
+                if (extras.getString("summaryText") != null) {
                     stacking = extras.getString("summaryText");
                     stacking = stacking.replace("%n%", sizeListMessage);
                 }
                 NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
-                    .setBigContentTitle(extras.getString("title"))
-                    .setSummaryText(stacking);
+                        .setBigContentTitle(extras.getString("title"))
+                        .setSummaryText(stacking);
 
-                for (int i=messageList.size()-1; i >= 0; i--) {
+                for (int i = messageList.size() - 1; i >= 0; i--) {
                     notificationInbox.addLine(Html.fromHtml(messageList.get(i)));
                 }
 
                 mBuilder.setStyle(notificationInbox);
             }
+        } else if (STYLE_PICTURE.equals(style)) {
+            setNotification("");
+
+            NotificationCompat.BigPictureStyle bigPicture = new NotificationCompat.BigPictureStyle();
+            bigPicture.bigPicture(getBitmapFromURL(extras.getString("picture")));
+            bigPicture.setBigContentTitle(extras.getString("title"));
+            bigPicture.setSummaryText(extras.getString("summaryText"));
+
+            mBuilder.setContentTitle(extras.getString("title"));
+            mBuilder.setContentText(message);
+
+            mBuilder.setStyle(bigPicture);
         } else {
             setNotification("");
+
+            NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
+
             if (message != null) {
                 mBuilder.setContentText(Html.fromHtml(message));
 
