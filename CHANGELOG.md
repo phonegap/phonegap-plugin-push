@@ -1,5 +1,36 @@
 # Change Log
 
+## [1.2.0](https://github.com/phonegap/phonegap-plugin-push/tree/1.2.0) (2015-08-25)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.1.1...1.2.0)
+
+**Implemented enhancements:**
+
+- Implement Big Picture Style for Android [\#75](https://github.com/phonegap/phonegap-plugin-push/issues/75)
+- Implement Inbox style for Android [\#74](https://github.com/phonegap/phonegap-plugin-push/issues/74)
+- on\("registration" is not getting called... [\#66](https://github.com/phonegap/phonegap-plugin-push/issues/66)
+- multi-line text support [\#63](https://github.com/phonegap/phonegap-plugin-push/issues/63)
+- Add image property to iOS and Android [\#39](https://github.com/phonegap/phonegap-plugin-push/issues/39)
+- Programmatically register [\#31](https://github.com/phonegap/phonegap-plugin-push/issues/31)
+
+**Fixed bugs:**
+
+- Pushes being deleted from notification bar when cold start [\#67](https://github.com/phonegap/phonegap-plugin-push/issues/67)
+- No default sound in Android [\#53](https://github.com/phonegap/phonegap-plugin-push/issues/53)
+- Multiple push notification problem [\#48](https://github.com/phonegap/phonegap-plugin-push/issues/48)
+
+**Closed issues:**
+
+- oficial push plugin and windows and wp8 compatibility [\#71](https://github.com/phonegap/phonegap-plugin-push/issues/71)
+- On Android, GCMIntentService.onError\(\) doesn't get passed to the JavaScript "error" event [\#65](https://github.com/phonegap/phonegap-plugin-push/issues/65)
+- Android: add property to vibrate phone on received notification [\#61](https://github.com/phonegap/phonegap-plugin-push/issues/61)
+- push.on =\> "registration" will trigger twice times that only in iOS [\#57](https://github.com/phonegap/phonegap-plugin-push/issues/57)
+- Publish plugin to PhoneGap Build [\#22](https://github.com/phonegap/phonegap-plugin-push/issues/22)
+
+**Merged pull requests:**
+
+- usage typo [\#60](https://github.com/phonegap/phonegap-plugin-push/pull/60) ([ericb](https://github.com/ericb))
+- Updating example to sync with docs [\#52](https://github.com/phonegap/phonegap-plugin-push/pull/52) ([rakatyal](https://github.com/rakatyal))
+
 ## [1.1.1](https://github.com/phonegap/phonegap-plugin-push/tree/1.1.1) (2015-07-27)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.1.0...1.1.1)
 
@@ -60,10 +91,6 @@
 - Publish plugin to npm [\#3](https://github.com/phonegap/phonegap-plugin-push/issues/3)
 - Update example to use new API [\#2](https://github.com/phonegap/phonegap-plugin-push/issues/2)
 - Lowercase Example/ directory [\#1](https://github.com/phonegap/phonegap-plugin-push/issues/1)
-
-**Merged pull requests:**
-
-- Fix didRegisterForRemoteNotification on iOS8 [\#5](https://github.com/phonegap/phonegap-plugin-push/pull/5) ([gbenvenuti](https://github.com/gbenvenuti))
 
 
 
