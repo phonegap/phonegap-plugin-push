@@ -378,6 +378,7 @@ Perhaps you want to include a large picture in the notification that you are sen
 	title:"Big Picture", 
 	message: "This is my big picture message", 
 	style: "picture",
+    picture: "http://36.media.tumblr.com/c066cc2238103856c9ac506faa6f3bc2/tumblr_nmstmqtuo81tssmyno1_1280.jpg",
 	summaryText: "The internet is built on cat pictures"
 }
 ```
