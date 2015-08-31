@@ -217,7 +217,7 @@ public class GCMIntentService extends GCMBaseIntentService {
                     Intent intent = new Intent(this, PushHandlerActivity.class);
                     intent.putExtra("callback", action.getString("callback"));
                     intent.putExtra("pushBundle", extras);
-                    PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, 0);
+                    PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     mBuilder.addAction(resources.getIdentifier(action.getString("icon"), "drawable", packageName),
                             action.getString("title"), pIntent);
