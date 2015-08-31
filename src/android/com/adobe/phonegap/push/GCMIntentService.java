@@ -41,7 +41,8 @@ public class GCMIntentService extends GCMBaseIntentService {
     private static final String STYLE_PICTURE = "picture";
     private static final String STYLE_TEXT = "text";
     private static ArrayList<String> messageList = new ArrayList();
-
+    private static int updateNotificationId = 0;
+    
     public void setNotification(String message){
 
         if(message == ""){
@@ -199,9 +200,15 @@ public class GCMIntentService extends GCMBaseIntentService {
          */
         createActions(extras, mBuilder, resources, packageName);
 
-        int notId = parseInt("notId", extras);
-
-        mNotificationManager.notify((String) appName, notId, mBuilder.build());
+        boolean updateNotificationsOption = prefs.getBoolean("updateNotifications", true);
+        if (updateNotificationsOption) {
+            int notId = parseInt("notId", extras);
+            mNotificationManager.notify((String) appName, notId, mBuilder.build());
+        } else {
+            mNotificationManager.notify((String) appName, updateNotificationId, mBuilder.build());
+            updateNotificationId++;
+            if (updateNotificationId >= Integer.MAX_VALUE) updateNotificationId = 0;
+        }
     }
 
     private void createActions(Bundle extras, NotificationCompat.Builder mBuilder, Resources resources, String packageName) {

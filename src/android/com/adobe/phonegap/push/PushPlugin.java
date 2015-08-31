@@ -90,6 +90,7 @@ public class PushPlugin extends CordovaPlugin {
                 editor.putBoolean("sound", jo.optBoolean("sound", true));
                 editor.putBoolean("vibrate", jo.optBoolean("vibrate", true));
                 editor.putBoolean("clearNotifications", jo.optBoolean("clearNotifications", true));
+                editor.putBoolean("updateNotifications", jo.optBoolean("updateNotifications", true));
                 editor.commit();
             }
 
