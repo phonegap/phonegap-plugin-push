@@ -196,15 +196,21 @@ public class PushPlugin extends CordovaPlugin {
                 }
                 else if (key.equals("coldstart")){
                     additionalData.put(key, extras.getBoolean("coldstart"));
-                } else if (key.equals("message") || key.equals("body")) {
+                } else if (key.equals("message") || key.equals("body") ||
+                        key.equals("gcm.notification.message") || 
+                        key.equals("gcm.notification.body")) {
                     json.put("message", value);
-                } else if (key.equals("title")) {
+                } else if (key.equals("title") || key.equals("gcm.notification.title")) {
                     json.put("title", value);
-                } else if (key.equals("msgcnt") || key.equals("badge")) {
+                } else if (key.equals("msgcnt") || key.equals("badge") ||
+                           key.equals("gcm.notification.msgcnt") || 
+                           key.equals("gcm.notification.badge")) {
                     json.put("count", value);
-                } else if (key.equals("soundname") || key.equals("sound")) {
+                } else if (key.equals("soundname") || key.equals("sound") ||
+                           key.equals("gcm.notification.soundname") || 
+                           key.equals("gcm.notification.sound")) {
                     json.put("sound", value);
-                } else if (key.equals("image")) {
+                } else if (key.equals("image") || key.equals("gcm.notification.image")) {
                     json.put("image", value);
                 } else if (key.equals("callback")) {
                     json.put("callback", value);
