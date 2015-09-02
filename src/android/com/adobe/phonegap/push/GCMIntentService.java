@@ -139,7 +139,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         if (vibrateOption) {
             mBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
         }
-        
+
         /*
          * Notification Icon Color
          *
@@ -183,6 +183,12 @@ public class GCMIntentService extends GCMBaseIntentService {
         if (soundOption) {
             setNotificationSound(context, extras, mBuilder);
         }
+
+        /*
+         *  LED Notification
+         */
+        setNotificationLedColor(extras, mBuilder);
+
 
         /*
          * Notification message
@@ -320,6 +326,13 @@ public class GCMIntentService extends GCMBaseIntentService {
             mBuilder.setSound(sound);
         } else {
             mBuilder.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI);
+        }
+    }
+
+    private void setNotificationLedColor(Context context, Bundle extras, NotificationCompat.Builder mBuilder) {
+        String ledLight = extras.getString("led");
+        if (ledLight != null) {
+            mBuilder.setLights(Color.argb(0, 255, 0, 0), 500, 500);
         }
     }
 
