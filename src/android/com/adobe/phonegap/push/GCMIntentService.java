@@ -136,8 +136,11 @@ public class GCMIntentService extends GCMBaseIntentService {
         /*
          * Notification Vibration
          */
+
         if (vibrateOption) {
             mBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
+        } else {
+            setNotificationVibrationPattern(extras, mBuilder);
         }
 
         /*
@@ -329,10 +332,25 @@ public class GCMIntentService extends GCMBaseIntentService {
         }
     }
 
-    private void setNotificationLedColor(Context context, Bundle extras, NotificationCompat.Builder mBuilder) {
+    private void setNotificationLedColor(Bundle extras, NotificationCompat.Builder mBuilder) {
         String ledLight = extras.getString("led");
         if (ledLight != null) {
             mBuilder.setLights(Color.argb(0, 255, 0, 0), 500, 500);
+        }
+    }
+
+    private void setNotificationVibrationPattern(Bundle extras, NotificationCompat.Builder mBuilder) {
+        String vibrationPattern = extras.getString("vibration");
+        if (vibrationPattern != null){
+            if(vibrationPattern.equals("fast")){
+                long[] pattern = {0, 100, 100, 100, 100, 100, 500, 100, 100, 100, 100, 100, 500, 100, 100, 100, 100, 100, 500, 100, 100, 100, 100, 100, 500, 100, 100, 100, 100, 100, 500, 100, 100, 100, 100, 100};
+                mBuilder.setVibrate(pattern);
+            }
+
+            if(vibrationPattern.equals("slow")){
+                long[] pattern = {0, 1000, 500, 1000};
+                mBuilder.setVibrate(pattern);
+           }
         }
     }
 
