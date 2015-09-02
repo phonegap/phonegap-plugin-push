@@ -192,6 +192,10 @@ public class GCMIntentService extends GCMBaseIntentService {
          */
         setNotificationLedColor(extras, mBuilder);
 
+        /*
+         *  Priority Notification
+         */
+        setNotificationPriority(extras, mBuilder);
 
         /*
          * Notification message
@@ -351,6 +355,13 @@ public class GCMIntentService extends GCMBaseIntentService {
                 long[] pattern = {0, 1000, 500, 1000};
                 mBuilder.setVibrate(pattern);
            }
+        }
+    }
+
+    private void setNotificationPriority(Bundle extras, NotificationCompat.Builder mBuilder) {
+        String priority = extras.getString("priority");
+        if (priority != null) {
+            mBuilder.setPriority(Integer.parseInt(priority));
         }
     }
 
