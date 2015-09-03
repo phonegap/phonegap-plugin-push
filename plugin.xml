@@ -88,6 +88,9 @@
     <js-module src="src/windows/PushPluginProxy.js" name="PushPlugin">
       <merges target="" />
     </js-module>
+    <config-file target="config.xml" parent="/*">
+    	<preference name="WindowsToastCapable" value="true" />
+	</config-file>
   </platform>
 
 </plugin>
