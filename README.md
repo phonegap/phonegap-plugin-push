@@ -4,16 +4,27 @@
 
 ## Installation
 
-This requires phonegap 5.0+ ( current stable v1.0.0 )
+This requires phonegap/cordova CLI 5.0+ ( current stable v1.2.2 )
 
 ```
 phonegap plugin add phonegap-plugin-push
+```
+or 
+
+```
+cordova plugin add phonegap-plugin-push
 ```
 
 It is also possible to install via repo url directly ( unstable )
 
 ```
 phonegap plugin add https://github.com/phonegap/phonegap-plugin-push
+```
+
+or 
+
+```
+cordova plugin add https://github.com/phonegap/phonegap-plugin-push
 ```
 
 ## Supported Platforms
