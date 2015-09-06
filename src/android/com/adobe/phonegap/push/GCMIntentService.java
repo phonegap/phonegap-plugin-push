@@ -361,14 +361,27 @@ public class GCMIntentService extends GCMBaseIntentService {
                     results[i] = Integer.parseInt(items[i]);
                 } catch (NumberFormatException nfe) {};
             }
-            mBuilder.setLights(Color.argb(results[0], results[1], results[2], results[3]), 500, 500);
+            if (results.length == 4) {
+                mBuilder.setLights(Color.argb(results[0], results[1], results[2], results[3]), 500, 500);
+            } else {
+                Log.e(LOG_TAG, "ledColor parameter must be an array of length == 4 (ARGB)");
+            }
         }
     }
 
     private void setNotificationPriority(Bundle extras, NotificationCompat.Builder mBuilder) {
-        String priority = extras.getString("priority");
-        if (priority != null) {
-            mBuilder.setPriority(Integer.parseInt(priority));
+        String priorityStr = extras.getString("priority");
+        if (priorityStr != null) {
+            try {
+                Integer priority = Integer.parseInt(priorityStr);
+                if (priority >=0 && priority <=2) {
+                    mBuilder.setPriority(priority);
+                } else {
+                    Log.e(LOG_TAG, "Priority parameter must be between 0 and 2");
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
         }
     }
 
