@@ -6,6 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Random;
 
+import org.apache.cordova.LOG;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -118,8 +119,8 @@ public class GCMIntentService extends GCMBaseIntentService {
         NotificationCompat.Builder mBuilder =
             new NotificationCompat.Builder(context)
                 .setWhen(System.currentTimeMillis())
-                .setContentTitle(getString(extras,"title"))
-                .setTicker(getString(extras,"title"))
+                .setContentTitle(getString(extras, "title"))
+                .setTicker(getString(extras, "title"))
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true);
 
@@ -136,10 +137,9 @@ public class GCMIntentService extends GCMBaseIntentService {
         /*
          * Notification Vibration
          */
-        if (vibrateOption) {
-            mBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
-        }
-        
+
+        setNotificationVibration(extras, vibrateOption, mBuilder);
+
         /*
          * Notification Icon Color
          *
@@ -185,6 +185,16 @@ public class GCMIntentService extends GCMBaseIntentService {
         }
 
         /*
+         *  LED Notification
+         */
+        setNotificationLedColor(extras, mBuilder);
+
+        /*
+         *  Priority Notification
+         */
+        setNotificationPriority(extras, mBuilder);
+
+        /*
          * Notification message
          */
         setNotificationMessage(extras, mBuilder);
@@ -206,7 +216,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
     private void createActions(Bundle extras, NotificationCompat.Builder mBuilder, Resources resources, String packageName) {
         Log.d(LOG_TAG, "create actions");
-        String actions = extras.getString("actions");
+        String actions = getString(extras, "actions");
         if (actions != null) {
             try {
                 JSONArray actionsArray = new JSONArray(actions);
@@ -229,19 +239,37 @@ public class GCMIntentService extends GCMBaseIntentService {
     }
 
     private void setNotificationCount(Bundle extras, NotificationCompat.Builder mBuilder) {
-        String msgcnt = extras.getString("msgcnt");
+        String msgcnt = getString(extras, "msgcnt");
         if (msgcnt == null) {
-            msgcnt = extras.getString("badge");
+            msgcnt = getString(extras, "badge");
         }
         if (msgcnt != null) {
             mBuilder.setNumber(Integer.parseInt(msgcnt));
         }
     }
 
+    private void setNotificationVibration(Bundle extras, Boolean vibrateOption, NotificationCompat.Builder mBuilder) {
+        String vibrationPattern = getString(extras, "vibrationPattern");
+        if (vibrationPattern != null) {
+            String[] items = vibrationPattern.replaceAll("\\[", "").replaceAll("\\]", "").split(",");
+            long[] results = new long[items.length];
+            for (int i = 0; i < items.length; i++) {
+                try {
+                    results[i] = Long.parseLong(items[i]);
+                } catch (NumberFormatException nfe) {};
+            }
+            mBuilder.setVibrate(results);
+        } else {
+            if (vibrateOption) {
+                mBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
+            }
+        }
+    }
+
     private void setNotificationMessage(Bundle extras, NotificationCompat.Builder mBuilder) {
         String message = getMessageText(extras);
 
-        String style = extras.getString("style", STYLE_TEXT);
+        String style = getString(extras, "style", STYLE_TEXT);
         if(STYLE_INBOX.equals(style)) {
             setNotification(message);
 
@@ -251,12 +279,12 @@ public class GCMIntentService extends GCMBaseIntentService {
             if (sizeList > 1) {
                 String sizeListMessage = sizeList.toString();
                 String stacking = sizeList + " more";
-                if (extras.getString("summaryText") != null) {
-                    stacking = extras.getString("summaryText");
+                if (getString(extras, "summaryText") != null) {
+                    stacking = getString(extras, "summaryText");
                     stacking = stacking.replace("%n%", sizeListMessage);
                 }
                 NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
-                        .setBigContentTitle(extras.getString("title"))
+                        .setBigContentTitle(getString(extras, "title"))
                         .setSummaryText(stacking);
 
                 for (int i = messageList.size() - 1; i >= 0; i--) {
@@ -269,11 +297,11 @@ public class GCMIntentService extends GCMBaseIntentService {
             setNotification("");
 
             NotificationCompat.BigPictureStyle bigPicture = new NotificationCompat.BigPictureStyle();
-            bigPicture.bigPicture(getBitmapFromURL(extras.getString("picture")));
-            bigPicture.setBigContentTitle(extras.getString("title"));
-            bigPicture.setSummaryText(extras.getString("summaryText"));
+            bigPicture.bigPicture(getBitmapFromURL(getString(extras, "picture")));
+            bigPicture.setBigContentTitle(getString(extras, "title"));
+            bigPicture.setSummaryText(getString(extras, "summaryText"));
 
-            mBuilder.setContentTitle(extras.getString("title"));
+            mBuilder.setContentTitle(getString(extras, "title"));
             mBuilder.setContentText(message);
 
             mBuilder.setStyle(bigPicture);
@@ -286,9 +314,9 @@ public class GCMIntentService extends GCMBaseIntentService {
                 mBuilder.setContentText(Html.fromHtml(message));
 
                 bigText.bigText(message);
-                bigText.setBigContentTitle(extras.getString("title"));
+                bigText.setBigContentTitle(getString(extras, "title"));
 
-                String summaryText = extras.getString("summaryText");
+                String summaryText = getString(extras, "summaryText");
                 if (summaryText != null) {
                     bigText.setSummaryText(summaryText);
                 }
@@ -308,8 +336,16 @@ public class GCMIntentService extends GCMBaseIntentService {
         return message;
     }
 
+    private String getString(Bundle extras,String key, String defaultString) {
+        String message = extras.getString(key, defaultString);
+        if (message == null) {
+            message = extras.getString("gcm.notification."+key, defaultString);
+        }
+        return message;
+    }
+
     private String getMessageText(Bundle extras) {
-        String message = getString(extras,"message");
+        String message = getString(extras, "message");
         if (message == null) {
             message = getString(extras,"body");
         }
@@ -317,9 +353,9 @@ public class GCMIntentService extends GCMBaseIntentService {
     }
 
     private void setNotificationSound(Context context, Bundle extras, NotificationCompat.Builder mBuilder) {
-        String soundname = getString(extras,"soundname");
+        String soundname = getString(extras, "soundname");
         if (soundname == null) {
-            soundname = getString(extras,"sound");
+            soundname = getString(extras, "sound");
         }
         if (soundname != null) {
             Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
@@ -328,6 +364,41 @@ public class GCMIntentService extends GCMBaseIntentService {
             mBuilder.setSound(sound);
         } else {
             mBuilder.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI);
+        }
+    }
+
+    private void setNotificationLedColor(Bundle extras, NotificationCompat.Builder mBuilder) {
+        String ledColor = getString(extras, "ledColor");
+        if (ledColor != null) {
+            // Converts parse Int Array from ledColor
+            String[] items = ledColor.replaceAll("\\[", "").replaceAll("\\]", "").split(",");
+            int[] results = new int[items.length];
+            for (int i = 0; i < items.length; i++) {
+                try {
+                    results[i] = Integer.parseInt(items[i]);
+                } catch (NumberFormatException nfe) {};
+            }
+            if (results.length == 4) {
+                mBuilder.setLights(Color.argb(results[0], results[1], results[2], results[3]), 500, 500);
+            } else {
+                Log.e(LOG_TAG, "ledColor parameter must be an array of length == 4 (ARGB)");
+            }
+        }
+    }
+
+    private void setNotificationPriority(Bundle extras, NotificationCompat.Builder mBuilder) {
+        String priorityStr = getString(extras, "priority");
+        if (priorityStr != null) {
+            try {
+                Integer priority = Integer.parseInt(priorityStr);
+                if (priority >= NotificationCompat.PRIORITY_MIN && priority <= NotificationCompat.PRIORITY_MAX) {
+                    mBuilder.setPriority(priority);
+                } else {
+                    Log.e(LOG_TAG, "Priority parameter must be between -2 and 2");
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -432,7 +503,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         int retval = 0;
 
         try {
-            retval = Integer.parseInt(extras.getString(value));
+            retval = Integer.parseInt(getString(extras, value));
         }
         catch(NumberFormatException e) {
             Log.e(LOG_TAG, "Number format exception - Error parsing " + value + ": " + e.getMessage());
