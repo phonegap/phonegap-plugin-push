@@ -118,8 +118,8 @@ public class GCMIntentService extends GCMBaseIntentService {
         NotificationCompat.Builder mBuilder =
             new NotificationCompat.Builder(context)
                 .setWhen(System.currentTimeMillis())
-                .setContentTitle(extras.getString("title"))
-                .setTicker(extras.getString("title"))
+                .setContentTitle(getString(extras,"title"))
+                .setTicker(getString(extras,"title"))
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true);
 
@@ -147,7 +147,7 @@ public class GCMIntentService extends GCMBaseIntentService {
          * To use, add the `iconColor` key to plugin android options
          *
          */
-        setNotificationIconColor(extras.getString("color"), mBuilder, localIconColor);
+        setNotificationIconColor(getString(extras,"color"), mBuilder, localIconColor);
 
         /*
          * Notification Icon
@@ -299,19 +299,27 @@ public class GCMIntentService extends GCMBaseIntentService {
             }
         }
     }
+    
+    private String getString(Bundle extras,String key) {
+        String message = extras.getString(key);
+        if (message == null) {
+            message = extras.getString("gcm.notification."+key);
+        }
+        return message;
+    }
 
     private String getMessageText(Bundle extras) {
-        String message = extras.getString("message");
+        String message = getString(extras,"message");
         if (message == null) {
-            message = extras.getString("body");
+            message = getString(extras,"body");
         }
         return message;
     }
 
     private void setNotificationSound(Context context, Bundle extras, NotificationCompat.Builder mBuilder) {
-        String soundname = extras.getString("soundname");
+        String soundname = getString(extras,"soundname");
         if (soundname == null) {
-            soundname = extras.getString("sound");
+            soundname = getString(extras,"sound");
         }
         if (soundname != null) {
             Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
@@ -324,7 +332,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     }
 
     private void setNotificationLargeIcon(Bundle extras, String packageName, Resources resources, NotificationCompat.Builder mBuilder) {
-        String gcmLargeIcon = extras.getString("image"); // from gcm
+        String gcmLargeIcon = getString(extras,"image"); // from gcm
         if (gcmLargeIcon != null) {
             if (gcmLargeIcon.startsWith("http://") || gcmLargeIcon.startsWith("https://")) {
                 mBuilder.setLargeIcon(getBitmapFromURL(gcmLargeIcon));
@@ -354,7 +362,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
     private void setNotificationSmallIcon(Context context, Bundle extras, String packageName, Resources resources, NotificationCompat.Builder mBuilder, String localIcon) {
         int iconId = 0;
-        String icon = extras.getString("icon");
+        String icon = getString(extras,"icon");
         if (icon != null) {
             iconId = resources.getIdentifier(icon, "drawable", packageName);
             Log.d(LOG_TAG, "using icon from plugin options");
