@@ -136,10 +136,9 @@ public class GCMIntentService extends GCMBaseIntentService {
         /*
          * Notification Vibration
          */
-        if (vibrateOption) {
-            mBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
-        }
-        
+
+        setNotificationVibration(extras, vibrateOption, mBuilder);
+
         /*
          * Notification Icon Color
          *
@@ -183,6 +182,16 @@ public class GCMIntentService extends GCMBaseIntentService {
         if (soundOption) {
             setNotificationSound(context, extras, mBuilder);
         }
+
+        /*
+         *  LED Notification
+         */
+        setNotificationLedColor(extras, mBuilder);
+
+        /*
+         *  Priority Notification
+         */
+        setNotificationPriority(extras, mBuilder);
 
         /*
          * Notification message
@@ -235,6 +244,24 @@ public class GCMIntentService extends GCMBaseIntentService {
         }
         if (msgcnt != null) {
             mBuilder.setNumber(Integer.parseInt(msgcnt));
+        }
+    }
+
+    private void setNotificationVibration(Bundle extras, Boolean vibrateOption, NotificationCompat.Builder mBuilder) {
+        String vibrationPattern = extras.getString("vibrationPattern");
+        if (vibrationPattern != null) {
+            String[] items = vibrationPattern.replaceAll("\\[", "").replaceAll("\\]", "").split(",");
+            long[] results = new long[items.length];
+            for (int i = 0; i < items.length; i++) {
+                try {
+                    results[i] = Long.parseLong(items[i]);
+                } catch (NumberFormatException nfe) {};
+            }
+            mBuilder.setVibrate(results);
+        } else {
+            if (vibrateOption) {
+                mBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
+            }
         }
     }
 
@@ -328,6 +355,41 @@ public class GCMIntentService extends GCMBaseIntentService {
             mBuilder.setSound(sound);
         } else {
             mBuilder.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI);
+        }
+    }
+
+    private void setNotificationLedColor(Bundle extras, NotificationCompat.Builder mBuilder) {
+        String ledColor = extras.getString("ledColor");
+        if (ledColor != null) {
+            // Converts parse Int Array from ledColor
+            String[] items = ledColor.replaceAll("\\[", "").replaceAll("\\]", "").split(",");
+            int[] results = new int[items.length];
+            for (int i = 0; i < items.length; i++) {
+                try {
+                    results[i] = Integer.parseInt(items[i]);
+                } catch (NumberFormatException nfe) {};
+            }
+            if (results.length == 4) {
+                mBuilder.setLights(Color.argb(results[0], results[1], results[2], results[3]), 500, 500);
+            } else {
+                Log.e(LOG_TAG, "ledColor parameter must be an array of length == 4 (ARGB)");
+            }
+        }
+    }
+
+    private void setNotificationPriority(Bundle extras, NotificationCompat.Builder mBuilder) {
+        String priorityStr = extras.getString("priority");
+        if (priorityStr != null) {
+            try {
+                Integer priority = Integer.parseInt(priorityStr);
+                if (priority >=0 && priority <=2) {
+                    mBuilder.setPriority(priority);
+                } else {
+                    Log.e(LOG_TAG, "Priority parameter must be between 0 and 2");
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
         }
     }
 
