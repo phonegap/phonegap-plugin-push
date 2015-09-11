@@ -37,7 +37,7 @@ var app = {
             "android": {
                 "senderID": "741175631277"
             },
-            "ios": {}, 
+            "ios": {"alert": "true", "badge": "true", "sound": "true"}, 
             "windows": {} 
         });
         

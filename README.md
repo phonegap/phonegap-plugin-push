@@ -37,7 +37,7 @@ cordova plugin add https://github.com/phonegap/phonegap-plugin-push
 
 ```javascript
     var push = PushNotification.init({ "android": {"senderID": "12345679"},
-         "ios": {}, "windows": {} } );
+         "ios": {"alert": "true", "badge": "true", "sound": "true"}, "windows": {} } );
 
     push.on('registration', function(data) {
         // data.registrationId
@@ -72,6 +72,9 @@ Parameter | Description
 `options.android.vibrate` | `Boolean` Optional. If `true` the device vibrates on receipt of notification. Default is `true`.
 `options.android.clearNotifications` | `Boolean` Optional. If `true` the app clears all pending notifications when it is closed. Default is `true`.
 `options.ios` | `JSON Object` iOS specific initialization options.
+`options.ios.alert` | `Boolean` Optional. If `true` the device shows an alert on receipt of notification. Default is `false`.
+`options.ios.badge` | `Boolean` Optional. If `true` the device sets the badge number on receipt of notification. Default is `false`.
+`options.ios.sound` | `Boolean` Optional. If `true` the device plays a sound on receipt of notification. Default is `false`.
 `options.windows` | `JSON Object` Windows specific initialization options.
 
 #### Returns
@@ -82,7 +85,7 @@ Parameter | Description
 
 ```javascript
     var push = PushNotification.init({ "android": {"senderID": "12345679"},
-         "ios": {}, "windows": {} } );
+         "ios": {"alert": "true", "badge": "true", "sound": "true"}, "windows": {} } );
 ```
 
 ### push.on(event, callback)
@@ -195,7 +198,7 @@ By default the icon displayed in your push notification will be your apps icon. 
 
 ```javascript
     var push = PushNotification.init({ "android": {"senderID": "12345679"},
-         "ios": {}, "windows": {} } );
+         "ios": {"alert": "true", "badge": "true", "sound": "true"}, "windows": {} } );
 ```
 
 The result will look much like this:
@@ -210,7 +213,7 @@ In order to get a better user experience you can specify an alternate icon and b
 	var push = PushNotification.init({ 
 		"android": { 
 			"senderID": "123456789", "icon": "phonegap", "iconColor": "blue"}, 
-		"ios": {}, "windows": {} 
+		"ios": {"alert": "true", "badge": "true", "sound": "true"}, "windows": {} 
 	});
 ```
 
