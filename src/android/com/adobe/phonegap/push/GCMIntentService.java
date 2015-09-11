@@ -33,6 +33,7 @@ import android.text.Html;
 import com.google.android.gcm.GCMBaseIntentService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @SuppressLint("NewApi")
 public class GCMIntentService extends GCMBaseIntentService {
@@ -41,11 +42,17 @@ public class GCMIntentService extends GCMBaseIntentService {
     private static final String STYLE_INBOX = "inbox";
     private static final String STYLE_PICTURE = "picture";
     private static final String STYLE_TEXT = "text";
-    private static ArrayList<String> messageList = new ArrayList();
+    private static HashMap<Integer, ArrayList<String>> messageMap = new HashMap<Integer, ArrayList<String>>();
 
-    public void setNotification(String message){
 
-        if(message == ""){
+    public void setNotification(int notId, String message){
+        ArrayList<String> messageList = messageMap.get(notId);
+        if(messageList == null) {
+            messageList = new ArrayList<String>();
+            messageMap.put(notId, messageList);
+        }
+
+        if(message.isEmpty()){
             messageList.clear();
         }else{
             messageList.add(message);
@@ -109,20 +116,22 @@ public class GCMIntentService extends GCMBaseIntentService {
         String packageName = context.getPackageName();
         Resources resources = context.getResources();
 
+        int notId = parseInt("notId", extras);
         Intent notificationIntent = new Intent(this, PushHandlerActivity.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         notificationIntent.putExtra("pushBundle", extras);
+        notificationIntent.putExtra("notId", notId);
 
         int requestCode = new Random().nextInt();
         PendingIntent contentIntent = PendingIntent.getActivity(this, requestCode, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder =
-            new NotificationCompat.Builder(context)
-                .setWhen(System.currentTimeMillis())
-                .setContentTitle(getString(extras, "title"))
-                .setTicker(getString(extras, "title"))
-                .setContentIntent(contentIntent)
-                .setAutoCancel(true);
+                new NotificationCompat.Builder(context)
+                        .setWhen(System.currentTimeMillis())
+                        .setContentTitle(getString(extras, "title"))
+                        .setTicker(getString(extras, "title"))
+                        .setContentIntent(contentIntent)
+                        .setAutoCancel(true);
 
         SharedPreferences prefs = context.getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
         String localIcon = prefs.getString("icon", null);
@@ -197,7 +206,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         /*
          * Notification message
          */
-        setNotificationMessage(extras, mBuilder);
+        setNotificationMessage(notId, extras, mBuilder);
 
         /*
          * Notification count
@@ -208,8 +217,6 @@ public class GCMIntentService extends GCMBaseIntentService {
          * Notication add actions
          */
         createActions(extras, mBuilder, resources, packageName);
-
-        int notId = parseInt("notId", extras);
 
         mNotificationManager.notify((String) appName, notId, mBuilder.build());
     }
@@ -266,15 +273,16 @@ public class GCMIntentService extends GCMBaseIntentService {
         }
     }
 
-    private void setNotificationMessage(Bundle extras, NotificationCompat.Builder mBuilder) {
+    private void setNotificationMessage(int notId, Bundle extras, NotificationCompat.Builder mBuilder) {
         String message = getMessageText(extras);
 
         String style = getString(extras, "style", STYLE_TEXT);
         if(STYLE_INBOX.equals(style)) {
-            setNotification(message);
+            setNotification(notId, message);
 
             mBuilder.setContentText(message);
 
+            ArrayList<String> messageList = messageMap.get(notId);
             Integer sizeList = messageList.size();
             if (sizeList > 1) {
                 String sizeListMessage = sizeList.toString();
@@ -294,7 +302,7 @@ public class GCMIntentService extends GCMBaseIntentService {
                 mBuilder.setStyle(notificationInbox);
             }
         } else if (STYLE_PICTURE.equals(style)) {
-            setNotification("");
+            setNotification(notId, "");
 
             NotificationCompat.BigPictureStyle bigPicture = new NotificationCompat.BigPictureStyle();
             bigPicture.bigPicture(getBitmapFromURL(getString(extras, "picture")));
@@ -306,7 +314,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
             mBuilder.setStyle(bigPicture);
         } else {
-            setNotification("");
+            setNotification(notId, "");
 
             NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
 
@@ -327,7 +335,7 @@ public class GCMIntentService extends GCMBaseIntentService {
             }
         }
     }
-    
+
     private String getString(Bundle extras,String key) {
         String message = extras.getString(key);
         if (message == null) {
@@ -337,7 +345,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     }
 
     private String getString(Bundle extras,String key, String defaultString) {
-        String message = extras.getString(key, defaultString);
+        String message = extras.getString(key);
         if (message == null) {
             message = extras.getString("gcm.notification."+key, defaultString);
         }
@@ -359,7 +367,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         }
         if (soundname != null) {
             Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
-                        + "://" + context.getPackageName() + "/raw/" + soundname);
+                    + "://" + context.getPackageName() + "/raw/" + soundname);
             Log.d(LOG_TAG, sound.toString());
             mBuilder.setSound(sound);
         } else {
