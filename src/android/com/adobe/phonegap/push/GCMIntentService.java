@@ -345,7 +345,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     }
 
     private String getString(Bundle extras,String key, String defaultString) {
-        String message = extras.getString(key, defaultString);
+        String message = extras.getString(key);
         if (message == null) {
             message = extras.getString("gcm.notification."+key, defaultString);
         }
