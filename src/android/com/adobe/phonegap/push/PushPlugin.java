@@ -65,8 +65,12 @@ public class PushPlugin extends CordovaPlugin {
                 gSenderID = jo.getString("senderID");
 
                 Log.v(LOG_TAG, "execute: senderID=" + gSenderID);
-
-                GCMRegistrar.register(getApplicationContext(), gSenderID);
+                
+                boolean registered = GCMRegistrar.isRegistered(getApplicationContext());
+                if (!registered) {
+                    GCMRegistrar.register(getApplicationContext(), gSenderID);
+                }
+                
                 result = true;
             } catch (JSONException e) {
                 Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
