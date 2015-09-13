@@ -1,16 +1,5 @@
 package com.adobe.phonegap.push;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Random;
-
-import org.apache.cordova.LOG;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -27,23 +16,28 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.text.Html;
+import android.util.Log;
 
 import com.google.android.gcm.GCMBaseIntentService;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 @SuppressLint("NewApi")
-public class GCMIntentService extends GCMBaseIntentService {
+public class GCMIntentService extends GCMBaseIntentService implements PushConstants {
 
     private static final String LOG_TAG = "PushPlugin_GCMIntentService";
-    private static final String STYLE_INBOX = "inbox";
-    private static final String STYLE_PICTURE = "picture";
-    private static final String STYLE_TEXT = "text";
     private static HashMap<Integer, ArrayList<String>> messageMap = new HashMap<Integer, ArrayList<String>>();
-
 
     public void setNotification(int notId, String message){
         ArrayList<String> messageList = messageMap.get(notId);
@@ -69,7 +63,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         Log.v(LOG_TAG, "onRegistered: " + regId);
 
         try {
-            JSONObject json = new JSONObject().put("registrationId", regId);
+            JSONObject json = new JSONObject().put(REGISTRATION_ID, regId);
 
             Log.v(LOG_TAG, "onRegistered: " + json.toString());
 
@@ -95,15 +89,17 @@ public class GCMIntentService extends GCMBaseIntentService {
         if (extras != null) {
             // if we are in the foreground, just surface the payload, else post it to the statusbar
             if (PushPlugin.isInForeground()) {
-                extras.putBoolean("foreground", true);
+                extras.putBoolean(FOREGROUND, true);
                 PushPlugin.sendExtras(extras);
             }
             else {
-                extras.putBoolean("foreground", false);
+                extras.putBoolean(FOREGROUND, false);
 
                 // Send a notification if there is a message
                 String message = this.getMessageText(extras);
-                if (message != null && message.length() != 0) {
+                String title = getString(extras, TITLE, "");
+                if ((message != null && message.length() != 0) ||
+                        (title != null && title.length() != 0)) {
                     createNotification(context, extras);
                 }
             }
@@ -116,11 +112,11 @@ public class GCMIntentService extends GCMBaseIntentService {
         String packageName = context.getPackageName();
         Resources resources = context.getResources();
 
-        int notId = parseInt("notId", extras);
+        int notId = parseInt(NOT_ID, extras);
         Intent notificationIntent = new Intent(this, PushHandlerActivity.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        notificationIntent.putExtra("pushBundle", extras);
-        notificationIntent.putExtra("notId", notId);
+        notificationIntent.putExtra(PUSH_BUNDLE, extras);
+        notificationIntent.putExtra(NOT_ID, notId);
 
         int requestCode = new Random().nextInt();
         PendingIntent contentIntent = PendingIntent.getActivity(this, requestCode, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -128,16 +124,16 @@ public class GCMIntentService extends GCMBaseIntentService {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setWhen(System.currentTimeMillis())
-                        .setContentTitle(getString(extras, "title"))
-                        .setTicker(getString(extras, "title"))
+                        .setContentTitle(getString(extras, TITLE))
+                        .setTicker(getString(extras, TITLE))
                         .setContentIntent(contentIntent)
                         .setAutoCancel(true);
 
         SharedPreferences prefs = context.getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
-        String localIcon = prefs.getString("icon", null);
-        String localIconColor = prefs.getString("iconColor", null);
-        boolean soundOption = prefs.getBoolean("sound", true);
-        boolean vibrateOption = prefs.getBoolean("vibrate", true);
+        String localIcon = prefs.getString(ICON, null);
+        String localIconColor = prefs.getString(ICON_COLOR, null);
+        boolean soundOption = prefs.getBoolean(SOUND, true);
+        boolean vibrateOption = prefs.getBoolean(VIBRATE, true);
         Log.d(LOG_TAG, "stored icon=" + localIcon);
         Log.d(LOG_TAG, "stored iconColor=" + localIconColor);
         Log.d(LOG_TAG, "stored sound=" + soundOption);
@@ -218,26 +214,26 @@ public class GCMIntentService extends GCMBaseIntentService {
          */
         createActions(extras, mBuilder, resources, packageName);
 
-        mNotificationManager.notify((String) appName, notId, mBuilder.build());
+        mNotificationManager.notify(appName, notId, mBuilder.build());
     }
 
     private void createActions(Bundle extras, NotificationCompat.Builder mBuilder, Resources resources, String packageName) {
         Log.d(LOG_TAG, "create actions");
-        String actions = getString(extras, "actions");
+        String actions = getString(extras, ACTIONS);
         if (actions != null) {
             try {
                 JSONArray actionsArray = new JSONArray(actions);
                 for (int i=0; i < actionsArray.length(); i++) {
                     Log.d(LOG_TAG, "adding action");
                     JSONObject action = actionsArray.getJSONObject(i);
-                    Log.d(LOG_TAG, "adding callback = " + action.getString("callback"));
+                    Log.d(LOG_TAG, "adding callback = " + action.getString(CALLBACK));
                     Intent intent = new Intent(this, PushHandlerActivity.class);
-                    intent.putExtra("callback", action.getString("callback"));
-                    intent.putExtra("pushBundle", extras);
+                    intent.putExtra(CALLBACK, action.getString(CALLBACK));
+                    intent.putExtra(PUSH_BUNDLE, extras);
                     PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                    mBuilder.addAction(resources.getIdentifier(action.getString("icon"), "drawable", packageName),
-                            action.getString("title"), pIntent);
+                    mBuilder.addAction(resources.getIdentifier(action.getString(ICON), DRAWABLE, packageName),
+                            action.getString(TITLE), pIntent);
                 }
             } catch(JSONException e) {
                 // nope
@@ -246,9 +242,9 @@ public class GCMIntentService extends GCMBaseIntentService {
     }
 
     private void setNotificationCount(Bundle extras, NotificationCompat.Builder mBuilder) {
-        String msgcnt = getString(extras, "msgcnt");
+        String msgcnt = getString(extras, MSGCNT);
         if (msgcnt == null) {
-            msgcnt = getString(extras, "badge");
+            msgcnt = getString(extras, BADGE);
         }
         if (msgcnt != null) {
             mBuilder.setNumber(Integer.parseInt(msgcnt));
@@ -256,14 +252,14 @@ public class GCMIntentService extends GCMBaseIntentService {
     }
 
     private void setNotificationVibration(Bundle extras, Boolean vibrateOption, NotificationCompat.Builder mBuilder) {
-        String vibrationPattern = getString(extras, "vibrationPattern");
+        String vibrationPattern = getString(extras, VIBRATION_PATTERN);
         if (vibrationPattern != null) {
             String[] items = vibrationPattern.replaceAll("\\[", "").replaceAll("\\]", "").split(",");
             long[] results = new long[items.length];
             for (int i = 0; i < items.length; i++) {
                 try {
                     results[i] = Long.parseLong(items[i]);
-                } catch (NumberFormatException nfe) {};
+                } catch (NumberFormatException nfe) {}
             }
             mBuilder.setVibrate(results);
         } else {
@@ -276,7 +272,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     private void setNotificationMessage(int notId, Bundle extras, NotificationCompat.Builder mBuilder) {
         String message = getMessageText(extras);
 
-        String style = getString(extras, "style", STYLE_TEXT);
+        String style = getString(extras, STYLE, STYLE_TEXT);
         if(STYLE_INBOX.equals(style)) {
             setNotification(notId, message);
 
@@ -287,12 +283,12 @@ public class GCMIntentService extends GCMBaseIntentService {
             if (sizeList > 1) {
                 String sizeListMessage = sizeList.toString();
                 String stacking = sizeList + " more";
-                if (getString(extras, "summaryText") != null) {
-                    stacking = getString(extras, "summaryText");
+                if (getString(extras, SUMMARY_TEXT) != null) {
+                    stacking = getString(extras, SUMMARY_TEXT);
                     stacking = stacking.replace("%n%", sizeListMessage);
                 }
                 NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
-                        .setBigContentTitle(getString(extras, "title"))
+                        .setBigContentTitle(getString(extras, TITLE))
                         .setSummaryText(stacking);
 
                 for (int i = messageList.size() - 1; i >= 0; i--) {
@@ -305,11 +301,11 @@ public class GCMIntentService extends GCMBaseIntentService {
             setNotification(notId, "");
 
             NotificationCompat.BigPictureStyle bigPicture = new NotificationCompat.BigPictureStyle();
-            bigPicture.bigPicture(getBitmapFromURL(getString(extras, "picture")));
-            bigPicture.setBigContentTitle(getString(extras, "title"));
-            bigPicture.setSummaryText(getString(extras, "summaryText"));
+            bigPicture.bigPicture(getBitmapFromURL(getString(extras, PICTURE)));
+            bigPicture.setBigContentTitle(getString(extras, TITLE));
+            bigPicture.setSummaryText(getString(extras, SUMMARY_TEXT));
 
-            mBuilder.setContentTitle(getString(extras, "title"));
+            mBuilder.setContentTitle(getString(extras, TITLE));
             mBuilder.setContentText(message);
 
             mBuilder.setStyle(bigPicture);
@@ -322,24 +318,27 @@ public class GCMIntentService extends GCMBaseIntentService {
                 mBuilder.setContentText(Html.fromHtml(message));
 
                 bigText.bigText(message);
-                bigText.setBigContentTitle(getString(extras, "title"));
+                bigText.setBigContentTitle(getString(extras, TITLE));
 
-                String summaryText = getString(extras, "summaryText");
+                String summaryText = getString(extras, SUMMARY_TEXT);
                 if (summaryText != null) {
                     bigText.setSummaryText(summaryText);
                 }
 
                 mBuilder.setStyle(bigText);
-            } else {
+            }
+            /*
+            else {
                 mBuilder.setContentText("<missing message content>");
             }
+            */
         }
     }
 
     private String getString(Bundle extras,String key) {
         String message = extras.getString(key);
         if (message == null) {
-            message = extras.getString("gcm.notification."+key);
+            message = extras.getString(GCM_NOTIFICATION+"."+key);
         }
         return message;
     }
@@ -347,23 +346,23 @@ public class GCMIntentService extends GCMBaseIntentService {
     private String getString(Bundle extras,String key, String defaultString) {
         String message = extras.getString(key);
         if (message == null) {
-            message = extras.getString("gcm.notification."+key, defaultString);
+            message = extras.getString(GCM_NOTIFICATION+"."+key, defaultString);
         }
         return message;
     }
 
     private String getMessageText(Bundle extras) {
-        String message = getString(extras, "message");
+        String message = getString(extras, MESSAGE);
         if (message == null) {
-            message = getString(extras,"body");
+            message = getString(extras, BODY);
         }
         return message;
     }
 
     private void setNotificationSound(Context context, Bundle extras, NotificationCompat.Builder mBuilder) {
-        String soundname = getString(extras, "soundname");
+        String soundname = getString(extras, SOUNDNAME);
         if (soundname == null) {
-            soundname = getString(extras, "sound");
+            soundname = getString(extras, SOUND);
         }
         if (soundname != null) {
             Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
@@ -376,7 +375,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     }
 
     private void setNotificationLedColor(Bundle extras, NotificationCompat.Builder mBuilder) {
-        String ledColor = getString(extras, "ledColor");
+        String ledColor = getString(extras, LED_COLOR);
         if (ledColor != null) {
             // Converts parse Int Array from ledColor
             String[] items = ledColor.replaceAll("\\[", "").replaceAll("\\]", "").split(",");
@@ -384,7 +383,7 @@ public class GCMIntentService extends GCMBaseIntentService {
             for (int i = 0; i < items.length; i++) {
                 try {
                     results[i] = Integer.parseInt(items[i]);
-                } catch (NumberFormatException nfe) {};
+                } catch (NumberFormatException nfe) {}
             }
             if (results.length == 4) {
                 mBuilder.setLights(Color.argb(results[0], results[1], results[2], results[3]), 500, 500);
@@ -395,7 +394,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     }
 
     private void setNotificationPriority(Bundle extras, NotificationCompat.Builder mBuilder) {
-        String priorityStr = getString(extras, "priority");
+        String priorityStr = getString(extras, PRIORITY);
         if (priorityStr != null) {
             try {
                 Integer priority = Integer.parseInt(priorityStr);
@@ -411,7 +410,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     }
 
     private void setNotificationLargeIcon(Bundle extras, String packageName, Resources resources, NotificationCompat.Builder mBuilder) {
-        String gcmLargeIcon = getString(extras,"image"); // from gcm
+        String gcmLargeIcon = getString(extras, IMAGE); // from gcm
         if (gcmLargeIcon != null) {
             if (gcmLargeIcon.startsWith("http://") || gcmLargeIcon.startsWith("https://")) {
                 mBuilder.setLargeIcon(getBitmapFromURL(gcmLargeIcon));
@@ -426,7 +425,7 @@ public class GCMIntentService extends GCMBaseIntentService {
                     Log.d(LOG_TAG, "using assets large-icon from gcm");
                 } catch (IOException e) {
                     int largeIconId = 0;
-                    largeIconId = resources.getIdentifier(gcmLargeIcon, "drawable", packageName);
+                    largeIconId = resources.getIdentifier(gcmLargeIcon, DRAWABLE, packageName);
                     if (largeIconId != 0) {
                         Bitmap largeIconBitmap = BitmapFactory.decodeResource(resources, largeIconId);
                         mBuilder.setLargeIcon(largeIconBitmap);
@@ -441,13 +440,13 @@ public class GCMIntentService extends GCMBaseIntentService {
 
     private void setNotificationSmallIcon(Context context, Bundle extras, String packageName, Resources resources, NotificationCompat.Builder mBuilder, String localIcon) {
         int iconId = 0;
-        String icon = getString(extras,"icon");
+        String icon = getString(extras, ICON);
         if (icon != null) {
-            iconId = resources.getIdentifier(icon, "drawable", packageName);
+            iconId = resources.getIdentifier(icon, DRAWABLE, packageName);
             Log.d(LOG_TAG, "using icon from plugin options");
         }
         else if (localIcon != null) {
-            iconId = resources.getIdentifier(localIcon, "drawable", packageName);
+            iconId = resources.getIdentifier(localIcon, DRAWABLE, packageName);
             Log.d(LOG_TAG, "using icon from plugin options");
         }
         if (iconId == 0) {
@@ -485,8 +484,7 @@ public class GCMIntentService extends GCMBaseIntentService {
             connection.setDoInput(true);
             connection.connect();
             InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
+            return BitmapFactory.decodeStream(input);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

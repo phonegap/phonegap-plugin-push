@@ -8,8 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
-public class PushHandlerActivity extends Activity
-{
+public class PushHandlerActivity extends Activity implements PushConstants {
     private static String LOG_TAG = "PushPlugin_PushHandlerActivity";
 
     /*
@@ -21,7 +20,7 @@ public class PushHandlerActivity extends Activity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         GCMIntentService gcm = new GCMIntentService();
-        gcm.setNotification(getIntent().getIntExtra("notId", 0), "");
+        gcm.setNotification(getIntent().getIntExtra(NOT_ID, 0), "");
         super.onCreate(savedInstanceState);
         Log.v(LOG_TAG, "onCreate");
 
@@ -43,11 +42,11 @@ public class PushHandlerActivity extends Activity
         Bundle extras = getIntent().getExtras();
 
         if (extras != null)	{
-            Bundle originalExtras = extras.getBundle("pushBundle");
+            Bundle originalExtras = extras.getBundle(PUSH_BUNDLE);
 
-            originalExtras.putBoolean("foreground", false);
-            originalExtras.putBoolean("coldstart", !isPushPluginActive);
-            originalExtras.putString("callback", getIntent().getExtras().getString("callback"));
+            originalExtras.putBoolean(FOREGROUND, false);
+            originalExtras.putBoolean(COLDSTART, !isPushPluginActive);
+            originalExtras.putString(CALLBACK, getIntent().getExtras().getString("callback"));
 
             PushPlugin.sendExtras(originalExtras);
         }
