@@ -27,6 +27,7 @@ public class PushPlugin extends CordovaPlugin {
     public static final String INITIALIZE = "init";
     public static final String UNREGISTER = "unregister";
     public static final String EXIT = "exit";
+    public static final String GCM_NOTIFICATION = "gcm.notification";
 
     private static CallbackContext pushContext;
     private static CordovaWebView gWebView;
@@ -186,6 +187,9 @@ public class PushPlugin extends CordovaPlugin {
                 Object value = extras.get(key);
                  
                 Log.d(LOG_TAG, "key = " + key);
+                if (key.startsWith(GCM_NOTIFICATION)) {
+                    key = key.substring(GCM_NOTIFICATION.length()+1, key.length());
+                }
 
                 // System data from Android
                 if (key.equals("from") || key.equals("collapse_key")) {
@@ -196,21 +200,15 @@ public class PushPlugin extends CordovaPlugin {
                 }
                 else if (key.equals("coldstart")){
                     additionalData.put(key, extras.getBoolean("coldstart"));
-                } else if (key.equals("message") || key.equals("body") ||
-                        key.equals("gcm.notification.message") || 
-                        key.equals("gcm.notification.body")) {
+                } else if (key.equals("message") || key.equals("body")) {
                     json.put("message", value);
-                } else if (key.equals("title") || key.equals("gcm.notification.title")) {
+                } else if (key.equals("title")) {
                     json.put("title", value);
-                } else if (key.equals("msgcnt") || key.equals("badge") ||
-                           key.equals("gcm.notification.msgcnt") || 
-                           key.equals("gcm.notification.badge")) {
+                } else if (key.equals("msgcnt") || key.equals("badge")) {
                     json.put("count", value);
-                } else if (key.equals("soundname") || key.equals("sound") ||
-                           key.equals("gcm.notification.soundname") || 
-                           key.equals("gcm.notification.sound")) {
+                } else if (key.equals("soundname") || key.equals("sound")) {
                     json.put("sound", value);
-                } else if (key.equals("image") || key.equals("gcm.notification.image")) {
+                } else if (key.equals("image")) {
                     json.put("image", value);
                 } else if (key.equals("callback")) {
                     json.put("callback", value);
