@@ -183,7 +183,7 @@
 - (void)notificationReceived {
     NSLog(@"Notification received");
     
-    if (notificationMessage)
+    if (notificationMessage && self.callbackId != nil)
     {
         NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:4];
         NSMutableDictionary* additionalData = [NSMutableDictionary dictionaryWithCapacity:4];
