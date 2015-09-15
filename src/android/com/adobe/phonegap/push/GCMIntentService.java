@@ -296,6 +296,13 @@ public class GCMIntentService extends GCMBaseIntentService implements PushConsta
                 }
 
                 mBuilder.setStyle(notificationInbox);
+            } else {
+                NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
+                if (message != null) {
+                    bigText.bigText(message);
+                    bigText.setBigContentTitle(getString(extras, TITLE));
+                    mBuilder.setStyle(bigText);
+                }
             }
         } else if (STYLE_PICTURE.equals(style)) {
             setNotification(notId, "");
