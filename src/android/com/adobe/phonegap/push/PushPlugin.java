@@ -19,21 +19,14 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 
-public class PushPlugin extends CordovaPlugin {
-    public static final String COM_ADOBE_PHONEGAP_PUSH = "com.adobe.phonegap.push";
+public class PushPlugin extends CordovaPlugin implements PushConstants {
 
     public static final String LOG_TAG = "PushPlugin";
 
-    public static final String INITIALIZE = "init";
-    public static final String UNREGISTER = "unregister";
-    public static final String EXIT = "exit";
-
     private static CallbackContext pushContext;
     private static CordovaWebView gWebView;
-    private static String gSenderID;
     private static Bundle gCachedExtras = null;
     private static boolean gForeground = false;
-    private static String gCallback = null;
 
     /**
      * Gets the application context from cordova's main activity.
@@ -57,16 +50,16 @@ public class PushPlugin extends CordovaPlugin {
             Log.v(LOG_TAG, "execute: data=" + data.toString());
 
             try {
-                jo = data.getJSONObject(0).getJSONObject("android");
+                jo = data.getJSONObject(0).getJSONObject(ANDROID);
 
                 gWebView = this.webView;
                 Log.v(LOG_TAG, "execute: jo=" + jo.toString());
 
-                gSenderID = jo.getString("senderID");
+                String senderID = jo.getString(SENDER_ID);
 
-                Log.v(LOG_TAG, "execute: senderID=" + gSenderID);
+                Log.v(LOG_TAG, "execute: senderID=" + senderID);
 
-                GCMRegistrar.register(getApplicationContext(), gSenderID);
+                GCMRegistrar.register(getApplicationContext(), senderID);
                 result = true;
             } catch (JSONException e) {
                 Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
@@ -78,18 +71,18 @@ public class PushPlugin extends CordovaPlugin {
                 SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 try {
-                    editor.putString("icon", jo.getString("icon"));
+                    editor.putString(ICON, jo.getString(ICON));
                 } catch (JSONException e) {
                     Log.d(LOG_TAG, "no icon option");
                 }
                 try {
-                    editor.putString("iconColor", jo.getString("iconColor"));
+                    editor.putString(ICON_COLOR, jo.getString(ICON_COLOR));
                 } catch (JSONException e) {
                     Log.d(LOG_TAG, "no iconColor option");
                 }
-                editor.putBoolean("sound", jo.optBoolean("sound", true));
-                editor.putBoolean("vibrate", jo.optBoolean("vibrate", true));
-                editor.putBoolean("clearNotifications", jo.optBoolean("clearNotifications", true));
+                editor.putBoolean(SOUND, jo.optBoolean(SOUND, true));
+                editor.putBoolean(VIBRATE, jo.optBoolean(VIBRATE, true));
+                editor.putBoolean(CLEAR_NOTIFICATIONS, jo.optBoolean(CLEAR_NOTIFICATIONS, true));
                 editor.commit();
             }
 
@@ -153,8 +146,8 @@ public class PushPlugin extends CordovaPlugin {
         super.onPause(multitasking);
         gForeground = false;
 
-        SharedPreferences prefs = getApplicationContext().getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
-        if (prefs.getBoolean("clearNotifications", true)) {
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
+        if (prefs.getBoolean(CLEAR_NOTIFICATIONS, true)) {
             final NotificationManager notificationManager = (NotificationManager) cordova.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancelAll();
         }
@@ -186,34 +179,31 @@ public class PushPlugin extends CordovaPlugin {
                 Object value = extras.get(key);
                  
                 Log.d(LOG_TAG, "key = " + key);
+                if (key.startsWith(GCM_NOTIFICATION)) {
+                    key = key.substring(GCM_NOTIFICATION.length()+1, key.length());
+                }
 
                 // System data from Android
-                if (key.equals("from") || key.equals("collapse_key")) {
+                if (key.equals(FROM) || key.equals(COLLAPSE_KEY)) {
                     additionalData.put(key, value);
                 }
-                else if (key.equals("foreground")) {
-                    additionalData.put(key, extras.getBoolean("foreground"));
+                else if (key.equals(FOREGROUND)) {
+                    additionalData.put(key, extras.getBoolean(FOREGROUND));
                 }
-                else if (key.equals("coldstart")){
-                    additionalData.put(key, extras.getBoolean("coldstart"));
-                } else if (key.equals("message") || key.equals("body") ||
-                        key.equals("gcm.notification.message") || 
-                        key.equals("gcm.notification.body")) {
-                    json.put("message", value);
-                } else if (key.equals("title") || key.equals("gcm.notification.title")) {
-                    json.put("title", value);
-                } else if (key.equals("msgcnt") || key.equals("badge") ||
-                           key.equals("gcm.notification.msgcnt") || 
-                           key.equals("gcm.notification.badge")) {
-                    json.put("count", value);
-                } else if (key.equals("soundname") || key.equals("sound") ||
-                           key.equals("gcm.notification.soundname") || 
-                           key.equals("gcm.notification.sound")) {
-                    json.put("sound", value);
-                } else if (key.equals("image") || key.equals("gcm.notification.image")) {
-                    json.put("image", value);
-                } else if (key.equals("callback")) {
-                    json.put("callback", value);
+                else if (key.equals(COLDSTART)){
+                    additionalData.put(key, extras.getBoolean(COLDSTART));
+                } else if (key.equals(MESSAGE) || key.equals(BODY)) {
+                    json.put(MESSAGE, value);
+                } else if (key.equals(TITLE)) {
+                    json.put(TITLE, value);
+                } else if (key.equals(MSGCNT) || key.equals(BADGE)) {
+                    json.put(COUNT, value);
+                } else if (key.equals(SOUNDNAME) || key.equals(SOUND)) {
+                    json.put(SOUND, value);
+                } else if (key.equals(IMAGE)) {
+                    json.put(IMAGE, value);
+                } else if (key.equals(CALLBACK)) {
+                    json.put(CALLBACK, value);
                 }
                 else if ( value instanceof String ) {
                     String strValue = (String)value;
@@ -235,7 +225,7 @@ public class PushPlugin extends CordovaPlugin {
                 }
             } // while
             
-            json.put("additionalData", additionalData);
+            json.put(ADDITIONAL_DATA, additionalData);
             Log.v(LOG_TAG, "extrasToJSON: " + json.toString());
 
             return json;

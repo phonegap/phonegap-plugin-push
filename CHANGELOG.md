@@ -1,5 +1,50 @@
 # Change Log
 
+## [1.2.3](https://github.com/phonegap/phonegap-plugin-push/tree/1.2.3) (2015-09-08)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.2.2...1.2.3)
+
+**Fixed bugs:**
+
+- Notification not showing..... [\#101](https://github.com/phonegap/phonegap-plugin-push/issues/101)
+- Same data payload for messages with action buttons [\#90](https://github.com/phonegap/phonegap-plugin-push/issues/90)
+
+**Closed issues:**
+
+- Using the framework syntax to embed libraries via gradle? [\#113](https://github.com/phonegap/phonegap-plugin-push/issues/113)
+- Notification doesn't show the app icon [\#112](https://github.com/phonegap/phonegap-plugin-push/issues/112)
+- Notification doesn't show the app icon [\#111](https://github.com/phonegap/phonegap-plugin-push/issues/111)
+- Background Notifications on iOS [\#109](https://github.com/phonegap/phonegap-plugin-push/issues/109)
+- Cordova Support [\#99](https://github.com/phonegap/phonegap-plugin-push/issues/99)
+- Uncaught ReferenceError: cordova is not defined, http://localhost:8100/lib/push.js, Line: 7 [\#98](https://github.com/phonegap/phonegap-plugin-push/issues/98)
+- Notifications never received on Android [\#96](https://github.com/phonegap/phonegap-plugin-push/issues/96)
+- How know the way the app was launched [\#95](https://github.com/phonegap/phonegap-plugin-push/issues/95)
+- Android, example doesn't work when it goes into background [\#94](https://github.com/phonegap/phonegap-plugin-push/issues/94)
+- Utilizing push plugin [\#91](https://github.com/phonegap/phonegap-plugin-push/issues/91)
+
+## [1.2.2](https://github.com/phonegap/phonegap-plugin-push/tree/1.2.2) (2015-08-31)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.2.1...1.2.2)
+
+**Closed issues:**
+
+- PushPlugin notification icon is too big [\#88](https://github.com/phonegap/phonegap-plugin-push/issues/88)
+
+## [1.2.1](https://github.com/phonegap/phonegap-plugin-push/tree/1.2.1) (2015-08-31)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.2.0...1.2.1)
+
+**Implemented enhancements:**
+
+- Question about GCM Notifications and data in the message payload [\#87](https://github.com/phonegap/phonegap-plugin-push/issues/87)
+
+**Fixed bugs:**
+
+- Notification callback for pushes without a message [\#80](https://github.com/phonegap/phonegap-plugin-push/issues/80)
+- GCM notifications do not work due to wrong notification payload keys [\#54](https://github.com/phonegap/phonegap-plugin-push/issues/54)
+
+**Closed issues:**
+
+- Android: No notification displayed on device. Notification event never called. [\#86](https://github.com/phonegap/phonegap-plugin-push/issues/86)
+- xcode error: libobjc.A.dylib`objc\_msgSend [\#84](https://github.com/phonegap/phonegap-plugin-push/issues/84)
+
 ## [1.2.0](https://github.com/phonegap/phonegap-plugin-push/tree/1.2.0) (2015-08-25)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.1.1...1.2.0)
 
@@ -25,11 +70,6 @@
 - Android: add property to vibrate phone on received notification [\#61](https://github.com/phonegap/phonegap-plugin-push/issues/61)
 - push.on =\> "registration" will trigger twice times that only in iOS [\#57](https://github.com/phonegap/phonegap-plugin-push/issues/57)
 - Publish plugin to PhoneGap Build [\#22](https://github.com/phonegap/phonegap-plugin-push/issues/22)
-
-**Merged pull requests:**
-
-- usage typo [\#60](https://github.com/phonegap/phonegap-plugin-push/pull/60) ([ericb](https://github.com/ericb))
-- Updating example to sync with docs [\#52](https://github.com/phonegap/phonegap-plugin-push/pull/52) ([rakatyal](https://github.com/rakatyal))
 
 ## [1.1.1](https://github.com/phonegap/phonegap-plugin-push/tree/1.1.1) (2015-07-27)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.1.0...1.1.1)
@@ -59,39 +99,11 @@
 - PushNotification not defined [\#21](https://github.com/phonegap/phonegap-plugin-push/issues/21)
 - Error trying to remove the plugin [\#19](https://github.com/phonegap/phonegap-plugin-push/issues/19)
 - Handling multiple notifications on Android devices  [\#12](https://github.com/phonegap/phonegap-plugin-push/issues/12)
-- PGB \(build.phonegap.com\) problem [\#11](https://github.com/phonegap/phonegap-plugin-push/issues/11)
-- reporting location via gcm [\#6](https://github.com/phonegap/phonegap-plugin-push/issues/6)
-
-**Merged pull requests:**
-
-- Updating Readme to document toast capable setting [\#47](https://github.com/phonegap/phonegap-plugin-push/pull/47) ([rakatyal](https://github.com/rakatyal))
-- fix issue \#41 [\#44](https://github.com/phonegap/phonegap-plugin-push/pull/44) ([Deminetix](https://github.com/Deminetix))
-- fix issue \#42 [\#43](https://github.com/phonegap/phonegap-plugin-push/pull/43) ([Deminetix](https://github.com/Deminetix))
-- Adding hyperlinks to README [\#40](https://github.com/phonegap/phonegap-plugin-push/pull/40) ([rakatyal](https://github.com/rakatyal))
-- Updating Readme [\#37](https://github.com/phonegap/phonegap-plugin-push/pull/37) ([rakatyal](https://github.com/rakatyal))
-- Adding windows support to plugin [\#36](https://github.com/phonegap/phonegap-plugin-push/pull/36) ([rakatyal](https://github.com/rakatyal))
-- Raghav/update [\#35](https://github.com/phonegap/phonegap-plugin-push/pull/35) ([rakatyal](https://github.com/rakatyal))
-- Adding behavior for different notification types [\#28](https://github.com/phonegap/phonegap-plugin-push/pull/28) ([rakatyal](https://github.com/rakatyal))
-- Initial commit to add support for windows universal platform [\#15](https://github.com/phonegap/phonegap-plugin-push/pull/15) ([rakatyal](https://github.com/rakatyal))
 
 ## [1.0.1](https://github.com/phonegap/phonegap-plugin-push/tree/1.0.1) (2015-06-08)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.0.0...1.0.1)
 
-**Closed issues:**
-
-- documentation "senderId" correction [\#10](https://github.com/phonegap/phonegap-plugin-push/issues/10)
-- add to our ci page [\#9](https://github.com/phonegap/phonegap-plugin-push/issues/9)
-- Update installation instructions [\#7](https://github.com/phonegap/phonegap-plugin-push/issues/7)
-
 ## [1.0.0](https://github.com/phonegap/phonegap-plugin-push/tree/1.0.0) (2015-06-05)
-**Closed issues:**
-
-- Update code using enabledRemoteNotificationTypes because it is “not supported in iOS 8” [\#8](https://github.com/phonegap/phonegap-plugin-push/issues/8)
-- Register method not working [\#4](https://github.com/phonegap/phonegap-plugin-push/issues/4)
-- Publish plugin to npm [\#3](https://github.com/phonegap/phonegap-plugin-push/issues/3)
-- Update example to use new API [\#2](https://github.com/phonegap/phonegap-plugin-push/issues/2)
-- Lowercase Example/ directory [\#1](https://github.com/phonegap/phonegap-plugin-push/issues/1)
-
 
 
 \* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
