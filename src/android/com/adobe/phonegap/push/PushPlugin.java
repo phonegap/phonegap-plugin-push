@@ -111,13 +111,17 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     public static void sendEvent(JSONObject _json) {
         PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, _json);
         pluginResult.setKeepCallback(true);
-        pushContext.sendPluginResult(pluginResult);
+        if (pushContext != null) {
+            pushContext.sendPluginResult(pluginResult);
+        }
     }
 
     public static void sendError(String message) {
         PluginResult pluginResult = new PluginResult(PluginResult.Status.ERROR, message);
         pluginResult.setKeepCallback(true);
-        pushContext.sendPluginResult(pluginResult);
+        if (pushContext != null) {
+            pushContext.sendPluginResult(pluginResult);
+        }
     }
 
     /*
