@@ -468,6 +468,14 @@ For advanced templates and usage, the notification object is included in [`data.
 
 This plugin automatically sets the toast capable flag to be true for Cordova 5.1.1+. For lower versions, you must declare that it is Toast Capable in your app's manifest file. 
 
+### Disabling the default processing of notifications by Windows
+
+The default handling can be disabled by setting the 'cancel' property in the notification object. 
+
+```
+data.additionalData.pushNotificationReceivedEventArgs.cancel = true
+```
+
 ## Native Requirements
 
 - There should be no dependency on any other plugins.
