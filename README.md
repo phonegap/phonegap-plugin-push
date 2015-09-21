@@ -187,8 +187,10 @@ Including this plugin in a project that is built by PhoneGap Build is as easy as
 into your apps `config.xml` file. PhoneGap Build will pick up the latest version of phonegap-plugin-push published on npm. If you want to specify a particular version of the plugin you can add the `version` attribute to the `gap` tag.
 
 ```
-<gap:plugin name="phonegap-plugin-push" source="npm" version="1.1.1" />
+<gap:plugin name="phonegap-plugin-push" source="npm" version="1.2.3" />
 ```
+
+Note: version 1.3.0 of this plugin begins to use Gradle to install the Android Support Framework. Gradle is not yet supported on PhoneGap Build so please use version 1.2.3 when building your app on PhoneGap Build.
 
 ## Android Behaviour
 
