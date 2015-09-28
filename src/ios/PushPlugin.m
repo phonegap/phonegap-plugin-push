@@ -45,6 +45,8 @@
 
 - (void)init:(CDVInvokedUrlCommand*)command;
 {
+    [self.commandDelegate runInBackground:^ {
+        
     NSLog(@"Push Plugin register called");
     self.callbackId = command.callbackId;
     
@@ -110,6 +112,8 @@
     
     if (notificationMessage)			// if there is a pending startup notification
         [self notificationReceived];	// go ahead and process it
+
+    }];
 }
 
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
