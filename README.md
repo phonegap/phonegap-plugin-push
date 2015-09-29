@@ -190,7 +190,7 @@ into your apps `config.xml` file. PhoneGap Build will pick up the latest version
 <gap:plugin name="phonegap-plugin-push" source="npm" version="1.2.3" />
 ```
 
-Note: version 1.3.0 of this plugin begins to use Gradle to install the Android Support Framework. Gradle is not yet supported on PhoneGap Build so please use version 1.2.3 when building your app on PhoneGap Build.
+Note: version 1.3.0 of this plugin begins to use Gradle to install the Android Support Framework. Support for Gradle has recently been added to PhoneGap Build. Please read [this blog post](http://phonegap.com/blog/2015/09/28/android-using-gradle/) for more information.
 
 ## Android Behaviour
 
