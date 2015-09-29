@@ -80,6 +80,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         editor.putBoolean(SOUND, jo.optBoolean(SOUND, true));
                         editor.putBoolean(VIBRATE, jo.optBoolean(VIBRATE, true));
                         editor.putBoolean(CLEAR_NOTIFICATIONS, jo.optBoolean(CLEAR_NOTIFICATIONS, true));
+                        editor.putBoolean(FORCE_SHOW, jo.optBoolean(FORCE_SHOW, false));
                         editor.commit();
                     }
 

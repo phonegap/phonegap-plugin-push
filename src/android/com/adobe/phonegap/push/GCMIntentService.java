@@ -88,7 +88,7 @@ public class GCMIntentService extends GCMBaseIntentService implements PushConsta
         Bundle extras = intent.getExtras();
         if (extras != null) {
             // if we are in the foreground, just surface the payload, else post it to the statusbar
-            if (PushPlugin.isInForeground()) {
+            if (!FORCE_SHOW && PushPlugin.isInForeground()) {
                 extras.putBoolean(FOREGROUND, true);
                 PushPlugin.sendExtras(extras);
             }
