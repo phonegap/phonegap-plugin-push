@@ -194,6 +194,14 @@ Note: version 1.3.0 of this plugin begins to use Gradle to install the Android S
 
 ## Android Behaviour
 
+### Compiling
+
+As of version 1.3.0 the plugin has been switched to using Gradle/Maven for building. You will need to ensure that you have installed the Android Support Library version 23 or greater.
+
+![android support library](https://cloud.githubusercontent.com/assets/353180/10171900/588dbd0a-66aa-11e5-8308-2daf80842119.png)
+
+For more detailed instructions on how to install the Android Support Library visit [Google's documentation](https://developer.android.com/tools/support-library/setup.html).
+
 ### Images
 
 By default the icon displayed in your push notification will be your apps icon. So when you initialize the plugin like this:
