@@ -37,75 +37,75 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     }
 
     @Override
-    public boolean execute(String action, JSONArray data, CallbackContext callbackContext) {
-
-        boolean result = false;
-
+    public boolean execute(final String action, final JSONArray data, final CallbackContext callbackContext) {
         Log.v(LOG_TAG, "execute: action=" + action);
+        gWebView = this.webView;
 
         if (INITIALIZE.equals(action)) {
-            pushContext = callbackContext;
-            JSONObject jo = null;
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    pushContext = callbackContext;
+                    JSONObject jo = null;
 
-            Log.v(LOG_TAG, "execute: data=" + data.toString());
+                    Log.v(LOG_TAG, "execute: data=" + data.toString());
 
-            try {
-                jo = data.getJSONObject(0).getJSONObject(ANDROID);
+                    try {
+                        jo = data.getJSONObject(0).getJSONObject(ANDROID);
 
-                gWebView = this.webView;
-                Log.v(LOG_TAG, "execute: jo=" + jo.toString());
+                        Log.v(LOG_TAG, "execute: jo=" + jo.toString());
 
-                String senderID = jo.getString(SENDER_ID);
+                        String senderID = jo.getString(SENDER_ID);
 
-                Log.v(LOG_TAG, "execute: senderID=" + senderID);
+                        Log.v(LOG_TAG, "execute: senderID=" + senderID);
 
-                GCMRegistrar.register(getApplicationContext(), senderID);
-                result = true;
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
-                result = false;
-                callbackContext.error(e.getMessage());
-            }
+                        GCMRegistrar.register(getApplicationContext(), senderID);
+                    } catch (JSONException e) {
+                        Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
+                        callbackContext.error(e.getMessage());
+                    }
 
-            if (jo != null) {
-                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                try {
-                    editor.putString(ICON, jo.getString(ICON));
-                } catch (JSONException e) {
-                    Log.d(LOG_TAG, "no icon option");
+                    if (jo != null) {
+                        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        try {
+                            editor.putString(ICON, jo.getString(ICON));
+                        } catch (JSONException e) {
+                            Log.d(LOG_TAG, "no icon option");
+                        }
+                        try {
+                            editor.putString(ICON_COLOR, jo.getString(ICON_COLOR));
+                        } catch (JSONException e) {
+                            Log.d(LOG_TAG, "no iconColor option");
+                        }
+                        editor.putBoolean(SOUND, jo.optBoolean(SOUND, true));
+                        editor.putBoolean(VIBRATE, jo.optBoolean(VIBRATE, true));
+                        editor.putBoolean(CLEAR_NOTIFICATIONS, jo.optBoolean(CLEAR_NOTIFICATIONS, true));
+                        editor.commit();
+                    }
+
+                    if (gCachedExtras != null) {
+                        Log.v(LOG_TAG, "sending cached extras");
+                        sendExtras(gCachedExtras);
+                        gCachedExtras = null;
+                    }
                 }
-                try {
-                    editor.putString(ICON_COLOR, jo.getString(ICON_COLOR));
-                } catch (JSONException e) {
-                    Log.d(LOG_TAG, "no iconColor option");
-                }
-                editor.putBoolean(SOUND, jo.optBoolean(SOUND, true));
-                editor.putBoolean(VIBRATE, jo.optBoolean(VIBRATE, true));
-                editor.putBoolean(CLEAR_NOTIFICATIONS, jo.optBoolean(CLEAR_NOTIFICATIONS, true));
-                editor.commit();
-            }
-
-            if ( gCachedExtras != null) {
-                Log.v(LOG_TAG, "sending cached extras");
-                sendExtras(gCachedExtras);
-                gCachedExtras = null;
-            }
-
+            });
         } else if (UNREGISTER.equals(action)) {
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    GCMRegistrar.unregister(getApplicationContext());
 
-            GCMRegistrar.unregister(getApplicationContext());
-
-            Log.v(LOG_TAG, "UNREGISTER");
-            result = true;
-            callbackContext.success();
+                    Log.v(LOG_TAG, "UNREGISTER");
+                    callbackContext.success();
+                }
+            });
         } else {
-            result = false;
             Log.e(LOG_TAG, "Invalid action : " + action);
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
+            return false;
         }
 
-        return result;
+        return true;
     }
 
     public static void sendEvent(JSONObject _json) {
