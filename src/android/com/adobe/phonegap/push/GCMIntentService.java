@@ -87,8 +87,12 @@ public class GCMIntentService extends GCMBaseIntentService implements PushConsta
         // Extract the payload from the message
         Bundle extras = intent.getExtras();
         if (extras != null) {
+
+            SharedPreferences prefs = context.getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
+            boolean forceShow = prefs.getBoolean(FORCE_SHOW, false);
+
             // if we are in the foreground, just surface the payload, else post it to the statusbar
-            if (!FORCE_SHOW && PushPlugin.isInForeground()) {
+            if (!forceShow && PushPlugin.isInForeground()) {
                 extras.putBoolean(FOREGROUND, true);
                 PushPlugin.sendExtras(extras);
             }
