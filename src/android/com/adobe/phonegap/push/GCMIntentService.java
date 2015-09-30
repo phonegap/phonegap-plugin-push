@@ -95,9 +95,23 @@ public class GCMIntentService extends GCMBaseIntentService implements PushConsta
             else {
                 extras.putBoolean(FOREGROUND, false);
 
-                // Send a notification if there is a message
                 String message = this.getMessageText(extras);
                 String title = getString(extras, TITLE, "");
+
+                // If the 'data' is present as a root object
+                // Supports Parce.com
+                if (message == null) {
+        					try {
+        						JSONObject object_example = new JSONObject(extras.getString("data"));
+        						message = object_example.getString("alert");
+                    title = object_example.getString("title");
+        						extras.putString("message", message);
+                    extras.putString("title", title);
+        					}
+        					catch (JSONException e) {}
+        				}
+
+                // Send a notification if there is a message
                 if ((message != null && message.length() != 0) ||
                         (title != null && title.length() != 0)) {
                     createNotification(context, extras);
