@@ -197,7 +197,7 @@ Note: version 1.3.0 of this plugin begins to use Gradle to install the Android S
 
 ### Compiling
 
-As of version 1.3.0 the plugin has been switched to using Gradle/Maven for building. You will need to ensure that you have installed the Android Support Library version 23 or greater and Android Support Repository version 20 or greater.
+As of version 1.3.0 the plugin has been switched to using Gradle/Maven for building. You will need to ensure that you have installed the Android Support Library version 23 or greater, Android Support Repository version 20 or greater, Google Play Services version 27 or greater and Google Repository version 22 or greater.
 
 ![android support library](https://cloud.githubusercontent.com/assets/353180/10230226/0627931e-684a-11e5-9a6b-72d72997f655.png)
 

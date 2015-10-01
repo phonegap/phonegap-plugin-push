@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.gcm.GCMRegistrar;
+import com.google.android.gms.iid.InstanceID;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Iterator;
 
 public class PushPlugin extends CordovaPlugin implements PushConstants {
@@ -48,24 +49,49 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                     JSONObject jo = null;
 
                     Log.v(LOG_TAG, "execute: data=" + data.toString());
+                    SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
+                    String token = null;
+                    String senderID = null;
 
                     try {
                         jo = data.getJSONObject(0).getJSONObject(ANDROID);
 
                         Log.v(LOG_TAG, "execute: jo=" + jo.toString());
 
-                        String senderID = jo.getString(SENDER_ID);
+                        senderID = jo.getString(SENDER_ID);
 
                         Log.v(LOG_TAG, "execute: senderID=" + senderID);
 
-                        GCMRegistrar.register(getApplicationContext(), senderID);
+                        String savedSenderID = sharedPref.getString(SENDER_ID, "");
+                        String savedRegID = sharedPref.getString(REGISTRATION_ID, "");
+
+                        // first time run get new token
+                        if ("".equals(savedSenderID) && "".equals(savedRegID)) {
+                            token = InstanceID.getInstance(getApplicationContext()).getToken(senderID, GCM);
+                        }
+                        // new sender ID, re-register
+                        else if (!savedSenderID.equals(senderID)) {
+                            token = InstanceID.getInstance(getApplicationContext()).getToken(senderID, GCM);
+                        }
+                        // use the saved one
+                        else {
+                            token = sharedPref.getString(REGISTRATION_ID, "");
+                        }
+
+                        JSONObject json = new JSONObject().put(REGISTRATION_ID, token);
+
+                        Log.v(LOG_TAG, "onRegistered: " + json.toString());
+
+                        PushPlugin.sendEvent( json );
                     } catch (JSONException e) {
+                        Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
+                        callbackContext.error(e.getMessage());
+                    } catch (IOException e) {
                         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
                         callbackContext.error(e.getMessage());
                     }
 
                     if (jo != null) {
-                        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         try {
                             editor.putString(ICON, jo.getString(ICON));
@@ -81,6 +107,8 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         editor.putBoolean(VIBRATE, jo.optBoolean(VIBRATE, true));
                         editor.putBoolean(CLEAR_NOTIFICATIONS, jo.optBoolean(CLEAR_NOTIFICATIONS, true));
                         editor.putBoolean(FORCE_SHOW, jo.optBoolean(FORCE_SHOW, false));
+                        editor.putString(SENDER_ID, senderID);
+                        editor.putString(REGISTRATION_ID, token);
                         editor.commit();
                     }
 
@@ -94,11 +122,15 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         } else if (UNREGISTER.equals(action)) {
             cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
-                    GCMRegistrar.unregister(getApplicationContext());
-
-                    Log.v(LOG_TAG, "UNREGISTER");
-                    callbackContext.success();
+                    try {
+                        InstanceID.getInstance(getApplicationContext()).deleteInstanceID();
+                        Log.v(LOG_TAG, "UNREGISTER");
+                        callbackContext.success();
+                    } catch (IOException e) {
+                        Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
+                        callbackContext.error(e.getMessage());
                 }
+            }
             });
         } else {
             Log.e(LOG_TAG, "Invalid action : " + action);

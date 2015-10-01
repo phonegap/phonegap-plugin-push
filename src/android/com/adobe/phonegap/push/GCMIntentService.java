@@ -19,7 +19,7 @@ import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.util.Log;
 
-import com.google.android.gcm.GCMBaseIntentService;
+import com.google.android.gms.gcm.GcmListenerService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,7 +34,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 @SuppressLint("NewApi")
-public class GCMIntentService extends GCMBaseIntentService implements PushConstants {
+public class GCMIntentService extends GcmListenerService implements PushConstants {
 
     private static final String LOG_TAG = "PushPlugin_GCMIntentService";
     private static HashMap<Integer, ArrayList<String>> messageMap = new HashMap<Integer, ArrayList<String>>();
@@ -53,42 +53,13 @@ public class GCMIntentService extends GCMBaseIntentService implements PushConsta
         }
     }
 
-    public GCMIntentService() {
-        super("GCMIntentService");
-    }
-
     @Override
-    public void onRegistered(Context context, String regId) {
+    public void onMessageReceived(String from, Bundle extras) {
+        Log.d(LOG_TAG, "onMessage - from: " + from);
 
-        Log.v(LOG_TAG, "onRegistered: " + regId);
-
-        try {
-            JSONObject json = new JSONObject().put(REGISTRATION_ID, regId);
-
-            Log.v(LOG_TAG, "onRegistered: " + json.toString());
-
-            PushPlugin.sendEvent( json );
-        }
-        catch(JSONException e) {
-            // No message to the user is sent, JSON failed
-            Log.e(LOG_TAG, "onRegistered: JSON exception");
-        }
-    }
-
-    @Override
-    public void onUnregistered(Context context, String regId) {
-        Log.d(LOG_TAG, "onUnregistered - regId: " + regId);
-    }
-
-    @Override
-    protected void onMessage(Context context, Intent intent) {
-        Log.d(LOG_TAG, "onMessage - context: " + context);
-
-        // Extract the payload from the message
-        Bundle extras = intent.getExtras();
         if (extras != null) {
 
-            SharedPreferences prefs = context.getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
+            SharedPreferences prefs = getApplicationContext().getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
             boolean forceShow = prefs.getBoolean(FORCE_SHOW, false);
 
             // if we are in the foreground and forceShow is `false` only send data
@@ -100,13 +71,13 @@ public class GCMIntentService extends GCMBaseIntentService implements PushConsta
             else if (forceShow && PushPlugin.isInForeground()) {
                 extras.putBoolean(FOREGROUND, true);
                 
-                showNotificationIfPossible(context, extras);
+                showNotificationIfPossible(getApplicationContext(), extras);
             }
             // if we are not in the foreground always send notification if the data has at least a message or title
             else {
                 extras.putBoolean(FOREGROUND, false);
 
-                showNotificationIfPossible(context, extras);
+                showNotificationIfPossible(getApplicationContext(), extras);
             }
         }
     }
@@ -519,15 +490,6 @@ public class GCMIntentService extends GCMBaseIntentService implements PushConsta
     private static String getAppName(Context context) {
         CharSequence appName =  context.getPackageManager().getApplicationLabel(context.getApplicationInfo());
         return (String)appName;
-    }
-
-    @Override
-    public void onError(Context context, String errorId) {
-        Log.e(LOG_TAG, "onError - errorId: " + errorId);
-        // if we are in the foreground, just send the error
-        if (PushPlugin.isInForeground()) {
-            PushPlugin.sendError(errorId);
-        }
     }
 
     private int parseInt(String value, Bundle extras) {

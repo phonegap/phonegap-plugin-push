@@ -37,6 +37,7 @@
 		</config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.INTERNET" />
 			<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 			<uses-permission android:name="android.permission.WAKE_LOCK" />
 			<uses-permission android:name="android.permission.VIBRATE"/>
@@ -47,23 +48,39 @@
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
 			<activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true"/>
-			<receiver android:name="com.adobe.phonegap.push.CordovaGCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
-				<intent-filter>
-					<action android:name="com.google.android.c2dm.intent.RECEIVE" />
-					<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-					<category android:name="$PACKAGE_NAME" />
-				</intent-filter>
-			</receiver>
-			<service android:name="com.adobe.phonegap.push.GCMIntentService" />
+            
+            <receiver
+                android:name="com.google.android.gms.gcm.GcmReceiver"
+                android:exported="true"
+                android:permission="com.google.android.c2dm.permission.SEND" >
+                <intent-filter>
+                    <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                    <category android:name="com.example.gcm" />
+                </intent-filter>
+            </receiver>
+            <service
+                android:name="com.adobe.phonegap.push.GCMIntentService"
+                android:exported="false" >
+                <intent-filter>
+                    <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                </intent-filter>
+            </service>
+            <service
+                android:name="com.adobe.phonegap.push.PushInstanceIDListenerService"
+                android:exported="false">
+                <intent-filter>
+                    <action android:name="com.google.android.gms.iid.InstanceID"/>
+                </intent-filter>
+            </service>            
 		</config-file>
 
 		<framework src="com.android.support:support-v13:23+" />
+        <framework src="com.google.android.gms:play-services:+" />
 
-		<source-file src="src/android/libs/gcm.jar" target-dir="libs/" />
-		<source-file src="src/android/com/adobe/phonegap/push/CordovaGCMBroadcastReceiver.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/GCMIntentService.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/" />
+		<source-file src="src/android/com/adobe/phonegap/push/PushInstanceIDListenerService.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushPlugin.java" target-dir="src/com/adobe/phonegap/push/" />
 
 	</platform>
