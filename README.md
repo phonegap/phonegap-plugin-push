@@ -71,6 +71,7 @@ Parameter | Description
 `options.android.sound` | `Boolean` Optional. If `true` it plays the sound specified in the push data or the default system sound. Default is `true`.
 `options.android.vibrate` | `Boolean` Optional. If `true` the device vibrates on receipt of notification. Default is `true`.
 `options.android.clearNotifications` | `Boolean` Optional. If `true` the app clears all pending notifications when it is closed. Default is `true`.
+`options.android.forceShow` | `Boolean` Optional. If `true` will always show a notification, even when the app is on the foreground. Default is `false`.
 `options.ios` | `JSON Object` iOS specific initialization options.
 `options.ios.alert` | `Boolean`\|`String` Optional. If `true`\|`"true"` the device shows an alert on receipt of notification. Default is `false`\|`"false"`.
 `options.ios.badge` | `Boolean`\|`String` Optional. If `true`\|`"true"` the device sets the badge number on receipt of notification. Default is `false`\|`"false"`.

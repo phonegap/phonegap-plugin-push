@@ -41,4 +41,5 @@ public interface PushConstants {
     public static final String COUNT = "count";
     public static final String FROM = "from";
     public static final String COLLAPSE_KEY = "collapse_key";
+    public static final String FORCE_SHOW = "forceShow";
 }
