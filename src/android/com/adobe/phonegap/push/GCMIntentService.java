@@ -91,22 +91,36 @@ public class GCMIntentService extends GCMBaseIntentService implements PushConsta
             SharedPreferences prefs = context.getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
             boolean forceShow = prefs.getBoolean(FORCE_SHOW, false);
 
-            // if we are in the foreground, just surface the payload, else post it to the statusbar
+            // if we are in the foreground and forceShow is `false` only send data
             if (!forceShow && PushPlugin.isInForeground()) {
                 extras.putBoolean(FOREGROUND, true);
                 PushPlugin.sendExtras(extras);
             }
+            // if we are in the foreground and forceShow is `true`, force show the notification if the data has at least a message or title
+            else if (forceShow && PushPlugin.isInForeground()) {
+                extras.putBoolean(FOREGROUND, true);
+                
+                showNotificationIfPossible(context, extras);
+            }
+            // if we are not in the foreground always send notification if the data has at least a message or title
             else {
                 extras.putBoolean(FOREGROUND, false);
 
-                // Send a notification if there is a message
-                String message = this.getMessageText(extras);
-                String title = getString(extras, TITLE, "");
-                if ((message != null && message.length() != 0) ||
-                        (title != null && title.length() != 0)) {
-                    createNotification(context, extras);
-                }
+                showNotificationIfPossible(context, extras);
             }
+        }
+    }
+    
+    private void showNotificationIfPossible (Context context, Bundle extras) {
+
+        // Send a notification if there is a message or title, otherwise just send data
+        String message = this.getMessageText(extras);
+        String title = getString(extras, TITLE, "");
+        if ((message != null && message.length() != 0) ||
+                (title != null && title.length() != 0)) {
+            createNotification(context, extras);
+        } else {
+            PushPlugin.sendExtras(extras);
         }
     }
 
@@ -214,7 +228,7 @@ public class GCMIntentService extends GCMBaseIntentService implements PushConsta
         setNotificationCount(extras, mBuilder);
 
         /*
-         * Notication add actions
+         * Notification add actions
          */
         createActions(extras, mBuilder, resources, packageName);
 
