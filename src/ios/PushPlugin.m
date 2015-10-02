@@ -33,6 +33,7 @@
 @synthesize callbackId;
 @synthesize notificationCallbackId;
 @synthesize callback;
+@synthesize clearBadge;
 
 
 - (void)unregister:(CDVInvokedUrlCommand*)command;
@@ -61,6 +62,7 @@
     id badgeArg = [iosOptions objectForKey:@"badge"];
     id soundArg = [iosOptions objectForKey:@"sound"];
     id alertArg = [iosOptions objectForKey:@"alert"];
+    id clearBadgeArg = [iosOptions objectForKey:@"clearBadge"];
     
     if (([badgeArg isKindOfClass:[NSString class]] && [badgeArg isEqualToString:@"true"]) || [badgeArg boolValue])
     {
@@ -90,7 +92,17 @@
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
     UserNotificationTypes |= UIUserNotificationActivationModeBackground;
 #endif
-    
+        
+        if (clearBadgeArg == nil || ([clearBadgeArg isKindOfClass:[NSString class]] && [clearBadgeArg isEqualToString:@"false"]) || ![clearBadgeArg boolValue]) {
+            NSLog(@"PushPlugin.register: setting badge to false");
+            clearBadge = NO;
+        } else {
+            NSLog(@"PushPlugin.register: setting badge to true");
+            clearBadge = YES;
+            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+        }
+        NSLog(@"PushPlugin.register: clear badge is set to %d", clearBadge);
+        
     if (notificationTypes == UIRemoteNotificationTypeNone)
         NSLog(@"PushPlugin.register: Push notification type is set to none");
     

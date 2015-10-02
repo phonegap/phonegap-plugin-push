@@ -86,11 +86,16 @@ static char launchNotificationKey;
 
     NSLog(@"active");
 
-    //zero badge
-    application.applicationIconBadgeNumber = 0;
+    PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+    if (pushHandler.clearBadge) {
+        NSLog(@"PushPlugin clearing badge");
+        //zero badge
+        application.applicationIconBadgeNumber = 0;        
+    } else {
+        NSLog(@"PushPlugin skip clear badge");
+    }
 
     if (self.launchNotification) {
-        PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
         pushHandler.isInline = NO;
         pushHandler.notificationMessage = self.launchNotification;
         self.launchNotification = nil;
