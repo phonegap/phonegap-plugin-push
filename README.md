@@ -448,6 +448,39 @@ This will produce the following notification in your tray:
 
 ![2015-08-25 16 08 00](https://cloud.githubusercontent.com/assets/353180/9472260/3655fa7a-4b22-11e5-8d87-20528112de16.png)
 
+### Co-existing with FaceBook Plugin
+
+There are a number of Cordova FaceBook Plugins available but the one that we recommend is [Jeduan's fork](https://github.com/jeduan/cordova-plugin-facebook4) of the original Wizcorp plugin. It is setup to use Gradle/Maven properly and the latest FaceBook SDK.
+
+To add to your app:
+
+```
+phonegap plugin add https://github.com/jeduan/cordova-plugin-facebook4 --variable APP_ID="App ID" --variable APP_NAME="App Name"
+```
+or 
+
+```
+cordova plugin add https://github.com/jeduan/cordova-plugin-facebook4 --variable APP_ID="App ID" --variable APP_NAME="App Name"
+```
+
+If you have an issue compiling the app and you are getting this error:
+
+```
+* What went wrong:
+Execution failed for task ':processDebugManifest'.
+> Manifest merger failed : uses-sdk:minSdkVersion 14 cannot be smaller than version 15 declared in library /Users/smacdona/code/bookface/platforms/android/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.6.0/AndroidManifest.xml
+  	Suggestion: use tools:overrideLibrary="com.facebook" to force usage
+```
+
+Then you can add the following entry into your config.xml file in the android platform tag.
+
+```
+<platform name="android">
+    <preference name="android-minSdkVersion" value="15"/>
+ </platform>
+ ```
+
+
 ## iOS Behaviour
 
 ### Sound
