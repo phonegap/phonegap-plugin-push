@@ -117,6 +117,10 @@
 }
 
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    if (self.callbackId == nil) {
+        NSLog(@"Unexpected call to didRegisterForRemoteNotificationsWithDeviceToken, ignoring: %@", deviceToken);
+        return;
+    }
     NSLog(@"Push Plugin register success: %@", deviceToken);
     
     NSMutableDictionary *results = [NSMutableDictionary dictionary];
@@ -180,6 +184,10 @@
 
 - (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
+    if (self.callbackId == nil) {
+        NSLog(@"Unexpected call to didFailToRegisterForRemoteNotificationsWithError, ignoring: %@", error);
+        return;
+    }
     NSLog(@"Push Plugin register failed");
     [self failWithMessage:@"" withError:error];
 }
