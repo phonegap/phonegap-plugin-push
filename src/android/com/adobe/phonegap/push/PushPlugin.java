@@ -18,6 +18,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 
 public class PushPlugin extends CordovaPlugin implements PushConstants {
@@ -207,40 +209,30 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
      * serializes a bundle to JSON.
      */
     private static JSONObject convertBundleToJson(Bundle extras) {
+        Log.d(LOG_TAG, "convert extras to json");
         try {
             JSONObject json = new JSONObject();
             JSONObject additionalData = new JSONObject();
+
+            // Add any keys that need to be in top level json to this set
+            HashSet<String> jsonKeySet = new HashSet();
+            Collections.addAll(jsonKeySet, TITLE,MESSAGE,COUNT,SOUND,IMAGE);
+
             Iterator<String> it = extras.keySet().iterator();
             while (it.hasNext()) {
                 String key = it.next();
                 Object value = extras.get(key);
                  
                 Log.d(LOG_TAG, "key = " + key);
-                if (key.startsWith(GCM_NOTIFICATION)) {
-                    key = key.substring(GCM_NOTIFICATION.length()+1, key.length());
-                }
 
-                // System data from Android
-                if (key.equals(FROM) || key.equals(COLLAPSE_KEY)) {
-                    additionalData.put(key, value);
+                if (jsonKeySet.contains(key)) {
+                    json.put(key, value);
+                }
+                else if (key.equals(COLDSTART)) {
+                    additionalData.put(key, extras.getBoolean(COLDSTART));
                 }
                 else if (key.equals(FOREGROUND)) {
                     additionalData.put(key, extras.getBoolean(FOREGROUND));
-                }
-                else if (key.equals(COLDSTART)){
-                    additionalData.put(key, extras.getBoolean(COLDSTART));
-                } else if (key.equals(MESSAGE) || key.equals(BODY)) {
-                    json.put(MESSAGE, value);
-                } else if (key.equals(TITLE)) {
-                    json.put(TITLE, value);
-                } else if (key.equals(MSGCNT) || key.equals(BADGE)) {
-                    json.put(COUNT, value);
-                } else if (key.equals(SOUNDNAME) || key.equals(SOUND)) {
-                    json.put(SOUND, value);
-                } else if (key.equals(IMAGE)) {
-                    json.put(IMAGE, value);
-                } else if (key.equals(CALLBACK)) {
-                    json.put(CALLBACK, value);
                 }
                 else if ( value instanceof String ) {
                     String strValue = (String)value;
@@ -261,7 +253,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                     }
                 }
             } // while
-            
+
             json.put(ADDITIONAL_DATA, additionalData);
             Log.v(LOG_TAG, "extrasToJSON: " + json.toString());
 
