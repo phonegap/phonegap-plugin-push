@@ -36,6 +36,12 @@ describe('phonegap-plugin-push', function() {
             expect(typeof push.unregister == 'function').toBe(true);
         });
 
+        it("should contain a getApplicationIconBadgeNumber function", function() {
+            var push = PushNotification.init({});
+            expect(push.getApplicationIconBadgeNumber).toBeDefined();
+            expect(typeof push.getApplicationIconBadgeNumber == 'function').toBe(true);
+        });
+
         it("should contain a setApplicationIconBadgeNumber function", function() {
             var push = PushNotification.init({});
             expect(push.setApplicationIconBadgeNumber).toBeDefined();

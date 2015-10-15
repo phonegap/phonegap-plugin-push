@@ -177,6 +177,18 @@ The `count` is an integer indicating what number should show up in the badge. Pa
 push.setApplicationIconBadgeNumber(successHandler, errorHandler, count);
 ```
 
+### push.getApplicationIconBadgeNumber(successHandler, errorHandler) - iOS only
+
+Get the current badge count visible when the app is not running
+
+successHandler gets called with an integer which is the current badge count
+
+#### Example
+
+```javascript
+push.getApplicationIconBadgeNumber(successHandler, errorHandler);
+```
+
 ## PhoneGap Build Support
 
 Including this plugin in a project that is built by PhoneGap Build is as easy as adding:
