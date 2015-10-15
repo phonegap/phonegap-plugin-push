@@ -271,6 +271,14 @@
     [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
 }
 
+- (void)getApplicationIconBadgeNumber:(CDVInvokedUrlCommand *)command
+{
+    NSInteger badge = [UIApplication sharedApplication].applicationIconBadgeNumber;
+
+    CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:(int)badge];
+    [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
+}
+
 -(void)successWithMessage:(NSString *)message
 {
     if (self.callbackId != nil)

@@ -103,6 +103,26 @@ PushNotification.prototype.setApplicationIconBadgeNumber = function(successCallb
 };
 
 /**
+ * Get the application icon badge
+ */
+
+PushNotification.prototype.getApplicationIconBadgeNumber = function(successCallback, errorCallback) {
+    if (errorCallback == null) { errorCallback = function() {}}
+
+    if (typeof errorCallback != "function")  {
+        console.log("PushNotification.getApplicationIconBadgeNumber failure: failure parameter not a function");
+        return
+    }
+
+    if (typeof successCallback != "function") {
+        console.log("PushNotification.getApplicationIconBadgeNumber failure: success callback parameter must be a function");
+        return
+    }
+
+    exec(successCallback, errorCallback, "PushNotification", "getApplicationIconBadgeNumber", []);
+};
+
+/**
  * Listen for an event.
  *
  * The following events are supported:
