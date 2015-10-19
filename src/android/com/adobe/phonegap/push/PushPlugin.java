@@ -134,6 +134,21 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                 }
             }
             });
+        } else if (CANCELNOTIFICATION.equals(action)) {
+            final String appName =  (String)(getApplicationContext().getPackageManager().getApplicationLabel(getApplicationContext().getApplicationInfo()));
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    try {
+                        final NotificationManager notificationManager = (NotificationManager) cordova.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.cancel(appName, data.getInt(0));
+                        Log.v(LOG_TAG, "CANCELNOTIFICATION");
+                        callbackContext.success();
+                    } catch (JSONException e) {
+                        Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
+                        callbackContext.error(e.getMessage());
+                    }
+                }
+            });
         } else {
             Log.e(LOG_TAG, "Invalid action : " + action);
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
