@@ -47,5 +47,5 @@ public interface PushConstants {
     public static final String COLLAPSE_KEY = "collapse_key";
     public static final String FORCE_SHOW = "forceShow";
     public static final String GCM = "GCM";
-    public static final String CANCELNOTIFICATION = "cancelNotification";
+    public static final String CANCEL_NOTIFICATION = "cancelNotification";
 }
