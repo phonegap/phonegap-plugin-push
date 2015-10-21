@@ -577,4 +577,20 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
         return retval;
     }
+    
+    private int getTag(String value, Bundle extras) {
+        String retval = getAppName(this);
+        try {
+            String tag = extras.getString(value);
+            if(tag != null) {
+               //use appName as namespace
+               retval = retval.concat('.').concat(tag);
+            }
+        }
+        catch(Exception e) {
+            Log.e(LOG_TAG, "exception - Error parsing tag : " + e.getMessage());
+        }
+
+        return retval;
+    }
 }
