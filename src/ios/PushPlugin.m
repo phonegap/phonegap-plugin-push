@@ -34,7 +34,7 @@
 @synthesize notificationCallbackId;
 @synthesize callback;
 @synthesize clearBadge;
-
+@synthesize handlerObj;
 
 - (void)unregister:(CDVInvokedUrlCommand*)command;
 {
@@ -306,6 +306,42 @@
     CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:errorMessage];
     
     [self.commandDelegate sendPluginResult:commandResult callbackId:self.callbackId];
+}
+
+-(void) finish:(CDVInvokedUrlCommand*)command
+{
+    NSLog(@"Push Plugin finish called");
+
+    [self.commandDelegate runInBackground:^ {
+        UIApplication *app = [UIApplication sharedApplication];
+        float finishTimer = (app.backgroundTimeRemaining > 20.0) ? 20.0 : app.backgroundTimeRemaining;
+    
+        [NSTimer scheduledTimerWithTimeInterval:finishTimer
+                                     target:self
+                                   selector:@selector(stopBackgroundTask:)
+                                   userInfo:nil
+                                    repeats:NO];
+
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+-(void)stopBackgroundTask:(NSTimer*)timer
+{
+    UIApplication *app = [UIApplication sharedApplication];
+    
+    NSLog(@"Push Plugin stopBackgroundTask called");
+    
+    if (handlerObj) {
+        NSLog(@"Push Plugin handlerObj");
+        completionHandler = [handlerObj[@"handler"] copy];
+        if (completionHandler) {
+            NSLog(@"Push Plugin: stopBackgroundTask (remaining t: %f)", app.backgroundTimeRemaining);
+            completionHandler(UIBackgroundFetchResultNewData);
+            completionHandler = nil;
+        }
+    }
 }
 
 @end

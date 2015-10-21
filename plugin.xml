@@ -93,7 +93,13 @@
 				<param name="ios-package" value="PushPlugin"/>
 			</feature>
 		</config-file>
-
+        
+        <config-file target="*-Info.plist" parent="UIBackgroundModes">
+            <array>
+                <string>remote-notification</string>
+            </array>
+        </config-file>
+        
 		<source-file src="src/ios/AppDelegate+notification.m" />
 		<source-file src="src/ios/PushPlugin.m" />
 

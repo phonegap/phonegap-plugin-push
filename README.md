@@ -190,6 +190,18 @@ successHandler gets called with an integer which is the current badge count
 push.getApplicationIconBadgeNumber(successHandler, errorHandler);
 ```
 
+### push.finish(successHandler, errorHandler) - iOS only
+
+Tells the OS that you are done processing a background push notification.
+
+successHandler gets called when background push processing is successfully completed.
+
+#### Example
+
+```javascript
+push.getApplicationIconBadgeNumber(successHandler, errorHandler);
+```
+
 ## PhoneGap Build Support
 
 Including this plugin in a project that is built by PhoneGap Build is as easy as adding:
@@ -494,6 +506,32 @@ Then you can add the following entry into your config.xml file in the android pl
  ```
 
 
+### Background Notifications
+
+On Android if you want your `on('notification')` event handler to be called when your app is in the background it is relatively simple.
+
+The JSON you send to GCM should not contain a title or message parameter. For instance the following JSON:
+
+```javascript
+{
+  title: "Test Push",
+  message: "Push number 1",
+  info: "super secret info"
+}
+```
+
+will produce a notification in the notification shade and call your `on('notification')` event handler.
+
+However if you want your `on('notification')` event handler called but no notification to be shown in the shader you would omit the `alert` property and send the following JSON to GCM:
+
+```javascript
+{
+  info: "super secret info"
+}
+```
+
+Omitting the message and title properties will keep your push from being added to the notification shade but it will still trigger your `on('notification')` event handler.
+
 ## iOS Behaviour
 
 ### Sound
@@ -510,6 +548,68 @@ Then send the follow JSON from APNS:
     }
 }
 ```
+
+### Background Notifications
+
+On iOS if you want your `on('notification')` event handler to be called when your app is in the background you will need to do a few things.
+
+First the JSON you send from APNS will need to include `content-available: 1` to the `aps` object. The `content-available: 1` property in your push message is a signal to iOS to wake up your app and give it up to 30 seconds of background processing. If do not want this type of behaviour just omit `content-available: 1` from your push data.
+
+
+For instance the following JSON:
+
+```javascript
+{
+    "aps": {
+        "alert": "Test background push",
+        "content-available": "1"
+    }
+}
+```
+
+will produce a notification in the notification shade and call your `on('notification')` event handler.
+
+However if you want your `on('notification')` event handler called but no notification to be shown in the shader you would omit the `alert` property and send the following JSON to APNS:
+
+```javascript
+{
+    "aps": {
+        "data": "Test silent background push",
+        "moredata": "Do more stuff",
+        "content-available": "1"
+    }
+}
+```
+
+That covers what you need to do on the server side to accept background pushes on iOS. However, it is critically important that you continue reading as there will be a change in your `on('notification')`. When you receive a background push on iOS you will be given 30 seconds of time in which to complete a task. If you spend longer than 30 seconds on the task the OS may decide that your app is misbehaving and kill it. In order to signal iOS that your `on('notification')` handler is done you will need to call the new `push.finish()` method. 
+
+For example:
+
+```javascript
+        var push = PushNotification.init({
+            "ios": {
+              "sound": true,
+              "vibration": true,
+              "badge": true,
+              "clearBadge": true
+            }
+        });
+        
+        push.on('registration', function(data) {
+        	// send data.registrationId to push service
+        });
+        
+
+        push.on('notification', function(data) {
+        	// do something with the push data
+        	// then call finish to let the OS know we are done
+            push.finish(function() {
+                console.log("processing of push data is finished");
+            });
+        });
+```
+
+It is absolutely critical that you call `push.finish()` when you have successfully processed your background push data.
 
 ## Windows Behaviour
 

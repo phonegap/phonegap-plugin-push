@@ -101,24 +101,24 @@ PushNotification.prototype.setApplicationIconBadgeNumber = function(successCallb
 
     exec(successCallback, errorCallback, "PushNotification", "setApplicationIconBadgeNumber", [{badge: badge}]);
 };
-
+               
 /**
  * Get the application icon badge
  */
-
+               
 PushNotification.prototype.getApplicationIconBadgeNumber = function(successCallback, errorCallback) {
     if (errorCallback == null) { errorCallback = function() {}}
-
+               
     if (typeof errorCallback != "function")  {
         console.log("PushNotification.getApplicationIconBadgeNumber failure: failure parameter not a function");
         return
     }
-
+               
     if (typeof successCallback != "function") {
         console.log("PushNotification.getApplicationIconBadgeNumber failure: success callback parameter must be a function");
         return
     }
-
+               
     exec(successCallback, errorCallback, "PushNotification", "getApplicationIconBadgeNumber", []);
 };
 
@@ -167,6 +167,23 @@ PushNotification.prototype.emit = function() {
     return true;
 };
 
+PushNotification.prototype.finish = function(successCallback, errorCallback) {
+    if (successCallback == null) { successCallback = function() {}}
+    if (errorCallback == null) { errorCallback = function() {}}
+               
+               if (typeof successCallback != "function") {
+               console.log("finish failure: success callback parameter must be a function");
+               return
+               }
+               
+    if (typeof errorCallback != "function")  {
+        console.log("finish failure: failure parameter not a function");
+        return
+    }
+
+    exec(successCallback, errorCallback, 'PushNotification', 'finish', []);
+}
+               
 /*!
  * Push Notification Plugin.
  */
