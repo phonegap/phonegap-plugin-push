@@ -190,6 +190,38 @@ successHandler gets called with an integer which is the current badge count
 push.getApplicationIconBadgeNumber(successHandler, errorHandler);
 ```
 
+### push.cancelNotification(successHandler, errorHandler, notification) - Android only
+
+Cancel a notification using either notId or Tag or both (depending on how they were pushed)
+
+#### Example
+
+```javascript
+/*{
+  title: "Test Push",
+  message: "Push tag 1",
+  tag: "tag1"
+}*/
+push.cancelNotification(successHandler, errorHandler, {tag : "tag1"});
+
+//or
+/*{
+  title: "Test Push",
+  message: "Push no 100",
+  notId: 100
+}*/
+push.cancelNotification(successHandler, errorHandler, {notId : 100});
+
+//or
+/*{
+  title: "Test Push",
+  message: "Push no 100",
+  tag : "tag2"
+  notId: 200,
+}*/
+push.cancelNotification(successHandler, errorHandler, {tag : "tag2" , notId : 200});
+```
+
 ## PhoneGap Build Support
 
 Including this plugin in a project that is built by PhoneGap Build is as easy as adding:
@@ -351,6 +383,29 @@ and:
 ```
 
 You will only see both "Push number 1" and "Push number 2" in the shade.
+                    
+                    
+Instead of notId, string tags can be used to achive the same effect.
+
+```javascript
+{
+  title: "Test Push",
+  message: "Push number 1",
+  tag: "tag1"
+}
+```
+
+and:
+
+```javascript
+{
+  title: "Test Push",
+  message: "Push number 2",
+  tag: "tag2"
+}
+```
+tags can also be used along with notId for more complex setups.
+
 
 ### Inbox Stacking ###
 

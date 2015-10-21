@@ -134,6 +134,26 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                 }
             }
             });
+        } else if (CANCEL_NOTIFICATION.equals(action)) {
+            try {
+                final String notificationTag =  getNotificationTag(getApplicationContext(), data.isNull(0) ? null : data.getString(0));
+                cordova.getThreadPool().execute(new Runnable() {
+                    public void run() {
+                        try {
+                            final NotificationManager notificationManager = (NotificationManager) cordova.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                            notificationManager.cancel(notificationTag, data.getInt(1));
+                            Log.v(LOG_TAG, "CANCEL_NOTIFICATION");
+                            callbackContext.success();
+                        } catch (JSONException e) {
+                            Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
+                            callbackContext.error(e.getMessage());
+                        }
+                    }
+                });
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
+                callbackContext.error(e.getMessage());
+            }
         } else {
             Log.e(LOG_TAG, "Invalid action : " + action);
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
@@ -271,5 +291,19 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
     public static boolean isActive() {
         return gWebView != null;
+    }
+    
+    public static String getAppName(Context context) {
+        CharSequence appName =  context.getPackageManager().getApplicationLabel(context.getApplicationInfo());
+        return (String)appName;
+    }
+    
+    public static String getNotificationTag(Context context, String value) {
+        String retval = getAppName(context);
+        if(value != null) {
+            //use appName as namespace
+            retval = retval.concat(".").concat(value);
+        }
+        return retval;
     }
 }

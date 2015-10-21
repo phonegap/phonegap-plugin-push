@@ -167,6 +167,40 @@ PushNotification.prototype.emit = function() {
     return true;
 };
 
+/**
+ * cancel a notification.
+ */
+
+PushNotification.prototype.cancelNotification = function(successCallback, errorCallback, notification) {
+    if (successCallback == null) { successCallback = function() {}}
+    if (errorCallback == null) { errorCallback = function() {}}
+
+    if (typeof errorCallback != "function")  {
+        console.log("PushNotification.cancel failure: failure parameter not a function");
+        return
+    }
+
+    if (typeof successCallback != "function") {
+        console.log("PushNotification.cancel failure: success callback parameter must be a function");
+        return
+    }
+    
+    if(!notification) {
+        errorCallback("PushNotification.cancel failure: notification parameter must be a object");
+    } else {
+        
+        exec(
+            successCallback, 
+            errorCallback, 
+            "PushNotification", 
+            "cancelNotification", 
+            [
+                notification.tag ? notification.tag : null,
+                notification.notId ? notification.notId : 0
+            ]
+        );
+    }
+};
 /*!
  * Push Notification Plugin.
  */

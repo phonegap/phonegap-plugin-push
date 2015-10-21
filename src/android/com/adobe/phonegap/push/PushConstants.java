@@ -6,6 +6,7 @@ public interface PushConstants {
     public static final String FOREGROUND = "foreground";
     public static final String TITLE = "title";
     public static final String NOT_ID = "notId";
+    public static final String NOT_TAG = "tag";
     public static final String PUSH_BUNDLE = "pushBundle";
     public static final String ICON = "icon";
     public static final String ICON_COLOR = "iconColor";
@@ -47,4 +48,5 @@ public interface PushConstants {
     public static final String COLLAPSE_KEY = "collapse_key";
     public static final String FORCE_SHOW = "forceShow";
     public static final String GCM = "GCM";
+    public static final String CANCEL_NOTIFICATION = "cancelNotification";
 }

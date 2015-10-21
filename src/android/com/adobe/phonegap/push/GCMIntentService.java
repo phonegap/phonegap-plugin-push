@@ -191,7 +191,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
     public void createNotification(Context context, Bundle extras) {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        String appName = getAppName(this);
+        String notificationTag = PushPlugin.getNotificationTag(context, extras.getString(NOT_TAG));
         String packageName = context.getPackageName();
         Resources resources = context.getResources();
 
@@ -297,7 +297,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
          */
         createActions(extras, mBuilder, resources, packageName);
 
-        mNotificationManager.notify(appName, notId, mBuilder.build());
+        mNotificationManager.notify(notificationTag, notId, mBuilder.build());
     }
 
     private void createActions(Bundle extras, NotificationCompat.Builder mBuilder, Resources resources, String packageName) {
@@ -555,11 +555,6 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             e.printStackTrace();
             return null;
         }
-    }
-
-    private static String getAppName(Context context) {
-        CharSequence appName =  context.getPackageManager().getApplicationLabel(context.getApplicationInfo());
-        return (String)appName;
     }
 
     private int parseInt(String value, Bundle extras) {
