@@ -171,7 +171,7 @@ PushNotification.prototype.emit = function() {
  * cancel a notification.
  */
 
-PushNotification.prototype.cancelNotification = function(notId, successCallback, errorCallback) {
+PushNotification.prototype.cancelNotification = function(successCallback, errorCallback, notification) {
     if (successCallback == null) { successCallback = function() {}}
     if (errorCallback == null) { errorCallback = function() {}}
 
@@ -184,8 +184,22 @@ PushNotification.prototype.cancelNotification = function(notId, successCallback,
         console.log("PushNotification.cancel failure: success callback parameter must be a function");
         return
     }
-
-    exec(successCallback, errorCallback, "PushNotification", "cancelNotification", [notId]);
+    
+    if(!notification) {
+        errorCallback("PushNotification.cancel failure: notification parameter must be a object");
+    } else {
+        
+        exec(
+            successCallback, 
+            errorCallback, 
+            "PushNotification", 
+            "cancelNotification", 
+            [
+                notification.tag ? notification.tag : null,
+                notification.notId ? notification.notId : 0
+            ]
+        );
+    }
 };
 /*!
  * Push Notification Plugin.

@@ -191,7 +191,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
     public void createNotification(Context context, Bundle extras) {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        String appName = getAppName(this);
+        String notificationTag = PushPlugin.getNotificationTag(context, extras.getString(NOT_TAG));
         String packageName = context.getPackageName();
         Resources resources = context.getResources();
 
@@ -297,7 +297,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
          */
         createActions(extras, mBuilder, resources, packageName);
 
-        mNotificationManager.notify(appName, notId, mBuilder.build());
+        mNotificationManager.notify(notificationTag, notId, mBuilder.build());
     }
 
     private void createActions(Bundle extras, NotificationCompat.Builder mBuilder, Resources resources, String packageName) {
@@ -557,11 +557,6 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         }
     }
 
-    private static String getAppName(Context context) {
-        CharSequence appName =  context.getPackageManager().getApplicationLabel(context.getApplicationInfo());
-        return (String)appName;
-    }
-
     private int parseInt(String value, Bundle extras) {
         int retval = 0;
 
@@ -573,22 +568,6 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         }
         catch(Exception e) {
             Log.e(LOG_TAG, "Number format exception - Error parsing " + value + ": " + e.getMessage());
-        }
-
-        return retval;
-    }
-    
-    private int getTag(String value, Bundle extras) {
-        String retval = getAppName(this);
-        try {
-            String tag = extras.getString(value);
-            if(tag != null) {
-               //use appName as namespace
-               retval = retval.concat('.').concat(tag);
-            }
-        }
-        catch(Exception e) {
-            Log.e(LOG_TAG, "exception - Error parsing tag : " + e.getMessage());
         }
 
         return retval;
