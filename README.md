@@ -199,7 +199,7 @@ successHandler gets called when background push processing is successfully compl
 #### Example
 
 ```javascript
-push.getApplicationIconBadgeNumber(successHandler, errorHandler);
+push.finish(successHandler, errorHandler);
 ```
 
 ## PhoneGap Build Support
