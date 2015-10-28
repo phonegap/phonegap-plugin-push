@@ -100,11 +100,63 @@
             </array>
         </config-file>
         
+                <!-- Plugin Code -->
 		<source-file src="src/ios/AppDelegate+notification.m" />
 		<source-file src="src/ios/PushPlugin.m" />
 
 		<header-file src="src/ios/AppDelegate+notification.h" />
 		<header-file src="src/ios/PushPlugin.h" />
+
+                <!--  GCM Provided Frameworks Used -->
+                <framework src="AddressBook.framework" />
+                <!-- Note these 2 appear in red in app code project but work-->
+                <framework src="libsqlite3.tbd" />
+                <framework src="libz.tbd" />
+
+                <!--  GCM Code from Cocoapods  -->
+		<header-file target-dir="GCM/Headers" src="src/ios/GGLInstanceID/Headers/Public/GGLInstanceID.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/GGLInstanceID/Headers/Public/GGLInstanceIDConfig.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/GGLInstanceID/Headers/Public/GGLInstanceIDDelegate.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/GGLInstanceID/Headers/Public/GGLInstanceIDHeaders.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/Google/Headers/GGLCloudMessaging/Public/CloudMessaging.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/Google/Headers/GGLCloudMessaging/Public/GGLContext+CloudMessaging.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/Google/Headers/GGLCore/Public/Core.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/Google/Headers/GGLCore/Public/GGLConfiguration.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/Google/Headers/GGLCore/Public/GGLContext.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/Google/Headers/GGLCore/Public/GGLErrorCode.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/GoogleCloudMessaging/Headers/Public/GCMConfig.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/GoogleCloudMessaging/Headers/Public/GCMPubSub.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/GoogleCloudMessaging/Headers/Public/GCMReceiverDelegate.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/GoogleCloudMessaging/Headers/Public/GCMService.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/GoogleCloudMessaging/Headers/Public/GoogleCloudMessaging.h" />
+
+                <source-file target-dir="GCM/Libraries" src="src/ios/Google/Libraries/libGGLCloudMessaging.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/Google/Libraries/libGGLCore.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GGLInstanceID/Libraries/libGGLInstanceIDLib.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleIPhoneUtilities/Libraries/libGIP_Reachability.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleSymbolUtilities/Libraries/libGSDK_Overload.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleNetworkingUtilities/Libraries/libGTMSessionFetcher_core.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleNetworkingUtilities/Libraries/libGTMSessionFetcher_full.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTMStackTrace.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_AddressBook.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_DebugUtils.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_GTMURLBuilder.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_KVO.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_NSData+zlib.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_NSDictionary+URLArguments.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_NSScannerJSON.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_NSStringHTML.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_NSStringXML.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_Regex.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_RoundedRectPath.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_StringEncoding.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_SystemVersion.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_UIFont+LineHeight.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_core.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_iPhone.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleCloudMessaging/Libraries/libGcmLib.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleInterchangeUtilities/Libraries/libProtocolBuffers.a" framework="true" />
+                <!--  End GCM Related Files -->
 
 	</platform>
 

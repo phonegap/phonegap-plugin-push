@@ -23,7 +23,12 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+//  See GGLInstanceID.h
+#define GMP_NO_MODULES true
+
 #import "PushPlugin.h"
+#import "CloudMessaging.h"
+
 
 @implementation PushPlugin
 
@@ -36,6 +41,40 @@
 @synthesize clearBadge;
 @synthesize handlerObj;
 
+@synthesize usesGCM;
+@synthesize gcmSandbox;
+@synthesize gcmSenderId;
+@synthesize gcmRegistrationOptions;
+@synthesize gcmRegistrationHandler;
+
+
+-(void)initGCMRegistrationHandler;
+{
+    __weak __block PushPlugin *weakSelf = self;
+    gcmRegistrationHandler = ^(NSString *registrationToken, NSError *error){
+        if (registrationToken != nil) {
+            NSLog(@"GCM Registration Token: %@", registrationToken);
+            [weakSelf registerWithToken:registrationToken];
+        } else {
+            NSLog(@"Registration to GCM failed with error: %@", error.localizedDescription);
+            [weakSelf failWithMessage:@"" withError:error];
+        }
+    };
+}
+
+//  GCM refresh token
+//  Unclear how this is testable under normal circumstances
+- (void)onTokenRefresh {
+#if !TARGET_IPHONE_SIMULATOR
+    // A rotation of the registration tokens is happening, so the app needs to request a new token.
+    NSLog(@"The GCM registration token needs to be changed.");
+    [[GGLInstanceID sharedInstance] tokenWithAuthorizedEntity:[self gcmSenderId]
+                                                        scope:kGGLInstanceIDScopeGCM
+                                                      options:[self gcmRegistrationOptions]
+                                                      handler:[self gcmRegistrationHandler]];
+#endif
+}
+     
 - (void)unregister:(CDVInvokedUrlCommand*)command;
 {
     self.callbackId = command.callbackId;
@@ -122,6 +161,29 @@
      (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 #endif
     
+    //  GCM options
+    [self setGcmSenderId: [iosOptions objectForKey:@"senderId"]];
+    if([[self gcmSenderId] length] > 0) {
+        NSLog(@"Using GCM Notification");
+        [self setUsesGCM: YES];
+        GCMConfig *gcmConfig = [GCMConfig defaultConfig];
+        [[GCMService sharedInstance] startWithConfig:gcmConfig];
+        [self initGCMRegistrationHandler];
+    } else {
+        NSLog(@"Using APNS Notification");
+        [self setUsesGCM:NO];
+    }
+    id gcmSandBoxArg = [iosOptions objectForKey:@"gcmSandbox"];
+
+    [self setGcmSandbox:NO];
+    if ([self usesGCM] &&
+        (([gcmSandBoxArg isKindOfClass:[NSString class]] && [gcmSandBoxArg isEqualToString:@"true"]) ||
+            [gcmSandBoxArg boolValue]))
+    {
+        NSLog(@"Using GCM Sandbox");
+        [self setGcmSandbox:YES];
+    }
+    
     if (notificationMessage)			// if there is a pending startup notification
         [self notificationReceived];	// go ahead and process it
 
@@ -184,13 +246,23 @@
     [results setValue:dev.name forKey:@"deviceName"];
     [results setValue:dev.model forKey:@"deviceModel"];
     [results setValue:dev.systemVersion forKey:@"deviceSystemVersion"];
-    
-    // Send result to trigger 'registration' event but keep callback
-    NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:1];
-    [message setObject:token forKey:@"registrationId"];
-    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
-    [pluginResult setKeepCallbackAsBool:YES];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
+
+    if([self usesGCM]) {
+        GGLInstanceIDConfig *instanceIDConfig = [GGLInstanceIDConfig defaultConfig];
+        instanceIDConfig.delegate = self;
+        [[GGLInstanceID sharedInstance] startWithConfig:instanceIDConfig];
+        
+        [self setGcmRegistrationOptions: @{kGGLInstanceIDRegisterAPNSOption:deviceToken,
+                                     kGGLInstanceIDAPNSServerTypeSandboxOption:@YES}];
+        
+        [[GGLInstanceID sharedInstance] tokenWithAuthorizedEntity:[self gcmSenderId]
+                                                            scope:kGGLInstanceIDScopeGCM
+                                                          options:[self gcmRegistrationOptions]
+                                                          handler:[self gcmRegistrationHandler]];
+
+    } else {
+        [self registerWithToken: token];
+    }
 #endif
 }
 
@@ -299,6 +371,16 @@
         [self.commandDelegate sendPluginResult:commandResult callbackId:self.callbackId];
     }
 }
+
+-(void)registerWithToken:(NSString*)token; {
+    // Send result to trigger 'registration' event but keep callback
+    NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:1];
+    [message setObject:token forKey:@"registrationId"];
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
+    [pluginResult setKeepCallbackAsBool:YES];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
+}
+
 
 -(void)failWithMessage:(NSString *)message withError:(NSError *)error
 {
