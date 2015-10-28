@@ -160,13 +160,13 @@
     }
     id gcmSandBoxArg = [iosOptions objectForKey:@"gcmSandbox"];
 
-    [self setGcmSandbox:NO];
+    [self setGcmSandbox:@NO];
     if ([self usesGCM] &&
         (([gcmSandBoxArg isKindOfClass:[NSString class]] && [gcmSandBoxArg isEqualToString:@"true"]) ||
             [gcmSandBoxArg boolValue]))
     {
         NSLog(@"Using GCM Sandbox");
-        [self setGcmSandbox:YES];
+        [self setGcmSandbox:@YES];
     }
     
     if (notificationMessage)			// if there is a pending startup notification
@@ -232,7 +232,7 @@
         [[GGLInstanceID sharedInstance] startWithConfig:instanceIDConfig];
         
         [self setGcmRegistrationOptions: @{kGGLInstanceIDRegisterAPNSOption:deviceToken,
-                                     kGGLInstanceIDAPNSServerTypeSandboxOption:@YES}];
+                                     kGGLInstanceIDAPNSServerTypeSandboxOption:[self gcmSandbox]}];
         
         [[GGLInstanceID sharedInstance] tokenWithAuthorizedEntity:[self gcmSenderId]
                                                             scope:kGGLInstanceIDScopeGCM
