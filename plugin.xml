@@ -77,11 +77,19 @@
 			</feature>
 		</config-file>
 
-                <!--  GCM  -->
+                <!-- Plugin Code -->
+		<source-file src="src/ios/AppDelegate+notification.m" />
+		<source-file src="src/ios/PushPlugin.m" />
+
+		<header-file src="src/ios/AppDelegate+notification.h" />
+		<header-file src="src/ios/PushPlugin.h" />
+
+                <!--  GCM Provided Frameworks Used -->
                 <framework src="AddressBook.framework" />
                 <framework src="libsqlite3.tbd" />
                 <framework src="libz.tbd" />
 
+                <!--  GCM Code from Cocoapods  -->
 		<header-file src="src/ios/GGLInstanceID/Headers/Public/GGLInstanceID.h" />
 		<header-file src="src/ios/GGLInstanceID/Headers/Public/GGLInstanceIDConfig.h" />
 		<header-file src="src/ios/GGLInstanceID/Headers/Public/GGLInstanceIDDelegate.h" />
@@ -97,12 +105,6 @@
 		<header-file src="src/ios/GoogleCloudMessaging/Headers/Public/GCMReceiverDelegate.h" />
 		<header-file src="src/ios/GoogleCloudMessaging/Headers/Public/GCMService.h" />
 		<header-file src="src/ios/GoogleCloudMessaging/Headers/Public/GoogleCloudMessaging.h" />
-
-		<source-file src="src/ios/AppDelegate+notification.m" />
-		<source-file src="src/ios/PushPlugin.m" />
-
-		<header-file src="src/ios/AppDelegate+notification.h" />
-		<header-file src="src/ios/PushPlugin.h" />
 
                 <source-file src="src/ios/Google/Libraries/libGGLCloudMessaging.a" framework="true" />
                 <source-file src="src/ios/Google/Libraries/libGGLCore.a" framework="true" />
@@ -130,6 +132,7 @@
                 <source-file src="src/ios/GoogleUtilities/Libraries/libGTM_iPhone.a" framework="true" />
                 <source-file src="src/ios/GoogleCloudMessaging/Libraries/libGcmLib.a" framework="true" />
                 <source-file src="src/ios/GoogleInterchangeUtilities/Libraries/libProtocolBuffers.a" framework="true" />
+                <!--  End GCM Related Files -->
 	</platform>
 
   	<!-- windows -->
