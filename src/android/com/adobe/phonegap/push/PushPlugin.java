@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.iid.InstanceID;
+import com.google.android.gms.gcm.GcmPubSub;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -25,6 +26,7 @@ import java.util.Iterator;
 public class PushPlugin extends CordovaPlugin implements PushConstants {
 
     public static final String LOG_TAG = "PushPlugin";
+    private static final String[] TOPICS = {"questions"};
 
     private static CallbackContext pushContext;
     private static CordovaWebView gWebView;
@@ -79,6 +81,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         else {
                             token = sharedPref.getString(REGISTRATION_ID, "");
                         }
+                        subscribeTopics(token);
 
                         JSONObject json = new JSONObject().put(REGISTRATION_ID, token);
 
@@ -143,6 +146,13 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         }
 
         return true;
+    }
+
+    private void subscribeTopics(String token) throws IOException {
+        for (String topic : TOPICS) {
+            GcmPubSub pubSub = GcmPubSub.getInstance(getApplicationContext());
+            pubSub.subscribe(token, "/topics/" + topic, null);
+        }
     }
 
     public static void sendEvent(JSONObject _json) {
