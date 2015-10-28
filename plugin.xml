@@ -157,7 +157,6 @@
                 <source-file target-dir="GCM/Libraries" src="src/ios/GoogleCloudMessaging/Libraries/libGcmLib.a" framework="true" />
                 <source-file target-dir="GCM/Libraries" src="src/ios/GoogleInterchangeUtilities/Libraries/libProtocolBuffers.a" framework="true" />
                 <!--  End GCM Related Files -->
-
 	</platform>
 
   	<!-- windows -->
