@@ -56,8 +56,8 @@
 
 //  GCM Features
 @property(nonatomic, assign) BOOL usesGCM;
-@property(nonatomic, assign) NSNumber* gcmSandbox;
-@property(nonatomic, assign) NSString *gcmSenderId;
+@property(nonatomic, strong) NSNumber* gcmSandbox;
+@property(nonatomic, strong) NSString *gcmSenderId;
 @property(nonatomic, strong) NSDictionary *gcmRegistrationOptions;
 @property(nonatomic, strong) void (^gcmRegistrationHandler) (NSString *registrationToken, NSError *error);
 
