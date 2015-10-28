@@ -30,7 +30,7 @@ cordova plugin add https://github.com/phonegap/phonegap-plugin-push
 ## Supported Platforms
 
 - Android
-- iOS
+- iOS (Native or GCM)
 - Windows Universal
 
 ## Quick Example
@@ -75,6 +75,8 @@ Parameter | Description
 `options.ios.alert` | `Boolean` Optional. If `true` the device shows an alert on receipt of notification. Default is `false`.
 `options.ios.badge` | `Boolean` Optional. If `true` the device sets the badge number on receipt of notification. Default is `false`.
 `options.ios.sound` | `Boolean` Optional. If `true` the device plays a sound on receipt of notification. Default is `false`.
+`options.ios.senderID` | `String` (Optional) Maps to the project number in the Google Developer Console.  Setting this uses GCM for notifications instead of native
+`options.ios.gcmSandbox` | `Boolean` (Optional) Whether to use prod or sandbox GCM setting.  Defaults to false.
 `options.windows` | `JSON Object` Windows specific initialization options.
 
 #### Returns
