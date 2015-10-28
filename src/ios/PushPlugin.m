@@ -147,7 +147,7 @@
 #endif
     
     //  GCM options
-    [self setGcmSenderId: [iosOptions objectForKey:@"senderId"]];
+    [self setGcmSenderId: [iosOptions objectForKey:@"senderID"]];
     if([[self gcmSenderId] length] > 0) {
         NSLog(@"Using GCM Notification");
         [self setUsesGCM: YES];
