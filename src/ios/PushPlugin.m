@@ -232,7 +232,7 @@
         [[GGLInstanceID sharedInstance] startWithConfig:instanceIDConfig];
         
         [self setGcmRegistrationOptions: @{kGGLInstanceIDRegisterAPNSOption:deviceToken,
-                                     kGGLInstanceIDAPNSServerTypeSandboxOption:[[self gcmSandbox] stringValue]}];
+                                     kGGLInstanceIDAPNSServerTypeSandboxOption:[self gcmSandbox]}];
         
         [[GGLInstanceID sharedInstance] tokenWithAuthorizedEntity:[self gcmSenderId]
                                                             scope:kGGLInstanceIDScopeGCM
