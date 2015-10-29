@@ -151,8 +151,6 @@
     if([[self gcmSenderId] length] > 0) {
         NSLog(@"Using GCM Notification");
         [self setUsesGCM: YES];
-        GCMConfig *gcmConfig = [GCMConfig defaultConfig];
-        [[GCMService sharedInstance] startWithConfig:gcmConfig];
         [self initGCMRegistrationHandler];
     } else {
         NSLog(@"Using APNS Notification");
