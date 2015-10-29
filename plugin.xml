@@ -86,6 +86,7 @@
 
                 <!--  GCM Provided Frameworks Used -->
                 <framework src="AddressBook.framework" />
+                <!-- Note these 2 appear in red in app code project but work-->
                 <framework src="libsqlite3.tbd" />
                 <framework src="libz.tbd" />
 
