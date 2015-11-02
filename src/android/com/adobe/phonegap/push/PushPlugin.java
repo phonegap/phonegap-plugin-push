@@ -127,6 +127,18 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                     try {
                         InstanceID.getInstance(getApplicationContext()).deleteInstanceID();
                         Log.v(LOG_TAG, "UNREGISTER");
+
+                        // Remove shared prefs
+                        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.remove(SOUND);
+                        editor.remove(VIBRATE);
+                        editor.remove(CLEAR_NOTIFICATIONS);
+                        editor.remove(FORCE_SHOW);
+                        editor.remove(SENDER_ID);
+                        editor.remove(REGISTRATION_ID);
+                        editor.commit();
+
                         callbackContext.success();
                     } catch (IOException e) {
                         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
