@@ -80,11 +80,15 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                             token = sharedPref.getString(REGISTRATION_ID, "");
                         }
 
-                        JSONObject json = new JSONObject().put(REGISTRATION_ID, token);
+                        if (!"".equals(token)) {
+                            JSONObject json = new JSONObject().put(REGISTRATION_ID, token);
 
-                        Log.v(LOG_TAG, "onRegistered: " + json.toString());
+                            Log.v(LOG_TAG, "onRegistered: " + json.toString());
 
-                        PushPlugin.sendEvent( json );
+                            PushPlugin.sendEvent( json );
+                        } else {
+                            callbackContext.error("Empty registration ID received from GCM");
+                        }
                     } catch (JSONException e) {
                         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
                         callbackContext.error(e.getMessage());
