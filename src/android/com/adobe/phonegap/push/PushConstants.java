@@ -21,6 +21,7 @@ public interface PushConstants {
     public static final String PICTURE = "picture";
     public static final String GCM_N = "gcm.n.";
     public static final String GCM_NOTIFICATION = "gcm.notification";
+    public static final String GCM_NOTIFICATION_BODY = "gcm.notification.body";
     public static final String UA_PREFIX = "com.urbanairship.push";
     public static final String PARSE_COM_DATA = "data";
     public static final String ALERT = "alert";
