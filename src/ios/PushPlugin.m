@@ -444,6 +444,18 @@
     [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
 }
 
+- (void)hasPermission:(CDVInvokedUrlCommand *)command
+{
+    BOOL enabled = NO;
+    id<UIApplicationDelegate> appDelegate = [UIApplication sharedApplication].delegate;
+    if ([appDelegate respondsToSelector:@selector(userHasRemoteNotificationsEnabled)]) {
+        enabled = [appDelegate performSelector:@selector(userHasRemoteNotificationsEnabled)];
+    }
+
+    CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:enabled];
+    [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
+}
+
 -(void)successWithMessage:(NSString *)message
 {
     if (self.callbackId != nil)

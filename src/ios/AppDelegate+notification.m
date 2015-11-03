@@ -115,6 +115,18 @@ static char launchNotificationKey;
     }
 }
 
+- (BOOL)userHasRemoteNotificationsEnabled {
+    UIApplication *application = [UIApplication sharedApplication];
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        return application.currentUserNotificationSettings.types != UIUserNotificationTypeNone;
+    } else {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        return application.enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone;
+#pragma GCC diagnostic pop
+    }
+}
+
 - (void)applicationDidBecomeActive:(UIApplication *)application {
 
     NSLog(@"active");
