@@ -452,7 +452,9 @@
         enabled = [appDelegate performSelector:@selector(userHasRemoteNotificationsEnabled)];
     }
 
-    CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:enabled];
+    NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:1];
+    [message setObject:[NSNumber numberWithBool:enabled] forKey:@"isEnabled"];
+    CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
     [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
 }
 
