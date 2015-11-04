@@ -39,6 +39,7 @@ public interface PushConstants {
     public static final String UNREGISTER = "unregister";
     public static final String EXIT = "exit";
     public static final String FINISH = "finish";
+    public static final String HAS_PERMISSION = "hasPermission";
     public static final String ANDROID = "android";
     public static final String SENDER_ID = "senderID";
     public static final String CLEAR_NOTIFICATIONS = "clearNotifications";

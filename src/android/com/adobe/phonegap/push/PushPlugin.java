@@ -152,6 +152,22 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
             });
         } else if (FINISH.equals(action)) {
             callbackContext.success();
+        } else if (HAS_PERMISSION.equals(action)) {
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    pushContext = callbackContext;
+                    JSONObject jo = new JSONObject();
+
+                    try {
+                        jo.put("isEnabled", PermissionUtils.hasPermission(getApplicationContext(), "OP_POST_NOTIFICATION"));
+                        PushPlugin.sendEvent(jo);
+                    } catch (UnknownError e) {
+                        callbackContext.error(e.getMessage());
+                    } catch (JSONException e) {
+                        callbackContext.error(e.getMessage());
+                    }
+                }
+            });
         } else {
             Log.e(LOG_TAG, "Invalid action : " + action);
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
@@ -240,7 +256,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
             while (it.hasNext()) {
                 String key = it.next();
                 Object value = extras.get(key);
-                 
+
                 Log.d(LOG_TAG, "key = " + key);
 
                 if (jsonKeySet.contains(key)) {
@@ -265,7 +281,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         }
                         else {
                             additionalData.put(key, value);
-                        }                       
+                        }
                     } catch (Exception e) {
                         additionalData.put(key, value);
                     }
