@@ -5,6 +5,7 @@ public interface PushConstants {
     public static final String REGISTRATION_ID = "registrationId";
     public static final String FOREGROUND = "foreground";
     public static final String TITLE = "title";
+    public static final String APP_NAME = "appName";
     public static final String NOT_ID = "notId";
     public static final String PUSH_BUNDLE = "pushBundle";
     public static final String ICON = "icon";
@@ -13,6 +14,7 @@ public interface PushConstants {
     public static final String VIBRATE = "vibrate";
     public static final String ACTIONS = "actions";
     public static final String CALLBACK = "callback";
+    public static final String CLOSE_AFTER_CLICK = "closeAfterClick";
     public static final String DRAWABLE = "drawable";
     public static final String MSGCNT = "msgcnt";
     public static final String VIBRATION_PATTERN = "vibrationPattern";
@@ -49,3 +51,4 @@ public interface PushConstants {
     public static final String FORCE_SHOW = "forceShow";
     public static final String GCM = "GCM";
 }
+
