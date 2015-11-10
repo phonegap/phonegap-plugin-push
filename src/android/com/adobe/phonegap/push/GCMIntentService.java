@@ -75,7 +75,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             else if (forceShow && PushPlugin.isInForeground()) {
                 Log.d(LOG_TAG, "foreground force");
                 extras.putBoolean(FOREGROUND, true);
-                
+
                 showNotificationIfPossible(getApplicationContext(), extras);
             }
             // if we are not in the foreground always send notification if the data has at least a message or title
@@ -440,7 +440,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         if (soundname == null) {
             soundname = extras.getString(SOUND);
         }
-        if (soundname != null) {
+        if (soundname != null && !soundname.contentEquals(SOUND_DEFAULT)) {
             Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
                     + "://" + context.getPackageName() + "/raw/" + soundname);
             Log.d(LOG_TAG, sound.toString());
