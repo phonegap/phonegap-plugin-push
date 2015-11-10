@@ -23,7 +23,7 @@ Initializes the plugin on the native side.
 
 Parameter | Type | Default | Description
 --------- | ---- | ------- | -----------
-`options` | `Object` | `{}` | An object describing relevant specific options for all target platforms. 
+`options` | `Object` | `{}` | An object describing relevant specific options for all target platforms.
 
 All available option attributes are described bellow. Currently, there are no Windows specific options.
 
@@ -226,7 +226,7 @@ Parameter | Type | Default | Description
 
 Parameter | Type | Description
 --------- | ---- | -----------
-`n` | `number` | An integer which is the current badge count. 
+`n` | `number` | An integer which is the current badge count.
 
 ### Example
 
@@ -256,5 +256,27 @@ push.finish(function() {
 	console.log('success');
 }, function() {
 	console.log('error');
+});
+```
+
+### PushNotification.hasPermission(callback)
+
+Checks whether the PushNotification Permission have been enabled or disabled.
+
+Callback Parameter | Description
+------------------ | -----------
+`data.isEnabled` | `Boolean`
+
+#### Example
+
+```javascript
+PushNotification.hasPermission(function(data) {
+    if (data.isEnabled) {
+        var push = PushNotification.init({
+            android: {
+                senderId: 'abc'
+            }
+        });
+    }
 });
 ```
