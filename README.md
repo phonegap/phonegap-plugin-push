@@ -9,7 +9,7 @@ This requires phonegap/cordova CLI 5.0+ ( current stable v1.4.2 )
 ```
 phonegap plugin add phonegap-plugin-push
 ```
-or 
+or
 
 ```
 cordova plugin add phonegap-plugin-push
@@ -21,7 +21,7 @@ It is also possible to install via repo url directly ( unstable )
 phonegap plugin add https://github.com/phonegap/phonegap-plugin-push
 ```
 
-or 
+or
 
 ```
 cordova plugin add https://github.com/phonegap/phonegap-plugin-push
@@ -202,6 +202,28 @@ successHandler gets called when background push processing is successfully compl
 push.finish(successHandler, errorHandler);
 ```
 
+### PushNotification.hasPermission(callback)
+
+Checks whether the PushNotification Permission have been enabled or disabled.
+
+Callback Parameter | Description
+------------------ | -----------
+`data.isEnabled` | `Boolean`
+
+#### Example
+
+```javascript
+PushNotification.hasPermission(function(data) {
+    if (data.isEnabled) {
+        var push = PushNotification.init({
+            android: {
+                senderId: 'abc'
+            }
+        });
+    }
+});
+```
+
 ## PhoneGap Build Support
 
 Including this plugin in a project that is built by PhoneGap Build is as easy as adding:
@@ -246,10 +268,10 @@ This is because Android now uses Material design and the default icon for push w
 In order to get a better user experience you can specify an alternate icon and background color to be shown when receiving a push notification. The code would look like this:
 
 ```javascript
-	var push = PushNotification.init({ 
-		"android": { 
-			"senderID": "123456789", "icon": "phonegap", "iconColor": "blue"}, 
-		"ios": {"alert": "true", "badge": "true", "sound": "true"}, "windows": {} 
+	var push = PushNotification.init({
+		"android": {
+			"senderID": "123456789", "icon": "phonegap", "iconColor": "blue"},
+		"ios": {"alert": "true", "badge": "true", "sound": "true"}, "windows": {}
 	});
 ```
 
@@ -482,7 +504,7 @@ To add to your app:
 ```
 phonegap plugin add https://github.com/jeduan/cordova-plugin-facebook4 --variable APP_ID="App ID" --variable APP_NAME="App Name"
 ```
-or 
+or
 
 ```
 cordova plugin add https://github.com/jeduan/cordova-plugin-facebook4 --variable APP_ID="App ID" --variable APP_NAME="App Name"
@@ -581,7 +603,7 @@ However if you want your `on('notification')` event handler called but no notifi
 }
 ```
 
-That covers what you need to do on the server side to accept background pushes on iOS. However, it is critically important that you continue reading as there will be a change in your `on('notification')`. When you receive a background push on iOS you will be given 30 seconds of time in which to complete a task. If you spend longer than 30 seconds on the task the OS may decide that your app is misbehaving and kill it. In order to signal iOS that your `on('notification')` handler is done you will need to call the new `push.finish()` method. 
+That covers what you need to do on the server side to accept background pushes on iOS. However, it is critically important that you continue reading as there will be a change in your `on('notification')`. When you receive a background push on iOS you will be given 30 seconds of time in which to complete a task. If you spend longer than 30 seconds on the task the OS may decide that your app is misbehaving and kill it. In order to signal iOS that your `on('notification')` handler is done you will need to call the new `push.finish()` method.
 
 For example:
 
@@ -594,11 +616,11 @@ For example:
               "clearBadge": true
             }
         });
-        
+
         push.on('registration', function(data) {
         	// send data.registrationId to push service
         });
-        
+
 
         push.on('notification', function(data) {
         	// do something with the push data
@@ -623,11 +645,11 @@ For advanced templates and usage, the notification object is included in [`data.
 
 ### Setting Toast Capable Option for Windows
 
-This plugin automatically sets the toast capable flag to be true for Cordova 5.1.1+. For lower versions, you must declare that it is Toast Capable in your app's manifest file. 
+This plugin automatically sets the toast capable flag to be true for Cordova 5.1.1+. For lower versions, you must declare that it is Toast Capable in your app's manifest file.
 
 ### Disabling the default processing of notifications by Windows
 
-The default handling can be disabled by setting the 'cancel' property in the notification object. 
+The default handling can be disabled by setting the 'cancel' property in the notification object.
 
 ```
 data.additionalData.pushNotificationReceivedEventArgs.cancel = true
