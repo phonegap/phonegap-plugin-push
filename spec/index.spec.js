@@ -165,9 +165,6 @@ describe('phonegap-plugin-push', function () {
 
         describe('off "notification" event', function () {
             it('should exist and be registered a callback handle', function (done) {
-                execSpy.andCallFake(function (win, fail, service, id, args) {
-                    fail('something went wrong');
-                });
                 var push = PushNotification.init(options),
                     eventHandler = function () {
                     };
@@ -183,9 +180,6 @@ describe('phonegap-plugin-push', function () {
 
         describe('off "registration" event', function () {
             it('should exist and be registered a callback handle', function (done) {
-                execSpy.andCallFake(function (win, fail, service, id, args) {
-                    fail('something went wrong');
-                });
                 var push = PushNotification.init(options),
                     eventHandler = function () {
                     };
@@ -201,9 +195,6 @@ describe('phonegap-plugin-push', function () {
 
         describe('off "error" event', function () {
             it('should exist and be registered a callback handle', function (done) {
-                execSpy.andCallFake(function (win, fail, service, id, args) {
-                    fail('something went wrong');
-                });
                 var push = PushNotification.init(options),
                     eventHandler = function () {
                     };
