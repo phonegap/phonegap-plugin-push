@@ -317,7 +317,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                         cancelButtonIntent.putExtra(APP_NAME, appName);
                         cancelButtonIntent.putExtra(NOT_ID, notId);
                         //Create the PendingIntent
-                        pIntent = PendingIntent.getBroadcast(this, 0, cancelButtonIntent, 0);
+                        pIntent = PendingIntent.getBroadcast(this, 0, cancelButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     } else {
                         Log.d(LOG_TAG, "adding action");
                         Intent intent = new Intent(this, PushHandlerActivity.class);
