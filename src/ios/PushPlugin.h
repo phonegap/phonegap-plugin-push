@@ -50,6 +50,7 @@
 @property BOOL isInline;
 @property BOOL clearBadge;
 @property (nonatomic, strong) NSDictionary *handlerObj;
+@property (nonatomic, strong) NSMutableDictionary *iosOptions;
 
 - (void)init:(CDVInvokedUrlCommand*)command;
 - (void)unregister:(CDVInvokedUrlCommand*)command;
@@ -59,6 +60,7 @@
 
 - (void)setNotificationMessage:(NSDictionary *)notification;
 - (void)notificationReceived;
+- (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
 
 //  GCM Features
 @property(nonatomic, assign) BOOL usesGCM;

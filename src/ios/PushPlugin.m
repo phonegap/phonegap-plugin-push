@@ -57,6 +57,10 @@
             [weakSelf registerWithToken:registrationToken];
         } else {
             NSLog(@"Registration to GCM failed with error: %@", error.localizedDescription);
+            NSLog(@"Registration to GCM failed with error: %@", error.localizedRecoveryOptions);
+            NSLog(@"Registration to GCM failed with error: %@", error.localizedRecoverySuggestion);
+            NSLog(@"Registration to GCM failed with error: %@", error.localizedFailureReason);
+            NSLog(@"Registration to GCM failed with error: %@", error.localizedFailureReason);
             [weakSelf failWithMessage:@"" withError:error];
         }
     };
@@ -92,6 +96,7 @@
     
     NSMutableDictionary* options = [command.arguments objectAtIndex:0];
     NSMutableDictionary* iosOptions = [options objectForKey:@"ios"];
+    self.iosOptions = iosOptions;
     
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
     UIUserNotificationType UserNotificationTypes = UIUserNotificationTypeNone;
@@ -161,6 +166,13 @@
      (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 #endif
     
+    if (notificationMessage)			// if there is a pending startup notification
+        [self notificationReceived];	// go ahead and process it
+    }];
+}
+
+- (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+    NSMutableDictionary* iosOptions = self.iosOptions;
     //  GCM options
     [self setGcmSenderId: [NSString stringWithString: [iosOptions objectForKey:@"senderID"]]];
     if([[self gcmSenderId] length] > 0) {
@@ -176,16 +188,11 @@
     [self setGcmSandbox:@NO];
     if ([self usesGCM] &&
         (([gcmSandBoxArg isKindOfClass:[NSString class]] && [gcmSandBoxArg isEqualToString:@"true"]) ||
-            [gcmSandBoxArg boolValue]))
+         [gcmSandBoxArg boolValue]))
     {
         NSLog(@"Using GCM Sandbox");
         [self setGcmSandbox:@YES];
     }
-    
-    if (notificationMessage)			// if there is a pending startup notification
-        [self notificationReceived];	// go ahead and process it
-
-    }];
 }
 
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
