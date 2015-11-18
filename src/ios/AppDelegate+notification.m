@@ -72,13 +72,13 @@ static char launchNotificationKey;
         pushHandler.notificationMessage = userInfo;
         pushHandler.isInline = YES;
         [pushHandler notificationReceived];
-        
+
         completionHandler(UIBackgroundFetchResultNewData);
     }
     // app is in background or in stand by
     else {
         NSLog(@"app in-active");
-        
+
         // do some convoluted logic to find out if this should be a silent push.
         long silent = 0;
         id aps = [userInfo objectForKey:@"aps"];
@@ -88,7 +88,7 @@ static char launchNotificationKey;
         } else if ([contentAvailable isKindOfClass:[NSNumber class]]) {
             silent = [contentAvailable integerValue];
         }
-        
+
         if (silent == 1) {
             NSLog(@"this should be a silent push");
             void (^safeHandler)(UIBackgroundFetchResult) = ^(UIBackgroundFetchResult result){
@@ -96,10 +96,10 @@ static char launchNotificationKey;
                     completionHandler(result);
                 });
             };
-            
+
             NSMutableDictionary* params = [NSMutableDictionary dictionaryWithCapacity:2];
             [params setObject:safeHandler forKey:@"handler"];
-            
+
             PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
             pushHandler.notificationMessage = userInfo;
             pushHandler.isInline = NO;
@@ -109,9 +109,21 @@ static char launchNotificationKey;
             NSLog(@"just put it in the shade");
             //save it for later
             self.launchNotification = userInfo;
-            
+
             completionHandler(UIBackgroundFetchResultNewData);
         }
+    }
+}
+
+- (BOOL)userHasRemoteNotificationsEnabled {
+    UIApplication *application = [UIApplication sharedApplication];
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        return application.currentUserNotificationSettings.types != UIUserNotificationTypeNone;
+    } else {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        return application.enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone;
+#pragma GCC diagnostic pop
     }
 }
 
@@ -123,7 +135,7 @@ static char launchNotificationKey;
     if (pushHandler.clearBadge) {
         NSLog(@"PushPlugin clearing badge");
         //zero badge
-        application.applicationIconBadgeNumber = 0;        
+        application.applicationIconBadgeNumber = 0;
     } else {
         NSLog(@"PushPlugin skip clear badge");
     }
