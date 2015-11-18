@@ -68,7 +68,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         String savedRegID = sharedPref.getString(REGISTRATION_ID, "");
 
                         // first time run get new token
-                        if ("".equals(savedSenderID) && "".equals(savedRegID)) {
+                        if ("".equals(savedRegID)) {
                             token = InstanceID.getInstance(getApplicationContext()).getToken(senderID, GCM);
                         }
                         // new sender ID, re-register
@@ -88,6 +88,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                             PushPlugin.sendEvent( json );
                         } else {
                             callbackContext.error("Empty registration ID received from GCM");
+                            return;
                         }
                     } catch (JSONException e) {
                         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
