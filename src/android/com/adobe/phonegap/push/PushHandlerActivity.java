@@ -19,14 +19,22 @@ public class PushHandlerActivity extends Activity implements PushConstants {
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        String appName = getIntent().getStringExtra(APP_NAME);
+        int notId = getIntent().getIntExtra(NOT_ID, -1);
+
         GCMIntentService gcm = new GCMIntentService();
-        gcm.setNotification(getIntent().getIntExtra(NOT_ID, 0), "");
+        gcm.setNotification(notId, "");
         super.onCreate(savedInstanceState);
         Log.v(LOG_TAG, "onCreate");
 
         boolean isPushPluginActive = PushPlugin.isActive();
         processPushBundle(isPushPluginActive);
 
+        // Close after click.
+        if (getIntent().getIntExtra(CLOSE_AFTER_CLICK, 0) == 1) {
+            final NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(appName, notId);
+        }
         finish();
 
         if (!isPushPluginActive) {
@@ -61,10 +69,13 @@ public class PushHandlerActivity extends Activity implements PushConstants {
         startActivity(launchIntent);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        final NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancelAll();
-    }
+    /**
+     * We don't need to close all notifications after open-hide app!
+     */
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        final NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+//        notificationManager.cancelAll();
+//    }
 }

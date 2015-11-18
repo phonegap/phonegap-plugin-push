@@ -318,25 +318,39 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         /*
          * Notification add actions
          */
-        createActions(extras, mBuilder, resources, packageName);
+        createActions(appName, notId, extras, mBuilder, resources, packageName);
 
         mNotificationManager.notify(appName, notId, mBuilder.build());
     }
 
-    private void createActions(Bundle extras, NotificationCompat.Builder mBuilder, Resources resources, String packageName) {
+    private void createActions(String appName, int notId, Bundle extras, NotificationCompat.Builder mBuilder, Resources resources, String packageName) {
         Log.d(LOG_TAG, "create actions");
         String actions = extras.getString(ACTIONS);
+        PendingIntent pIntent;
         if (actions != null) {
             try {
                 JSONArray actionsArray = new JSONArray(actions);
                 for (int i=0; i < actionsArray.length(); i++) {
-                    Log.d(LOG_TAG, "adding action");
                     JSONObject action = actionsArray.getJSONObject(i);
-                    Log.d(LOG_TAG, "adding callback = " + action.getString(CALLBACK));
-                    Intent intent = new Intent(this, PushHandlerActivity.class);
-                    intent.putExtra(CALLBACK, action.getString(CALLBACK));
-                    intent.putExtra(PUSH_BUNDLE, extras);
-                    PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    Log.d(LOG_TAG, "adding action callback = " + action.getString(CALLBACK));
+                    if (action.getString(CALLBACK).equals("cancelNotificationButton")) {
+                        Log.d(LOG_TAG, "adding CLOSE action");
+                        //Create an Intent for the BroadcastReceiver
+                        Intent cancelButtonIntent = new Intent(this, CancelButtonReceiver.class);
+                        cancelButtonIntent.putExtra(APP_NAME, appName);
+                        cancelButtonIntent.putExtra(NOT_ID, notId);
+                        //Create the PendingIntent
+                        pIntent = PendingIntent.getBroadcast(this, 0, cancelButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    } else {
+                        Log.d(LOG_TAG, "adding action");
+                        Intent intent = new Intent(this, PushHandlerActivity.class);
+                        intent.putExtra(CALLBACK, action.getString(CALLBACK));
+                        intent.putExtra(PUSH_BUNDLE, extras);
+                        intent.putExtra(APP_NAME, appName);
+                        intent.putExtra(NOT_ID, notId);
+                        intent.putExtra(CLOSE_AFTER_CLICK, action.getInt(CLOSE_AFTER_CLICK));
+                        pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    }
 
                     mBuilder.addAction(resources.getIdentifier(action.getString(ICON), DRAWABLE, packageName),
                             action.getString(TITLE), pIntent);
@@ -601,3 +615,4 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         return retval;
     }
 }
+
