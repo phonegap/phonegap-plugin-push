@@ -141,7 +141,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
             Log.d(LOG_TAG, "key = " + key);
 
-            // If the key is "data" or "message" and the value is a json object extract
+            // If normalizeKeythe key is "data" or "message" and the value is a json object extract
             // This is to support parse.com and other services. Issue #147 and pull #218
             if (key.equals(PARSE_COM_DATA) || key.equals(MESSAGE)) {
                 Object json = extras.get(key);
@@ -167,6 +167,19 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                         Log.e(LOG_TAG, "normalizeExtras: JSON exception");
                     }
                 }
+            } else if (key.equals(("notification"))) {
+                Bundle value = extras.getBundle(key);
+                Iterator<String> iterator = value.keySet().iterator();
+                while (iterator.hasNext()) {
+                    String notifkey = iterator.next();
+
+                    Log.d(LOG_TAG, "notifkey = " + notifkey);
+                    String newKey = normalizeKey(notifkey);
+                    Log.d(LOG_TAG, "replace key " + notifkey + " with " + newKey);
+
+                    newExtras.putString(newKey, value.getString(notifkey));
+                }
+                continue;
             }
 
             String newKey = normalizeKey(key);
