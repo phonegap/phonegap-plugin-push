@@ -48,7 +48,7 @@
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
 			<activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true"/>
-            
+
             <receiver
                 android:name="com.google.android.gms.gcm.GcmReceiver"
                 android:exported="true"
@@ -71,7 +71,11 @@
                 <intent-filter>
                     <action android:name="com.google.android.gms.iid.InstanceID"/>
                 </intent-filter>
-            </service>            
+            </service>
+            <service
+                android:name="com.adobe.phonegap.push.RegistrationIntentService"
+                android:exported="false">
+            </service>
 		</config-file>
 
         <framework src="push.gradle" custom="true" type="gradleReference" />
@@ -83,6 +87,7 @@
 		<source-file src="src/android/com/adobe/phonegap/push/PushHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushInstanceIDListenerService.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushPlugin.java" target-dir="src/com/adobe/phonegap/push/" />
+        <source-file src="src/android/com/adobe/phonegap/push/RegistrationIntentService.java" target-dir="src/com/adobe/phonegap/push/" />
 
 	</platform>
 
@@ -94,13 +99,13 @@
 				<param name="ios-package" value="PushPlugin"/>
 			</feature>
 		</config-file>
-        
+
         <config-file target="*-Info.plist" parent="UIBackgroundModes">
             <array>
                 <string>remote-notification</string>
             </array>
         </config-file>
-        
+
 		<source-file src="src/ios/AppDelegate+notification.m" />
 		<source-file src="src/ios/PushPlugin.m" />
 
