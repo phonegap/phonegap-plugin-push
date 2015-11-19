@@ -74,7 +74,8 @@
             </service>            
 		</config-file>
 
-		<framework src="com.android.support:support-v13:23+" />
+        <framework src="push.gradle" custom="true" type="gradleReference" />
+        <framework src="com.android.support:support-v13:23+" />
         <framework src="com.google.android.gms:play-services-gcm:+" />
 
 		<source-file src="src/android/com/adobe/phonegap/push/GCMIntentService.java" target-dir="src/com/adobe/phonegap/push/" />
