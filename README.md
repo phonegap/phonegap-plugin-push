@@ -477,7 +477,7 @@ You can set a priority parameter for your notifications. Just add a `priority` f
 
 ### Picture Messages
 
-Perhaps you want to include a large picture in the notification that you are sending to your users. Luckily you can do that too buy sending the following JSON from GCM.
+Perhaps you want to include a large picture in the notification that you are sending to your users. Luckily you can do that too by sending the following JSON from GCM.
 
 ```javascript
 {
