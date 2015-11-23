@@ -178,7 +178,7 @@ As stated in the example, you will have to store your event handler if you are p
 
 ### push.unregister(successHandler, errorHandler)
 
-The unregister method is used when the application no longer wants to receive push notifications.
+The unregister method is used when the application no longer wants to receive push notifications. Beware that this cleans up all event handlers previously registered, so you will need to re-register them if you want them to function again without an application reload.
 
 #### Example
 
