@@ -79,7 +79,17 @@ PushNotification.prototype.unregister = function(successCallback, errorCallback,
         return
     }
 
-    exec(successCallback, errorCallback, "PushNotification", "unregister", [options]);
+    var that = this;
+    var cleanHandlersAndPassThrough = function() {
+        that._handlers = {
+            'registration': [],
+            'notification': [],
+            'error': []
+        };
+        successCallback();
+    }
+
+    exec(cleanHandlersAndPassThrough, errorCallback, "PushNotification", "unregister", [options]);
 };
 
 /**
