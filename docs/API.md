@@ -1,8 +1,6 @@
 # API
 
 - [.init()](#pushnotificationinitoptions)
-
-
 - [push.on()](#pushonevent-callback)
   - [push.on('registration')](#pushonregistration-callback)
   - [push.on('notification')](#pushonnotification-callback)
