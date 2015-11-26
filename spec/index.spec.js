@@ -1,3 +1,5 @@
+/* globals require */
+
 /*!
  * Module dependencies.
  */
@@ -20,32 +22,32 @@ describe('phonegap-plugin-push', function () {
     });
 
     describe('PushNotification', function () {
-        it("should exist", function () {
+        it('should exist', function () {
             expect(PushNotification).toBeDefined();
-            expect(typeof PushNotification == 'object').toBe(true);
+            expect(typeof PushNotification === 'object').toBe(true);
         });
 
-        it("should contain a init function", function () {
+        it('should contain a init function', function () {
             expect(PushNotification.init).toBeDefined();
-            expect(typeof PushNotification.init == 'function').toBe(true);
+            expect(typeof PushNotification.init === 'function').toBe(true);
         });
 
-        it("should contain a unregister function", function () {
+        it('should contain a unregister function', function () {
             var push = PushNotification.init({});
             expect(push.unregister).toBeDefined();
-            expect(typeof push.unregister == 'function').toBe(true);
+            expect(typeof push.unregister === 'function').toBe(true);
         });
 
-        it("should contain a getApplicationIconBadgeNumber function", function () {
+        it('should contain a getApplicationIconBadgeNumber function', function () {
             var push = PushNotification.init({});
             expect(push.getApplicationIconBadgeNumber).toBeDefined();
-            expect(typeof push.getApplicationIconBadgeNumber == 'function').toBe(true);
+            expect(typeof push.getApplicationIconBadgeNumber === 'function').toBe(true);
         });
 
-        it("should contain a setApplicationIconBadgeNumber function", function () {
+        it('should contain a setApplicationIconBadgeNumber function', function () {
             var push = PushNotification.init({});
             expect(push.setApplicationIconBadgeNumber).toBeDefined();
-            expect(typeof push.setApplicationIconBadgeNumber == 'function').toBe(true);
+            expect(typeof push.setApplicationIconBadgeNumber === 'function').toBe(true);
         });
     });
 
@@ -215,7 +217,7 @@ describe('phonegap-plugin-push', function () {
 
                 expect(push._handlers.registration.length).toEqual(0);
                 
-                    push.on('registration',eventHandler);
+                push.on('registration',eventHandler);
 
                 expect(push._handlers.registration.length).toEqual(1);
                 expect(push._handlers.registration.indexOf(eventHandler)).toBeGreaterThan(-1);
@@ -235,7 +237,7 @@ describe('phonegap-plugin-push', function () {
                     eventHandler = function () {
                     };
 
-                expect(push._handlers.notification.length).toEqual(0)
+                expect(push._handlers.notification.length).toEqual(0);
                 
                 push.on('notification', eventHandler);
 
@@ -257,7 +259,7 @@ describe('phonegap-plugin-push', function () {
                     eventHandler = function () {
                     };
 
-                expect(push._handlers.error.length).toEqual(0)
+                expect(push._handlers.error.length).toEqual(0);
                                 
                 push.on('error', eventHandler);
 
