@@ -30,7 +30,7 @@ cordova plugin add https://github.com/phonegap/phonegap-plugin-push
 ## Supported Platforms
 
 - Android
-- iOS
+- iOS (Native or GCM)
 - Windows Universal
 
 ## Quick Example
@@ -77,6 +77,8 @@ Parameter | Description
 `options.ios.badge` | `Boolean`\|`String` Optional. If `true`\|`"true"` the device sets the badge number on receipt of notification. Default is `false`\|`"false"`. **Note:** the value you set this option to the first time you call the init method will be how the application always acts. Once this is set programmatically in the init method it can only be changed manually by the user in Settings>Notifications>`App Name`. This is normal iOS behaviour.
 `options.ios.sound` | `Boolean`\|`String` Optional. If `true`\|`"true"` the device plays a sound on receipt of notification. Default is `false`\|`"false"`. **Note:** the value you set this option to the first time you call the init method will be how the application always acts. Once this is set programmatically in the init method it can only be changed manually by the user in Settings>Notifications>`App Name`. This is normal iOS behaviour.
 `options.ios.clearBadge` | `Boolean`\|`String` Optional. If `true`\|`"true"` the badge will be cleared on app startup. Default is `false`\|`"false"`.
+`options.ios.senderID` | `String` (Optional) Maps to the project number in the Google Developer Console.  Setting this uses GCM for notifications instead of native
+`options.ios.gcmSandbox` | `Boolean` (Optional) Whether to use prod or sandbox GCM setting.  Defaults to false.
 `options.windows` | `JSON Object` Windows specific initialization options.
 
 #### Returns
