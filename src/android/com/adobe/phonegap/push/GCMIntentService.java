@@ -63,21 +63,24 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             SharedPreferences prefs = getApplicationContext().getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
             boolean forceShow = prefs.getBoolean(FORCE_SHOW, false);
 
-            normalizeExtras(extras);
+            extras = normalizeExtras(extras);
 
             // if we are in the foreground and forceShow is `false` only send data
             if (!forceShow && PushPlugin.isInForeground()) {
+                Log.d(LOG_TAG, "foreground");
                 extras.putBoolean(FOREGROUND, true);
                 PushPlugin.sendExtras(extras);
             }
             // if we are in the foreground and forceShow is `true`, force show the notification if the data has at least a message or title
             else if (forceShow && PushPlugin.isInForeground()) {
+                Log.d(LOG_TAG, "foreground force");
                 extras.putBoolean(FOREGROUND, true);
-                
+
                 showNotificationIfPossible(getApplicationContext(), extras);
             }
             // if we are not in the foreground always send notification if the data has at least a message or title
             else {
+                Log.d(LOG_TAG, "background");
                 extras.putBoolean(FOREGROUND, false);
 
                 showNotificationIfPossible(getApplicationContext(), extras);
@@ -88,18 +91,17 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     /*
      * Change a values key in the extras bundle
      */
-    private void replaceKey(String oldKey, String newKey, Bundle extras) {
+    private void replaceKey(String oldKey, String newKey, Bundle extras, Bundle newExtras) {
         Object value = extras.get(oldKey);
         if ( value != null ) {
-            extras.remove(oldKey);
             if (value instanceof String) {
-                extras.putString(newKey, (String) value);
+                newExtras.putString(newKey, (String) value);
             } else if (value instanceof Boolean) {
-                extras.putBoolean(newKey, (Boolean) value);
+                newExtras.putBoolean(newKey, (Boolean) value);
             } else if (value instanceof Number) {
-                extras.putDouble(newKey, ((Number) value).doubleValue());
+                newExtras.putDouble(newKey, ((Number) value).doubleValue());
             } else {
-                extras.putString(newKey, String.valueOf(value));
+                newExtras.putString(newKey, String.valueOf(value));
             }
         }
     }
@@ -108,7 +110,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
      * Replace alternate keys with our canonical value
      */
     private String normalizeKey(String key) {
-        if (key.equals(BODY) || key.equals(ALERT)) {
+        if (key.equals(BODY) || key.equals(ALERT) || key.equals(GCM_NOTIFICATION_BODY)) {
             return MESSAGE;
         } else if (key.equals(MSGCNT) || key.equals(BADGE)) {
             return COUNT;
@@ -129,15 +131,17 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     /*
      * Parse bundle into normalized keys.
      */
-    private void normalizeExtras(Bundle extras) {
-        Log.d(LOG_TAG, "mormalize extras");
+    private Bundle normalizeExtras(Bundle extras) {
+        Log.d(LOG_TAG, "normalize extras");
         Iterator<String> it = extras.keySet().iterator();
+        Bundle newExtras = new Bundle();
+
         while (it.hasNext()) {
             String key = it.next();
 
             Log.d(LOG_TAG, "key = " + key);
 
-            // If the key is "data" or "message" and the value is a json object extract
+            // If normalizeKeythe key is "data" or "message" and the value is a json object extract
             // This is to support parse.com and other services. Issue #147 and pull #218
             if (key.equals(PARSE_COM_DATA) || key.equals(MESSAGE)) {
                 Object json = extras.get(key);
@@ -156,24 +160,35 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
                                 String value = data.getString(jsonKey);
                                 jsonKey = normalizeKey(jsonKey);
-                                extras.putString(jsonKey, value);
+                                newExtras.putString(jsonKey, value);
                             }
-
-                            extras.remove(key);
                         }
                     } catch( JSONException e) {
                         Log.e(LOG_TAG, "normalizeExtras: JSON exception");
                     }
                 }
+            } else if (key.equals(("notification"))) {
+                Bundle value = extras.getBundle(key);
+                Iterator<String> iterator = value.keySet().iterator();
+                while (iterator.hasNext()) {
+                    String notifkey = iterator.next();
+
+                    Log.d(LOG_TAG, "notifkey = " + notifkey);
+                    String newKey = normalizeKey(notifkey);
+                    Log.d(LOG_TAG, "replace key " + notifkey + " with " + newKey);
+
+                    newExtras.putString(newKey, value.getString(notifkey));
+                }
+                continue;
             }
 
             String newKey = normalizeKey(key);
-            if ( !key.equals(newKey) ) {
-                Log.d(LOG_TAG, "replace key " + key + " with " + newKey);
-                replaceKey(key, newKey, extras);
-            }
+            Log.d(LOG_TAG, "replace key " + key + " with " + newKey);
+            replaceKey(key, newKey, extras, newExtras);
+
         } // while
 
+        return newExtras;
     }
 
     private void showNotificationIfPossible (Context context, Bundle extras) {
@@ -181,10 +196,18 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         // Send a notification if there is a message or title, otherwise just send data
         String message = extras.getString(MESSAGE);
         String title = extras.getString(TITLE);
+
+        Log.d(LOG_TAG, "message =[" + message + "]");
+        Log.d(LOG_TAG, "title =[" + title + "]");
+
         if ((message != null && message.length() != 0) ||
                 (title != null && title.length() != 0)) {
+
+            Log.d(LOG_TAG, "create notification");
+
             createNotification(context, extras);
         } else {
+            Log.d(LOG_TAG, "send notification event");
             PushPlugin.sendExtras(extras);
         }
     }
@@ -430,7 +453,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         if (soundname == null) {
             soundname = extras.getString(SOUND);
         }
-        if (soundname != null) {
+        if (soundname != null && !soundname.contentEquals(SOUND_DEFAULT)) {
             Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
                     + "://" + context.getPackageName() + "/raw/" + soundname);
             Log.d(LOG_TAG, sound.toString());

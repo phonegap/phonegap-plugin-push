@@ -68,7 +68,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         String savedRegID = sharedPref.getString(REGISTRATION_ID, "");
 
                         // first time run get new token
-                        if ("".equals(savedSenderID) && "".equals(savedRegID)) {
+                        if ("".equals(savedRegID)) {
                             token = InstanceID.getInstance(getApplicationContext()).getToken(senderID, GCM);
                         }
                         // new sender ID, re-register
@@ -80,11 +80,16 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                             token = sharedPref.getString(REGISTRATION_ID, "");
                         }
 
-                        JSONObject json = new JSONObject().put(REGISTRATION_ID, token);
+                        if (!"".equals(token)) {
+                            JSONObject json = new JSONObject().put(REGISTRATION_ID, token);
 
-                        Log.v(LOG_TAG, "onRegistered: " + json.toString());
+                            Log.v(LOG_TAG, "onRegistered: " + json.toString());
 
-                        PushPlugin.sendEvent( json );
+                            PushPlugin.sendEvent( json );
+                        } else {
+                            callbackContext.error("Empty registration ID received from GCM");
+                            return;
+                        }
                     } catch (JSONException e) {
                         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
                         callbackContext.error(e.getMessage());
@@ -127,6 +132,18 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                     try {
                         InstanceID.getInstance(getApplicationContext()).deleteInstanceID();
                         Log.v(LOG_TAG, "UNREGISTER");
+
+                        // Remove shared prefs
+                        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.remove(SOUND);
+                        editor.remove(VIBRATE);
+                        editor.remove(CLEAR_NOTIFICATIONS);
+                        editor.remove(FORCE_SHOW);
+                        editor.remove(SENDER_ID);
+                        editor.remove(REGISTRATION_ID);
+                        editor.commit();
+
                         callbackContext.success();
                     } catch (IOException e) {
                         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());

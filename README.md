@@ -4,12 +4,12 @@
 
 ## Installation
 
-This requires phonegap/cordova CLI 5.0+ ( current stable v1.4.0 )
+This requires phonegap/cordova CLI 5.0+ ( current stable v1.4.3 )
 
 ```
 phonegap plugin add phonegap-plugin-push
 ```
-or 
+or
 
 ```
 cordova plugin add phonegap-plugin-push
@@ -21,7 +21,7 @@ It is also possible to install via repo url directly ( unstable )
 phonegap plugin add https://github.com/phonegap/phonegap-plugin-push
 ```
 
-or 
+or
 
 ```
 cordova plugin add https://github.com/phonegap/phonegap-plugin-push
@@ -66,7 +66,7 @@ Parameter | Description
 `options` | `JSON Object` platform specific initialization options.
 `options.android` | `JSON Object` Android specific initialization options.
 `options.android.senderID` | `String` Maps to the project number in the Google Developer Console.
-`options.android.icon` | `String` Optional. The name of a drawable resource to use as the small-icon.
+`options.android.icon` | `String` Optional. The name of a drawable resource to use as the small-icon. The name should not include the extension.
 `options.android.iconColor` | `String` Optional. Sets the background color of the small icon on Android 5.0 and greater. [Supported Formats](http://developer.android.com/reference/android/graphics/Color.html#parseColor(java.lang.String))
 `options.android.sound` | `Boolean` Optional. If `true` it plays the sound specified in the push data or the default system sound. Default is `true`.
 `options.android.vibrate` | `Boolean` Optional. If `true` the device vibrates on receipt of notification. Default is `true`.
@@ -158,6 +158,26 @@ push.on('error', function(e) {
 });
 ```
 
+### push.off(event, handle)
+
+Parameter | Description
+--------- | ------------
+`event` | `String` Name of the event type. The possible event names are the same as for the ```push.on``` function.
+`handle` | `Function` handle to the function to get removed.
+
+#### Example
+```javascript
+var eventHandler = function(data){ /*...*/};
+
+//Adding handler for notification event
+push.on('notification', eventHandler);
+
+//Removing handler for notification event
+push.off('notification', eventHandler);
+```
+
+As stated in the example, you will have to store your event handler if you are planning to remove it.
+
 ### push.unregister(successHandler, errorHandler)
 
 The unregister method is used when the application no longer wants to receive push notifications.
@@ -248,10 +268,10 @@ This is because Android now uses Material design and the default icon for push w
 In order to get a better user experience you can specify an alternate icon and background color to be shown when receiving a push notification. The code would look like this:
 
 ```javascript
-	var push = PushNotification.init({ 
-		"android": { 
-			"senderID": "123456789", "icon": "phonegap", "iconColor": "blue"}, 
-		"ios": {"alert": "true", "badge": "true", "sound": "true"}, "windows": {} 
+	var push = PushNotification.init({
+		"android": {
+			"senderID": "123456789", "icon": "phonegap", "iconColor": "blue"},
+		"ios": {"alert": "true", "badge": "true", "sound": "true"}, "windows": {}
 	});
 ```
 
@@ -484,7 +504,7 @@ To add to your app:
 ```
 phonegap plugin add https://github.com/jeduan/cordova-plugin-facebook4 --variable APP_ID="App ID" --variable APP_NAME="App Name"
 ```
-or 
+or
 
 ```
 cordova plugin add https://github.com/jeduan/cordova-plugin-facebook4 --variable APP_ID="App ID" --variable APP_NAME="App Name"
@@ -501,11 +521,11 @@ Execution failed for task ':processDebugManifest'.
 
 Then you can add the following entry into your config.xml file in the android platform tag.
 
-```
+```xml
 <platform name="android">
     <preference name="android-minSdkVersion" value="15"/>
  </platform>
- ```
+```
 
 
 ### Background Notifications
@@ -583,32 +603,32 @@ However if you want your `on('notification')` event handler called but no notifi
 }
 ```
 
-That covers what you need to do on the server side to accept background pushes on iOS. However, it is critically important that you continue reading as there will be a change in your `on('notification')`. When you receive a background push on iOS you will be given 30 seconds of time in which to complete a task. If you spend longer than 30 seconds on the task the OS may decide that your app is misbehaving and kill it. In order to signal iOS that your `on('notification')` handler is done you will need to call the new `push.finish()` method. 
+That covers what you need to do on the server side to accept background pushes on iOS. However, it is critically important that you continue reading as there will be a change in your `on('notification')`. When you receive a background push on iOS you will be given 30 seconds of time in which to complete a task. If you spend longer than 30 seconds on the task the OS may decide that your app is misbehaving and kill it. In order to signal iOS that your `on('notification')` handler is done you will need to call the new `push.finish()` method.
 
 For example:
 
 ```javascript
-        var push = PushNotification.init({
-            "ios": {
-              "sound": true,
-              "vibration": true,
-              "badge": true,
-              "clearBadge": true
-            }
-        });
-        
-        push.on('registration', function(data) {
-        	// send data.registrationId to push service
-        });
-        
+var push = PushNotification.init({
+    "ios": {
+      "sound": true,
+      "vibration": true,
+      "badge": true,
+      "clearBadge": true
+    }
+});
 
-        push.on('notification', function(data) {
-        	// do something with the push data
-        	// then call finish to let the OS know we are done
-            push.finish(function() {
-                console.log("processing of push data is finished");
-            });
-        });
+push.on('registration', function(data) {
+    // send data.registrationId to push service
+});
+
+
+push.on('notification', function(data) {
+    // do something with the push data
+    // then call finish to let the OS know we are done
+    push.finish(function() {
+        console.log("processing of push data is finished");
+    });
+});
 ```
 
 It is absolutely critical that you call `push.finish()` when you have successfully processed your background push data.
@@ -625,11 +645,11 @@ For advanced templates and usage, the notification object is included in [`data.
 
 ### Setting Toast Capable Option for Windows
 
-This plugin automatically sets the toast capable flag to be true for Cordova 5.1.1+. For lower versions, you must declare that it is Toast Capable in your app's manifest file. 
+This plugin automatically sets the toast capable flag to be true for Cordova 5.1.1+. For lower versions, you must declare that it is Toast Capable in your app's manifest file.
 
 ### Disabling the default processing of notifications by Windows
 
-The default handling can be disabled by setting the 'cancel' property in the notification object. 
+The default handling can be disabled by setting the 'cancel' property in the notification object.
 
 ```
 data.additionalData.pushNotificationReceivedEventArgs.cancel = true
