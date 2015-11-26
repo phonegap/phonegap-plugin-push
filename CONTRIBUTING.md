@@ -65,24 +65,24 @@ Some things that will increase the chance that your pull request is accepted:
 - Describe your feature/bugfix and why it's needed/important in the pull request description.
 
 
-### Editor Config
+## Editor Config
 
 The project uses [.editorconfig](http://editorconfig.org/) to define the coding
 style of each file. We recommend that you install the Editor Config extension
 for your preferred IDE. Consistenty is key.
 
-### JSHint
+## JSHint
 
 The project uses [.jshint](http://jshint.com/docs) to define the JavaScript
 coding conventions. Most editors now have a JSHint add-on to provide on-save
 or on-edit linting.
 
-#### Install JSHint for vim
+### Install JSHint for vim
 
 1. Install [jshint](https://www.npmjs.com/package/jshint).
 1. Install [jshint.vim](https://github.com/wookiehangover/jshint.vim).
 
-#### Install JSHint for Sublime
+### Install JSHint for Sublime
 
 1. Install [Package Control](https://packagecontrol.io/installation)
 1. Restart Sublime

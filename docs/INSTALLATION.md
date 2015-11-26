@@ -1,5 +1,12 @@
 # Installation
 
+- [Android details](#android-details)
+  - [Compilation](#compilation)
+  - [Co-existing with Facebook Plugin](#co-existing-with-facebook-plugin)
+  - [Common errors](#common-errors)
+    - [minSdkVersion === 14](#minsdkversion--14)
+	- [Multidex](#multidex)
+
 This requires phonegap/cordova CLI 5.0+ ( current stable v1.4.4 )
 
 ```
@@ -40,9 +47,9 @@ You will need to ensure that you have installed the following items through the 
 
 For more detailed instructions on how to install the Android Support Library visit [Google's documentation](https://developer.android.com/tools/support-library/setup.html).
 
-### Co-existing with FaceBook Plugin
+### Co-existing with Facebook Plugin
 
-There are a number of Cordova FaceBook Plugins available but the one that we recommend is [Jeduan's fork](https://github.com/jeduan/cordova-plugin-facebook4) of the original Wizcorp plugin. It is setup to use Gradle/Maven and the latest FaceBook SDK properly.
+There are a number of Cordova Facebook Plugins available but the one that we recommend is [Jeduan's fork](https://github.com/jeduan/cordova-plugin-facebook4) of the original Wizcorp plugin. It is setup to use Gradle/Maven and the latest Facebook SDK properly.
 
 To add to your app:
 

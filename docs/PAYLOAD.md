@@ -1,3 +1,23 @@
+- [Android Behaviour](#android-behaviour)
+  - [Images](#images)
+  - [Sound](#sound)
+  - [Stacking](#stacking)
+  - [Inbox Stacking](#inbox-stacking)
+  - [Action Buttons](#action-buttons)
+  - [Led in Notifications](#led-in-notifications)
+  - [Vibration Pattern in Notifications](#vibration-pattern-in-notifications)
+  - [Priority in Notifications](#priority-in-notifications)
+  - [Picture Messages](#picture-messages)
+  - [Background Notifications](#background-notifications)
+- [iOS Behaviour](#ios-behaviour)
+  - [Sound](#sound-1)
+  - [Background Notifications](#background-notifications-1)
+- [Windows Behaviour](#windows-behaviour)
+  - [Notifications](#notifications)
+  - [Setting Toast Capable Option for Windows](#setting-toast-capable-option-for-windows)
+  - [Disabling the default processing of notifications by Windows](#disabling-the-default-processing-of-notifications-by-windows)
+
+
 # Android Behaviour
 
 ## Images
@@ -109,7 +129,7 @@ In order for your your notification to play a custom sound you will need to add 
 
 *Note:* when you specify the custom sound file name omit the file's extension.
 
-### Stacking
+## Stacking
 
 By default when using this plugin on Android each notification that your app receives will replace the previous notification in the shade.
 
@@ -306,7 +326,7 @@ Then send the follow JSON from APNS:
 }
 ```
 
-### Background Notifications
+## Background Notifications
 
 On iOS if you want your `on('notification')` event handler to be called when your app is in the background you will need to do a few things.
 
