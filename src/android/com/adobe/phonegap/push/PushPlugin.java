@@ -155,12 +155,12 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         } else if (HAS_PERMISSION.equals(action)) {
             cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
-                    pushContext = callbackContext;
                     JSONObject jo = new JSONObject();
-
                     try {
                         jo.put("isEnabled", PermissionUtils.hasPermission(getApplicationContext(), "OP_POST_NOTIFICATION"));
-                        PushPlugin.sendEvent(jo);
+                        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, jo);
+                        pluginResult.setKeepCallback(true);
+                        callbackContext.sendPluginResult(pluginResult);
                     } catch (UnknownError e) {
                         callbackContext.error(e.getMessage());
                     } catch (JSONException e) {
