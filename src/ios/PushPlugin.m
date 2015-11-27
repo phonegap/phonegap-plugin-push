@@ -278,7 +278,7 @@
 {
     NSMutableDictionary* options = [command.arguments objectAtIndex:0];
     int badge = [[options objectForKey:@"badge"] intValue] ?: 0;
-    
+
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badge];
     
     NSString* message = [NSString stringWithFormat:@"app badge count set to %d", badge];
@@ -318,13 +318,13 @@
     [self.commandDelegate runInBackground:^ {
         UIApplication *app = [UIApplication sharedApplication];
         float finishTimer = (app.backgroundTimeRemaining > 20.0) ? 20.0 : app.backgroundTimeRemaining;
-        
-        [NSTimer scheduledTimerWithTimeInterval:finishTimer
-                                         target:self
-                                       selector:@selector(stopBackgroundTask:)
-                                       userInfo:nil
-                                        repeats:NO];
-        
+    
+        [NSTimer scheduledTimerWithTimeInterval:[finishTimer
+                                     target:self
+                                    selector:@selector(stopBackgroundTask:)
+                                    userInfo:nil
+                                     repeats:NO];
+
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
