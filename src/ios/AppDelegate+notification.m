@@ -33,8 +33,8 @@ static char launchNotificationKey;
 - (AppDelegate *)swizzled_init
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createNotificationChecker:)
-                name:@"UIApplicationDidFinishLaunchingNotification" object:nil];
-    
+               name:@"UIApplicationDidFinishLaunchingNotification" object:nil];
+
     // This actually calls the original init method over in AppDelegate. Equivilent to calling super
     // on an overrided method, this is not recursive, although it appears that way. neat huh?
     return [self swizzled_init];

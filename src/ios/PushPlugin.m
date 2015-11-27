@@ -314,7 +314,7 @@
 -(void) finish:(CDVInvokedUrlCommand*)command
 {
     NSLog(@"Push Plugin finish called");
-    
+
     [self.commandDelegate runInBackground:^ {
         UIApplication *app = [UIApplication sharedApplication];
         float finishTimer = (app.backgroundTimeRemaining > 20.0) ? 20.0 : app.backgroundTimeRemaining;
