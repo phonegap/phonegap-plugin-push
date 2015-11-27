@@ -289,7 +289,7 @@
 - (void)getApplicationIconBadgeNumber:(CDVInvokedUrlCommand *)command
 {
     NSInteger badge = [UIApplication sharedApplication].applicationIconBadgeNumber;
-    
+
     CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:(int)badge];
     [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
 }
@@ -320,7 +320,7 @@
         float finishTimer = (app.backgroundTimeRemaining > 20.0) ? 20.0 : app.backgroundTimeRemaining;
     
         [NSTimer scheduledTimerWithTimeInterval:finishTimer
-                                    target:self
+                                     target:self
                                    selector:@selector(stopBackgroundTask:)
                                    userInfo:nil
                                     repeats:NO];
