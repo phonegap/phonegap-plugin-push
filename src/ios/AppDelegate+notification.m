@@ -24,7 +24,7 @@ static char launchNotificationKey;
 + (void)load
 {
     Method original, swizzled;
-
+    
     original = class_getInstanceMethod(self, @selector(init));
     swizzled = class_getInstanceMethod(self, @selector(swizzled_init));
     method_exchangeImplementations(original, swizzled);
@@ -33,8 +33,8 @@ static char launchNotificationKey;
 - (AppDelegate *)swizzled_init
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createNotificationChecker:)
-               name:@"UIApplicationDidFinishLaunchingNotification" object:nil];
-
+                                                 name:@"UIApplicationDidFinishLaunchingNotification" object:nil];
+    
     // This actually calls the original init method over in AppDelegate. Equivilent to calling super
     // on an overrided method, this is not recursive, although it appears that way. neat huh?
     return [self swizzled_init];
@@ -64,14 +64,34 @@ static char launchNotificationKey;
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     NSLog(@"didReceiveNotification with fetchCompletionHandler");
-
+    
+    PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+    
     // app is in the foreground so call notification callback
-    if (application.applicationState == UIApplicationStateActive) {
+    if (application.applicationState == UIApplicationStateActive && !pushHandler.forceShow) {
         NSLog(@"app active");
         PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
         pushHandler.notificationMessage = userInfo;
         pushHandler.isInline = YES;
         [pushHandler notificationReceived];
+        
+        completionHandler(UIBackgroundFetchResultNewData);
+    }
+    // we force the notification, by default ios won't show the notification when in foreground so we create a local one
+    else if (pushHandler.forceShow) {
+        NSLog(@"force show");
+        NSLog(@"%@", [userInfo valueForKey:@"aps"]);
+        
+        UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+        localNotification.userInfo = userInfo;
+        localNotification.soundName = [[userInfo valueForKey:@"aps"] valueForKey:@"sound"];
+        localNotification.alertBody = [[userInfo valueForKey:@"aps"] valueForKey:@"alert"];
+        localNotification.applicationIconBadgeNumber = [[[userInfo valueForKey:@"aps"] valueForKey:@"badge"] intValue];
+        localNotification.fireDate = [NSDate date];
+        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+        
+        //save it for later
+        self.launchNotification = userInfo;
         
         completionHandler(UIBackgroundFetchResultNewData);
     }
@@ -116,18 +136,17 @@ static char launchNotificationKey;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-
     NSLog(@"active");
-
+    
     PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
     if (pushHandler.clearBadge) {
         NSLog(@"PushPlugin clearing badge");
         //zero badge
-        application.applicationIconBadgeNumber = 0;        
+        application.applicationIconBadgeNumber = 0;
     } else {
         NSLog(@"PushPlugin skip clear badge");
     }
-
+    
     if (self.launchNotification) {
         pushHandler.isInline = NO;
         pushHandler.notificationMessage = self.launchNotification;
@@ -151,7 +170,7 @@ static char launchNotificationKey;
 // http://developer.apple.com/library/ios/#documentation/cocoa/conceptual/objectivec/Chapters/ocAssociativeReferences.html
 - (NSMutableArray *)launchNotification
 {
-   return objc_getAssociatedObject(self, &launchNotificationKey);
+    return objc_getAssociatedObject(self, &launchNotificationKey);
 }
 
 - (void)setLaunchNotification:(NSDictionary *)aDictionary

@@ -34,6 +34,7 @@
     NSString *notificationCallbackId;
     NSString *callback;
     BOOL    clearBadge;
+    BOOL    forceShow;
     
     NSDictionary *handlerObj;
     void (^completionHandler)(UIBackgroundFetchResult);
@@ -48,6 +49,7 @@
 @property (nonatomic, strong) NSDictionary *notificationMessage;
 @property BOOL isInline;
 @property BOOL clearBadge;
+@property BOOL forceShow;
 @property (nonatomic, strong) NSDictionary *handlerObj;
 
 - (void)init:(CDVInvokedUrlCommand*)command;
