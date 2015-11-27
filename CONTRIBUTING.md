@@ -69,7 +69,7 @@ Some things that will increase the chance that your pull request is accepted:
 
 The project uses [.editorconfig](http://editorconfig.org/) to define the coding
 style of each file. We recommend that you install the Editor Config extension
-for your preferred IDE. Consistenty is key.
+for your preferred IDE. Consistency is key.
 
 ## JSHint
 
