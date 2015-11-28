@@ -47,7 +47,7 @@ var PushNotification = function(options) {
                 return false;
             }
             
-            executeFunctionByName(result.additionalData.callback, window, result);
+            executeFunctionByName(result.additionalData.callback, options.context ? options.context : window, result);
         } else if (result) {
             that.emit('notification', result);
         }
