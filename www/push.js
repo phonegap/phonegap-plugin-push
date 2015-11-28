@@ -33,7 +33,7 @@ var PushNotification = function(options) {
     var success = function(result) {
         if (result && typeof result.registrationId !== 'undefined') {
             that.emit('registration', result);
-        } else if (result && typeof result.callback !== 'undefined') {
+        } else if (result && typeof result.additionalData.callback !== 'undefined') {
             var executeFunctionByName = function(functionName, context /*, args */) {
                 var args = Array.prototype.slice.call(arguments, 2);
                 var namespaces = functionName.split(".");
@@ -41,10 +41,13 @@ var PushNotification = function(options) {
                 for (var i = 0; i < namespaces.length; i++) {
                     context = context[namespaces[i]];
                 }
-                return context[func].apply(context, args);
+                if ('function' == typeof context[func]) {
+                    return context[func].apply(context, args);
+                }
+                return false;
             }
             
-            executeFunctionByName(result.callback, window, result);
+            executeFunctionByName(result.additionalData.callback, options.context ? options.context : window, result);
         } else if (result) {
             that.emit('notification', result);
         }
