@@ -11,9 +11,7 @@
     "ecosystem:phonegap",
     "cordova-ios",
     "cordova-android",
-    "cordova-windows8",
     "cordova-windows",
-    "cordova-wp8",
     "cordova-browser"
   ],
   "homepage": "https://github.com/phonegap/phonegap-plugin-push",

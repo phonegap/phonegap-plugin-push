@@ -15,9 +15,7 @@
         "platforms": [
             "ios",
             "android",
-            "windows8",
             "windows",
-            "wp8",
             "browser"
         ]
     },
