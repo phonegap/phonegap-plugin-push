@@ -75,12 +75,21 @@ Execution failed for task ':processDebugManifest'.
   	Suggestion: use tools:overrideLibrary="com.facebook" to force usage
 ```
 
-Then you can add the following entry into your config.xml file in the android platform tag.
+Then you can add the following entry into your config.xml file in the android platform tag:
 
 ```xml
 <platform name="android">
     <preference name="android-minSdkVersion" value="15"/>
  </platform>
+```
+
+or compile your project using the following command, if the solution above doesn't work for you. Basically add `-- --minSdkVersion=15` to the end of the command line (mind the extra `--`, it's needed):
+
+```bash
+cordova compile android -- --minSdkVersion=15
+cordova build android -- --minSdkVersion=15
+cordova run android -- --minSdkVersion=15
+cordova emulate android -- --minSdkVersion=15
 ```
 
 #### Multidex
