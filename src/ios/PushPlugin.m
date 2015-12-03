@@ -316,11 +316,13 @@
         UIApplication *app = [UIApplication sharedApplication];
         float finishTimer = (app.backgroundTimeRemaining > 20.0) ? 20.0 : app.backgroundTimeRemaining;
     
-        [NSTimer scheduledTimerWithTimeInterval:finishTimer
-                                     target:self
-                                   selector:@selector(stopBackgroundTask:)
-                                   userInfo:nil
-                                    repeats:NO];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [NSTimer scheduledTimerWithTimeInterval:finishTimer
+                                       target:self
+                                       selector:@selector(stopBackgroundTask:)
+                                       userInfo:nil
+                                       repeats:NO];
+        });
 
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
