@@ -7,7 +7,7 @@
     - [minSdkVersion === 14](#minsdkversion--14)
 	- [Multidex](#multidex)
 
-This requires phonegap/cordova CLI 5.0+ ( current stable v1.4.4 )
+This requires phonegap/cordova CLI 5.0+ ( current stable v1.4.5 )
 
 ```
 phonegap plugin add phonegap-plugin-push
@@ -115,4 +115,4 @@ Then at least one other plugin you have installed is using an outdated way to de
 This causes gradle to fail, and you'll need to identify which plugin is causing it and request an update to the plugin author, so that it uses the proper way to declare dependencies for cordova.
 See [this for the reference on the cordova plugin specification](https://cordova.apache.org/docs/en/5.4.0/plugin_ref/spec.html#link-18), it'll be usefull to mention it when creating an issue or requesting that plugin to be updated.
 
-Common plugins to suffer from this outdated dependency management are plugins related to *facebook*, *google+*, *notifications*, *crosswalk* and *google maps*. 
+Common plugins to suffer from this outdated dependency management are plugins related to *facebook*, *google+*, *notifications*, *crosswalk* and *google maps*.
