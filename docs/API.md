@@ -49,8 +49,8 @@ Attribute | Type | Default | Description
 `ios.badge` | `boolean` | `false` | Optional. If `true` the device sets the badge number on receipt of notification. **Note:** the value you set this option to the first time you call the init method will be how the application always acts. Once this is set programmatically in the init method it can only be changed manually by the user in Settings>Notifications>`App Name`. This is normal iOS behaviour.
 `ios.sound` | `boolean` | `false` | Optional. If `true` the device plays a sound on receipt of notification. **Note:** the value you set this option to the first time you call the init method will be how the application always acts. Once this is set programmatically in the init method it can only be changed manually by the user in Settings>Notifications>`App Name`. This is normal iOS behaviour.
 `ios.clearBadge` | `boolean` | `false` | Optional. If `true` the badge will be cleared on app startup.
-`options.ios.senderID` | `string` | (Optional) | Maps to the project number in the Google Developer Console.  Setting this uses GCM for notifications instead of native
-`options.ios.gcmSandbox` | `boolean` | false | Whether to use prod or sandbox GCM setting.  Defaults to false.
+`options.ios.senderID` | `string` | `undefined` (Native) | Maps to the project number in the Google Developer Console.  Setting this uses GCM for notifications instead of native
+`options.ios.gcmSandbox` | `boolean` | `false` | Whether to use prod or sandbox GCM setting.  Defaults to false.
 
 ### Example
 
