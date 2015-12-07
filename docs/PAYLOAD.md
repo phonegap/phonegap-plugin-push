@@ -287,27 +287,28 @@ This will produce the following notification in your tray:
 
 On Android if you want your `on('notification')` event handler to be called when your app is in the background it is relatively simple.
 
-The JSON you send to GCM should not contain a title or message parameter. For instance the following JSON:
+First the JSON you send from GCM will need to include `"content-available": "1"`. This will tell the push plugin to call your `on('notification')` event handler no matter what other data is in the push notification.
 
 ```javascript
 {
 	title: "Test Push",
 	message: "Push number 1",
-	info: "super secret info"
+	info: "super secret info",
+	content-available: "1"
 }
 ```
 
-will produce a notification in the notification shade and call your `on('notification')` event handler.
+or 
 
-However if you want your `on('notification')` event handler called but no notification to be shown in the shader you would omit the `alert` property and send the following JSON to GCM:
 
 ```javascript
 {
-	info: "super secret info"
+	info: "super secret info",
+	content-available: "1"
 }
 ```
 
-Omitting the message and title properties will keep your push from being added to the notification shade but it will still trigger your `on('notification')` event handler.
+If do not want this type of behaviour just omit `"content-available": 1` from your push data and your `on('notification')` event handler will not be called.
 
 # iOS Behaviour
 
@@ -339,7 +340,7 @@ For instance the following JSON:
 {
 	aps: {
 		alert: "Test background push",
-		"content-available": 1
+		content-available: 1
 	}
 }
 ```
@@ -353,7 +354,7 @@ However if you want your `on('notification')` event handler called but no notifi
 	aps: {
 		data: "Test silent background push",
 		moredata: "Do more stuff",
-		"content-available": 1
+		content-available: 1
 	}
 }
 ```
