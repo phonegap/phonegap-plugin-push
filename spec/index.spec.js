@@ -84,14 +84,14 @@ describe('phonegap-plugin-push', function () {
         describe('on "notification" event', function () {
             beforeEach(function () {
                 execSpy.andCallFake(function (win, fail, service, id, args) {
-                    win({
+                    win([{
                         message: 'Message',
                         title: 'Title',
                         count: 1,
                         sound: 'beep',
                         image: 'Image',
                         additionalData: {}
-                    });
+                    }]);
                 });
             });
 
@@ -102,10 +102,18 @@ describe('phonegap-plugin-push', function () {
                 });
             });
 
+            it('should return a notification array on success', function (done) {
+                var push = PushNotification.init(options);
+                push.on('notification', function (data) {
+                    expect(data.constructor).toBe(Array);
+                    done();
+                });
+            });
+
             it('should provide the data.message argument', function (done) {
                 var push = PushNotification.init(options);
                 push.on('notification', function (data) {
-                    expect(data.message).toEqual('Message');
+                    expect(data[0].message).toEqual('Message');
                     done();
                 });
             });
@@ -113,7 +121,7 @@ describe('phonegap-plugin-push', function () {
             it('should provide the data.title argument', function (done) {
                 var push = PushNotification.init(options);
                 push.on('notification', function (data) {
-                    expect(data.title).toEqual('Title');
+                    expect(data[0].title).toEqual('Title');
                     done();
                 });
             });
@@ -121,7 +129,7 @@ describe('phonegap-plugin-push', function () {
             it('should provide the data.count argument', function (done) {
                 var push = PushNotification.init(options);
                 push.on('notification', function (data) {
-                    expect(data.count).toEqual(1);
+                    expect(data[0].count).toEqual(1);
                     done();
                 });
             });
@@ -129,7 +137,7 @@ describe('phonegap-plugin-push', function () {
             it('should provide the data.sound argument', function (done) {
                 var push = PushNotification.init(options);
                 push.on('notification', function (data) {
-                    expect(data.sound).toEqual('beep');
+                    expect(data[0].sound).toEqual('beep');
                     done();
                 });
             });
@@ -137,7 +145,7 @@ describe('phonegap-plugin-push', function () {
             it('should provide the data.image argument', function (done) {
                 var push = PushNotification.init(options);
                 push.on('notification', function (data) {
-                    expect(data.image).toEqual('Image');
+                    expect(data[0].image).toEqual('Image');
                     done();
                 });
             });
@@ -145,7 +153,7 @@ describe('phonegap-plugin-push', function () {
             it('should provide the data.additionalData argument', function (done) {
                 var push = PushNotification.init(options);
                 push.on('notification', function (data) {
-                    expect(data.additionalData).toEqual({});
+                    expect(data[0].additionalData).toEqual({});
                     done();
                 });
             });
@@ -216,12 +224,12 @@ describe('phonegap-plugin-push', function () {
                     };
 
                 expect(push._handlers.registration.length).toEqual(0);
-                
+
                 push.on('registration',eventHandler);
 
                 expect(push._handlers.registration.length).toEqual(1);
                 expect(push._handlers.registration.indexOf(eventHandler)).toBeGreaterThan(-1);
-                                
+
                 execSpy.andCallFake(function (win, fail, service, id, args) {
                     win();
                 });
@@ -231,19 +239,19 @@ describe('phonegap-plugin-push', function () {
                     done();
                 });
             });
-            
+
             it('should clear "notification" event handlers', function (done) {
                 var push = PushNotification.init(options),
                     eventHandler = function () {
                     };
 
                 expect(push._handlers.notification.length).toEqual(0);
-                
+
                 push.on('notification', eventHandler);
 
                 expect(push._handlers.notification.length).toEqual(1);
                 expect(push._handlers.notification.indexOf(eventHandler)).toBeGreaterThan(-1);
-                
+
                 execSpy.andCallFake(function (win, fail, service, id, args) {
                     win();
                 });
@@ -253,19 +261,19 @@ describe('phonegap-plugin-push', function () {
                     done();
                 });
             });
-            
+
             it('should clear "error" event handlers', function (done) {
                 var push = PushNotification.init(options),
                     eventHandler = function () {
                     };
 
                 expect(push._handlers.error.length).toEqual(0);
-                                
+
                 push.on('error', eventHandler);
 
                 expect(push._handlers.error.length).toEqual(1);
                 expect(push._handlers.error.indexOf(eventHandler)).toBeGreaterThan(-1);
-                
+
                 execSpy.andCallFake(function (win, fail, service, id, args) {
                     win();
                 });
@@ -274,7 +282,7 @@ describe('phonegap-plugin-push', function () {
                     expect(push._handlers.error.indexOf(eventHandler)).toEqual(-1);
                     done();
                 });
-                
+
             });
         });
     });
