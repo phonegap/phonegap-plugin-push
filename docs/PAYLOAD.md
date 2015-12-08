@@ -117,6 +117,8 @@ Produces the following notification.
 
 ## Sound
 
+For Android there are two special values for sound you can use. The first is `default` which will play the phones default notification sound. Then second is `ringtone` which will play the phones default ringtone sound.
+
 In order for your your notification to play a custom sound you will need to add the files to your Android project's `res/raw` directory. Then send the follow JSON from GCM:
 
 ```javascript
