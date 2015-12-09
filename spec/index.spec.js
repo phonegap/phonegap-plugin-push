@@ -5,6 +5,7 @@
  */
 
 var cordova = require('./helper/cordova'),
+    window = {}, // jshint ignore:line
     PushNotification = require('../www/push'),
     execSpy,
     execWin,
@@ -149,6 +150,26 @@ describe('phonegap-plugin-push', function () {
                     done();
                 });
             });
+
+            describe('data.additionalData callback argument', function () {
+                it('should point to a function accessible from window', function (done) {
+                    var result = {'additionalData': {'callback': 'a.b.fn'}};
+
+                    execSpy.andCallFake(function (win, fail, service, id, args) {
+                        win(result);
+                    });
+
+                    window.a = {b:{fn:jasmine.createSpy('function accessible from window')}};
+
+                    PushNotification.init(options);
+
+                    setTimeout(function () {
+                        expect(window.a.b.fn).toHaveBeenCalledWith(result);
+                        delete window.a;
+                        done();
+                    }, 100);
+                });
+            });
         });
 
         describe('on "error" event', function () {
@@ -216,12 +237,12 @@ describe('phonegap-plugin-push', function () {
                     };
 
                 expect(push._handlers.registration.length).toEqual(0);
-                
+
                 push.on('registration',eventHandler);
 
                 expect(push._handlers.registration.length).toEqual(1);
                 expect(push._handlers.registration.indexOf(eventHandler)).toBeGreaterThan(-1);
-                                
+
                 execSpy.andCallFake(function (win, fail, service, id, args) {
                     win();
                 });
@@ -231,19 +252,19 @@ describe('phonegap-plugin-push', function () {
                     done();
                 });
             });
-            
+
             it('should clear "notification" event handlers', function (done) {
                 var push = PushNotification.init(options),
                     eventHandler = function () {
                     };
 
                 expect(push._handlers.notification.length).toEqual(0);
-                
+
                 push.on('notification', eventHandler);
 
                 expect(push._handlers.notification.length).toEqual(1);
                 expect(push._handlers.notification.indexOf(eventHandler)).toBeGreaterThan(-1);
-                
+
                 execSpy.andCallFake(function (win, fail, service, id, args) {
                     win();
                 });
@@ -253,19 +274,19 @@ describe('phonegap-plugin-push', function () {
                     done();
                 });
             });
-            
+
             it('should clear "error" event handlers', function (done) {
                 var push = PushNotification.init(options),
                     eventHandler = function () {
                     };
 
                 expect(push._handlers.error.length).toEqual(0);
-                                
+
                 push.on('error', eventHandler);
 
                 expect(push._handlers.error.length).toEqual(1);
                 expect(push._handlers.error.indexOf(eventHandler)).toBeGreaterThan(-1);
-                
+
                 execSpy.andCallFake(function (win, fail, service, id, args) {
                     win();
                 });
@@ -274,7 +295,7 @@ describe('phonegap-plugin-push', function () {
                     expect(push._handlers.error.indexOf(eventHandler)).toEqual(-1);
                     done();
                 });
-                
+
             });
         });
     });
