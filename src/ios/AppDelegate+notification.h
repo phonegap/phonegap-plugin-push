@@ -6,7 +6,7 @@
 //
 //
 
-#import "AppDelegate.h"
+/*#import "AppDelegate.h"
 
 @interface AppDelegate (notification)
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken;
@@ -19,3 +19,4 @@
 @property (nonatomic, retain) NSDictionary  *launchNotification;
 
 @end
+*/

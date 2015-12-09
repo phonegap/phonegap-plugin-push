@@ -5,22 +5,23 @@
 //  Created by Robert Easterday on 10/26/12.
 //
 //
-
+/*
 #import "AppDelegate+notification.h"
 #import "PushPlugin.h"
 #import <objc/runtime.h>
 
 static char launchNotificationKey;
-
-@implementation AppDelegate (notification)
+*/
+/*@implementation AppDelegate (notification)
 
 - (id) getCommandInstance:(NSString*)className
 {
     return [self.viewController getCommandInstance:className];
 }
-
+*/
 // its dangerous to override a method from within a category.
 // Instead we will use method swizzling. we set this up in the load call.
+/*
 + (void)load
 {
     Method original, swizzled;
@@ -29,7 +30,8 @@ static char launchNotificationKey;
     swizzled = class_getInstanceMethod(self, @selector(swizzled_init));
     method_exchangeImplementations(original, swizzled);
 }
-
+*/
+/*
 - (AppDelegate *)swizzled_init
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createNotificationChecker:)
@@ -37,11 +39,12 @@ static char launchNotificationKey;
 
     // This actually calls the original init method over in AppDelegate. Equivilent to calling super
     // on an overrided method, this is not recursive, although it appears that way. neat huh?
-    return [self swizzled_init];
-}
+    /*return [self swizzled_init];*/
+//}
 
 // This code will be called immediately after application:didFinishLaunchingWithOptions:. We need
 // to process notifications in cold-start situations
+/*
 - (void)createNotificationChecker:(NSNotification *)notification
 {
     if (notification)
@@ -51,7 +54,8 @@ static char launchNotificationKey;
             self.launchNotification = [launchOptions objectForKey: @"UIApplicationLaunchOptionsRemoteNotificationKey"];
     }
 }
-
+*/
+/*
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
     [pushHandler didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
@@ -61,7 +65,8 @@ static char launchNotificationKey;
     PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
     [pushHandler didFailToRegisterForRemoteNotificationsWithError:error];
 }
-
+*/
+/*
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     NSLog(@"didReceiveNotification with fetchCompletionHandler");
 
@@ -72,13 +77,13 @@ static char launchNotificationKey;
         pushHandler.notificationMessage = userInfo;
         pushHandler.isInline = YES;
         [pushHandler notificationReceived];
-        
+
         completionHandler(UIBackgroundFetchResultNewData);
     }
     // app is in background or in stand by
     else {
         NSLog(@"app in-active");
-        
+
         // do some convoluted logic to find out if this should be a silent push.
         long silent = 0;
         id aps = [userInfo objectForKey:@"aps"];
@@ -88,7 +93,7 @@ static char launchNotificationKey;
         } else if ([contentAvailable isKindOfClass:[NSNumber class]]) {
             silent = [contentAvailable integerValue];
         }
-        
+
         if (silent == 1) {
             NSLog(@"this should be a silent push");
             void (^safeHandler)(UIBackgroundFetchResult) = ^(UIBackgroundFetchResult result){
@@ -96,10 +101,10 @@ static char launchNotificationKey;
                     completionHandler(result);
                 });
             };
-            
+
             NSMutableDictionary* params = [NSMutableDictionary dictionaryWithCapacity:2];
             [params setObject:safeHandler forKey:@"handler"];
-            
+
             PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
             pushHandler.notificationMessage = userInfo;
             pushHandler.isInline = NO;
@@ -109,7 +114,7 @@ static char launchNotificationKey;
             NSLog(@"just put it in the shade");
             //save it for later
             self.launchNotification = userInfo;
-            
+
             completionHandler(UIBackgroundFetchResultNewData);
         }
     }
@@ -123,7 +128,7 @@ static char launchNotificationKey;
     if (pushHandler.clearBadge) {
         NSLog(@"PushPlugin clearing badge");
         //zero badge
-        application.applicationIconBadgeNumber = 0;        
+        application.applicationIconBadgeNumber = 0;
     } else {
         NSLog(@"PushPlugin skip clear badge");
     }
@@ -165,3 +170,4 @@ static char launchNotificationKey;
 }
 
 @end
+*/
