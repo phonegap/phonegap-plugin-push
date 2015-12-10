@@ -12,6 +12,7 @@
 - [iOS Behaviour](#ios-behaviour)
   - [Sound](#sound-1)
   - [Background Notifications](#background-notifications-1)
+  - [Action Buttons](#action-buttons-1)
 - [Windows Behaviour](#windows-behaviour)
   - [Notifications](#notifications)
   - [Setting Toast Capable Option for Windows](#setting-toast-capable-option-for-windows)
@@ -396,33 +397,34 @@ It is absolutely critical that you call `push.finish()` when you have successful
 Your notification can include action buttons. For iOS you must setup the possible actions when you initialize the plugin:
 
 ```javascript
-        app.push = PushNotification.init({
-            "ios": {
-              "sound": true,
-              "vibration": true,
-              "badge": true,
-              "categories": {
-              	"invite": {
-               		"yes": {
-              			"callback": "app.accept", "title": "Accept", "foreground": true, "destructive": false
-					},
-					"no": {
-						"callback": "app.reject", "title": "Reject", "foreground": true, "destructive": false
-					},
-					"maybe": {
-						"callback": "app.maybe", "title": "Maybe", "foreground": true, "destructive": false
-					}
+var push = PushNotification.init({
+	"ios": {
+		"sound": true,
+		"vibration": true,
+		"badge": true,
+		"categories": {
+			"invite": {
+				"yes": {
+					"callback": "app.accept", "title": "Accept", "foreground": true, "destructive": false
 				},
-              	"delete": {
-               		"yes": {
-              			"callback": "app.delete", "title": "Delete", "foreground": true, "destructive": true
-					},
-					"no": {
-						"callback": "app.cancel", "title": "Cancel", "foreground": true, "destructive": false
-					}
+				"no": {
+					"callback": "app.reject", "title": "Reject", "foreground": true, "destructive": false
+				},
+				"maybe": {
+					"callback": "app.maybe", "title": "Maybe", "foreground": true, "destructive": false
 				}
-            }
-        });
+			},
+			"delete": {
+				"yes": {
+					"callback": "app.delete", "title": "Delete", "foreground": true, "destructive": true
+				},
+				"no": {
+					"callback": "app.cancel", "title": "Cancel", "foreground": true, "destructive": false
+				}
+			}
+		}
+	}
+});
 ```
 
 Then you will need to set the `category` value in your `aps` payload to match one of the objects in the `categories` object.
