@@ -391,6 +391,59 @@ push.on('notification', function(data) {
 
 It is absolutely critical that you call `push.finish()` when you have successfully processed your background push data.
 
+## Action Buttons
+
+Your notification can include action buttons. For iOS you must setup the possible actions when you initialize the plugin:
+
+```javascript
+        app.push = PushNotification.init({
+            "ios": {
+              "sound": true,
+              "vibration": true,
+              "badge": true,
+              "categories": {
+              	"invite": {
+               		"yes": {
+              			"callback": "app.accept", "title": "Accept", "foreground": true, "destructive": false
+					},
+					"no": {
+						"callback": "app.reject", "title": "Reject", "foreground": true, "destructive": false
+					},
+					"maybe": {
+						"callback": "app.maybe", "title": "Maybe", "foreground": true, "destructive": false
+					}
+				},
+              	"delete": {
+               		"yes": {
+              			"callback": "app.delete", "title": "Delete", "foreground": true, "destructive": true
+					},
+					"no": {
+						"callback": "app.cancel", "title": "Cancel", "foreground": true, "destructive": false
+					}
+				}
+            }
+        });
+```
+
+Then you will need to set the `category` value in your `aps` payload to match one of the objects in the `categories` object.
+
+
+```javascript
+{
+	"aps": {
+		"alert": "Test action buttons",
+		"category": "invite"
+	}
+}
+```
+
+
+This will produce the following notification in your tray:
+
+// NEED SCREENSHOT
+
+If your users clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed.
+
 # Windows Behaviour
 
 ## Notifications
