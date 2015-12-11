@@ -1,12 +1,6 @@
 /* global cordova:false */
 /* globals window */
 
-/*!
- * Module dependencies.
- */
-
-var exec = cordova.require('cordova/exec');
-
 /**
  * PushNotification constructor.
  *
@@ -59,7 +53,7 @@ var PushNotification = function(options) {
 
     // wait at least one process tick to allow event subscriptions
     setTimeout(function() {
-        exec(success, fail, 'PushNotification', 'init', [options]);
+        cordova.exec(success, fail, 'PushNotification', 'init', [options]);
     }, 10);
 };
 
@@ -90,7 +84,7 @@ PushNotification.prototype.unregister = function(successCallback, errorCallback,
         successCallback();
     };
 
-    exec(cleanHandlersAndPassThrough, errorCallback, 'PushNotification', 'unregister', [options]);
+    cordova.exec(cleanHandlersAndPassThrough, errorCallback, 'PushNotification', 'unregister', [options]);
 };
 
 /**
@@ -110,7 +104,7 @@ PushNotification.prototype.setApplicationIconBadgeNumber = function(successCallb
         return;
     }
 
-    exec(successCallback, errorCallback, 'PushNotification', 'setApplicationIconBadgeNumber', [{badge: badge}]);
+    cordova.exec(successCallback, errorCallback, 'PushNotification', 'setApplicationIconBadgeNumber', [{badge: badge}]);
 };
 
 /**
@@ -130,7 +124,7 @@ PushNotification.prototype.getApplicationIconBadgeNumber = function(successCallb
         return;
     }
 
-    exec(successCallback, errorCallback, 'PushNotification', 'getApplicationIconBadgeNumber', []);
+    cordova.exec(successCallback, errorCallback, 'PushNotification', 'getApplicationIconBadgeNumber', []);
 };
 
 /**
@@ -208,7 +202,7 @@ PushNotification.prototype.finish = function(successCallback, errorCallback) {
         return;
     }
 
-    exec(successCallback, errorCallback, 'PushNotification', 'finish', []);
+    cordova.exec(successCallback, errorCallback, 'PushNotification', 'finish', []);
 };
 
 /*!
