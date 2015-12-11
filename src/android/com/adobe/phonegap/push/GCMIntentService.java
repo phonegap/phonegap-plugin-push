@@ -196,6 +196,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         // Send a notification if there is a message or title, otherwise just send data
         String message = extras.getString(MESSAGE);
         String title = extras.getString(TITLE);
+        String forceLaunch = extras.getString(FORCE_LAUNCH);
 
         Log.d(LOG_TAG, "message =[" + message + "]");
         Log.d(LOG_TAG, "title =[" + title + "]");
@@ -206,6 +207,11 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             Log.d(LOG_TAG, "create notification");
 
             createNotification(context, extras);
+        } else if ("1".equals(forceLaunch)) {
+            Log.d(LOG_TAG, "force launch event");
+            Intent intent = new Intent(this, PushHandlerActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         } else {
             Log.d(LOG_TAG, "send notification event");
             PushPlugin.sendExtras(extras);
@@ -364,7 +370,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             long[] results = new long[items.length];
             for (int i = 0; i < items.length; i++) {
                 try {
-                    results[i] = Long.parseLong(items[i].trim());
+                    results[i] = Long.parseLong(items[i]);
                 } catch (NumberFormatException nfe) {}
             }
             mBuilder.setVibrate(results);
@@ -471,7 +477,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             int[] results = new int[items.length];
             for (int i = 0; i < items.length; i++) {
                 try {
-                    results[i] = Integer.parseInt(items[i].trim());
+                    results[i] = Integer.parseInt(items[i]);
                 } catch (NumberFormatException nfe) {}
             }
             if (results.length == 4) {
