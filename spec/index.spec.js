@@ -5,7 +5,6 @@
  */
 
 var cordova = require('./helper/cordova'),
-    window = {}, // jshint ignore:line
     PushNotification = require('../www/push'),
     execSpy,
     execWin,
@@ -19,7 +18,7 @@ describe('phonegap-plugin-push', function () {
     beforeEach(function () {
         options = {android: {}, ios: {}, windows: {}};
         execWin = jasmine.createSpy();
-        execSpy = spyOn(cordova.required, 'cordova/exec').andCallFake(execWin);
+        execSpy = spyOn(cordova, 'exec').andCallFake(execWin);
     });
 
     describe('PushNotification', function () {
@@ -148,26 +147,6 @@ describe('phonegap-plugin-push', function () {
                 push.on('notification', function (data) {
                     expect(data.additionalData).toEqual({});
                     done();
-                });
-            });
-
-            describe('data.additionalData callback argument', function () {
-                it('should point to a function accessible from window', function (done) {
-                    var result = {'additionalData': {'callback': 'a.b.fn'}};
-
-                    execSpy.andCallFake(function (win, fail, service, id, args) {
-                        win(result);
-                    });
-
-                    window.a = {b:{fn:jasmine.createSpy('function accessible from window')}};
-
-                    PushNotification.init(options);
-
-                    setTimeout(function () {
-                        expect(window.a.b.fn).toHaveBeenCalledWith(result);
-                        delete window.a;
-                        done();
-                    }, 100);
                 });
             });
         });

@@ -1,12 +1,6 @@
 /* global cordova:false */
 /* globals window */
 
-/*!
- * Module dependencies.
- */
-
-var exec = cordova.require('cordova/exec');
-
 /**
  * PushNotification constructor.
  *
@@ -28,6 +22,8 @@ var PushNotification = function(options) {
 
     // store the options to this object instance
     this.options = options;
+    // defer cordova's exec reference, we can spyOn for tests
+    this.exec = cordova.exec;
 
     // triggered on registration and notification
     var that = this;
@@ -59,7 +55,7 @@ var PushNotification = function(options) {
 
     // wait at least one process tick to allow event subscriptions
     setTimeout(function() {
-        exec(success, fail, 'PushNotification', 'init', [options]);
+        that.exec(success, fail, 'PushNotification', 'init', [options]);
     }, 10);
 };
 
@@ -90,7 +86,7 @@ PushNotification.prototype.unregister = function(successCallback, errorCallback,
         successCallback();
     };
 
-    exec(cleanHandlersAndPassThrough, errorCallback, 'PushNotification', 'unregister', [options]);
+    this.exec(cleanHandlersAndPassThrough, errorCallback, 'PushNotification', 'unregister', [options]);
 };
 
 /**
@@ -110,7 +106,7 @@ PushNotification.prototype.setApplicationIconBadgeNumber = function(successCallb
         return;
     }
 
-    exec(successCallback, errorCallback, 'PushNotification', 'setApplicationIconBadgeNumber', [{badge: badge}]);
+    this.exec(successCallback, errorCallback, 'PushNotification', 'setApplicationIconBadgeNumber', [{badge: badge}]);
 };
 
 /**
@@ -130,7 +126,7 @@ PushNotification.prototype.getApplicationIconBadgeNumber = function(successCallb
         return;
     }
 
-    exec(successCallback, errorCallback, 'PushNotification', 'getApplicationIconBadgeNumber', []);
+    this.exec(successCallback, errorCallback, 'PushNotification', 'getApplicationIconBadgeNumber', []);
 };
 
 /**
@@ -208,7 +204,7 @@ PushNotification.prototype.finish = function(successCallback, errorCallback) {
         return;
     }
 
-    exec(successCallback, errorCallback, 'PushNotification', 'finish', []);
+    this.exec(successCallback, errorCallback, 'PushNotification', 'finish', []);
 };
 
 /*!
