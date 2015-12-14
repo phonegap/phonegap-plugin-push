@@ -64,14 +64,33 @@ static char launchNotificationKey;
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     NSLog(@"didReceiveNotification with fetchCompletionHandler");
-
+    
+    PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+    
     // app is in the foreground so call notification callback
-    if (application.applicationState == UIApplicationStateActive) {
+    if (application.applicationState == UIApplicationStateActive && !pushHandler.forceShow) {
         NSLog(@"app active");
         PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
         pushHandler.notificationMessage = userInfo;
         pushHandler.isInline = YES;
         [pushHandler notificationReceived];
+        
+        completionHandler(UIBackgroundFetchResultNewData);
+    }
+    // we force the notification, by default ios won't show the notification when in foreground so we create a local one
+    else if (pushHandler.forceShow) {
+        NSLog(@"force show");
+
+        UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+        localNotification.userInfo = userInfo;
+        localNotification.soundName = [[userInfo valueForKey:@"aps"] valueForKey:@"sound"];
+        localNotification.alertBody = [[userInfo valueForKey:@"aps"] valueForKey:@"alert"];
+        localNotification.applicationIconBadgeNumber = [[[userInfo valueForKey:@"aps"] valueForKey:@"badge"] intValue];
+        localNotification.fireDate = [NSDate date];
+        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+
+        //save it for later
+        self.launchNotification = userInfo;
         
         completionHandler(UIBackgroundFetchResultNewData);
     }
@@ -116,14 +135,13 @@ static char launchNotificationKey;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-
     NSLog(@"active");
 
     PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
     if (pushHandler.clearBadge) {
         NSLog(@"PushPlugin clearing badge");
         //zero badge
-        application.applicationIconBadgeNumber = 0;        
+        application.applicationIconBadgeNumber = 0;
     } else {
         NSLog(@"PushPlugin skip clear badge");
     }
