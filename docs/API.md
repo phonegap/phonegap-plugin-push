@@ -1,6 +1,7 @@
 # API
 
 - [.init()](#pushnotificationinitoptions)
+- [.hasPermission()](#pushnotificationhaspermissionsuccesshandler)
 - [push.on()](#pushonevent-callback)
   - [push.on('registration')](#pushonregistration-callback)
   - [push.on('notification')](#pushonnotification-callback)
@@ -67,6 +68,38 @@ var push = PushNotification.init({
 		sound: 'false'
 	},
 	windows: {}
+});
+```
+
+## PushNotification.hasPermission(successHandler)
+
+Checks whether the push notification permission has been granted.
+
+### Parameters
+
+Parameter | Type | Default | Description
+--------- | ---- | ------- | -----------
+`successHandler` | `Function` | | Is called when the api successfully retrieves the details on the permission.
+
+### Callback parameters
+
+#### `successHandler`
+
+Parameter | Type | Description
+--------- | ---- | -----------
+`data.isEnabled` | `Boolean` | Whether the permission for push notifications has been granted.
+
+### Example
+
+```javascript
+PushNotification.hasPermission(function(data) {
+    if (data.isEnabled) {
+        var push = PushNotification.init({
+            android: {
+                senderId: 'abc'
+            }
+        });
+    }
 });
 ```
 
@@ -261,37 +294,5 @@ push.finish(function() {
 	console.log('success');
 }, function() {
 	console.log('error');
-});
-```
-
-## PushNotification.hasPermission(successHandler)
-
-Checks whether the push notification permission has been granted.
-
-### Parameters
-
-Parameter | Type | Default | Description
---------- | ---- | ------- | -----------
-`successHandler` | `Function` | | Is called when the api successfully retrieves the details on the permission.
-
-### Callback parameters
-
-#### `successHandler`
-
-Parameter | Type | Description
---------- | ---- | -----------
-`data.isEnabled` | `Boolean` | Whether the permission for push notifications has been granted.
-
-### Example
-
-```javascript
-PushNotification.hasPermission(function(data) {
-    if (data.isEnabled) {
-        var push = PushNotification.init({
-            android: {
-                senderId: 'abc'
-            }
-        });
-    }
 });
 ```
