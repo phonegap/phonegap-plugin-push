@@ -264,15 +264,25 @@ push.finish(function() {
 });
 ```
 
-### PushNotification.hasPermission(callback)
+## PushNotification.hasPermission(successHandler)
 
-Checks whether the PushNotification Permission have been enabled or disabled.
+Checks whether the push notification permission has been granted.
 
-Callback Parameter | Description
------------------- | -----------
-`data.isEnabled` | `Boolean`
+### Parameters
 
-#### Example
+Parameter | Type | Default | Description
+--------- | ---- | ------- | -----------
+`successHandler` | `Function` | | Is called when the api successfully retrieves the details on the permission.
+
+### Callback parameters
+
+#### `successHandler`
+
+Parameter | Type | Description
+--------- | ---- | -----------
+`data.isEnabled` | `Boolean` | Whether the permission for push notifications has been granted.
+
+### Example
 
 ```javascript
 PushNotification.hasPermission(function(data) {
