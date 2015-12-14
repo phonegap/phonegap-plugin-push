@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.iid.InstanceID;
 
 import org.apache.cordova.CallbackContext;
@@ -85,6 +86,9 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                             Log.v(LOG_TAG, "onRegistered: " + json.toString());
 
+                            JSONArray topics = jo.optJSONArray(TOPICS);
+                            subscribeToTopics(topics, token);
+
                             PushPlugin.sendEvent( json );
                         } else {
                             callbackContext.error("Empty registration ID received from GCM");
@@ -130,19 +134,25 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
             cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
                     try {
-                        InstanceID.getInstance(getApplicationContext()).deleteInstanceID();
-                        Log.v(LOG_TAG, "UNREGISTER");
-
-                        // Remove shared prefs
                         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.remove(SOUND);
-                        editor.remove(VIBRATE);
-                        editor.remove(CLEAR_NOTIFICATIONS);
-                        editor.remove(FORCE_SHOW);
-                        editor.remove(SENDER_ID);
-                        editor.remove(REGISTRATION_ID);
-                        editor.commit();
+                        String token = sharedPref.getString(REGISTRATION_ID, "");
+                        JSONArray topics = data.optJSONArray(0);
+                        if (topics != null && !"".equals(token)) {
+                            unsubscribeFromTopics(topics, token);
+                        } else {
+                            InstanceID.getInstance(getApplicationContext()).deleteInstanceID();
+                            Log.v(LOG_TAG, "UNREGISTER");
+
+                            // Remove shared prefs
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.remove(SOUND);
+                            editor.remove(VIBRATE);
+                            editor.remove(CLEAR_NOTIFICATIONS);
+                            editor.remove(FORCE_SHOW);
+                            editor.remove(SENDER_ID);
+                            editor.remove(REGISTRATION_ID);
+                            editor.commit();
+                        }
 
                         callbackContext.success();
                     } catch (IOException e) {
@@ -238,6 +248,40 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         super.onDestroy();
         gForeground = false;
         gWebView = null;
+    }
+
+    private void subscribeToTopics(JSONArray topics, String registrationToken) {
+        if (topics != null) {
+            String topic = null;
+            for (int i=0; i<topics.length(); i++) {
+                try {
+                    topic = topics.optString(i, null);
+                    if (topic != null) {
+                        Log.d(LOG_TAG, "Subscribing to topic: " + topic);
+                        GcmPubSub.getInstance(getApplicationContext()).subscribe(registrationToken, "/topics/" + topic, null);
+                    }
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "Failed to subscribe to topic: " + topic, e);
+                }
+            }
+        }
+    }
+
+    private void unsubscribeFromTopics(JSONArray topics, String registrationToken) {
+        if (topics != null) {
+            String topic = null;
+            for (int i=0; i<topics.length(); i++) {
+                try {
+                    topic = topics.optString(i, null);
+                    if (topic != null) {
+                        Log.d(LOG_TAG, "Unsubscribing to topic: " + topic);
+                        GcmPubSub.getInstance(getApplicationContext()).unsubscribe(registrationToken, "/topics/" + topic);
+                    }
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "Failed to unsubscribe to topic: " + topic, e);
+                }
+            }
+        }
     }
 
     /*

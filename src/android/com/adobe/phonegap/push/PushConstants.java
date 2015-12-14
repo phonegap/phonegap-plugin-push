@@ -53,4 +53,5 @@ public interface PushConstants {
     public static final String FORCE_SHOW = "forceShow";
     public static final String GCM = "GCM";
     public static final String CONTENT_AVAILABLE = "content-available";
+    public static final String TOPICS = "topics";
 }
