@@ -28,7 +28,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
     private static CallbackContext pushContext;
     private static CordovaWebView gWebView;
-    private static Bundle gCachedExtras = null;
+    private static ArrayList<Bundle> gCachedExtras = new ArrayList<Bundle>();
     private static boolean gForeground = false;
 
     /**
@@ -119,10 +119,13 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         editor.commit();
                     }
 
-                    if (gCachedExtras != null) {
+                    if (!gCachedExtras.isEmpty()) {
                         Log.v(LOG_TAG, "sending cached extras");
-                        sendExtras(gCachedExtras);
-                        gCachedExtras = null;
+                        Iterator<Bundle> gCachedExtrasIterator = gCachedExtras.iterator();
+                        while (gCachedExtrasIterator.hasNext()) {
+                            sendExtras(gCachedExtrasIterator.next());
+                        }
+                        gCachedExtras.clear();
                     }
                 }
             });
@@ -188,7 +191,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                 sendEvent(convertBundleToJson(extras));
             } else {
                 Log.v(LOG_TAG, "sendExtras: caching extras to send at a later time.");
-                gCachedExtras = extras;
+                gCachedExtras.add(extras);
             }
         }
     }
@@ -241,7 +244,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
             while (it.hasNext()) {
                 String key = it.next();
                 Object value = extras.get(key);
-                 
+
                 Log.d(LOG_TAG, "key = " + key);
 
                 if (jsonKeySet.contains(key)) {
@@ -266,7 +269,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         }
                         else {
                             additionalData.put(key, value);
-                        }                       
+                        }
                     } catch (Exception e) {
                         additionalData.put(key, value);
                     }
