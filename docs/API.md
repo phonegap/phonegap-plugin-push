@@ -94,11 +94,7 @@ Parameter | Type | Description
 ```javascript
 PushNotification.hasPermission(function(data) {
     if (data.isEnabled) {
-        var push = PushNotification.init({
-            android: {
-                senderId: 'abc'
-            }
-        });
+        console.log('isEnabled');
     }
 });
 ```
