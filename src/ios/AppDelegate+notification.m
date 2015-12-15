@@ -23,11 +23,17 @@ static char launchNotificationKey;
 // Instead we will use method swizzling. we set this up in the load call.
 + (void)load
 {
-    Method original, swizzled;
+    Method original_init, swizzled_init;
 
-    original = class_getInstanceMethod(self, @selector(init));
-    swizzled = class_getInstanceMethod(self, @selector(notification_init));
-    method_exchangeImplementations(original, swizzled);
+    original_init = class_getInstanceMethod(self, @selector(init));
+    swizzled_init = class_getInstanceMethod(self, @selector(notification_init));
+    method_exchangeImplementations(original_init, swizzled_init);
+
+    Method original_applicationDidBecomeActive, swizzled_applicationDidBecomeActive;
+
+    original_applicationDidBecomeActive = class_getInstanceMethod(self, @selector(applicationDidBecomeActive:));
+    swizzled_applicationDidBecomeActive = class_getInstanceMethod(self, @selector(notification_applicationDidBecomeActive:));
+    method_exchangeImplementations(original_applicationDidBecomeActive, swizzled_applicationDidBecomeActive);
 }
 
 - (AppDelegate *)notification_init
@@ -115,7 +121,9 @@ static char launchNotificationKey;
     }
 }
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
+- (void)notification_applicationDidBecomeActive:(UIApplication *)application {
+
+    [self notification_applicationDidBecomeActive:application];
 
     NSLog(@"active");
 
