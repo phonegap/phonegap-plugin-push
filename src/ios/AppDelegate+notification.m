@@ -11,7 +11,6 @@
 #import <objc/runtime.h>
 
 static char launchNotificationKey;
-
 @implementation AppDelegate (notification)
 
 - (id) getCommandInstance:(NSString*)className
@@ -61,6 +60,18 @@ static char launchNotificationKey;
     PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
     [pushHandler didFailToRegisterForRemoteNotificationsWithError:error];
 }
+
+//- (void)application:(UIApplication *)application
+//didReceiveRemoteNotification:(NSDictionary *)userInfo {
+//    NSLog(@"Notification received: %@", userInfo);
+    // This works only if the app started the GCM service
+//    [[GCMService sharedInstance] appDidReceiveMessage:userInfo];
+    // Handle the received message
+    // [START_EXCLUDE]
+//    [[NSNotificationCenter defaultCenter] postNotificationName:_messageKey
+//                                                        object:nil
+//                                                      userInfo:userInfo];
+//}
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     NSLog(@"didReceiveNotification with fetchCompletionHandler");

@@ -26,6 +26,7 @@
     </engines>
 
     <preference name="SENDER_ID" />
+    <preference name="GOOGLE_APP_ID" />
 
 	<!-- android -->
 	<platform name="android">
@@ -109,6 +110,18 @@
             <array>
                 <string>remote-notification</string>
             </array>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="GCM_SENDER_ID">
+            <string>$SENDER_ID</string>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="IS_GCM_ENABLED">
+            <true/>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="GOOGLE_APP_ID">
+            <string>$GOOGLE_APP_ID</string>
         </config-file>
 
 		<source-file src="src/ios/AppDelegate+notification.m" />
