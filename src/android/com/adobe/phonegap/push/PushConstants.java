@@ -50,5 +50,8 @@ public interface PushConstants {
     public static final String COLLAPSE_KEY = "collapse_key";
     public static final String FORCE_SHOW = "forceShow";
     public static final String GCM = "GCM";
+
+    // Two custom properties
     public static final String FORCE_LAUNCH = "force_launch";
+    public static final String START_ON_BACKGROUND = "start_on_background";
 }

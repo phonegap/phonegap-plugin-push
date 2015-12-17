@@ -197,6 +197,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         String message = extras.getString(MESSAGE);
         String title = extras.getString(TITLE);
         String forceLaunch = extras.getString(FORCE_LAUNCH);
+        String startOnBackground = extras.getString(START_ON_BACKGROUND);
 
         Log.d(LOG_TAG, "message =[" + message + "]");
         Log.d(LOG_TAG, "title =[" + title + "]");
@@ -211,6 +212,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             Log.d(LOG_TAG, "force launch event");
             Intent intent = new Intent(this, PushHandlerActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(PUSH_BUNDLE, extras);
             startActivity(intent);
         } else {
             Log.d(LOG_TAG, "send notification event");
