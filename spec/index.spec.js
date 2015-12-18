@@ -216,12 +216,12 @@ describe('phonegap-plugin-push', function () {
                     };
 
                 expect(push._handlers.registration.length).toEqual(0);
-                
+
                 push.on('registration',eventHandler);
 
                 expect(push._handlers.registration.length).toEqual(1);
                 expect(push._handlers.registration.indexOf(eventHandler)).toBeGreaterThan(-1);
-                                
+
                 execSpy.andCallFake(function (win, fail, service, id, args) {
                     win();
                 });
@@ -231,19 +231,19 @@ describe('phonegap-plugin-push', function () {
                     done();
                 });
             });
-            
+
             it('should clear "notification" event handlers', function (done) {
                 var push = PushNotification.init(options),
                     eventHandler = function () {
                     };
 
                 expect(push._handlers.notification.length).toEqual(0);
-                
+
                 push.on('notification', eventHandler);
 
                 expect(push._handlers.notification.length).toEqual(1);
                 expect(push._handlers.notification.indexOf(eventHandler)).toBeGreaterThan(-1);
-                
+
                 execSpy.andCallFake(function (win, fail, service, id, args) {
                     win();
                 });
@@ -253,19 +253,19 @@ describe('phonegap-plugin-push', function () {
                     done();
                 });
             });
-            
+
             it('should clear "error" event handlers', function (done) {
                 var push = PushNotification.init(options),
                     eventHandler = function () {
                     };
 
                 expect(push._handlers.error.length).toEqual(0);
-                                
+
                 push.on('error', eventHandler);
 
                 expect(push._handlers.error.length).toEqual(1);
                 expect(push._handlers.error.indexOf(eventHandler)).toBeGreaterThan(-1);
-                
+
                 execSpy.andCallFake(function (win, fail, service, id, args) {
                     win();
                 });
@@ -274,7 +274,74 @@ describe('phonegap-plugin-push', function () {
                     expect(push._handlers.error.indexOf(eventHandler)).toEqual(-1);
                     done();
                 });
-                
+            });
+        });
+
+        describe('unregister topics method', function () {
+            it('should not clear "registration" event handlers', function (done) {
+                var push = PushNotification.init(options),
+                    eventHandler = function () {
+                    };
+
+                expect(push._handlers.registration.length).toEqual(0);
+
+                push.on('registration',eventHandler);
+
+                expect(push._handlers.registration.length).toEqual(1);
+                expect(push._handlers.registration.indexOf(eventHandler)).toBeGreaterThan(-1);
+
+                execSpy.andCallFake(function (win, fail, service, id, args) {
+                    win();
+                });
+                push.unregister(function() {
+                    expect(push._handlers.registration.length).toEqual(1);
+                    expect(push._handlers.registration.indexOf(eventHandler)).toBeGreaterThan(-1);
+                    done();
+                }, null, ['foo', 'bar']);
+            });
+
+            it('should not clear "notification" event handlers', function (done) {
+                var push = PushNotification.init(options),
+                    eventHandler = function () {
+                    };
+
+                expect(push._handlers.notification.length).toEqual(0);
+
+                push.on('notification', eventHandler);
+
+                expect(push._handlers.notification.length).toEqual(1);
+                expect(push._handlers.notification.indexOf(eventHandler)).toBeGreaterThan(-1);
+
+                execSpy.andCallFake(function (win, fail, service, id, args) {
+                    win();
+                });
+                push.unregister(function() {
+                    expect(push._handlers.notification.length).toEqual(1);
+                    expect(push._handlers.notification.indexOf(eventHandler)).toBeGreaterThan(-1);
+                    done();
+                }, null, ['foo', 'bar']);
+            });
+
+            it('should not clear "error" event handlers', function (done) {
+                var push = PushNotification.init(options),
+                    eventHandler = function () {
+                    };
+
+                expect(push._handlers.error.length).toEqual(0);
+
+                push.on('error', eventHandler);
+
+                expect(push._handlers.error.length).toEqual(1);
+                expect(push._handlers.error.indexOf(eventHandler)).toBeGreaterThan(-1);
+
+                execSpy.andCallFake(function (win, fail, service, id, args) {
+                    win();
+                });
+                push.unregister(function() {
+                    expect(push._handlers.error.length).toEqual(1);
+                    expect(push._handlers.error.indexOf(eventHandler)).toBeGreaterThan(-1);
+                    done();
+                }, null, ['foo', 'bar']);
             });
         });
     });

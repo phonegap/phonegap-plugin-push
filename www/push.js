@@ -82,11 +82,13 @@ PushNotification.prototype.unregister = function(successCallback, errorCallback,
 
     var that = this;
     var cleanHandlersAndPassThrough = function() {
-        that._handlers = {
-            'registration': [],
-            'notification': [],
-            'error': []
-        };
+        if (!options) {
+            that._handlers = {
+                'registration': [],
+                'notification': [],
+                'error': []
+            };            
+        }
         successCallback();
     };
 
