@@ -416,7 +416,7 @@ var push = PushNotification.init({
 			},
 			"delete": {
 				"yes": {
-					"callback": "app.delete", "title": "Delete", "foreground": true, "destructive": true
+					"callback": "app.doDelete", "title": "Delete", "foreground": true, "destructive": true
 				},
 				"no": {
 					"callback": "app.cancel", "title": "Cancel", "foreground": true, "destructive": false
