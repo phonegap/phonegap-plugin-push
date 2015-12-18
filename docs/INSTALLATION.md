@@ -7,7 +7,7 @@
     - [minSdkVersion === 14](#minsdkversion--14)
 	- [Multidex](#multidex)
 
-This requires phonegap/cordova CLI 5.0+ ( current stable v1.5.0 )
+This requires phonegap/cordova CLI 5.0+ ( current stable v1.5.1 )
 
 ```
 phonegap plugin add phonegap-plugin-push
