@@ -27,7 +27,8 @@
 #import <Cordova/CDV.h>
 #import <Cordova/CDVPlugin.h>
 
-@interface PushPlugin : CDVPlugin
+@protocol GGLInstanceIDDelegate;
+@interface PushPlugin : CDVPlugin<GGLInstanceIDDelegate>
 {
     NSDictionary *notificationMessage;
     BOOL    isInline;
@@ -58,5 +59,12 @@
 
 - (void)setNotificationMessage:(NSDictionary *)notification;
 - (void)notificationReceived;
+
+//  GCM Features
+@property(nonatomic, assign) BOOL usesGCM;
+@property(nonatomic, strong) NSNumber* gcmSandbox;
+@property(nonatomic, strong) NSString *gcmSenderId;
+@property(nonatomic, strong) NSDictionary *gcmRegistrationOptions;
+@property(nonatomic, strong) void (^gcmRegistrationHandler) (NSString *registrationToken, NSError *error);
 
 @end

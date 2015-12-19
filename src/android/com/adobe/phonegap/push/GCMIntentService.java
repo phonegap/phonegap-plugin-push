@@ -196,9 +196,11 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         // Send a notification if there is a message or title, otherwise just send data
         String message = extras.getString(MESSAGE);
         String title = extras.getString(TITLE);
+        String contentAvailable = extras.getString(CONTENT_AVAILABLE);
 
         Log.d(LOG_TAG, "message =[" + message + "]");
         Log.d(LOG_TAG, "title =[" + title + "]");
+        Log.d(LOG_TAG, "contentAvailable =[" + contentAvailable + "]");
 
         if ((message != null && message.length() != 0) ||
                 (title != null && title.length() != 0)) {
@@ -206,7 +208,9 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             Log.d(LOG_TAG, "create notification");
 
             createNotification(context, extras);
-        } else {
+        }
+
+        if ("1".equals(contentAvailable)) {
             Log.d(LOG_TAG, "send notification event");
             PushPlugin.sendExtras(extras);
         }
@@ -453,7 +457,9 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         if (soundname == null) {
             soundname = extras.getString(SOUND);
         }
-        if (soundname != null && !soundname.contentEquals(SOUND_DEFAULT)) {
+        if (SOUND_RINGTONE.equals(soundname)) {
+            mBuilder.setSound(android.provider.Settings.System.DEFAULT_RINGTONE_URI);
+        } else if (soundname != null && !soundname.contentEquals(SOUND_DEFAULT)) {
             Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
                     + "://" + context.getPackageName() + "/raw/" + soundname);
             Log.d(LOG_TAG, sound.toString());

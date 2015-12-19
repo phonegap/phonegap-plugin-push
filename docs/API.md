@@ -1,6 +1,7 @@
 # API
 
 - [.init()](#pushnotificationinitoptions)
+- [.hasPermission()](#pushnotificationhaspermissionsuccesshandler)
 - [push.on()](#pushonevent-callback)
   - [push.on('registration')](#pushonregistration-callback)
   - [push.on('notification')](#pushonnotification-callback)
@@ -15,6 +16,8 @@
 
 Initializes the plugin on the native side.
 
+**Note:** like all plugins you must wait until you receive the [`deviceready`](https://cordova.apache.org/docs/en/5.4.0/cordova/events/events.deviceready.html) event before calling `PushNotification.init()`.
+
 ### Returns
 
 - Instance of `PushNotification`.
@@ -23,7 +26,7 @@ Initializes the plugin on the native side.
 
 Parameter | Type | Default | Description
 --------- | ---- | ------- | -----------
-`options` | `Object` | `{}` | An object describing relevant specific options for all target platforms. 
+`options` | `Object` | `{}` | An object describing relevant specific options for all target platforms.
 
 All available option attributes are described bellow. Currently, there are no Windows specific options.
 
@@ -38,6 +41,7 @@ Attribute | Type | Default | Description
 `android.vibrate` | `boolean` | `true` | Optional. If `true` the device vibrates on receipt of notification.
 `android.clearNotifications` | `boolean` | `true` | Optional. If `true` the app clears all pending notifications when it is closed.
 `android.forceShow` | `boolean` | `false` | Optional. If `true` will always show a notification, even when the app is on the foreground.
+`android.topics` | `array` | `[]` | Optional. If the array contains one or more strings each string will be used to subscribe to a GcmPubSub topic.
 
 #### iOS
 
@@ -49,6 +53,9 @@ Attribute | Type | Default | Description
 `ios.badge` | `boolean` | `false` | Optional. If `true` the device sets the badge number on receipt of notification. **Note:** the value you set this option to the first time you call the init method will be how the application always acts. Once this is set programmatically in the init method it can only be changed manually by the user in Settings>Notifications>`App Name`. This is normal iOS behaviour.
 `ios.sound` | `boolean` | `false` | Optional. If `true` the device plays a sound on receipt of notification. **Note:** the value you set this option to the first time you call the init method will be how the application always acts. Once this is set programmatically in the init method it can only be changed manually by the user in Settings>Notifications>`App Name`. This is normal iOS behaviour.
 `ios.clearBadge` | `boolean` | `false` | Optional. If `true` the badge will be cleared on app startup.
+`ios.senderID` | `string` | `undefined` (Native) | Maps to the project number in the Google Developer Console.  Setting this uses GCM for notifications instead of native
+`ios.gcmSandbox` | `boolean` | `false` | Whether to use prod or sandbox GCM setting.  Defaults to false.
+`ios.topics` | `array` | `[]` | Optional. If the array contains one or more strings each string will be used to subscribe to a GcmPubSub topic. Note: only usable in conjunction with `senderID`.
 
 ### Example
 
@@ -63,6 +70,34 @@ var push = PushNotification.init({
 		sound: 'false'
 	},
 	windows: {}
+});
+```
+
+## PushNotification.hasPermission(successHandler)
+
+Checks whether the push notification permission has been granted.
+
+### Parameters
+
+Parameter | Type | Default | Description
+--------- | ---- | ------- | -----------
+`successHandler` | `Function` | | Is called when the api successfully retrieves the details on the permission.
+
+### Callback parameters
+
+#### `successHandler`
+
+Parameter | Type | Description
+--------- | ---- | -----------
+`data.isEnabled` | `Boolean` | Whether the permission for push notifications has been granted.
+
+### Example
+
+```javascript
+PushNotification.hasPermission(function(data) {
+    if (data.isEnabled) {
+        console.log('isEnabled');
+    }
 });
 ```
 
@@ -164,9 +199,11 @@ push.off('notification', callback);
 
 **WARNING**: As stated in the example, you will have to store your event handler if you are planning to remove it.
 
-## push.unregister(successHandler, errorHandler)
+## push.unregister(successHandler, errorHandler, topics)
 
 The unregister method is used when the application no longer wants to receive push notifications. Beware that this cleans up all event handlers previously registered, so you will need to re-register them if you want them to function again without an application reload.
+
+If you provide a list of topics as an optional parameter then the application will unsubscribe from these topics but continue to receive other push messages.
 
 ### Parameters
 
@@ -174,6 +211,7 @@ Parameter | Type | Default | Description
 --------- | ---- | ------- | -----------
 `successHandler` | `Function` | | Is called when the api successfully unregisters.
 `errorHandler` | `Function` | | Is called when the api encounters an error while unregistering.
+`topics` | `Array` | | A list of topics to unsubscribe from.
 
 ### Example
 
@@ -224,7 +262,7 @@ Parameter | Type | Default | Description
 
 Parameter | Type | Description
 --------- | ---- | -----------
-`n` | `number` | An integer which is the current badge count. 
+`n` | `number` | An integer which is the current badge count.
 
 ### Example
 

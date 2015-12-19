@@ -12,6 +12,7 @@
 - [iOS Behaviour](#ios-behaviour)
   - [Sound](#sound-1)
   - [Background Notifications](#background-notifications-1)
+  - [Action Buttons](#action-buttons-1)
 - [Windows Behaviour](#windows-behaviour)
   - [Notifications](#notifications)
   - [Setting Toast Capable Option for Windows](#setting-toast-capable-option-for-windows)
@@ -26,15 +27,15 @@ By default the icon displayed in your push notification will be your apps icon. 
 
 ```javascript
 var push = PushNotification.init({
-	android: {
-		senderID: "12345679"
+	"android": {
+		"senderID": "12345679"
 	},
-	ios: {
-		alert: "true",
-		badge: "true",
-		sound: "true"
+	"ios": {
+		"alert": "true",
+		"badge": "true",
+		"sound": "true"
 	},
-	windows: {}
+	"windows": {}
 });
 ```
 
@@ -48,17 +49,17 @@ In order to get a better user experience you can specify an alternate icon and b
 
 ```javascript
 var push = PushNotification.init({
-	android: {
-		senderID: "123456789",
-		icon: "phonegap",
-		iconColor: "blue"
+	"android": {
+		"senderID": "123456789",
+		"icon": "phonegap",
+		"iconColor": "blue"
 	},
-	ios: {
-		alert: "true",
-		badge: "true",
-		sound: "true"
+    "ios": {
+		"alert": "true",
+		"badge": "true",
+		"sound": "true"
 	},
-	windows: {}
+	"windows": {}
 });
 ```
 
@@ -76,9 +77,9 @@ The first is the *drawables* folder in your app. This JSON sent from GCM:
 
 ```javascript
 {
-	title: "Large Icon",
-	message: "Loaded from drawables folder",
-	image: "twitter"
+	"title": "Large Icon",
+	"message": "Loaded from drawables folder",
+	"image": "twitter"
 }
 ```
 
@@ -90,9 +91,9 @@ The second is the *assets* folder in your app. This JSON sent from GCM:
 
 ```javascript
 {
-	title: "Large Icon",
-	message: "Loaded from assets folder",
-	image: "www/image/logo.png"
+	"title": "Large Icon",
+	"message": "Loaded from assets folder",
+	"image": "www/image/logo.png"
 }
 ```
 
@@ -105,9 +106,9 @@ The third is the remote *URL*. This JSON sent from GCM:
 
 ```javascript
 {
-	title: "Large Icon",
-	message: "Loaded from URL",
-	image: "https://dl.dropboxusercontent.com/u/887989/antshot.png"
+	"title": "Large Icon",
+	"message": "Loaded from URL",
+	"image": "https://dl.dropboxusercontent.com/u/887989/antshot.png"
 }
 ```
 
@@ -117,13 +118,15 @@ Produces the following notification.
 
 ## Sound
 
+For Android there are two special values for sound you can use. The first is `default` which will play the phones default notification sound. Then second is `ringtone` which will play the phones default ringtone sound.
+
 In order for your your notification to play a custom sound you will need to add the files to your Android project's `res/raw` directory. Then send the follow JSON from GCM:
 
 ```javascript
 {
-	title: "Sound Test",
-	message: "Loaded res/raw",
-	soundname: "test"
+	"title": "Sound Test",
+	"message": "Loaded res/raw",
+	"soundname": "test"
 }
 ```
 
@@ -137,8 +140,8 @@ If you want to see multiple notifications in the shade you will need to provide 
 
 ```javascript
 {
-	title: "Test Push",
-	message: "Push number 1"
+	"title": "Test Push",
+	"message": "Push number 1"
 }
 ```
 
@@ -146,8 +149,8 @@ Followed by:
 
 ```javascript
 {
-	title: "Test Push",
-	message: "Push number 2"
+	"title": "Test Push",
+	"message": "Push number 2"
 }
 ```
 
@@ -155,9 +158,9 @@ You will only see "Push number 2" in the shade. However, if you send:
 
 ```javascript
 {
-	title: "Test Push",
-	message: "Push number 1",
-	notId: 1
+	"title": "Test Push",
+	"message": "Push number 1",
+	"notId": 1
 }
 ```
 
@@ -165,9 +168,9 @@ and:
 
 ```javascript
 {
-	title: "Test Push",
-	message: "Push number 2",
-	notId: 2
+	"title": "Test Push",
+	"message": "Push number 2",
+	"notId": 2
 }
 ```
 
@@ -179,10 +182,10 @@ A better alternative to stacking your notifications is to use the inbox style to
 
 ```javascript
 {
-	title: "My Title",
-	message: "My first message",
-	style: "inbox",
-	summaryText: "There are %n% notifications"
+	"title": "My Title",
+	"message": "My first message",
+	"style": "inbox",
+	"summaryText": "There are %n% notifications"
 }
 ```
 
@@ -194,10 +197,10 @@ But, if you follow it up with subsequent notifications like:
 
 ```javascript
 {
-	title: "My Title",
-	message: "My second message",
-	style: "inbox",
-	summaryText: "There are %n% notifications"
+	"title": "My Title",
+	"message": "My second message",
+	"style": "inbox",
+	"summaryText": "There are %n% notifications"
 }
 ```
 
@@ -213,11 +216,11 @@ Your notification can include action buttons. If you wish to include an icon alo
 
 ```javascript
 {
-	title: "AUX Scrum",
-	message: "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
-	actions: [
-		{ icon: "emailGuests", title: "EMAIL GUESTS", callback: "app.emailGuests"},
-		{ icon: "snooze", title: "SNOOZE", callback: "app.snooze"},
+	"title": "AUX Scrum",
+	"message": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
+	"actions": [
+		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests"},
+		{ "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze"},
 	]
 }
 ```
@@ -234,9 +237,9 @@ You can use a Led notifcation and choose the color of it. Just add a `ledColor` 
 
 ```javascript
 {
-	title: "Green LED",
-	message: "This is my message with a Green LED",
-	ledColor: [0, 0, 255, 0]
+	"title": "Green LED",
+	"message": "This is my message with a Green LED",
+	"ledColor": [0, 0, 255, 0]
 }
 ```
 
@@ -246,9 +249,9 @@ You can set a Vibration Pattern for your notifications. Just add a `vibrationPat
 
 ```javascript
 {
-	title: "Vibration Pattern",
-	message: "Device should wait for 2 seconds, vibrate for 1 second then be silent for 500 ms then vibrate for 500 ms",
-	vibrationPattern: [2000, 1000, 500, 500]
+	"title": "Vibration Pattern",
+	"message": "Device should wait for 2 seconds, vibrate for 1 second then be silent for 500 ms then vibrate for 500 ms",
+	"vibrationPattern": [2000, 1000, 500, 500]
 }
 ```
 
@@ -258,9 +261,9 @@ You can set a priority parameter for your notifications. Just add a `priority` f
 
 ```javascript
 {
-	title: "This is a maximum priority Notification",
-	message: "This notification should appear in front of all others",
-	priority: 2
+	"title": "This is a maximum priority Notification",
+	"message": "This notification should appear in front of all others",
+	"priority": 2
 }
 ```
 
@@ -270,11 +273,11 @@ Perhaps you want to include a large picture in the notification that you are sen
 
 ```javascript
 {
-	title: "Big Picture",
-	message: "This is my big picture message",
-	style: "picture",
-	picture: "http://36.media.tumblr.com/c066cc2238103856c9ac506faa6f3bc2/tumblr_nmstmqtuo81tssmyno1_1280.jpg",
-	summaryText: "The internet is built on cat pictures"
+	"title": "Big Picture",
+	"message": "This is my big picture message",
+	"style": "picture",
+	"picture": "http://36.media.tumblr.com/c066cc2238103856c9ac506faa6f3bc2/tumblr_nmstmqtuo81tssmyno1_1280.jpg",
+	"summaryText": "The internet is built on cat pictures"
 }
 ```
 
@@ -287,27 +290,28 @@ This will produce the following notification in your tray:
 
 On Android if you want your `on('notification')` event handler to be called when your app is in the background it is relatively simple.
 
-The JSON you send to GCM should not contain a title or message parameter. For instance the following JSON:
+First the JSON you send from GCM will need to include `"content-available": "1"`. This will tell the push plugin to call your `on('notification')` event handler no matter what other data is in the push notification.
 
 ```javascript
 {
-	title: "Test Push",
-	message: "Push number 1",
-	info: "super secret info"
+	"title": "Test Push",
+	"message": "Push number 1",
+	"info": "super secret info",
+	"content-available": "1"
 }
 ```
 
-will produce a notification in the notification shade and call your `on('notification')` event handler.
+or
 
-However if you want your `on('notification')` event handler called but no notification to be shown in the shader you would omit the `alert` property and send the following JSON to GCM:
 
 ```javascript
 {
-	info: "super secret info"
+	"info": "super secret info",
+	"content-available": "1"
 }
 ```
 
-Omitting the message and title properties will keep your push from being added to the notification shade but it will still trigger your `on('notification')` event handler.
+If do not want this type of behaviour just omit `"content-available": 1` from your push data and your `on('notification')` event handler will not be called.
 
 # iOS Behaviour
 
@@ -319,9 +323,9 @@ Then send the follow JSON from APNS:
 
 ```javascript
 {
-	aps: {
-		alert: "Test sound",
-		sound: "sub.caf"
+	"aps": {
+		"alert": "Test sound",
+		"sound": "sub.caf"
 	}
 }
 ```
@@ -337,8 +341,8 @@ For instance the following JSON:
 
 ```javascript
 {
-	aps: {
-		alert: "Test background push",
+	"aps": {
+		"alert": "Test background push",
 		"content-available": 1
 	}
 }
@@ -350,9 +354,9 @@ However if you want your `on('notification')` event handler called but no notifi
 
 ```javascript
 {
-	aps: {
-		data: "Test silent background push",
-		moredata: "Do more stuff",
+	"aps": {
+		"data": "Test silent background push",
+		"moredata": "Do more stuff",
 		"content-available": 1
 	}
 }
@@ -364,11 +368,11 @@ For example:
 
 ```javascript
 var push = PushNotification.init({
-	ios: {
-		sound: true,
-		vibration: true,
-		badge: true,
-		clearBadge: true
+	"ios": {
+		"sound": "true",
+		"vibration": "true",
+		"badge": "true",
+		"clearBadge": "true"
 	}
 });
 
@@ -387,6 +391,60 @@ push.on('notification', function(data) {
 ```
 
 It is absolutely critical that you call `push.finish()` when you have successfully processed your background push data.
+
+## Action Buttons
+
+Your notification can include action buttons. For iOS you must setup the possible actions when you initialize the plugin:
+
+```javascript
+var push = PushNotification.init({
+	"ios": {
+		"sound": true,
+		"vibration": true,
+		"badge": true,
+		"categories": {
+			"invite": {
+				"yes": {
+					"callback": "app.accept", "title": "Accept", "foreground": true, "destructive": false
+				},
+				"no": {
+					"callback": "app.reject", "title": "Reject", "foreground": true, "destructive": false
+				},
+				"maybe": {
+					"callback": "app.maybe", "title": "Maybe", "foreground": true, "destructive": false
+				}
+			},
+			"delete": {
+				"yes": {
+					"callback": "app.doDelete", "title": "Delete", "foreground": true, "destructive": true
+				},
+				"no": {
+					"callback": "app.cancel", "title": "Cancel", "foreground": true, "destructive": false
+				}
+			}
+		}
+	}
+});
+```
+
+Then you will need to set the `category` value in your `aps` payload to match one of the objects in the `categories` object.
+
+
+```javascript
+{
+	"aps": {
+		"alert": "Test action buttons",
+		"category": "invite"
+	}
+}
+```
+
+
+This will produce the following notification in your tray:
+
+// NEED SCREENSHOT
+
+If your users clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed.
 
 # Windows Behaviour
 
