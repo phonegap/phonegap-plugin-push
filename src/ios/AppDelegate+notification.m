@@ -23,27 +23,21 @@ static char launchNotificationKey;
 // Instead we will use method swizzling. we set this up in the load call.
 + (void)load
 {
-    Method original_init, swizzled_init;
+    Method original, swizzled;
 
-    original_init = class_getInstanceMethod(self, @selector(init));
-    swizzled_init = class_getInstanceMethod(self, @selector(notification_init));
-    method_exchangeImplementations(original_init, swizzled_init);
-
-    Method original_applicationDidBecomeActive, swizzled_applicationDidBecomeActive;
-
-    original_applicationDidBecomeActive = class_getInstanceMethod(self, @selector(applicationDidBecomeActive:));
-    swizzled_applicationDidBecomeActive = class_getInstanceMethod(self, @selector(notification_applicationDidBecomeActive:));
-    method_exchangeImplementations(original_applicationDidBecomeActive, swizzled_applicationDidBecomeActive);
+    original = class_getInstanceMethod(self, @selector(init));
+    swizzled = class_getInstanceMethod(self, @selector(swizzled_init));
+    method_exchangeImplementations(original, swizzled);
 }
 
-- (AppDelegate *)notification_init
+- (AppDelegate *)swizzled_init
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createNotificationChecker:)
                                                  name:@"UIApplicationDidFinishLaunchingNotification" object:nil];
 
     // This actually calls the original init method over in AppDelegate. Equivilent to calling super
     // on an overrided method, this is not recursive, although it appears that way. neat huh?
-    return [self notification_init];
+    return [self swizzled_init];
 }
 
 // This code will be called immediately after application:didFinishLaunchingWithOptions:. We need
@@ -133,9 +127,7 @@ static char launchNotificationKey;
     }
 }
 
-- (void)notification_applicationDidBecomeActive:(UIApplication *)application {
-
-    [self notification_applicationDidBecomeActive:application];
+- (void)applicationDidBecomeActive:(UIApplication *)application {
 
     NSLog(@"active");
 
