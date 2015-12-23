@@ -19,6 +19,7 @@ import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.util.Log;
 
+import com.adobe.phonegap.push.formatters.LocalizeFormatter;
 import com.google.android.gms.gcm.GcmListenerService;
 
 import org.json.JSONArray;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -64,6 +66,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             boolean forceShow = prefs.getBoolean(FORCE_SHOW, false);
 
             extras = normalizeExtras(extras);
+            formatIfNecessary(extras);
 
             // if we are in the foreground and forceShow is `false` only send data
             if (!forceShow && PushPlugin.isInForeground()) {
@@ -215,6 +218,15 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             PushPlugin.sendExtras(extras);
         }
     }
+    
+    private void formatIfNecessary(Bundle extras) {
+   	 String message = extras.getString(MESSAGE);
+		if(message.contains("format")){
+			Log.d(LOG_TAG, "message =[" + message + "] Needs format.");
+			final String formattedMessage = new LocalizeFormatter().localize(message);
+			extras.putString(MESSAGE, formattedMessage);
+		}
+  	}
 
     public void createNotification(Context context, Bundle extras) {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
