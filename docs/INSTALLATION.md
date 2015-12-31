@@ -6,6 +6,8 @@
   - [Common errors](#common-errors)
     - [minSdkVersion === 14](#minsdkversion--14)
 	- [Multidex](#multidex)
+- [iOS details](#ios-details)
+  - [XCode](#xcode)
 
 This requires phonegap/cordova CLI 5.0+ ( current stable v1.5.2 )
 
@@ -116,3 +118,10 @@ This causes gradle to fail, and you'll need to identify which plugin is causing 
 See [this for the reference on the cordova plugin specification](https://cordova.apache.org/docs/en/5.4.0/plugin_ref/spec.html#link-18), it'll be usefull to mention it when creating an issue or requesting that plugin to be updated.
 
 Common plugins to suffer from this outdated dependency management are plugins related to *facebook*, *google+*, *notifications*, *crosswalk* and *google maps*.
+
+## iOS details
+
+### XCode
+
+XCode version 7.0 or greater is required for building this plugin.
+
