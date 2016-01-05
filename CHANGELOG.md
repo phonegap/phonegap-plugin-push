@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.5.2](https://github.com/phonegap/phonegap-plugin-push/tree/1.5.1) (2015-12-21)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.5.1...1.5.2)
+
+**Fixed bugs:**
+
+- notification\_applicationDidBecomeActive method [\#447](https://github.com/phonegap/phonegap-plugin-push/issues/447)
+
 ## [1.5.1](https://github.com/phonegap/phonegap-plugin-push/tree/1.5.1) (2015-12-18)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.5.0...1.5.1)
 
