@@ -12,25 +12,27 @@
 This requires phonegap/cordova CLI 5.0+ ( current stable v1.5.2 )
 
 ```
-phonegap plugin add phonegap-plugin-push
+phonegap plugin add phonegap-plugin-push --variable SENDER_ID="XXXXXXX"
 ```
 or
 
 ```
-cordova plugin add phonegap-plugin-push
+cordova plugin add phonegap-plugin-push --variable SENDER_ID="XXXXXXX"
 ```
 
 It is also possible to install via repo url directly ( unstable )
 
 ```
-phonegap plugin add https://github.com/phonegap/phonegap-plugin-push
+phonegap plugin add https://github.com/phonegap/phonegap-plugin-push --variable SENDER_ID="XXXXXXX"
 ```
 
 or
 
 ```
-cordova plugin add https://github.com/phonegap/phonegap-plugin-push
+cordova plugin add https://github.com/phonegap/phonegap-plugin-push --variable SENDER_ID="XXXXXXX"
 ```
+
+Where the `XXXXXXX` in `SENDER_ID="XXXXXXX"` maps to the project number in the Google Developer Console. If you are not creating an Android application you can put in anything for this value.
 
 ## Android details
 
@@ -130,4 +132,3 @@ Common plugins to suffer from this outdated dependency management are plugins re
 ### XCode
 
 XCode version 7.0 or greater is required for building this plugin.
-
