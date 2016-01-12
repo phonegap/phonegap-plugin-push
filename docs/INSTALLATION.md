@@ -131,3 +131,16 @@ Common plugins to suffer from this outdated dependency management are plugins re
 
 XCode version 7.0 or greater is required for building this plugin.
 
+### Bitcode
+
+If you are running into a problem where the linker is complaining about bit code. For instance:
+
+```
+ld: '<file.o>' does not contain bitcode. You must rebuild it with bitcode enabled (Xcode setting ENABLE_BITCODE), obtain an updated library from the vendor, or disable bitcode for this target. for architecture arm64 clang: error: linker command failed with exit code 1 (use -v to see invocation)
+```
+
+You have two options. The first is to [disable bitcode as per this StackOverflow answer](http://stackoverflow.com/a/32466484/41679) or [upgrade to cordova-ios 4 or greater](https://cordova.apache.org/announcements/2015/12/08/cordova-ios-4.0.0.html).
+
+```
+cordova platform update ios@4.0.0
+```
