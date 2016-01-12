@@ -8,6 +8,7 @@
 	- [Multidex](#multidex)
 - [iOS details](#ios-details)
   - [XCode](#xcode)
+  - [Bitcode](#bitcode)
 
 This requires phonegap/cordova CLI 5.0+ ( current stable v1.5.2 )
 
