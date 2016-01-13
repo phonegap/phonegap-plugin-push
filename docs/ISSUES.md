@@ -65,13 +65,13 @@ Please point me in the right direction.
 
 *Response:*
 
-Thanks for the detailed logs and example code by looking them over I'm sure of what your problem is. If you look at line [https://gist.github.com/macdonst/47549150c299080c455c#file-logcat-txt-L334](334) of your logcat you will see that it complains that:
+Thanks for the detailed logs and example code by looking them over I'm sure of what your problem is. If you look at line [334](https://gist.github.com/macdonst/47549150c299080c455c#file-logcat-txt-L334) of your logcat you will see that it complains that:
 
 ```
 I/chromium(11669): [INFO:CONSOLE(54)] "Uncaught ReferenceError: PushNotification is not defined", source: file:///android_asset/www/js/index.js (54)
 ```
 
-This leads me to line [https://gist.github.com/macdonst/191f74ac75b6802c047d#file-app-js-L4](4) of your code where you are initializing push before you get the `deviceready` event. Like all Cordova API's you have to wait until you receive the `deviceready` event before you initialize Push.  
+This leads me to line [4](https://gist.github.com/macdonst/191f74ac75b6802c047d#file-app-js-L4) of your code where you are initializing push before you get the `deviceready` event. Like all Cordova API's you have to wait until you receive the `deviceready` event before you initialize Push.  
 
 Check out [https://github.com/phonegap/phonegap-plugin-push/blob/20f489a90cf519f962fd957700f92115f142594b/example/www/js/index.js](https://github.com/phonegap/phonegap-plugin-push/blob/20f489a90cf519f962fd957700f92115f142594b/example/www/js/index.js) for an example of how to wait for `deviceready`.
 
