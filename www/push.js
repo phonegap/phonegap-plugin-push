@@ -87,7 +87,7 @@ PushNotification.prototype.unregister = function(successCallback, errorCallback,
                 'registration': [],
                 'notification': [],
                 'error': []
-            };            
+            };
         }
         successCallback();
     };
