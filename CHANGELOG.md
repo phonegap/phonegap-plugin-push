@@ -1,5 +1,28 @@
 # Change Log
 
+## [1.5.3](https://github.com/phonegap/phonegap-plugin-push/tree/1.5.3) (2016-01-14)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.5.2...1.5.3)
+
+**Fixed bugs:**
+
+- Android 4.1 and AppOpsManager [\#495](https://github.com/phonegap/phonegap-plugin-push/issues/495)
+
+**Closed issues:**
+
+- iOS Building Error [\#507](https://github.com/phonegap/phonegap-plugin-push/issues/507)
+- \[FIX\] notification not fired when app is in background/killed ? Check this out [\#502](https://github.com/phonegap/phonegap-plugin-push/issues/502)
+- Which Sender ID to use [\#485](https://github.com/phonegap/phonegap-plugin-push/issues/485)
+- coldstart not documented [\#483](https://github.com/phonegap/phonegap-plugin-push/issues/483)
+- Android: iconColor doesn't work in hexadecimal \(\#RRGGBB\) format [\#480](https://github.com/phonegap/phonegap-plugin-push/issues/480)
+- Cannot find symbol variable INSTANCE\_ID\_SCOPE [\#477](https://github.com/phonegap/phonegap-plugin-push/issues/477)
+- notification event not fired on cold start on Android 5 [\#469](https://github.com/phonegap/phonegap-plugin-push/issues/469)
+- Push notifications not working with iPhone6 + ios 9.2? [\#462](https://github.com/phonegap/phonegap-plugin-push/issues/462)
+- UTF8 support on android: the notification text \(on android only\) is shown with "???" [\#461](https://github.com/phonegap/phonegap-plugin-push/issues/461)
+- example application? [\#460](https://github.com/phonegap/phonegap-plugin-push/issues/460)
+- build fail in ios - version 1.5.2 [\#458](https://github.com/phonegap/phonegap-plugin-push/issues/458)
+- Getting NotRegistered error when sending GCM push notification, but the device never unregistered [\#419](https://github.com/phonegap/phonegap-plugin-push/issues/419)
+- Changelog neglected [\#412](https://github.com/phonegap/phonegap-plugin-push/issues/412)
+
 ## [1.5.2](https://github.com/phonegap/phonegap-plugin-push/tree/1.5.1) (2015-12-21)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.5.1...1.5.2)
 
