@@ -10,6 +10,8 @@ public interface PushConstants {
     public static final String ICON = "icon";
     public static final String ICON_COLOR = "iconColor";
     public static final String SOUND = "sound";
+    public static final String SOUND_DEFAULT = "default";
+    public static final String SOUND_RINGTONE = "ringtone";
     public static final String VIBRATE = "vibrate";
     public static final String ACTIONS = "actions";
     public static final String CALLBACK = "callback";
@@ -50,4 +52,6 @@ public interface PushConstants {
     public static final String COLLAPSE_KEY = "collapse_key";
     public static final String FORCE_SHOW = "forceShow";
     public static final String GCM = "GCM";
+    public static final String CONTENT_AVAILABLE = "content-available";
+    public static final String TOPICS = "topics";
 }

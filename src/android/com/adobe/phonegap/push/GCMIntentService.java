@@ -75,7 +75,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             else if (forceShow && PushPlugin.isInForeground()) {
                 Log.d(LOG_TAG, "foreground force");
                 extras.putBoolean(FOREGROUND, true);
-                
+
                 showNotificationIfPossible(getApplicationContext(), extras);
             }
             // if we are not in the foreground always send notification if the data has at least a message or title
@@ -141,7 +141,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
             Log.d(LOG_TAG, "key = " + key);
 
-            // If the key is "data" or "message" and the value is a json object extract
+            // If normalizeKeythe key is "data" or "message" and the value is a json object extract
             // This is to support parse.com and other services. Issue #147 and pull #218
             if (key.equals(PARSE_COM_DATA) || key.equals(MESSAGE)) {
                 Object json = extras.get(key);
@@ -167,6 +167,19 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                         Log.e(LOG_TAG, "normalizeExtras: JSON exception");
                     }
                 }
+            } else if (key.equals(("notification"))) {
+                Bundle value = extras.getBundle(key);
+                Iterator<String> iterator = value.keySet().iterator();
+                while (iterator.hasNext()) {
+                    String notifkey = iterator.next();
+
+                    Log.d(LOG_TAG, "notifkey = " + notifkey);
+                    String newKey = normalizeKey(notifkey);
+                    Log.d(LOG_TAG, "replace key " + notifkey + " with " + newKey);
+
+                    newExtras.putString(newKey, value.getString(notifkey));
+                }
+                continue;
             }
 
             String newKey = normalizeKey(key);
@@ -183,9 +196,11 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         // Send a notification if there is a message or title, otherwise just send data
         String message = extras.getString(MESSAGE);
         String title = extras.getString(TITLE);
+        String contentAvailable = extras.getString(CONTENT_AVAILABLE);
 
         Log.d(LOG_TAG, "message =[" + message + "]");
         Log.d(LOG_TAG, "title =[" + title + "]");
+        Log.d(LOG_TAG, "contentAvailable =[" + contentAvailable + "]");
 
         if ((message != null && message.length() != 0) ||
                 (title != null && title.length() != 0)) {
@@ -193,7 +208,9 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             Log.d(LOG_TAG, "create notification");
 
             createNotification(context, extras);
-        } else {
+        }
+
+        if ("1".equals(contentAvailable)) {
             Log.d(LOG_TAG, "send notification event");
             PushPlugin.sendExtras(extras);
         }
@@ -351,7 +368,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             long[] results = new long[items.length];
             for (int i = 0; i < items.length; i++) {
                 try {
-                    results[i] = Long.parseLong(items[i]);
+                    results[i] = Long.parseLong(items[i].trim());
                 } catch (NumberFormatException nfe) {}
             }
             mBuilder.setVibrate(results);
@@ -440,7 +457,9 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         if (soundname == null) {
             soundname = extras.getString(SOUND);
         }
-        if (soundname != null) {
+        if (SOUND_RINGTONE.equals(soundname)) {
+            mBuilder.setSound(android.provider.Settings.System.DEFAULT_RINGTONE_URI);
+        } else if (soundname != null && !soundname.contentEquals(SOUND_DEFAULT)) {
             Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
                     + "://" + context.getPackageName() + "/raw/" + soundname);
             Log.d(LOG_TAG, sound.toString());
@@ -458,7 +477,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             int[] results = new int[items.length];
             for (int i = 0; i < items.length; i++) {
                 try {
-                    results[i] = Integer.parseInt(items[i]);
+                    results[i] = Integer.parseInt(items[i].trim());
                 } catch (NumberFormatException nfe) {}
             }
             if (results.length == 4) {

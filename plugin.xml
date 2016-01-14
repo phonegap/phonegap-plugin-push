@@ -4,17 +4,14 @@
     xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads"
     xmlns:rim="http://www.blackberry.com/ns/widgets"
     id="phonegap-plugin-push"
-    version="1.4.2">
+    version="1.5.2">
 
   <name>PushPlugin</name>
-	<author>Bob Easterday</author>
-
 	<description>
-		This plugin allows your application to receive push notifications on Android, iOS, WP8 and Windows8 devices.
+		This plugin allows your application to receive push notifications on Android, iOS and Windows devices.
     Android uses Google Cloud Messaging.
     iOS uses Apple APNS Notifications.
-    WP8 uses Microsoft MPNS Notifications.
-    Windows8 uses Microsoft WNS Notifications.
+    Windows uses Microsoft WNS Notifications.
 	</description>
 
 	<license>MIT</license>
@@ -24,8 +21,9 @@
 	</js-module>
 
 	<engines>
-		<engine name="cordova" version=">=3.0.0" />
-	</engines>
+        <engine name="cordova" version=">=3.6.3" />
+        <engine name="cordova-android" version=">=4.0.0" />
+    </engines>
 
 	<!-- android -->
 	<platform name="android">
@@ -42,8 +40,8 @@
 			<uses-permission android:name="android.permission.WAKE_LOCK" />
 			<uses-permission android:name="android.permission.VIBRATE"/>
 			<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-			<permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-			<uses-permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" />
+			<permission android:name="${applicationId}.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+			<uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
 		</config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
@@ -55,7 +53,7 @@
                 android:permission="com.google.android.c2dm.permission.SEND" >
                 <intent-filter>
                     <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                    <category android:name="$PACKAGE_NAME" />
+                    <category android:name="${applicationId}" />
                 </intent-filter>
             </receiver>
             <service
@@ -72,9 +70,14 @@
                     <action android:name="com.google.android.gms.iid.InstanceID"/>
                 </intent-filter>
             </service>
+            <service
+                android:name="com.adobe.phonegap.push.RegistrationIntentService"
+                android:exported="false">
+            </service>
 		</config-file>
 
-		<framework src="com.android.support:support-v13:23+" />
+        <framework src="push.gradle" custom="true" type="gradleReference" />
+        <framework src="com.android.support:support-v13:23+" />
         <framework src="com.google.android.gms:play-services-gcm:+" />
 
 		<source-file src="src/android/com/adobe/phonegap/push/GCMIntentService.java" target-dir="src/com/adobe/phonegap/push/" />
@@ -82,6 +85,7 @@
 		<source-file src="src/android/com/adobe/phonegap/push/PushHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushInstanceIDListenerService.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushPlugin.java" target-dir="src/com/adobe/phonegap/push/" />
+        <source-file src="src/android/com/adobe/phonegap/push/RegistrationIntentService.java" target-dir="src/com/adobe/phonegap/push/" />
         <source-file src="src/android/com/adobe/phonegap/push/PermissionUtils.java" target-dir="src/com/adobe/phonegap/push/" />
 
 	</platform>
@@ -107,6 +111,56 @@
 		<header-file src="src/ios/AppDelegate+notification.h" />
 		<header-file src="src/ios/PushPlugin.h" />
 
+                <!--  GCM Provided Frameworks Used -->
+                <framework src="AddressBook.framework" />
+                <!-- Note these 2 appear in red in app code project but work-->
+                <framework src="libsqlite3.tbd" />
+                <framework src="libz.tbd" />
+
+                <!--  GCM Code from Cocoapods  -->
+		<header-file target-dir="GCM/Headers" src="src/ios/GGLInstanceID/Headers/Public/GGLInstanceID.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/GGLInstanceID/Headers/Public/GGLInstanceIDConfig.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/GGLInstanceID/Headers/Public/GGLInstanceIDDelegate.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/GGLInstanceID/Headers/Public/GGLInstanceIDHeaders.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/Google/Headers/GGLCloudMessaging/Public/CloudMessaging.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/Google/Headers/GGLCloudMessaging/Public/GGLContext+CloudMessaging.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/Google/Headers/GGLCore/Public/Core.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/Google/Headers/GGLCore/Public/GGLConfiguration.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/Google/Headers/GGLCore/Public/GGLContext.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/Google/Headers/GGLCore/Public/GGLErrorCode.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/GoogleCloudMessaging/Headers/Public/GCMConfig.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/GoogleCloudMessaging/Headers/Public/GCMPubSub.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/GoogleCloudMessaging/Headers/Public/GCMReceiverDelegate.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/GoogleCloudMessaging/Headers/Public/GCMService.h" />
+		<header-file target-dir="GCM/Headers" src="src/ios/GoogleCloudMessaging/Headers/Public/GoogleCloudMessaging.h" />
+
+                <source-file target-dir="GCM/Libraries" src="src/ios/Google/Libraries/libGGLCloudMessaging.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/Google/Libraries/libGGLCore.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GGLInstanceID/Libraries/libGGLInstanceIDLib.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleIPhoneUtilities/Libraries/libGIP_Reachability.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleSymbolUtilities/Libraries/libGSDK_Overload.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleNetworkingUtilities/Libraries/libGTMSessionFetcher_core.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleNetworkingUtilities/Libraries/libGTMSessionFetcher_full.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTMStackTrace.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_AddressBook.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_DebugUtils.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_GTMURLBuilder.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_KVO.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_NSData+zlib.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_NSDictionary+URLArguments.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_NSScannerJSON.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_NSStringHTML.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_NSStringXML.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_Regex.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_RoundedRectPath.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_StringEncoding.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_SystemVersion.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_UIFont+LineHeight.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_core.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_iPhone.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleCloudMessaging/Libraries/libGcmLib.a" framework="true" />
+                <source-file target-dir="GCM/Libraries" src="src/ios/GoogleInterchangeUtilities/Libraries/libProtocolBuffers.a" framework="true" />
+                <!--  End GCM Related Files -->
 	</platform>
 
   	<!-- windows -->
