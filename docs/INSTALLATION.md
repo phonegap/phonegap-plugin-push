@@ -10,7 +10,7 @@
   - [XCode](#xcode)
   - [Bitcode](#bitcode)
 
-This requires phonegap/cordova CLI 5.0+ ( current stable v1.5.2 )
+This requires phonegap/cordova CLI 5.0+ ( current stable v1.5.3 )
 
 ```
 phonegap plugin add phonegap-plugin-push
