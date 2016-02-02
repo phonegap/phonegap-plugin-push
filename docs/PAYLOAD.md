@@ -394,7 +394,7 @@ It is absolutely critical that you call `push.finish()` when you have successful
 
 ## Action Buttons
 
-Your notification can include action buttons. For iOS you must setup the possible actions when you initialize the plugin:
+Your notification can include action buttons. For iOS 8+ you must setup the possible actions when you initialize the plugin:
 
 ```javascript
 var push = PushNotification.init({
@@ -427,13 +427,14 @@ var push = PushNotification.init({
 });
 ```
 
+You’ll notice that we’ve added a new parameter to the iOS object of our init code called categories. Each category is a named object, invite and delete in this case. These names will need to match the one you send via your payload to APNS if you want the action buttons to be displayed. Each category can have up to three buttons which must be labeled `yes`, `no` and `maybe`. In turn each of these buttons has four properties, `callback` the javascript function you want to call, `title` the label for the button, `foreground` whether or not to bring your app to the foreground and `destructive` which doesn’t actually do anything destructive it just colors the button red as a warning to the user that the action may be destructive.
 Then you will need to set the `category` value in your `aps` payload to match one of the objects in the `categories` object.
 
 
 ```javascript
 {
 	"aps": {
-		"alert": "Test action buttons",
+		"alert": "This is a notification that will be displayed ASAP.",
 		"category": "invite"
 	}
 }
@@ -442,7 +443,7 @@ Then you will need to set the `category` value in your `aps` payload to match on
 
 This will produce the following notification in your tray:
 
-// NEED SCREENSHOT
+![push6-ios](https://cloud.githubusercontent.com/assets/353180/12754125/12d13020-c998-11e5-98b4-b245fda30490.png)
 
 If your users clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed.
 
