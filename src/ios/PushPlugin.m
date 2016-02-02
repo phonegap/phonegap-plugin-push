@@ -147,6 +147,7 @@
 
     isInline = NO;
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         NSLog(@"PushPlugin.register: better button setup");
         // setup action buttons
         NSMutableSet *categories = [[NSMutableSet alloc] init];
@@ -203,6 +204,9 @@
             }
 
         }
+#else
+    NSLog(@"PushPlugin.register: action buttons only supported on iOS8 and above");
+#endif
 
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
