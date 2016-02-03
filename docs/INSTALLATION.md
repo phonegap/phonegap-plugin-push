@@ -200,4 +200,4 @@ Next open up your `config.xml` file and add the following line:
 
 Now, when you build your app the files will get copied into your platforms directory for you.
 
-If you are using PhoneGap Build check out these instructions on [Additional Resources](docs/PHONEGAP_BUILD.md#additional-resources)
+If you are using PhoneGap Build check out these instructions on [Additional Resources](PHONEGAP_BUILD.md#additional-resources)
