@@ -9,6 +9,7 @@
 - [iOS details](#ios-details)
   - [XCode](#xcode)
   - [Bitcode](#bitcode)
+- [Additional Resources](#additional-resources)
 
 This requires phonegap/cordova CLI 5.0+ ( current stable v1.5.3 )
 
@@ -145,3 +146,58 @@ You have two options. The first is to [disable bitcode as per this StackOverflow
 ```
 cordova platform update ios@4.0.0
 ```
+
+## Additional Resources
+
+The push plugin enables you to play sounds and display different icons during push (Android only). These additional resources need to be added to your projects `platforms` directory in order for them to be included into your final application binary. One way of doing it is to create a hook to do the copying for you on each build.
+
+First create a `scripts` directory in the root of your project. Next add a file to the scripts directory called `copy_resource_files.js`. The contents of the file will look something like this:
+
+```javascript
+#!/usr/bin/env node
+
+// each object in the array consists of a key which refers to the source and
+// the value which is the destination.
+var filestocopy = [{
+    "resources/android/images/logo.png":
+    "platforms/android/res/drawable/logo.png"
+}, {
+    "resources/android/sounds/ring.mp3":
+    "platforms/android/res/raw/ring.mp3"
+}, {
+    "resources/ios/sounds/ring.caf":
+    "platforms/ios/YourAppName/ring.caf"
+}, ];
+
+var fs = require('fs');
+var path = require('path');
+
+// no need to configure below
+var rootdir = process.argv[2];
+
+filestocopy.forEach(function(obj) {
+    Object.keys(obj).forEach(function(key) {
+        var val = obj[key];
+        var srcfile = path.join(rootdir, key);
+        var destfile = path.join(rootdir, val);
+        //console.log("copying "+srcfile+" to "+destfile);
+        var destdir = path.dirname(destfile);
+        if (fs.existsSync(srcfile) && fs.existsSync(destdir)) {
+            fs.createReadStream(srcfile).pipe(
+               fs.createWriteStream(destfile));
+        }
+    });
+});
+```
+
+Obviously, you'll need to modify the `filestocopy` variable to suit your needs. Pay attention to the destination path on iOS where you will need to replace `YourAppName`.
+
+Next open up your `config.xml` file and add the following line:
+
+```xml
+<hook type="before_build" src="scripts/copy_resource_files.js" />
+```
+
+Now, when you build your app the files will get copied into your platforms directory for you.
+
+If you are using PhoneGap Build check out these instructions on [Additional Resources](docs/PHONEGAP_BUILD.md#additional-resources)
