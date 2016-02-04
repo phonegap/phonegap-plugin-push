@@ -809,6 +809,8 @@ This will produce the following notification in your tray:
 
 If your users clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed.
 
+> Note: Action buttons are only supported on iOS when you send directly to APNS. If you are using GCM to send to iOS devices you will lose this functionality.
+
 # Windows Behaviour
 
 ## Notifications
