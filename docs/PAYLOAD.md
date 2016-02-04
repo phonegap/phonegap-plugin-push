@@ -692,6 +692,17 @@ Then send the follow JSON from APNS:
 }
 ```
 
+If you want the default sound to play upon receipt of push use this payload:
+
+```
+{
+    "aps": {
+        "alert": "Test sound",
+        "sound": "default"
+    }
+}
+```
+
 ## Background Notifications
 
 On iOS if you want your `on('notification')` event handler to be called when your app is in the background you will need to do a few things.
