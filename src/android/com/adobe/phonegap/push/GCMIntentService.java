@@ -337,10 +337,22 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                     Log.d(LOG_TAG, "adding action");
                     JSONObject action = actionsArray.getJSONObject(i);
                     Log.d(LOG_TAG, "adding callback = " + action.getString(CALLBACK));
-                    Intent intent = new Intent(this, PushHandlerActivity.class);
-                    intent.putExtra(CALLBACK, action.getString(CALLBACK));
-                    intent.putExtra(PUSH_BUNDLE, extras);
-                    PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    boolean foreground = action.getBoolean(FOREGROUND);
+                    Intent intent = null;
+                    PendingIntent pIntent = null;
+                    if (foreground) {
+                        intent = new Intent(this, PushHandlerActivity.class);
+                        intent.putExtra(CALLBACK, action.getString(CALLBACK));
+                        intent.putExtra(PUSH_BUNDLE, extras);
+                        intent.putExtra(FOREGROUND, foreground);
+                        pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    } else {
+                        intent = new Intent(this, BackgroundActionButtonHandler.class);
+                        intent.putExtra(CALLBACK, action.getString(CALLBACK));
+                        intent.putExtra(PUSH_BUNDLE, extras);
+                        intent.putExtra(FOREGROUND, foreground);
+                        pIntent = PendingIntent.getBroadcast(this, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    }
 
                     mBuilder.addAction(resources.getIdentifier(action.getString(ICON), DRAWABLE, packageName),
                             action.getString(TITLE), pIntent);
@@ -586,7 +598,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         }
     }
 
-    private static String getAppName(Context context) {
+    public static String getAppName(Context context) {
         CharSequence appName =  context.getPackageManager().getApplicationLabel(context.getApplicationInfo());
         return (String)appName;
     }
