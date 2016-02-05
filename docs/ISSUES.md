@@ -1,11 +1,11 @@
 # ISSUES
 
-- [Read the docs](#readthedocs)
-- [Search the issues](#searchtheissues)
-- [Opening a new issue](#openinganewissue)
-  - [Provide details](#providedetails)
-  - [An example issue](#anexampleissue)
-- [Voting on an issue](#votingonanewissue)
+- [Read the docs](#read-the-docs)
+- [Search the issues](#search-the-issues)
+- [Opening a new issue](#opening-a-new-issue)
+  - [Provide details](#provide-details)
+  - [An example issue](#an-example-issue)
+- [Voting on an issue](#voting-on-an-issue)
 
 The following tips are for users of this plugin who want to get help.
 
