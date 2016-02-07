@@ -337,7 +337,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                     Log.d(LOG_TAG, "adding action");
                     JSONObject action = actionsArray.getJSONObject(i);
                     Log.d(LOG_TAG, "adding callback = " + action.getString(CALLBACK));
-                    boolean foreground = action.getBoolean(FOREGROUND);
+                    boolean foreground = action.optBoolean(FOREGROUND, true);
                     Intent intent = null;
                     PendingIntent pIntent = null;
                     if (foreground) {
@@ -354,7 +354,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                         pIntent = PendingIntent.getBroadcast(this, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     }
 
-                    mBuilder.addAction(resources.getIdentifier(action.getString(ICON), DRAWABLE, packageName),
+                    mBuilder.addAction(resources.getIdentifier(action.optString(ICON, ""), DRAWABLE, packageName),
                             action.getString(TITLE), pIntent);
                 }
             } catch(JSONException e) {
