@@ -450,8 +450,8 @@ var message = new gcm.Message();
 message.addData('title', 'AUX Scrum');
 message.addData('message', 'Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.');
 message.addData('actions', [
-    { "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests"},
-    { "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze"},
+    { "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests", "foreground": true},
+    { "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze", "foreground": false},
 ]);
 service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
 	if(err) console.error(err);
@@ -464,6 +464,15 @@ This will produce the following notification in your tray:
 ![action_combo](https://cloud.githubusercontent.com/assets/353180/9313435/02554d2a-44f1-11e5-8cd9-0aadd1e02b18.png)
 
 If your users clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed. In this case it is `app.emailGuests` and `app.snooze` respectively. If you set the `foreground` property to `true` the app will be brought to the front, if `foreground` is `false` then the callback is run without the app being brought to the foreground.
+
+### Attributes
+
+Attribute | Type | Default | Description
+--------- | ---- | ------- | -----------
+`icon` | `string` | | Optional. The name of a drawable resource to use as the small-icon. The name should not include the extension.
+`title` | `string` | | Required. The label to display for the action button.
+`callback` | `string` | | Required. The function to be executed when the action button is pressed.
+`foreground` | `boolean` | `true` | Optional. Whether or not to bring the app to the foreground when the action button is pressed.
 
 ## Led in Notifications
 
