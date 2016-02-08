@@ -11,6 +11,7 @@
 #import <objc/runtime.h>
 
 static char launchNotificationKey;
+static char coldstartKey;
 
 @implementation AppDelegate (notification)
 
@@ -70,11 +71,18 @@ static char launchNotificationKey;
 // to process notifications in cold-start situations
 - (void)createNotificationChecker:(NSNotification *)notification
 {
+    NSLog(@"createNotificationChecker");
     if (notification)
     {
         NSDictionary *launchOptions = [notification userInfo];
-        if (launchOptions)
+        if (launchOptions) {
+            NSLog(@"coldstart");
             self.launchNotification = [launchOptions objectForKey: @"UIApplicationLaunchOptionsRemoteNotificationKey"];
+            self.coldstart = [NSNumber numberWithBool:YES];
+        } else {
+            NSLog(@"not coldstart");
+            self.coldstart = [NSNumber numberWithBool:NO];
+        }
     }
 }
 
@@ -170,6 +178,7 @@ static char launchNotificationKey;
 
     if (self.launchNotification) {
         pushHandler.isInline = NO;
+        pushHandler.coldstart = [self.coldstart boolValue];
         pushHandler.notificationMessage = self.launchNotification;
         self.launchNotification = nil;
         [pushHandler performSelectorOnMainThread:@selector(notificationReceived) withObject:pushHandler waitUntilDone:NO];
@@ -205,9 +214,20 @@ forRemoteNotification: (NSDictionary *) notification completionHandler: (void (^
     objc_setAssociatedObject(self, &launchNotificationKey, aDictionary, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (NSNumber *)coldstart
+{
+    return objc_getAssociatedObject(self, &coldstartKey);
+}
+
+- (void)setColdstart:(NSNumber *)aNumber
+{
+    objc_setAssociatedObject(self, &coldstartKey, aNumber, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 - (void)dealloc
 {
     self.launchNotification = nil; // clear the association and release the object
+    self.coldstart = nil;
 }
 
 @end
