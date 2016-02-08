@@ -143,7 +143,7 @@ Parameter | Type | Description
 `data.image` | `string` | The path of the image file to be displayed in the notification.
 `data.additionalData` | `Object` | An optional collection of data sent by the 3rd party push service that does not fit in the above properties.
 `data.additionalData.foreground` | `boolean` | Whether the notification was received while the app was in the foreground
-`data.additionalData.coldstart` | `boolean` | Will be `true` if the application is started by clicking on the push notification, `false` if the app is already started. (Android only)
+`data.additionalData.coldstart` | `boolean` | Will be `true` if the application is started by clicking on the push notification, `false` if the app is already started. (Android/iOS only)
 
 ### Example
 

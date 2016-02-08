@@ -17,5 +17,6 @@
 - (id) getCommandInstance:(NSString*)className;
 
 @property (nonatomic, retain) NSDictionary  *launchNotification;
+@property (nonatomic, retain) NSNumber  *coldstart;
 
 @end
