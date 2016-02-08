@@ -45,7 +45,7 @@
 		</config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
-			<activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:lauchMode="singleTop" android:exported="true"/>
+			<activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:launchMode="singleTop" android:exported="true"/>
 
             <receiver
                 android:name="com.google.android.gms.gcm.GcmReceiver"
