@@ -10,7 +10,9 @@ Including this plugin in a project that is built by PhoneGap Build is as easy as
 
 ```xml
 <preference name="android-build-tool" value="gradle" />
-<plugin name="phonegap-plugin-push" source="npm" />
+<plugin name="phonegap-plugin-push" source="npm">
+    <variable name="SENDER_ID" value="<Your Sender ID>" />
+</plugin>
 ```
 
 into your app's `config.xml` file. PhoneGap Build will pick up the latest version of phonegap-plugin-push published on npm. If you want to specify a particular version of the plugin you can add the `spec` attribute to the `plugin` tag.
