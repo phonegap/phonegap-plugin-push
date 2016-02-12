@@ -129,6 +129,26 @@ See [this for the reference on the cordova plugin specification](https://cordova
 
 Common plugins to suffer from this outdated dependency management are plugins related to *facebook*, *google+*, *notifications*, *crosswalk* and *google maps*.
 
+#### More than one library with package name 'com.google.android.gms'
+
+When some other packages include cordova-google-play-services as cordova-admob or cordova-plugin-analytics is not possible add the phonegap-plugin-push because during the build process you'll get this error:
+
+```
+:processDebugResources FAILED
+FAILURE: Build failed with an exception.
+
+What went wrong: Execution failed for task ':processDebugResources'. > Error: more than one library with package name 'com.google.android.gms'
+```
+
+Those plugins should be using gradle to include the Google Play Services package but instead they include the play services jar directly or via a plugin dependency. So all of that is bad news. These plugins should be updated to use gradle. Please raise issues on those plugins as the change is not hard to make.
+
+In fact there is a PR open to do just that appfeel/analytics-google#11 for cordova-plugin-analytics. You should bug the team at appfeel to merge that PR.
+
+Alternatively, switch to another plugin that provides the same functionality but uses gradle:
+
+[https://github.com/danwilson/google-analytics-plugin](https://github.com/danwilson/google-analytics-plugin)
+[https://github.com/cmackay/google-analytics-plugin](https://github.com/cmackay/google-analytics-plugin)
+
 ## iOS details
 
 ### XCode
