@@ -200,10 +200,16 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         String message = extras.getString(MESSAGE);
         String title = extras.getString(TITLE);
         String contentAvailable = extras.getString(CONTENT_AVAILABLE);
+        String badgeCount = extras.getString(COUNT);
 
         Log.d(LOG_TAG, "message =[" + message + "]");
         Log.d(LOG_TAG, "title =[" + title + "]");
         Log.d(LOG_TAG, "contentAvailable =[" + contentAvailable + "]");
+        Log.d(LOG_TAG, "badgeCount =[" + badgeCount + "]");
+
+        if (badgeCount != null) {
+            PushPlugin.setApplicationIconBadgeNumber(context, Integer.parseInt(badgeCount));
+        }
 
         if ((message != null && message.length() != 0) ||
                 (title != null && title.length() != 0)) {
