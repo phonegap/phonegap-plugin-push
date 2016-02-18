@@ -14,5 +14,5 @@ This plugin offers support to receive and handle native push notifications with 
 - [Platform support](docs/PLATFORM_SUPPORT.md)
 - [PhoneGap Build support](docs/PHONEGAP_BUILD.md)
 - [Push notification payload details](docs/PAYLOAD.md)
-- [Contributing](CONTRIBUTING.md)
+- [Contributing](.github/CONTRIBUTING.md)
 - [License (MIT)](MIT-LICENSE)
