@@ -44,11 +44,15 @@ static char launchNotificationKey;
 // to process notifications in cold-start situations
 - (void)createNotificationChecker:(NSNotification *)notification
 {
+    NSLog(@"createNotificationChecker");
+
     if (notification)
     {
         NSDictionary *launchOptions = [notification userInfo];
-        if (launchOptions)
+        if (launchOptions) {
+            NSLog(@"coldstart");
             self.launchNotification = [launchOptions objectForKey: @"UIApplicationLaunchOptionsRemoteNotificationKey"];
+        }
     }
 }
 
@@ -103,6 +107,11 @@ static char launchNotificationKey;
             PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
             pushHandler.notificationMessage = userInfo;
             pushHandler.isInline = NO;
+
+            if(application.applicationState == UIApplicationStateInactive) {
+                pushHandler.coldstart = [NSNumber numberWithInt:self.launchNotification? 1 : 0];
+            }
+            
             pushHandler.handlerObj = params;
             [pushHandler notificationReceived];
         } else {
@@ -142,6 +151,7 @@ static char launchNotificationKey;
 
     if (self.launchNotification) {
         pushHandler.isInline = NO;
+        pushHandler.coldstart = [NSNumber numberWithInt:self.launchNotification? 1 : 0];
         pushHandler.notificationMessage = self.launchNotification;
         self.launchNotification = nil;
         [pushHandler performSelectorOnMainThread:@selector(notificationReceived) withObject:pushHandler waitUntilDone:NO];
