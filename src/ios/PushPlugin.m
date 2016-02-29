@@ -34,6 +34,7 @@
 
 @synthesize notificationMessage;
 @synthesize isInline;
+@synthesize coldstart;
 
 @synthesize callbackId;
 @synthesize notificationCallbackId;
@@ -413,6 +414,11 @@
             [additionalData setObject:[NSNumber numberWithBool:NO] forKey:@"foreground"];
         }
 
+
+        if (coldstart != nil && [coldstart intValue] >= 0) {
+            [additionalData setObject:[NSNumber numberWithBool:[coldstart intValue] == 1] forKey:@"coldstart"];
+        }
+
         [message setObject:additionalData forKey:@"additionalData"];
 
         // send notification message
@@ -421,6 +427,7 @@
         [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
 
         self.notificationMessage = nil;
+        self.coldstart = nil;
     }
 }
 
