@@ -40,8 +40,8 @@
 			<uses-permission android:name="android.permission.WAKE_LOCK" />
 			<uses-permission android:name="android.permission.VIBRATE"/>
 			<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-			<permission android:name="${applicationId}.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-			<uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
+			<permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+			<uses-permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" />
 		</config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
@@ -53,7 +53,7 @@
                 android:permission="com.google.android.c2dm.permission.SEND" >
                 <intent-filter>
                     <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                    <category android:name="${applicationId}" />
+                    <category android:name="$PACKAGE_NAME" />
                 </intent-filter>
             </receiver>
             <service
@@ -76,7 +76,6 @@
             </service>
 		</config-file>
 
-        <framework src="push.gradle" custom="true" type="gradleReference" />
         <framework src="com.android.support:support-v13:23+" />
         <framework src="com.google.android.gms:play-services-gcm:+" />
 
