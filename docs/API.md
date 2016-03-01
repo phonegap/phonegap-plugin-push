@@ -297,7 +297,7 @@ push.getApplicationIconBadgeNumber(function(n) {
 });
 ```
 
-## push.finish(successHandler, errorHandler) - iOS only
+## push.finish(successHandler, errorHandler, id) - iOS only
 
 Tells the OS that you are done processing a background push notification.
 
@@ -307,6 +307,7 @@ Parameter | Type | Default | Description
 --------- | ---- | ------- | -----------
 `successHandler` | `Function` | | Is called when the api successfully completes background push processing.
 `errorHandler` | `Function` | | Is called when the api encounters an error while processing and completing the background push.
+`id` | `String` | | Tells the OS which background process is complete.
 
 ### Example
 
@@ -315,5 +316,5 @@ push.finish(function() {
 	console.log('success');
 }, function() {
 	console.log('error');
-});
+}, 'push-1');
 ```

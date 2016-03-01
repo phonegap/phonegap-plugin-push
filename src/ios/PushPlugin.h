@@ -36,7 +36,7 @@
     NSString *callback;
     BOOL    clearBadge;
 
-    NSDictionary *handlerObj;
+    NSMutableDictionary *handlerObj;
     void (^completionHandler)(UIBackgroundFetchResult);
 
     BOOL ready;
@@ -50,7 +50,7 @@
 @property BOOL isInline;
 @property BOOL coldstart;
 @property BOOL clearBadge;
-@property (nonatomic, strong) NSDictionary *handlerObj;
+@property (nonatomic, strong) NSMutableDictionary *handlerObj;
 
 - (void)init:(CDVInvokedUrlCommand*)command;
 - (void)unregister:(CDVInvokedUrlCommand*)command;
