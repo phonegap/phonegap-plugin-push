@@ -810,18 +810,34 @@ var push = PushNotification.init({
 ```
 
 You’ll notice that we’ve added a new parameter to the iOS object of our init code called categories. Each category is a named object, invite and delete in this case. These names will need to match the one you send via your payload to APNS if you want the action buttons to be displayed. Each category can have up to three buttons which must be labeled `yes`, `no` and `maybe`. In turn each of these buttons has four properties, `callback` the javascript function you want to call, `title` the label for the button, `foreground` whether or not to bring your app to the foreground and `destructive` which doesn’t actually do anything destructive it just colors the button red as a warning to the user that the action may be destructive.
-Then you will need to set the `category` value in your `aps` payload to match one of the objects in the `categories` object.
 
+Just like with background notifications it is absolutely critical that you call `push.finish()` when you have successfully processed the button callback. For instance:
+
+```javascript
+app.accept = function(data) {
+    // do something with the notification data
+
+    push.finish(function() {
+        console.log('accept callback finished');
+    }, function() {
+        console.log('accept callback failed');
+    }, data.additionalData.notId);    
+};
+```
+
+You may notice that the `finish` method now takes `success`, `failure` and `id` parameters. The `id` parameter let's the operating system know which background process to stop. You'll set it in the next step.
+
+Then you will need to set the `category` value in your `aps` payload to match one of the objects in the `categories` object. As well you *should* set a `notId` property in the root of payload object. This is the parameter you pass to the `finish` method in order to tell the operating system that the processing of the push event is done.
 
 ```javascript
 {
 	"aps": {
 		"alert": "This is a notification that will be displayed ASAP.",
 		"category": "invite"
-	}
+	},
+    "notId": "1"
 }
 ```
-
 
 This will produce the following notification in your tray:
 

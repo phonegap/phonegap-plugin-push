@@ -196,9 +196,10 @@ PushNotification.prototype.emit = function() {
     return true;
 };
 
-PushNotification.prototype.finish = function(successCallback, errorCallback) {
+PushNotification.prototype.finish = function(successCallback, errorCallback, id) {
     if (!successCallback) { successCallback = function() {}; }
     if (!errorCallback) { errorCallback = function() {}; }
+    if (!id) { id = 'handler'; }
 
     if (typeof successCallback !== 'function') {
         console.log('finish failure: success callback parameter must be a function');
@@ -210,7 +211,7 @@ PushNotification.prototype.finish = function(successCallback, errorCallback) {
         return;
     }
 
-    exec(successCallback, errorCallback, 'PushNotification', 'finish', []);
+    exec(successCallback, errorCallback, 'PushNotification', 'finish', [id]);
 };
 
 /*!

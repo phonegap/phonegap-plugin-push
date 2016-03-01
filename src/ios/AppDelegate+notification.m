@@ -131,13 +131,23 @@ static char coldstartKey;
                 });
             };
 
-            NSMutableDictionary* params = [NSMutableDictionary dictionaryWithCapacity:2];
-            [params setObject:safeHandler forKey:@"handler"];
-
             PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+
+            if (pushHandler.handlerObj == nil) {
+                pushHandler.handlerObj = [NSMutableDictionary dictionaryWithCapacity:2];
+            }
+
+            id notId = [userInfo objectForKey:@"notId"];
+            if (notId != nil) {
+                NSLog(@"Push Plugin notId %@", notId);
+                [pushHandler.handlerObj setObject:safeHandler forKey:notId];
+            } else {
+                NSLog(@"Push Plugin notId handler");
+                [pushHandler.handlerObj setObject:safeHandler forKey:@"handler"];
+            }
+
             pushHandler.notificationMessage = userInfo;
             pushHandler.isInline = NO;
-            pushHandler.handlerObj = params;
             [pushHandler notificationReceived];
         } else {
             NSLog(@"just put it in the shade");
@@ -192,14 +202,40 @@ forRemoteNotification: (NSDictionary *) notification completionHandler: (void (^
     NSLog(@"Push Plugin handleActionWithIdentifier %@", identifier);
     NSMutableDictionary *userInfo = [notification mutableCopy];
     [userInfo setObject:identifier forKey:@"callback"];
-    PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
-    pushHandler.notificationMessage = userInfo;
-    pushHandler.isInline = NO;
-    [pushHandler notificationReceived];
+    NSLog(@"Push Plugin userInfo %@", userInfo);
 
+    if (application.applicationState == UIApplicationStateActive) {
+        PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+        pushHandler.notificationMessage = userInfo;
+        pushHandler.isInline = NO;
+        [pushHandler notificationReceived];
+    } else {
+        void (^safeHandler)() = ^(void){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionHandler();
+            });
+        };
 
-    // Must be called when finished
-    completionHandler();
+        PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+
+        if (pushHandler.handlerObj == nil) {
+            pushHandler.handlerObj = [NSMutableDictionary dictionaryWithCapacity:2];
+        }
+
+        id notId = [userInfo objectForKey:@"notId"];
+        if (notId != nil) {
+            NSLog(@"Push Plugin notId %@", notId);
+            [pushHandler.handlerObj setObject:safeHandler forKey:notId];
+        } else {
+            NSLog(@"Push Plugin notId handler");
+            [pushHandler.handlerObj setObject:safeHandler forKey:@"handler"];
+        }
+
+        pushHandler.notificationMessage = userInfo;
+        pushHandler.isInline = NO;
+
+        [pushHandler performSelectorOnMainThread:@selector(notificationReceived) withObject:pushHandler waitUntilDone:NO];
+    }
 }
 
 // The accessors use an Associative Reference since you can't define a iVar in a category
