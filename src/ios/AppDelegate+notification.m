@@ -23,21 +23,47 @@ static char launchNotificationKey;
 // Instead we will use method swizzling. we set this up in the load call.
 + (void)load
 {
-    Method original, swizzled;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class class = [self class];
 
-    original = class_getInstanceMethod(self, @selector(init));
-    swizzled = class_getInstanceMethod(self, @selector(swizzled_init));
-    method_exchangeImplementations(original, swizzled);
+        SEL originalSelector = @selector(init);
+        SEL swizzledSelector = @selector(pushPluginSwizzledInit);
+
+        Method original = class_getInstanceMethod(class, originalSelector);
+        Method swizzled = class_getInstanceMethod(class, swizzledSelector);
+
+        BOOL didAddMethod =
+        class_addMethod(class,
+                        originalSelector,
+                        method_getImplementation(swizzled),
+                        method_getTypeEncoding(swizzled));
+
+        if (didAddMethod) {
+            class_replaceMethod(class,
+                                swizzledSelector,
+                                method_getImplementation(original),
+                                method_getTypeEncoding(original));
+        } else {
+            method_exchangeImplementations(original, swizzled);
+        }
+    });
 }
 
-- (AppDelegate *)swizzled_init
+- (AppDelegate *)pushPluginSwizzledInit
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createNotificationChecker:)
-                                                 name:@"UIApplicationDidFinishLaunchingNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(createNotificationChecker:)
+                                                 name:UIApplicationDidFinishLaunchingNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self
+                                            selector:@selector(pushPluginOnApplicationDidBecomeActive:)
+                                                name:UIApplicationDidBecomeActiveNotification
+                                              object:nil];
 
     // This actually calls the original init method over in AppDelegate. Equivilent to calling super
     // on an overrided method, this is not recursive, although it appears that way. neat huh?
-    return [self swizzled_init];
+    return [self pushPluginSwizzledInit];
 }
 
 // This code will be called immediately after application:didFinishLaunchingWithOptions:. We need
@@ -127,9 +153,11 @@ static char launchNotificationKey;
     }
 }
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
+- (void)pushPluginOnApplicationDidBecomeActive:(NSNotification *)notification {
 
     NSLog(@"active");
+
+    UIApplication *application = notification.object;
 
     PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
     if (pushHandler.clearBadge) {
