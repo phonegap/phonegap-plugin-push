@@ -18,7 +18,7 @@ describe('phonegap-plugin-push', function () {
     beforeEach(function () {
         options = {android: {}, ios: {}, windows: {}};
         execWin = jasmine.createSpy();
-        execSpy = spyOn(cordova.required, 'cordova/exec').andCallFake(execWin);
+        execSpy = spyOn(cordova, 'exec').andCallFake(execWin);
     });
 
     describe('PushNotification', function () {

@@ -25,6 +25,8 @@
 
 module.exports = global.cordova = cordova = {
 
+    exec: function(){},
+
     /**
      * cordova.require Mock.
      *

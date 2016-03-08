@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads"
+    xmlns:rim="http://www.blackberry.com/ns/widgets"
+    id="phonegap-plugin-push-tests"
+    version="1.4.5">
+
+    <name>PushPlugin Tests</name>
+    <author>Bob Easterday</author>
+	<license>MIT</license>
+
+    <js-module src="tests.js" name="tests">
+    </js-module>
+</plugin>
