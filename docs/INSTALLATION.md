@@ -37,6 +37,19 @@ cordova plugin add https://github.com/phonegap/phonegap-plugin-push --variable S
 
 Where the `XXXXXXX` in `SENDER_ID="XXXXXXX"` maps to the project number in the Google Developer Console. If you are not creating an Android application you can put in anything for this value.
 
+> Note: if you are using ionic you may need to specify the SENDER_ID variable in your package.json.
+
+```
+  "cordovaPlugins": [
+    {
+      "variables": {
+        "SENDER_ID": "12345678"
+      },
+      "locator": "phonegap-plugin-push"
+    }
+  ]
+```
+
 ## Android details
 
 ### Compilation
