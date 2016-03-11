@@ -43,7 +43,7 @@ Where the `XXXXXXX` in `SENDER_ID="XXXXXXX"` maps to the project number in the G
   "cordovaPlugins": [
     {
       "variables": {
-        "SENDER_ID": "12345678"
+        "SENDER_ID": "XXXXXXX"
       },
       "locator": "phonegap-plugin-push"
     }
