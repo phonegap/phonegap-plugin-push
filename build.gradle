@@ -28,3 +28,4 @@ repositories {
 dependencies {
     compile 'me.leolin:ShortcutBadger:1.1.4@aar'
 }
+
