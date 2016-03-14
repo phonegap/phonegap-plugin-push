@@ -25,6 +25,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -57,7 +59,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     @Override
     public void onMessageReceived(String from, Bundle extras) {
         Log.d(LOG_TAG, "onMessage - from: " + from);
-        Log.d(LOG_TAG, "My new plugin! Yeaah! ");
+        ShortcutBadger.applyCount(getApplicationContext(), 3);
         if (extras != null) {
 
             SharedPreferences prefs = getApplicationContext().getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
@@ -190,6 +192,11 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
         return newExtras;
     }
+
+    private void updateBadge(Context context, int badge) {
+
+    }
+
 
     private void showNotificationIfPossible (Context context, Bundle extras) {
 
