@@ -59,7 +59,6 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     @Override
     public void onMessageReceived(String from, Bundle extras) {
         Log.d(LOG_TAG, "onMessage - from: " + from);
-        ShortcutBadger.applyCount(getApplicationContext(), 3);
         if (extras != null) {
 
             SharedPreferences prefs = getApplicationContext().getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
@@ -193,10 +192,13 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         return newExtras;
     }
 
-    private void updateBadge(Context context, int badge) {
-        if (badge > 0) {
-            ShortcutBadger.applyCount(context, badge);
-        } else if (badge == 0) {
+    private void updateBadge(Context context, String badge) {
+
+        count = badge == null ? 0 : Integer.parseInt(badge);
+
+        if (count > 0) {
+            ShortcutBadger.applyCount(context, count);
+        } else if (count == 0) {
             ShortcutBadger.removeCount(context);
         }
     }
@@ -208,7 +210,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         String message = extras.getString(MESSAGE);
         String title = extras.getString(TITLE);
         String contentAvailable = extras.getString(CONTENT_AVAILABLE);
-        int badgeCount = extras.getInt(COUNT);
+        String badgeCount = extras.getString(COUNT);
 
         Log.d(LOG_TAG, "message =[" + message + "]");
         Log.d(LOG_TAG, "title =[" + title + "]");
