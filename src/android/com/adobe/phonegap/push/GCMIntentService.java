@@ -194,7 +194,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
     private void updateBadge(Context context, String badge) {
 
-        count = badge == null ? 0 : Integer.parseInt(badge);
+        int count = badge == null ? 0 : Integer.parseInt(badge);
 
         if (count > 0) {
             ShortcutBadger.applyCount(context, count);
