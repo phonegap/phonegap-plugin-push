@@ -57,7 +57,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     @Override
     public void onMessageReceived(String from, Bundle extras) {
         Log.d(LOG_TAG, "onMessage - from: " + from);
-
+        Log.d(LOG_TAG, "My new plugin! Yeaah! ");
         if (extras != null) {
 
             SharedPreferences prefs = getApplicationContext().getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
