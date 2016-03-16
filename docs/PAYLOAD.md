@@ -77,10 +77,31 @@ The first is the *drawables* folder in your app. This JSON sent from GCM:
 
 ```javascript
 {
-	"title": "Large Icon",
-	"message": "Loaded from drawables folder",
-	"image": "twitter"
+    "registration_ids": ["my device id"],
+    "data": {
+        "title": "Large Icon",
+    	"message": "Loaded from drawables folder",
+    	"image": "twitter"
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Large Icon');
+message.addData('message', 'Loaded from drawables folder.');
+message.addData('image', 'twitter');
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 Would look for the *twitter* image in the drawables folder and produce the following notification.
@@ -91,10 +112,31 @@ The second is the *assets* folder in your app. This JSON sent from GCM:
 
 ```javascript
 {
-	"title": "Large Icon",
-	"message": "Loaded from assets folder",
-	"image": "www/image/logo.png"
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Large Icon",
+    	"message": "Loaded from assets folder",
+    	"image": "www/image/logo.png"
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Large Icon');
+message.addData('message', 'Loaded from assets folder.');
+message.addData('image', 'www/image/logo.png');
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 Would look for the *logo.png* file in the assets/www/img folder. Since your apps www folder gets copied into the Android assets folder it is an excellent spot to store the images without needing to write a hook to copy them to the *drawables* folder. It produces the following notification.
@@ -106,10 +148,31 @@ The third is the remote *URL*. This JSON sent from GCM:
 
 ```javascript
 {
-	"title": "Large Icon",
-	"message": "Loaded from URL",
-	"image": "https://dl.dropboxusercontent.com/u/887989/antshot.png"
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Large Icon",
+    	"message": "Loaded from URL",
+    	"image": "https://dl.dropboxusercontent.com/u/887989/antshot.png"
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Large Icon');
+message.addData('message', 'Loaded from URL');
+message.addData('image', 'https://dl.dropboxusercontent.com/u/887989/antshot.png');
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 Produces the following notification.
@@ -124,10 +187,31 @@ In order for your your notification to play a custom sound you will need to add 
 
 ```javascript
 {
-	"title": "Sound Test",
-	"message": "Loaded res/raw",
-	"soundname": "test"
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Sound Test",
+    	"message": "Loaded res/raw",
+    	"soundname": "test"
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Sound Test');
+message.addData('message', 'Loaded res/raw');
+message.addData('soundname', 'test');
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 *Note:* when you specify the custom sound file name omit the file's extension.
@@ -140,38 +224,120 @@ If you want to see multiple notifications in the shade you will need to provide 
 
 ```javascript
 {
-	"title": "Test Push",
-	"message": "Push number 1"
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Test Push",
+    	"message": "Push number 1"
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Test Push');
+message.addData('message', 'Push number 1');
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 Followed by:
 
 ```javascript
 {
-	"title": "Test Push",
-	"message": "Push number 2"
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Test Push",
+    	"message": "Push number 2"
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Test Push');
+message.addData('message', 'Push number 2');
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 You will only see "Push number 2" in the shade. However, if you send:
 
 ```javascript
 {
-	"title": "Test Push",
-	"message": "Push number 1",
-	"notId": 1
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Test Push",
+    	"message": "Push number 1",
+    	"notId": 1
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Test Push');
+message.addData('message', 'Push number 1');
+message.addData('notId', 1);
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 and:
 
 ```javascript
 {
-	"title": "Test Push",
-	"message": "Push number 2",
-	"notId": 2
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Test Push",
+    	"message": "Push number 2",
+    	"notId": 2
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Test Push');
+message.addData('message', 'Push number 2');
+message.addData('notId', 2);
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 You will only see both "Push number 1" and "Push number 2" in the shade.
@@ -182,11 +348,33 @@ A better alternative to stacking your notifications is to use the inbox style to
 
 ```javascript
 {
-	"title": "My Title",
-	"message": "My first message",
-	"style": "inbox",
-	"summaryText": "There are %n% notifications"
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "My Title",
+    	"message": "My first message",
+    	"style": "inbox",
+    	"summaryText": "There are %n% notifications"
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'My Title');
+message.addData('message', 'My first message');
+message.addData('style', 'inbox');
+message.addData('summaryText', 'There are %n% notifications');
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 It will produce a normal looking notification:
@@ -197,11 +385,33 @@ But, if you follow it up with subsequent notifications like:
 
 ```javascript
 {
-	"title": "My Title",
-	"message": "My second message",
-	"style": "inbox",
-	"summaryText": "There are %n% notifications"
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "My Title",
+    	"message": "My second message",
+    	"style": "inbox",
+    	"summaryText": "There are %n% notifications"
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'My Title');
+message.addData('message', 'My second message');
+message.addData('style', 'inbox');
+message.addData('summaryText', 'There are %n% notifications');
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 You will get an inbox view so you can display multiple notifications in a single panel.
@@ -216,20 +426,53 @@ Your notification can include action buttons. If you wish to include an icon alo
 
 ```javascript
 {
-	"title": "AUX Scrum",
-	"message": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
-	"actions": [
-		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests"},
-		{ "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze"},
-	]
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "AUX Scrum",
+    	"message": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
+        "actions": [
+    		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests", "foreground": true},
+    		{ "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze", "foreground": false},
+    	]
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'AUX Scrum');
+message.addData('message', 'Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.');
+message.addData('actions', [
+    { "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests", "foreground": true},
+    { "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze", "foreground": false},
+]);
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 This will produce the following notification in your tray:
 
 ![action_combo](https://cloud.githubusercontent.com/assets/353180/9313435/02554d2a-44f1-11e5-8cd9-0aadd1e02b18.png)
 
-If your users clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed. In this case it is `app.emailGuests` and `app.snooze` respectively.
+If your users clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed. In this case it is `app.emailGuests` and `app.snooze` respectively. If you set the `foreground` property to `true` the app will be brought to the front, if `foreground` is `false` then the callback is run without the app being brought to the foreground.
+
+### Attributes
+
+Attribute | Type | Default | Description
+--------- | ---- | ------- | -----------
+`icon` | `string` | | Optional. The name of a drawable resource to use as the small-icon. The name should not include the extension.
+`title` | `string` | | Required. The label to display for the action button.
+`callback` | `string` | | Required. The function to be executed when the action button is pressed.
+`foreground` | `boolean` | `true` | Optional. Whether or not to bring the app to the foreground when the action button is pressed.
 
 ## Led in Notifications
 
@@ -237,10 +480,31 @@ You can use a Led notifcation and choose the color of it. Just add a `ledColor` 
 
 ```javascript
 {
-	"title": "Green LED",
-	"message": "This is my message with a Green LED",
-	"ledColor": [0, 0, 255, 0]
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Green LED",
+    	"message": "This is my message with a Green LED",
+    	"ledColor": [0, 0, 255, 0]
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Green LED');
+message.addData('message', 'This is my message with a Green LED');
+message.addData('ledColor', [0, 0, 255, 0]);
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 ## Vibration Pattern in Notifications
@@ -249,10 +513,31 @@ You can set a Vibration Pattern for your notifications. Just add a `vibrationPat
 
 ```javascript
 {
-	"title": "Vibration Pattern",
-	"message": "Device should wait for 2 seconds, vibrate for 1 second then be silent for 500 ms then vibrate for 500 ms",
-	"vibrationPattern": [2000, 1000, 500, 500]
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Vibration Pattern",
+    	"message": "Device should wait for 2 seconds, vibrate for 1 second then be silent for 500 ms then vibrate for 500 ms",
+    	"vibrationPattern": [2000, 1000, 500, 500]
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Vibration Pattern');
+message.addData('message', 'Device should wait for 2 seconds, vibrate for 1 second then be silent for 500 ms then vibrate for 500 ms');
+message.addData('vibrationPattern', [2000, 1000, 500, 500]);
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 ## Priority in Notifications
@@ -261,10 +546,31 @@ You can set a priority parameter for your notifications. Just add a `priority` f
 
 ```javascript
 {
-	"title": "This is a maximum priority Notification",
-	"message": "This notification should appear in front of all others",
-	"priority": 2
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "This is a maximum priority Notification",
+    	"message": "This notification should appear in front of all others",
+    	"priority": 2
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'This is a maximum priority Notification');
+message.addData('message', 'This notification should appear in front of all others');
+message.addData('priority', 2);
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 ## Picture Messages
@@ -273,12 +579,35 @@ Perhaps you want to include a large picture in the notification that you are sen
 
 ```javascript
 {
-	"title": "Big Picture",
-	"message": "This is my big picture message",
-	"style": "picture",
-	"picture": "http://36.media.tumblr.com/c066cc2238103856c9ac506faa6f3bc2/tumblr_nmstmqtuo81tssmyno1_1280.jpg",
-	"summaryText": "The internet is built on cat pictures"
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Big Picture",
+    	"message": "This is my big picture message",
+    	"style": "picture",
+    	"picture": "http://36.media.tumblr.com/c066cc2238103856c9ac506faa6f3bc2/tumblr_nmstmqtuo81tssmyno1_1280.jpg",
+    	"summaryText": "The internet is built on cat pictures"
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Big Picture');
+message.addData('message', 'This is my big picture message');
+message.addData('style', 'picture');
+message.addData('picture', 'http://36.media.tumblr.com/c066cc2238103856c9ac506faa6f3bc2/tumblr_nmstmqtuo81tssmyno1_1280.jpg');
+message.addData('summaryText', 'The internet is built on cat pictures');
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 This will produce the following notification in your tray:
@@ -294,11 +623,33 @@ First the JSON you send from GCM will need to include `"content-available": "1"`
 
 ```javascript
 {
-	"title": "Test Push",
-	"message": "Push number 1",
-	"info": "super secret info",
-	"content-available": "1"
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Test Push",
+    	"message": "Push number 1",
+    	"info": "super secret info",
+    	"content-available": "1"
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Test Push');
+message.addData('message', 'Push number 1');
+message.addData('info', 'super secret info');
+message.addData('content-available', '1');
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 or
@@ -306,9 +657,29 @@ or
 
 ```javascript
 {
-	"info": "super secret info",
-	"content-available": "1"
+    "registration_ids": ["my device id"],
+    "data": {
+    	"info": "super secret info",
+    	"content-available": "1"
+    }
 }
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('info', 'super secret info');
+message.addData('content-available', '1');
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
 ```
 
 If do not want this type of behaviour just omit `"content-available": 1` from your push data and your `on('notification')` event handler will not be called.
@@ -317,7 +688,7 @@ If do not want this type of behaviour just omit `"content-available": 1` from yo
 
 ## Sound
 
-In order for your your notification to play a custom sound you will need to add the files to root of your iOS project. The files must be in the proper format. See the [Local and Remote Notification Programming Guide](https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/IPhoneOSClientImp.html#//apple_ref/doc/uid/TP40008194-CH103-SW6) for more info on proper file formats and how to convert existing sound files.
+In order for your notification to play a custom sound you will need to add the files to root of your iOS project. The files must be in the proper format. See the [Local and Remote Notification Programming Guide](https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/IPhoneOSClientImp.html#//apple_ref/doc/uid/TP40008194-CH103-SW6) for more info on proper file formats and how to convert existing sound files.
 
 Then send the follow JSON from APNS:
 
@@ -327,6 +698,17 @@ Then send the follow JSON from APNS:
 		"alert": "Test sound",
 		"sound": "sub.caf"
 	}
+}
+```
+
+If you want the default sound to play upon receipt of push use this payload:
+
+```
+{
+    "aps": {
+        "alert": "Test sound",
+        "sound": "default"
+    }
 }
 ```
 
@@ -394,7 +776,7 @@ It is absolutely critical that you call `push.finish()` when you have successful
 
 ## Action Buttons
 
-Your notification can include action buttons. For iOS you must setup the possible actions when you initialize the plugin:
+Your notification can include action buttons. For iOS 8+ you must setup the possible actions when you initialize the plugin:
 
 ```javascript
 var push = PushNotification.init({
@@ -427,24 +809,43 @@ var push = PushNotification.init({
 });
 ```
 
-Then you will need to set the `category` value in your `aps` payload to match one of the objects in the `categories` object.
+You’ll notice that we’ve added a new parameter to the iOS object of our init code called categories. Each category is a named object, invite and delete in this case. These names will need to match the one you send via your payload to APNS if you want the action buttons to be displayed. Each category can have up to three buttons which must be labeled `yes`, `no` and `maybe`. In turn each of these buttons has four properties, `callback` the javascript function you want to call, `title` the label for the button, `foreground` whether or not to bring your app to the foreground and `destructive` which doesn’t actually do anything destructive it just colors the button red as a warning to the user that the action may be destructive.
 
+Just like with background notifications it is absolutely critical that you call `push.finish()` when you have successfully processed the button callback. For instance:
+
+```javascript
+app.accept = function(data) {
+    // do something with the notification data
+
+    push.finish(function() {
+        console.log('accept callback finished');
+    }, function() {
+        console.log('accept callback failed');
+    }, data.additionalData.notId);    
+};
+```
+
+You may notice that the `finish` method now takes `success`, `failure` and `id` parameters. The `id` parameter let's the operating system know which background process to stop. You'll set it in the next step.
+
+Then you will need to set the `category` value in your `aps` payload to match one of the objects in the `categories` object. As well you *should* set a `notId` property in the root of payload object. This is the parameter you pass to the `finish` method in order to tell the operating system that the processing of the push event is done.
 
 ```javascript
 {
 	"aps": {
-		"alert": "Test action buttons",
+		"alert": "This is a notification that will be displayed ASAP.",
 		"category": "invite"
-	}
+	},
+    "notId": "1"
 }
 ```
 
-
 This will produce the following notification in your tray:
 
-// NEED SCREENSHOT
+![push6-ios](https://cloud.githubusercontent.com/assets/353180/12754125/12d13020-c998-11e5-98b4-b245fda30490.png)
 
 If your users clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed.
+
+> Note: Action buttons are only supported on iOS when you send directly to APNS. If you are using GCM to send to iOS devices you will lose this functionality.
 
 # Windows Behaviour
 

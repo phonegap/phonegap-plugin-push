@@ -1,6 +1,5 @@
 package com.adobe.phonegap.push;
 
-import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 
@@ -14,16 +13,16 @@ public class PermissionUtils {
 
     public static boolean hasPermission(Context appContext, String appOpsServiceId) throws UnknownError {
 
-        AppOpsManager mAppOps = (AppOpsManager) appContext.getSystemService(Context.APP_OPS_SERVICE);
         ApplicationInfo appInfo = appContext.getApplicationInfo();
 
         String pkg = appContext.getPackageName();
         int uid = appInfo.uid;
         Class appOpsClass = null;
+        Object appOps = appContext.getSystemService("appops");
 
         try {
 
-            appOpsClass = Class.forName(AppOpsManager.class.getName());
+            appOpsClass = Class.forName("android.app.AppOpsManager");
 
             Method checkOpNoThrowMethod = appOpsClass.getMethod(
                 CHECK_OP_NO_THROW,
@@ -35,9 +34,9 @@ public class PermissionUtils {
             Field opValue = appOpsClass.getDeclaredField(appOpsServiceId);
 
             int value = (int) opValue.getInt(Integer.class);
-            Object result = checkOpNoThrowMethod.invoke(mAppOps, value, uid, pkg);
+            Object result = checkOpNoThrowMethod.invoke(appOps, value, uid, pkg);
 
-            return Integer.parseInt(result.toString()) == AppOpsManager.MODE_ALLOWED; // type madness
+            return Integer.parseInt(result.toString()) == 0; // AppOpsManager.MODE_ALLOWED
 
         } catch (ClassNotFoundException e) {
             throw new UnknownError("class not found");

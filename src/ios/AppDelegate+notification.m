@@ -11,6 +11,8 @@
 #import <objc/runtime.h>
 
 static char launchNotificationKey;
+static char coldstartKey;
+
 @implementation AppDelegate (notification)
 
 - (id) getCommandInstance:(NSString*)className
@@ -22,32 +24,65 @@ static char launchNotificationKey;
 // Instead we will use method swizzling. we set this up in the load call.
 + (void)load
 {
-    Method original, swizzled;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class class = [self class];
 
-    original = class_getInstanceMethod(self, @selector(init));
-    swizzled = class_getInstanceMethod(self, @selector(swizzled_init));
-    method_exchangeImplementations(original, swizzled);
+        SEL originalSelector = @selector(init);
+        SEL swizzledSelector = @selector(pushPluginSwizzledInit);
+
+        Method original = class_getInstanceMethod(class, originalSelector);
+        Method swizzled = class_getInstanceMethod(class, swizzledSelector);
+
+        BOOL didAddMethod =
+        class_addMethod(class,
+                        originalSelector,
+                        method_getImplementation(swizzled),
+                        method_getTypeEncoding(swizzled));
+
+        if (didAddMethod) {
+            class_replaceMethod(class,
+                                swizzledSelector,
+                                method_getImplementation(original),
+                                method_getTypeEncoding(original));
+        } else {
+            method_exchangeImplementations(original, swizzled);
+        }
+    });
 }
 
-- (AppDelegate *)swizzled_init
+- (AppDelegate *)pushPluginSwizzledInit
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createNotificationChecker:)
-                                                 name:@"UIApplicationDidFinishLaunchingNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(createNotificationChecker:)
+                                                 name:UIApplicationDidFinishLaunchingNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self
+                                            selector:@selector(pushPluginOnApplicationDidBecomeActive:)
+                                                name:UIApplicationDidBecomeActiveNotification
+                                              object:nil];
 
     // This actually calls the original init method over in AppDelegate. Equivilent to calling super
     // on an overrided method, this is not recursive, although it appears that way. neat huh?
-    return [self swizzled_init];
+    return [self pushPluginSwizzledInit];
 }
 
 // This code will be called immediately after application:didFinishLaunchingWithOptions:. We need
 // to process notifications in cold-start situations
 - (void)createNotificationChecker:(NSNotification *)notification
 {
+    NSLog(@"createNotificationChecker");
     if (notification)
     {
         NSDictionary *launchOptions = [notification userInfo];
-        if (launchOptions)
+        if (launchOptions) {
+            NSLog(@"coldstart");
             self.launchNotification = [launchOptions objectForKey: @"UIApplicationLaunchOptionsRemoteNotificationKey"];
+            self.coldstart = [NSNumber numberWithBool:YES];
+        } else {
+            NSLog(@"not coldstart");
+            self.coldstart = [NSNumber numberWithBool:NO];
+        }
     }
 }
 
@@ -60,18 +95,6 @@ static char launchNotificationKey;
     PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
     [pushHandler didFailToRegisterForRemoteNotificationsWithError:error];
 }
-
-//- (void)application:(UIApplication *)application
-//didReceiveRemoteNotification:(NSDictionary *)userInfo {
-//    NSLog(@"Notification received: %@", userInfo);
-    // This works only if the app started the GCM service
-//    [[GCMService sharedInstance] appDidReceiveMessage:userInfo];
-    // Handle the received message
-    // [START_EXCLUDE]
-//    [[NSNotificationCenter defaultCenter] postNotificationName:_messageKey
-//                                                        object:nil
-//                                                      userInfo:userInfo];
-//}
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     NSLog(@"didReceiveNotification with fetchCompletionHandler");
@@ -108,13 +131,23 @@ static char launchNotificationKey;
                 });
             };
 
-            NSMutableDictionary* params = [NSMutableDictionary dictionaryWithCapacity:2];
-            [params setObject:safeHandler forKey:@"handler"];
-
             PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+
+            if (pushHandler.handlerObj == nil) {
+                pushHandler.handlerObj = [NSMutableDictionary dictionaryWithCapacity:2];
+            }
+
+            id notId = [userInfo objectForKey:@"notId"];
+            if (notId != nil) {
+                NSLog(@"Push Plugin notId %@", notId);
+                [pushHandler.handlerObj setObject:safeHandler forKey:notId];
+            } else {
+                NSLog(@"Push Plugin notId handler");
+                [pushHandler.handlerObj setObject:safeHandler forKey:@"handler"];
+            }
+
             pushHandler.notificationMessage = userInfo;
             pushHandler.isInline = NO;
-            pushHandler.handlerObj = params;
             [pushHandler notificationReceived];
         } else {
             NSLog(@"just put it in the shade");
@@ -138,9 +171,11 @@ static char launchNotificationKey;
     }
 }
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
+- (void)pushPluginOnApplicationDidBecomeActive:(NSNotification *)notification {
 
     NSLog(@"active");
+
+    UIApplication *application = notification.object;
 
     PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
     if (pushHandler.clearBadge) {
@@ -153,6 +188,7 @@ static char launchNotificationKey;
 
     if (self.launchNotification) {
         pushHandler.isInline = NO;
+        pushHandler.coldstart = [self.coldstart boolValue];
         pushHandler.notificationMessage = self.launchNotification;
         self.launchNotification = nil;
         [pushHandler performSelectorOnMainThread:@selector(notificationReceived) withObject:pushHandler waitUntilDone:NO];
@@ -166,14 +202,40 @@ forRemoteNotification: (NSDictionary *) notification completionHandler: (void (^
     NSLog(@"Push Plugin handleActionWithIdentifier %@", identifier);
     NSMutableDictionary *userInfo = [notification mutableCopy];
     [userInfo setObject:identifier forKey:@"callback"];
-    PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
-    pushHandler.notificationMessage = userInfo;
-    pushHandler.isInline = NO;
-    [pushHandler notificationReceived];
+    NSLog(@"Push Plugin userInfo %@", userInfo);
 
+    if (application.applicationState == UIApplicationStateActive) {
+        PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+        pushHandler.notificationMessage = userInfo;
+        pushHandler.isInline = NO;
+        [pushHandler notificationReceived];
+    } else {
+        void (^safeHandler)() = ^(void){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionHandler();
+            });
+        };
 
-    // Must be called when finished
-    completionHandler();
+        PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+
+        if (pushHandler.handlerObj == nil) {
+            pushHandler.handlerObj = [NSMutableDictionary dictionaryWithCapacity:2];
+        }
+
+        id notId = [userInfo objectForKey:@"notId"];
+        if (notId != nil) {
+            NSLog(@"Push Plugin notId %@", notId);
+            [pushHandler.handlerObj setObject:safeHandler forKey:notId];
+        } else {
+            NSLog(@"Push Plugin notId handler");
+            [pushHandler.handlerObj setObject:safeHandler forKey:@"handler"];
+        }
+
+        pushHandler.notificationMessage = userInfo;
+        pushHandler.isInline = NO;
+
+        [pushHandler performSelectorOnMainThread:@selector(notificationReceived) withObject:pushHandler waitUntilDone:NO];
+    }
 }
 
 // The accessors use an Associative Reference since you can't define a iVar in a category
@@ -188,9 +250,20 @@ forRemoteNotification: (NSDictionary *) notification completionHandler: (void (^
     objc_setAssociatedObject(self, &launchNotificationKey, aDictionary, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (NSNumber *)coldstart
+{
+    return objc_getAssociatedObject(self, &coldstartKey);
+}
+
+- (void)setColdstart:(NSNumber *)aNumber
+{
+    objc_setAssociatedObject(self, &coldstartKey, aNumber, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 - (void)dealloc
 {
     self.launchNotification = nil; // clear the association and release the object
+    self.coldstart = nil;
 }
 
 @end

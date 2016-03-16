@@ -4,7 +4,7 @@
     xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads"
     xmlns:rim="http://www.blackberry.com/ns/widgets"
     id="phonegap-plugin-push"
-    version="1.5.2">
+    version="1.6.0">
 
   <name>PushPlugin</name>
 	<description>
@@ -23,10 +23,10 @@
 	<engines>
         <engine name="cordova" version=">=3.6.3" />
         <engine name="cordova-android" version=">=4.0.0" />
+        <engine name="cordova-ios" version=">=4.0.0" />
     </engines>
 
     <preference name="SENDER_ID" />
-    <preference name="GOOGLE_APP_ID" />
 
 	<!-- android -->
 	<platform name="android">
@@ -47,12 +47,13 @@
 			<uses-permission android:name="android.permission.WAKE_LOCK" />
 			<uses-permission android:name="android.permission.VIBRATE"/>
 			<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-			<permission android:name="${applicationId}.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-			<uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
+			<permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+			<uses-permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" />
 		</config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
 			<activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true"/>
+            <receiver android:name="com.adobe.phonegap.push.BackgroundActionButtonHandler"/>
 
             <receiver
                 android:name="com.google.android.gms.gcm.GcmReceiver"
@@ -60,7 +61,7 @@
                 android:permission="com.google.android.c2dm.permission.SEND" >
                 <intent-filter>
                     <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                    <category android:name="${applicationId}" />
+                    <category android:name="$PACKAGE_NAME" />
                 </intent-filter>
             </receiver>
             <service
@@ -83,7 +84,6 @@
             </service>
 		</config-file>
 
-        <framework src="push.gradle" custom="true" type="gradleReference" />
         <framework src="com.android.support:support-v13:23+" />
         <framework src="com.google.android.gms:play-services-gcm:+" />
 
@@ -94,6 +94,7 @@
 		<source-file src="src/android/com/adobe/phonegap/push/PushPlugin.java" target-dir="src/com/adobe/phonegap/push/" />
         <source-file src="src/android/com/adobe/phonegap/push/RegistrationIntentService.java" target-dir="src/com/adobe/phonegap/push/" />
         <source-file src="src/android/com/adobe/phonegap/push/PermissionUtils.java" target-dir="src/com/adobe/phonegap/push/" />
+        <source-file src="src/android/com/adobe/phonegap/push/BackgroundActionButtonHandler.java" target-dir="src/com/adobe/phonegap/push/" />
 
 	</platform>
 
@@ -118,10 +119,6 @@
 
         <config-file target="*-Info.plist" parent="IS_GCM_ENABLED">
             <true/>
-        </config-file>
-
-        <config-file target="*-Info.plist" parent="GOOGLE_APP_ID">
-            <string>$GOOGLE_APP_ID</string>
         </config-file>
 
 		<source-file src="src/ios/AppDelegate+notification.m" />
