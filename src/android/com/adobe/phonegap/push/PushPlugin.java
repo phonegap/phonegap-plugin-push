@@ -3,6 +3,9 @@ package com.adobe.phonegap.push;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -40,6 +43,29 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         return this.cordova.getActivity().getApplicationContext();
     }
 
+    /**
+     * Retrieve the senderId we added to AndroidManifest.xml when we installed.
+     *
+     * @return senderId String
+     * @throws NameNotFoundException
+     */
+    private String getSenderIdFromApplicationManifest() throws NameNotFoundException {
+        // Ugly boilerplate to get the metaData from the AndroidManifest. Refactoring welcome!
+        Context context = getApplicationContext();
+        ApplicationInfo app = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+        Bundle bundle = app.metaData;
+
+        // We cannot getString() because ID is a number. We cannot getInt() because the senderId
+        // has 13 digits & the max length of Android int is 10 digits. We must therefore get a float.
+        // See similar StackOverflow if you don't believe me
+        //   http://stackoverflow.com/questions/22210404/android-metadata-from-manifest-returning-null
+        Float senderIDAsFloatObj = bundle.getFloat(GOOGLE_APP_ID);
+
+        // There is no getLong(). We must do the convoluted & somewhat unsafe conversion.
+        //   http://www.tutorialspoint.com/java/lang/float_longvalue.htm
+        return Long.toString(senderIDAsFloatObj.longValue());
+    }
+
     @Override
     public boolean execute(final String action, final JSONArray data, final CallbackContext callbackContext) {
         Log.v(LOG_TAG, "execute: action=" + action);
@@ -61,7 +87,8 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                         Log.v(LOG_TAG, "execute: jo=" + jo.toString());
 
-                        senderID = jo.getString(SENDER_ID);
+                        // Prefer explicitly defined SENDER_ID from the plugin's JS. Default to installation information.
+                        senderID = !jo.isNull(SENDER_ID) ? jo.getString(SENDER_ID) : getSenderIdFromApplicationManifest();
 
                         Log.v(LOG_TAG, "execute: senderID=" + senderID);
 
@@ -94,6 +121,9 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                             callbackContext.error("Empty registration ID received from GCM");
                             return;
                         }
+                    } catch (NameNotFoundException e) {
+                        Log.e(LOG_TAG, "execute: Got PackageManager's NameNotFound Exception " + e.getMessage());
+                        callbackContext.error(e.getMessage());
                     } catch (JSONException e) {
                         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
                         callbackContext.error(e.getMessage());
