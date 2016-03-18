@@ -752,7 +752,7 @@ For example:
 var push = PushNotification.init({
 	"ios": {
 		"sound": "true",
-		"vibration": "true",
+		"alert": "true",
 		"badge": "true",
 		"clearBadge": "true"
 	}
@@ -782,7 +782,7 @@ Your notification can include action buttons. For iOS 8+ you must setup the poss
 var push = PushNotification.init({
 	"ios": {
 		"sound": true,
-		"vibration": true,
+		"alert": true,
 		"badge": true,
 		"categories": {
 			"invite": {
