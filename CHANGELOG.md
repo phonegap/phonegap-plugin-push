@@ -1,5 +1,22 @@
 # Change Log
 
+## [1.6.1](https://github.com/phonegap/phonegap-plugin-push/tree/1.6.1) (2016-03-23)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.6.0...1.6.1)
+
+**Fixed bugs:**
+
+- App crashes on notification when in background [\#715](https://github.com/phonegap/phonegap-plugin-push/issues/715)
+
+**Closed issues:**
+
+- Memory Leak when call `push.on\('registration'`. so `Push Plugin register called` not called [\#743](https://github.com/phonegap/phonegap-plugin-push/issues/743)
+- l [\#739](https://github.com/phonegap/phonegap-plugin-push/issues/739)
+- \[testing issue template\] ignore me [\#717](https://github.com/phonegap/phonegap-plugin-push/issues/717)
+- Incorrect init option "vibration" in a few ios samples on PAYLOAD.md [\#713](https://github.com/phonegap/phonegap-plugin-push/issues/713)
+- android M wear case [\#691](https://github.com/phonegap/phonegap-plugin-push/issues/691)
+- Incorrect document detailing \(PHONEGAP\_BUILD.md\) [\#686](https://github.com/phonegap/phonegap-plugin-push/issues/686)
+- Windows Phone 8.1, not fired plugin methods [\#526](https://github.com/phonegap/phonegap-plugin-push/issues/526)
+
 ## [1.6.0](https://github.com/phonegap/phonegap-plugin-push/tree/1.6.0) (2016-03-09)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.5.3...1.6.0)
 
