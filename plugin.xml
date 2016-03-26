@@ -23,7 +23,7 @@
 	<engines>
         <engine name="cordova" version=">=3.6.3" />
         <engine name="cordova-android" version=">=4.0.0" />
-        <engine name="cordova-ios" version=">=4.0.0" />
+        <engine name="cordova-ios" version=">=4.1.0" />
     </engines>
 
     <preference name="SENDER_ID" />
