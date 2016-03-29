@@ -432,7 +432,7 @@ Your notification can include action buttons. If you wish to include an icon alo
     	"message": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
         "actions": [
     		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests", "foreground": true},
-    		{ "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze", "foreground": false},
+    		{ "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze", "foreground": false}
     	]
     }
 }
