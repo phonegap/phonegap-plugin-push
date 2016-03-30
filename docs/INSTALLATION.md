@@ -59,7 +59,7 @@ As of version 1.3.0 the plugin has been switched to using Gradle/Maven for build
 You will need to ensure that you have installed the following items through the Android SDK Manager:
 
 - Android Support Library version 23 or greater
-- Local Maven repository for Support Libraries version 20 or greater
+- Local Maven repository for Support Libraries (formerly Android Support Repository) version 20 or greater
 - Google Play Services version 27 or greater
 - Google Repository version 22 or greater
 
