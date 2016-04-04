@@ -18,6 +18,8 @@ Initializes the plugin on the native side.
 
 **Note:** like all plugins you must wait until you receive the [`deviceready`](https://cordova.apache.org/docs/en/5.4.0/cordova/events/events.deviceready.html) event before calling `PushNotification.init()`.
 
+**Note:** you will want to call `PushNotification.init()` each time your app starts. The remote push service can periodically reset your registration ID so this ensures you have the correct value.
+
 ### Returns
 
 - Instance of `PushNotification`.
