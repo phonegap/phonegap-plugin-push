@@ -684,6 +684,39 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 
 If do not want this type of behaviour just omit `"content-available": 1` from your push data and your `on('notification')` event handler will not be called.
 
+### Use of content-available: True
+
+The GCM docs will tell you to send a data payload of:
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "content_available": true,
+    "data": {
+        "title": "Test Push",
+        "message": "Push number 1",
+        "info": "super secret info",
+    }
+}
+```
+
+Where the `content-available` property is part of the main payload object. Setting the property in this part of the payload will result in the PushPlugin not getting the data correctly. Setting `content-available: true` will cause the Android OS to handle the push payload for you and not pass the data to the PushPlugin.
+
+Instead move `content-available: true` into the `data` object of the payload and set it to `1` as per the example below:
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+        "title": "Test Push",
+        "message": "Push number 1",
+        "info": "super secret info",
+        "content-available": "1"
+    }
+}
+```
+
+
 # iOS Behaviour
 
 ## Sound
