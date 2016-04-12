@@ -194,22 +194,36 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         return newExtras;
     }
 
+    private int extractBadgeCount(Bundle extras) {
+        int count = -1;
+        String msgcnt = extras.getString(COUNT);
+
+        try {
+            if (msgcnt != null) {
+                count = Integer.parseInt(msgcnt);
+            }
+        } catch (NumberFormatException e) {
+            Log.e(LOG_TAG, e.getLocalizedMessage(), e);
+        }
+
+        return count;
+    }
+
     private void showNotificationIfPossible (Context context, Bundle extras) {
 
         // Send a notification if there is a message or title, otherwise just send data
         String message = extras.getString(MESSAGE);
         String title = extras.getString(TITLE);
         String contentAvailable = extras.getString(CONTENT_AVAILABLE);
-        String badgeCount = extras.getString(COUNT);
+        int badgeCount = extractBadgeCount(extras);
+        if (badgeCount >= 0) {
+            Log.d(LOG_TAG, "count =[" + badgeCount + "]");
+            PushPlugin.setApplicationIconBadgeNumber(context, badgeCount);
+        }
 
         Log.d(LOG_TAG, "message =[" + message + "]");
         Log.d(LOG_TAG, "title =[" + title + "]");
         Log.d(LOG_TAG, "contentAvailable =[" + contentAvailable + "]");
-        Log.d(LOG_TAG, "badgeCount =[" + badgeCount + "]");
-
-        if (badgeCount != null) {
-            PushPlugin.setApplicationIconBadgeNumber(context, Integer.parseInt(badgeCount));
-        }
 
         if ((message != null && message.length() != 0) ||
                 (title != null && title.length() != 0)) {
@@ -326,7 +340,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         /*
          * Notification count
          */
-        setNotificationCount(extras, mBuilder);
+        setNotificationCount(context, extras, mBuilder);
 
         /*
          * Notification add actions
@@ -366,9 +380,9 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                         pIntent = PendingIntent.getBroadcast(this, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     }
                     NotificationCompat.Action wAction =
-                    new NotificationCompat.Action.Builder(resources.getIdentifier(action.optString(ICON, ""), DRAWABLE, packageName),
-                            action.getString(TITLE), pIntent)
-                            .build();
+                            new NotificationCompat.Action.Builder(resources.getIdentifier(action.optString(ICON, ""), DRAWABLE, packageName),
+                                    action.getString(TITLE), pIntent)
+                                    .build();
                     wActions.add(wAction);
                     mBuilder.addAction(resources.getIdentifier(action.optString(ICON, ""), DRAWABLE, packageName),
                             action.getString(TITLE), pIntent);
@@ -383,13 +397,11 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         }
     }
 
-    private void setNotificationCount(Bundle extras, NotificationCompat.Builder mBuilder) {
-        String msgcnt = extras.getString(MSGCNT);
-        if (msgcnt == null) {
-            msgcnt = extras.getString(BADGE);
-        }
-        if (msgcnt != null) {
-            mBuilder.setNumber(Integer.parseInt(msgcnt));
+    private void setNotificationCount(Context context, Bundle extras, NotificationCompat.Builder mBuilder) {
+        int count = extractBadgeCount(extras);
+        if (count >= 0) {
+            Log.d(LOG_TAG, "count =[" + count + "]");
+            mBuilder.setNumber(count);
         }
     }
 
