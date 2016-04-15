@@ -153,6 +153,18 @@ push.on('registration', function(data) {
 });
 ```
 
+### Common Problems
+
+#### Got JSON Exception TIMEOUT
+
+If you run this plugin on older versions of Android and you get an error:
+
+```
+E/PushPlugin(20077): execute: Got JSON Exception TIMEOUT
+```
+
+It means you are running an older version of Google Play Services. You will need to open the Google Play Store app and update your version of Google Play Services.
+
 ## push.on('notification', callback)
 
 The event `notification` will be triggered each time a push notification is received by a 3rd party push service on the device.
