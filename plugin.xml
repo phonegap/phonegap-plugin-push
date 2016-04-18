@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads"
+    xmlns:amazon="http://schemas.amazon.com/apk/res/android"
     xmlns:rim="http://www.blackberry.com/ns/widgets"
     id="phonegap-plugin-push"
     version="1.6.1">
@@ -49,7 +49,11 @@
 			<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 			<permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" android:protectionLevel="signature" />
 			<uses-permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" />
-		</config-file>
+
+            <permission android:name="$PACKAGE_NAME.permission.RECEIVE_ADM_MESSAGE" android:protectionLevel="signature" />
+            <uses-permission android:name="$PACKAGE_NAME.permission.RECEIVE_ADM_MESSAGE" />
+            <uses-permission android:name="com.amazon.device.messaging.permission.RECEIVE" />
+        </config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
 			<activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true"/>
@@ -82,6 +86,17 @@
                 android:name="com.adobe.phonegap.push.RegistrationIntentService"
                 android:exported="false">
             </service>
+
+            <amazon:enable-feature android:name="com.amazon.device.messaging" android:required="true"/>
+            <service android:exported="false" android:name="com.adobe.phonegap.push.adm.ADMMessageHandler" />
+            <activity android:exported="true" android:name="com.adobe.phonegap.push.adm.ADMHandlerActivity" />
+            <receiver android:name="com.adobe.phonegap.push.adm.ADMMessageHandler$Receiver" android:permission="com.amazon.device.messaging.permission.SEND">
+                <intent-filter>
+                    <action android:name="com.amazon.device.messaging.intent.REGISTRATION" />
+                    <action android:name="com.amazon.device.messaging.intent.RECEIVE" />
+                    <category android:name="$PACKAGE_NAME" />
+                </intent-filter>
+            </receiver>
 		</config-file>
 
         <framework src="com.android.support:support-v13:23+" />
@@ -95,7 +110,13 @@
         <source-file src="src/android/com/adobe/phonegap/push/RegistrationIntentService.java" target-dir="src/com/adobe/phonegap/push/" />
         <source-file src="src/android/com/adobe/phonegap/push/PermissionUtils.java" target-dir="src/com/adobe/phonegap/push/" />
         <source-file src="src/android/com/adobe/phonegap/push/BackgroundActionButtonHandler.java" target-dir="src/com/adobe/phonegap/push/" />
+        <source-file src="src/android/com/adobe/phonegap/push/gcm/GCMAdapter.java" target-dir="src/com/adobe/phonegap/push/gcm" />
+        <source-file src="src/android/com/adobe/phonegap/push/Adapter.java" target-dir="src/com/adobe/phonegap/push" />
 
+        <source-file src="src/android/com/adobe/phonegap/push/adm/ADMMessageHandler.java" target-dir="src/com/adobe/phonegap/push/adm" />
+        <source-file src="src/android/com/adobe/phonegap/push/adm/ADMHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/adm" />
+        <source-file src="src/android/com/adobe/phonegap/push/adm/ADMAdapter.java" target-dir="src/com/adobe/phonegap/push/adm" />
+        <source-file src="ext_libs/amazon-device-messaging-1.0.1.jar" target-dir="ext_libs" />
 	</platform>
 
 	<!-- ios -->
