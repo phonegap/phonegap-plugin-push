@@ -1,22 +1,21 @@
-/* 
- * Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved. 
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at 
- * 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
- * limitations under the License. 
+/*
+ * Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-package com.amazon.cordova.plugin;
+package com.adobe.phonegap.push.adm;
 
-import org.apache.cordova.CordovaActivity;
 import org.json.JSONObject;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -30,6 +29,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.app.Notification.Builder;
 
+import com.adobe.phonegap.push.PushPlugin;
 import com.amazon.device.messaging.ADMMessageHandlerBase;
 import com.amazon.device.messaging.ADMMessageReceiver;
 
@@ -48,7 +48,7 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
     private static String defaultOfflineMessage = null;
     private static final String PREFS_NAME = "PushPluginPrefs";
     private static final String DEFAULT_MESSAGE_TEXT = "You have a new message.";
-    
+
     // An identifier for ADM notification unique within your application
     // It allows you to update the same notification later on
     public static final int NOTIFICATION_ID = 519;
@@ -63,7 +63,7 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
 
     /**
      * Class constructor, including the className argument.
-     * 
+     *
      * @param className
      *            The name of the class.
      */
@@ -87,7 +87,7 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
     /** {@inheritDoc} */
     @Override
     protected void onRegistered(final String newRegistrationId) {
-        // You start the registration process by calling startRegister() in your Main Activity. 
+        // You start the registration process by calling startRegister() in your Main Activity.
         // When the registration ID is ready, ADM calls onRegistered()
         // on your app. Transmit the passed-in registration ID to your server, so
         // your server can send messages to this app instance. onRegistered() is also
@@ -96,17 +96,13 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
 
         // we fire the register event in the web app, register handler should
         // fire to send the registration ID to your server via a header key/value pair over HTTP.(AJAX)
-        PushPlugin.sendRegistrationIdWithEvent(PushPlugin.REGISTER_EVENT,
-            newRegistrationId);
+        PushPlugin.sendRegistrationId(newRegistrationId);
     }
 
     /** {@inheritDoc} */
     @Override
     protected void onUnregistered(final String registrationId) {
-        // If your app is unregistered on this device, inform your server that
-        // this app instance is no longer a valid target for messages.
-        PushPlugin.sendRegistrationIdWithEvent(PushPlugin.UNREGISTER_EVENT,
-            registrationId);
+
     }
 
     /** {@inheritDoc} */
@@ -115,22 +111,14 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
         // You should consider a registration error fatal. In response, your app
         // may degrade gracefully, or you may wish to notify the user that this part
         // of your app's functionality is not available.
-        try {
-            JSONObject json;
-            json = new JSONObject().put(PushPlugin.EVENT, ERROR_EVENT);
-            json.put(ADMMessageHandler.ERROR_MSG, errorId);
-
-            PushPlugin.sendJavascript(json);
-        } catch (Exception e) {
-            Log.getStackTraceString(e);
-        }
+        PushPlugin.sendError(errorId);
     }
 
     /** {@inheritDoc} */
     @Override
     protected void onMessage(final Intent intent) {
         // Extract the message content from the set of extras attached to
-        // the com.amazon.device.messaging.intent.RECEIVE intent.
+        // the com.adm.device.messaging.intent.RECEIVE intent.
 
         // Extract the payload from the message
         Bundle extras = intent.getExtras();
@@ -150,7 +138,7 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
     /**
      * Creates a notification when app is not running or is not in foreground. It puts the message info into the Intent
      * extra
-     * 
+     *
      * @param context
      * @param extras
      */
@@ -203,7 +191,7 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
     }
 
     // clean up the message in the intent
-    static void cleanupNotificationIntent() {
+    public static void cleanupNotificationIntent() {
         if (notificationIntent != null) {
             Bundle pushBundle = notificationIntent.getExtras().getBundle(
                 PUSH_BUNDLE);
@@ -233,10 +221,10 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
     public static void saveConfigOptions(Context context) {
         if (context != null && TextUtils.isEmpty(defaultOfflineMessage)) {
             // read config options from config.xml
-            shouldShowOfflineMessage = ((CordovaActivity) context)
-                .getBooleanProperty(SHOW_MESSAGE_PREF, false);
-            defaultOfflineMessage = ((CordovaActivity) context)
-                .getStringProperty(DEFAULT_MESSAGE_PREF, null);
+            shouldShowOfflineMessage = true; //((CordovaActivity) context)
+                //                .getBooleanProperty(SHOW_MESSAGE_PREF, false);
+            defaultOfflineMessage = "hello"; //((CordovaActivity) context)
+                //.getStringProperty(DEFAULT_MESSAGE_PREF, null);
 
             // save them to sharedPreferences if necessary
             SharedPreferences config = context.getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
@@ -248,10 +236,10 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
         }
 
     }
-    
+
     /**
      * Gets "shownotificationmessage" config option
-     * 
+     *
      * @return returns boolean- true is shownotificationmessage is set to true in config.xml/sharedPreferences otherwise false
      */
     private boolean shouldShowMessageInNotification() {
@@ -265,10 +253,10 @@ public class ADMMessageHandler extends ADMMessageHandlerBase {
         }
         return shouldShowOfflineMessage;
     }
-    
+
     /**
      * Gets "defaultnotificationmessage" config option
-     * 
+     *
      * @return returns default message provided by user in cofing.xml/sharedPreferences
      */
     private String defaultMessageTextInNotification() {
