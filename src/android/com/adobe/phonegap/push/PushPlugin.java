@@ -4,10 +4,11 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.android.gms.gcm.GcmPubSub;
-import com.google.android.gms.iid.InstanceID;
+import com.adobe.phonegap.push.adm.ADMAdapter;
+import com.adobe.phonegap.push.gcm.GCMAdapter;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -24,6 +25,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 public class PushPlugin extends CordovaPlugin implements PushConstants {
+    private Adapter adapter;
 
     public static final String LOG_TAG = "PushPlugin";
 
@@ -31,6 +33,29 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     private static CordovaWebView gWebView;
     private static Bundle gCachedExtras = null;
     private static boolean gForeground = false;
+
+    @Override
+    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+        super.initialize(cordova, webView);
+        gForeground = true;
+
+        if (isAmazonDevice()) {
+            Log.v(LOG_TAG, "Using ADM adapter");
+            adapter = new ADMAdapter();
+        }
+        else {
+            Log.v(LOG_TAG, "Using GCM adapter");
+            adapter = new GCMAdapter();
+        }
+
+        Log.v(LOG_TAG, "Setting up adapter");
+        adapter.setup(getApplicationContext(), cordova.getActivity());
+    }
+
+    private boolean isAmazonDevice() {
+        String deviceMaker = android.os.Build.MANUFACTURER;
+        return deviceMaker.equalsIgnoreCase("Amazon");
+    }
 
     /**
      * Gets the application context from cordova's main activity.
@@ -45,6 +70,11 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         Log.v(LOG_TAG, "execute: action=" + action);
         gWebView = this.webView;
 
+        if (!adapter.isSupported(getApplicationContext()) && !HAS_PERMISSION.equals(action)) {
+            callbackContext.error(NOT_SUPPORTED);
+            return false;
+        }
+
         if (INITIALIZE.equals(action)) {
             cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
@@ -57,7 +87,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                     String senderID = null;
 
                     try {
-                        jo = data.getJSONObject(0).getJSONObject(ANDROID);
+                        jo = data.getJSONObject(0).getJSONObject(adapter.getOptionsKey());
 
                         Log.v(LOG_TAG, "execute: jo=" + jo.toString());
 
@@ -68,30 +98,23 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         String savedSenderID = sharedPref.getString(SENDER_ID, "");
                         String savedRegID = sharedPref.getString(REGISTRATION_ID, "");
 
-                        // first time run get new token
-                        if ("".equals(savedRegID)) {
-                            token = InstanceID.getInstance(getApplicationContext()).getToken(senderID, GCM);
-                        }
-                        // new sender ID, re-register
-                        else if (!savedSenderID.equals(senderID)) {
-                            token = InstanceID.getInstance(getApplicationContext()).getToken(senderID, GCM);
+                        // first time run get new token or new sender
+                        if ("".equals(savedRegID) || !savedSenderID.equals(senderID)) {
+                            Log.v(LOG_TAG, "Getting token");
+                            token = adapter.getToken(getApplicationContext(), senderID);
                         }
                         // use the saved one
                         else {
+                            Log.v(LOG_TAG, "Using saved token");
                             token = sharedPref.getString(REGISTRATION_ID, "");
                         }
 
                         if (!"".equals(token)) {
-                            JSONObject json = new JSONObject().put(REGISTRATION_ID, token);
-
-                            Log.v(LOG_TAG, "onRegistered: " + json.toString());
-
-                            JSONArray topics = jo.optJSONArray(TOPICS);
-                            subscribeToTopics(topics, token);
-
-                            PushPlugin.sendEvent( json );
+                            Log.v(LOG_TAG, "Subscribing to topics" );
+                            adapter.subscribe(getApplicationContext(), jo.optJSONArray(TOPICS), token);
+                            sendRegistrationId(token);
                         } else {
-                            callbackContext.error("Empty registration ID received from GCM");
+                            Log.v(LOG_TAG, "Empty registration ID received");
                             return;
                         }
                     } catch (JSONException e) {
@@ -123,11 +146,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         editor.commit();
                     }
 
-                    if (gCachedExtras != null) {
-                        Log.v(LOG_TAG, "sending cached extras");
-                        sendExtras(gCachedExtras);
-                        gCachedExtras = null;
-                    }
+                    deliverPendingMessages();
                 }
             });
         } else if (UNREGISTER.equals(action)) {
@@ -138,9 +157,9 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         String token = sharedPref.getString(REGISTRATION_ID, "");
                         JSONArray topics = data.optJSONArray(0);
                         if (topics != null && !"".equals(token)) {
-                            unsubscribeFromTopics(topics, token);
+                            adapter.unsubscribe(getApplicationContext(), topics, token);
                         } else {
-                            InstanceID.getInstance(getApplicationContext()).deleteInstanceID();
+                            adapter.deleteToken(getApplicationContext());
                             Log.v(LOG_TAG, "UNREGISTER");
 
                             // Remove shared prefs
@@ -168,7 +187,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                 public void run() {
                     JSONObject jo = new JSONObject();
                     try {
-                        jo.put("isEnabled", PermissionUtils.hasPermission(getApplicationContext(), "OP_POST_NOTIFICATION"));
+                        jo.put("isEnabled", adapter.hasPermission(getApplicationContext()));
                         PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, jo);
                         pluginResult.setKeepCallback(true);
                         callbackContext.sendPluginResult(pluginResult);
@@ -186,6 +205,40 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         }
 
         return true;
+    }
+
+    public static void sendRegistrationId(String token) {
+        Log.e(LOG_TAG, "Reporting token " + token);
+
+        if (TextUtils.isEmpty(token)) {
+            return;
+        }
+
+        try {
+            JSONObject json = new JSONObject().put(REGISTRATION_ID, token);
+            sendEvent(json);
+        } catch (JSONException e) {
+            Log.getStackTraceString(e);
+        }
+    }
+
+    public void deliverPendingMessages() {
+        if (gCachedExtras != null) {
+            Log.v(LOG_TAG, "sending cached extras");
+            sendExtras(gCachedExtras);
+            gCachedExtras = null;
+        }
+        else {
+            Log.e(LOG_TAG, "checking offline messages");
+            Bundle pushBundle = adapter.retrieveOfflineMessages();
+
+            if (pushBundle != null) {
+                Log.d(LOG_TAG, "Sending offline message...");
+                sendExtras(pushBundle);
+            }
+        }
+
+        adapter.cancelNotifcation(cordova.getActivity());
     }
 
     public static void sendEvent(JSONObject _json) {
@@ -220,12 +273,6 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     }
 
     @Override
-    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-        super.initialize(cordova, webView);
-        gForeground = true;
-    }
-
-    @Override
     public void onPause(boolean multitasking) {
         super.onPause(multitasking);
         gForeground = false;
@@ -248,40 +295,6 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         super.onDestroy();
         gForeground = false;
         gWebView = null;
-    }
-
-    private void subscribeToTopics(JSONArray topics, String registrationToken) {
-        if (topics != null) {
-            String topic = null;
-            for (int i=0; i<topics.length(); i++) {
-                try {
-                    topic = topics.optString(i, null);
-                    if (topic != null) {
-                        Log.d(LOG_TAG, "Subscribing to topic: " + topic);
-                        GcmPubSub.getInstance(getApplicationContext()).subscribe(registrationToken, "/topics/" + topic, null);
-                    }
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "Failed to subscribe to topic: " + topic, e);
-                }
-            }
-        }
-    }
-
-    private void unsubscribeFromTopics(JSONArray topics, String registrationToken) {
-        if (topics != null) {
-            String topic = null;
-            for (int i=0; i<topics.length(); i++) {
-                try {
-                    topic = topics.optString(i, null);
-                    if (topic != null) {
-                        Log.d(LOG_TAG, "Unsubscribing to topic: " + topic);
-                        GcmPubSub.getInstance(getApplicationContext()).unsubscribe(registrationToken, "/topics/" + topic);
-                    }
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "Failed to unsubscribe to topic: " + topic, e);
-                }
-            }
-        }
     }
 
     /*
