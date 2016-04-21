@@ -58,6 +58,8 @@ Attribute | Type | Default | Description
 
 The following properties are used if you want use GCM on iOS.
 
+Attribute | Type | Default | Description
+--------- | ---- | ------- | -----------
 `ios.senderID` | `string` | `undefined` (Native) | Maps to the project number in the Google Developer Console.  Setting this uses GCM for notifications instead of native
 `ios.gcmSandbox` | `boolean` | `false` | Whether to use prod or sandbox GCM setting.  Defaults to false.
 `ios.topics` | `array` | `[]` | Optional. If the array contains one or more strings each string will be used to subscribe to a GcmPubSub topic. Note: only usable in conjunction with `senderID`.
