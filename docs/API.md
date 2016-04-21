@@ -18,6 +18,8 @@ Initializes the plugin on the native side.
 
 **Note:** like all plugins you must wait until you receive the [`deviceready`](https://cordova.apache.org/docs/en/5.4.0/cordova/events/events.deviceready.html) event before calling `PushNotification.init()`.
 
+**Note:** you will want to call `PushNotification.init()` each time your app starts. The remote push service can periodically reset your registration ID so this ensures you have the correct value.
+
 ### Returns
 
 - Instance of `PushNotification`.
@@ -53,6 +55,7 @@ Attribute | Type | Default | Description
 `ios.badge` | `boolean` | `false` | Optional. If `true` the device sets the badge number on receipt of notification. **Note:** the value you set this option to the first time you call the init method will be how the application always acts. Once this is set programmatically in the init method it can only be changed manually by the user in Settings>Notifications>`App Name`. This is normal iOS behaviour.
 `ios.sound` | `boolean` | `false` | Optional. If `true` the device plays a sound on receipt of notification. **Note:** the value you set this option to the first time you call the init method will be how the application always acts. Once this is set programmatically in the init method it can only be changed manually by the user in Settings>Notifications>`App Name`. This is normal iOS behaviour.
 `ios.clearBadge` | `boolean` | `false` | Optional. If `true` the badge will be cleared on app startup.
+`ios.categories` | `array` | `[]` | Optional. The data required in order to enabled Action Buttons for iOS. See [Action Buttons on iOS](https://github.com/phonegap/phonegap-plugin-push/blob/master/docs/PAYLOAD.md#action-buttons-1) for more details.
 
 #### iOS GCM support
 
@@ -151,6 +154,18 @@ push.on('registration', function(data) {
 	console.log(data.registrationId);
 });
 ```
+
+### Common Problems
+
+#### Got JSON Exception TIMEOUT
+
+If you run this plugin on older versions of Android and you get an error:
+
+```
+E/PushPlugin(20077): execute: Got JSON Exception TIMEOUT
+```
+
+It means you are running an older version of Google Play Services. You will need to open the Google Play Store app and update your version of Google Play Services.
 
 ## push.on('notification', callback)
 

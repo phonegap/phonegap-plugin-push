@@ -4,7 +4,7 @@
     xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads"
     xmlns:rim="http://www.blackberry.com/ns/widgets"
     id="phonegap-plugin-push"
-    version="1.6.0">
+    version="1.6.2">
 
   <name>PushPlugin</name>
 	<description>
@@ -111,6 +111,14 @@
             <array>
                 <string>remote-notification</string>
             </array>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="GCM_SENDER_ID">
+            <string>$SENDER_ID</string>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="IS_GCM_ENABLED">
+            <true/>
         </config-file>
 
 		<source-file src="src/ios/AppDelegate+notification.m" />

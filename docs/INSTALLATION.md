@@ -12,7 +12,7 @@
   - [Bitcode](#bitcode)
 - [Additional Resources](#additional-resources)
 
-This requires phonegap/cordova CLI 5.0+ ( current stable v1.6.0 )
+This requires phonegap/cordova CLI 5.0+ ( current stable v1.6.2 )
 
 ```
 phonegap plugin add phonegap-plugin-push --variable SENDER_ID="XXXXXXX"
@@ -50,6 +50,14 @@ Where the `XXXXXXX` in `SENDER_ID="XXXXXXX"` maps to the project number in the G
   ]
 ```
 
+> Note: You need to specify the SENDER_ID variable in your config.xml if you plan on installing/restoring plugins using the prepare method.  The prepare method will skip installing the plugin otherwise.
+
+```
+<plugin name="phonegap-plugin-push" spec="1.6.0">
+    <variable name="SENDER_ID" value="XXXXXXX" />
+</plugin>
+```
+
 ## Android details
 
 ### Compilation
@@ -59,7 +67,7 @@ As of version 1.3.0 the plugin has been switched to using Gradle/Maven for build
 You will need to ensure that you have installed the following items through the Android SDK Manager:
 
 - Android Support Library version 23 or greater
-- Android Support Repository version 20 or greater
+- Local Maven repository for Support Libraries (formerly Android Support Repository) version 20 or greater
 - Google Play Services version 27 or greater
 - Google Repository version 22 or greater
 
