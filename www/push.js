@@ -190,7 +190,12 @@ PushNotification.prototype.emit = function() {
     }
 
     for (var i = 0, length = this._handlers[eventName].length; i < length; i++) {
-        this._handlers[eventName][i].apply(undefined,args);
+        var callback = this._handlers[eventName][i];
+        if (typeof callback === 'function') {
+            callback.apply(undefined,args);
+        } else {
+            console.log('event handler: ' + eventName + ' must be a function');
+        }
     }
 
     return true;
