@@ -191,6 +191,7 @@ static char coldstartKey;
         pushHandler.coldstart = [self.coldstart boolValue];
         pushHandler.notificationMessage = self.launchNotification;
         self.launchNotification = nil;
+        self.coldstart = [NSNumber numberWithBool:NO];
         [pushHandler performSelectorOnMainThread:@selector(notificationReceived) withObject:pushHandler waitUntilDone:NO];
     }
 }
