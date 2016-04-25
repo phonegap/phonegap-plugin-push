@@ -1,3 +1,11 @@
+# Creating a Project From a Template
+
+If you want to get started with a sample project you can create a new project from the example template.
+
+```
+phonegap create my-app --template phonegap-template-push
+```
+
 ## Quick Example
 
 ```javascript
