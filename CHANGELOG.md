@@ -1,5 +1,22 @@
 # Change Log
 
+## [1.6.3](https://github.com/phonegap/phonegap-plugin-push/tree/1.6.3) (2016-04-27)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.6.2...1.6.3)
+
+**Fixed bugs:**
+
+- \[Android\] Can't install multiple apps using this plugin \(v1.6.x\) [\#768](https://github.com/phonegap/phonegap-plugin-push/issues/768)
+- JS error in "Success callbackId: PushNotifiation\#\#\#.." whenever a notification is sent to the device [\#824](https://github.com/phonegap/phonegap-plugin-push/issues/824)
+
+**Closed issues:**
+
+- Move example directory to a phonegap template [\#832](https://github.com/phonegap/phonegap-plugin-push/issues/832)
+- va [\#830](https://github.com/phonegap/phonegap-plugin-push/issues/830)
+- does not create the notification bar [\#821](https://github.com/phonegap/phonegap-plugin-push/issues/821)
+- Did not show notification in status bar for Xiomi Redmi Note 3 [\#790](https://github.com/phonegap/phonegap-plugin-push/issues/790)
+- PushNotification.hasPermission not working as expected [\#789](https://github.com/phonegap/phonegap-plugin-push/issues/789)
+
+
 ## [1.6.2](https://github.com/phonegap/phonegap-plugin-push/tree/1.6.2) (2016-04-06)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.6.1...1.6.2)
 
