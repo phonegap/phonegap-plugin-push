@@ -7,7 +7,7 @@
   - [push.on('notification')](#pushonnotification-callback)
   - [push.on('error')](#pushonerror-callback)
 - [push.off()](#pushoffevent-callback)
-- [push.unregister()](#pushunregistersuccesshandler-errorhandler)
+- [push.unregister()](#pushunregistersuccesshandler-errorhandler-topics)
 - [push.setApplicationIconBadgeNumber()](#pushsetapplicationiconbadgenumbersuccesshandler-errorhandler-count---ios-only)
 - [push.getApplicationIconBadgeNumber()](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios-only)
 - [push.finish()](#pushfinishsuccesshandler-errorhandler---ios-only)
