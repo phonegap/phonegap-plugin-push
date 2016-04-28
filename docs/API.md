@@ -10,7 +10,7 @@
 - [push.unregister()](#pushunregistersuccesshandler-errorhandler-topics)
 - [push.setApplicationIconBadgeNumber()](#pushsetapplicationiconbadgenumbersuccesshandler-errorhandler-count---ios-only)
 - [push.getApplicationIconBadgeNumber()](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios-only)
-- [push.finish()](#pushfinishsuccesshandler-errorhandler---ios-only)
+- [push.finish()](#pushfinishsuccesshandler-errorhandler-id---ios-only)
 
 ## PushNotification.init(options)
 
