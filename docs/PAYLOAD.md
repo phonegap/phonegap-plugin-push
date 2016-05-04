@@ -20,6 +20,7 @@
   - [Notifications](#notifications)
   - [Setting Toast Capable Option for Windows](#setting-toast-capable-option-for-windows)
   - [Disabling the default processing of notifications by Windows](#disabling-the-default-processing-of-notifications-by-windows)
+  - [Background Notifications](#background-notifications-2)
 
 
 # Android Behaviour
@@ -924,3 +925,25 @@ The default handling can be disabled by setting the 'cancel' property in the not
 ```javascript
 data.additionalData.pushNotificationReceivedEventArgs.cancel = true
 ```
+
+## Background Notifications
+
+On Windows, to trigger the on('notification') event handler when your app is in the background and it is launched through the push notification, you will have to include `activation` data in the payload of the notification. This is done by using the `launch` attribute, which can be any string that can be understood by the app. However it should not cause the XML payload to become invalid.
+
+If you do not include a launch attribute string, your app will be launched normally, as though the user had launched it from the Start screen, and the notification event handler won't be called.
+
+Here is an example of a sample toast notification payload containing the launch attribute:
+
+```xml
+<toast launch="{&quot;myContext&quot;:&quot;12345&quot;}">
+    <visual>
+        <binding template="ToastImageAndText01">
+            <image id="1" src="ms-appx:///images/redWide.png" alt="red graphic"/>
+            <text id="1">Hello World!</text>
+        </binding>
+    </visual>
+</toast>
+```
+
+This launch attribute string is passed on to the app as data.launchArgs through the on('notification') handler. It's important to note that due to the Windows platform design, the other visual payload is not available to the handler on cold start. So notification attributes like message, title etc. which are available through the on('notification') handler when the app is running, won't be available for background notifications.
+
