@@ -100,7 +100,9 @@ var push = PushNotification.init({
 });
 ```
 
-## PushNotification.hasPermission(successHandler)
+## PushNotification.hasPermission(successHandler) - Android & iOS only
+
+> Deprecated this method will be remove in release 2.0.0
 
 Checks whether the push notification permission has been granted.
 
