@@ -236,8 +236,8 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setWhen(System.currentTimeMillis())
-                        .setContentTitle(extras.getString(TITLE))
-                        .setTicker(extras.getString(TITLE))
+                        .setContentTitle(Html.fromHtml(extras.getString(TITLE)))
+                        .setTicker(Html.fromHtml(extras.getString(TITLE)))
                         .setContentIntent(contentIntent)
                         .setAutoCancel(true);
 
@@ -411,7 +411,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         if(STYLE_INBOX.equals(style)) {
             setNotification(notId, message);
 
-            mBuilder.setContentText(message);
+            mBuilder.setContentText(Html.fromHtml(message));
 
             ArrayList<String> messageList = messageMap.get(notId);
             Integer sizeList = messageList.size();
@@ -423,8 +423,8 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                     stacking = stacking.replace("%n%", sizeListMessage);
                 }
                 NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
-                        .setBigContentTitle(extras.getString(TITLE))
-                        .setSummaryText(stacking);
+                        .setBigContentTitle(Html.fromHtml(extras.getString(TITLE)))
+                        .setSummaryText(Html.fromHtml(stacking));
 
                 for (int i = messageList.size() - 1; i >= 0; i--) {
                     notificationInbox.addLine(Html.fromHtml(messageList.get(i)));
@@ -434,8 +434,8 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             } else {
                 NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
                 if (message != null) {
-                    bigText.bigText(message);
-                    bigText.setBigContentTitle(extras.getString(TITLE));
+                    bigText.bigText(Html.fromHtml(message));
+                    bigText.setBigContentTitle(Html.fromHtml(extras.getString(TITLE)));
                     mBuilder.setStyle(bigText);
                 }
             }
@@ -444,11 +444,11 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
             NotificationCompat.BigPictureStyle bigPicture = new NotificationCompat.BigPictureStyle();
             bigPicture.bigPicture(getBitmapFromURL(extras.getString(PICTURE)));
-            bigPicture.setBigContentTitle(extras.getString(TITLE));
-            bigPicture.setSummaryText(extras.getString(SUMMARY_TEXT));
+            bigPicture.setBigContentTitle(Html.fromHtml(extras.getString(TITLE)));
+            bigPicture.setSummaryText(Html.fromHtml(extras.getString(SUMMARY_TEXT)));
 
-            mBuilder.setContentTitle(extras.getString(TITLE));
-            mBuilder.setContentText(message);
+            mBuilder.setContentTitle(Html.fromHtml(extras.getString(TITLE)));
+            mBuilder.setContentText(Html.fromHtml(message));
 
             mBuilder.setStyle(bigPicture);
         } else {
@@ -459,12 +459,12 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             if (message != null) {
                 mBuilder.setContentText(Html.fromHtml(message));
 
-                bigText.bigText(message);
-                bigText.setBigContentTitle(extras.getString(TITLE));
+                bigText.bigText(Html.fromHtml(message));
+                bigText.setBigContentTitle(Html.fromHtml(extras.getString(TITLE)));
 
                 String summaryText = extras.getString(SUMMARY_TEXT);
                 if (summaryText != null) {
-                    bigText.setSummaryText(summaryText);
+                    bigText.setSummaryText(Html.fromHtml(summaryText));
                 }
 
                 mBuilder.setStyle(bigText);
