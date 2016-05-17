@@ -634,7 +634,6 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     }
     
     private Spanned fromHtml(String source) {
-        Log.e(LOG_TAG, "from html: " + source);
         if (source != null)
             return Html.fromHtml(source);
         else
