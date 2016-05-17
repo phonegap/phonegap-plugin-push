@@ -19,6 +19,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.NotificationCompat.WearableExtender;
 import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
@@ -236,8 +237,8 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setWhen(System.currentTimeMillis())
-                        .setContentTitle(Html.fromHtml(extras.getString(TITLE)))
-                        .setTicker(Html.fromHtml(extras.getString(TITLE)))
+                        .setContentTitle(fromHtml(extras.getString(TITLE)))
+                        .setTicker(fromHtml(extras.getString(TITLE)))
                         .setContentIntent(contentIntent)
                         .setAutoCancel(true);
 
@@ -411,7 +412,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         if(STYLE_INBOX.equals(style)) {
             setNotification(notId, message);
 
-            mBuilder.setContentText(Html.fromHtml(message));
+            mBuilder.setContentText(fromHtml(message));
 
             ArrayList<String> messageList = messageMap.get(notId);
             Integer sizeList = messageList.size();
@@ -423,19 +424,19 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                     stacking = stacking.replace("%n%", sizeListMessage);
                 }
                 NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
-                        .setBigContentTitle(Html.fromHtml(extras.getString(TITLE)))
-                        .setSummaryText(Html.fromHtml(stacking));
+                        .setBigContentTitle(fromHtml(extras.getString(TITLE)))
+                        .setSummaryText(fromHtml(stacking));
 
                 for (int i = messageList.size() - 1; i >= 0; i--) {
-                    notificationInbox.addLine(Html.fromHtml(messageList.get(i)));
+                    notificationInbox.addLine(fromHtml(messageList.get(i)));
                 }
 
                 mBuilder.setStyle(notificationInbox);
             } else {
                 NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
                 if (message != null) {
-                    bigText.bigText(Html.fromHtml(message));
-                    bigText.setBigContentTitle(Html.fromHtml(extras.getString(TITLE)));
+                    bigText.bigText(fromHtml(message));
+                    bigText.setBigContentTitle(fromHtml(extras.getString(TITLE)));
                     mBuilder.setStyle(bigText);
                 }
             }
@@ -444,11 +445,11 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
             NotificationCompat.BigPictureStyle bigPicture = new NotificationCompat.BigPictureStyle();
             bigPicture.bigPicture(getBitmapFromURL(extras.getString(PICTURE)));
-            bigPicture.setBigContentTitle(Html.fromHtml(extras.getString(TITLE)));
-            bigPicture.setSummaryText(Html.fromHtml(extras.getString(SUMMARY_TEXT)));
+            bigPicture.setBigContentTitle(fromHtml(extras.getString(TITLE)));
+            bigPicture.setSummaryText(fromHtml(extras.getString(SUMMARY_TEXT)));
 
-            mBuilder.setContentTitle(Html.fromHtml(extras.getString(TITLE)));
-            mBuilder.setContentText(Html.fromHtml(message));
+            mBuilder.setContentTitle(fromHtml(extras.getString(TITLE)));
+            mBuilder.setContentText(fromHtml(message));
 
             mBuilder.setStyle(bigPicture);
         } else {
@@ -457,14 +458,14 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
 
             if (message != null) {
-                mBuilder.setContentText(Html.fromHtml(message));
+                mBuilder.setContentText(fromHtml(message));
 
-                bigText.bigText(Html.fromHtml(message));
-                bigText.setBigContentTitle(Html.fromHtml(extras.getString(TITLE)));
+                bigText.bigText(fromHtml(message));
+                bigText.setBigContentTitle(fromHtml(extras.getString(TITLE)));
 
                 String summaryText = extras.getString(SUMMARY_TEXT);
                 if (summaryText != null) {
-                    bigText.setSummaryText(Html.fromHtml(summaryText));
+                    bigText.setSummaryText(fromHtml(summaryText));
                 }
 
                 mBuilder.setStyle(bigText);
@@ -630,5 +631,13 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         }
 
         return retval;
+    }
+    
+    private Spanned fromHtml(String source) {
+        Log.e(LOG_TAG, "from html: " + source);
+        if (source != null)
+            return Html.fromHtml(source);
+        else
+            return null;
     }
 }
