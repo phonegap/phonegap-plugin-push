@@ -195,6 +195,9 @@ static char coldstartKey;
     }
 }
 
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    NSLog(@"application:didReceiveRemoteNotification: %@", userInfo);
+}
 
 - (void)application:(UIApplication *) application handleActionWithIdentifier: (NSString *) identifier
 forRemoteNotification: (NSDictionary *) notification completionHandler: (void (^)()) completionHandler {
