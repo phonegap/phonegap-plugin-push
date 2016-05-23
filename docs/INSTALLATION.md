@@ -12,7 +12,7 @@
   - [Bitcode](#bitcode)
 - [Additional Resources](#additional-resources)
 
-This requires phonegap/cordova CLI 5.0+ ( current stable v1.6.3 )
+This requires phonegap/cordova CLI 5.0+ ( current stable v1.6.4 )
 
 ```
 phonegap plugin add phonegap-plugin-push --variable SENDER_ID="XXXXXXX"
