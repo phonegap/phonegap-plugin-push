@@ -4,8 +4,8 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 
+import android.util.Log;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.iid.InstanceID;
 
