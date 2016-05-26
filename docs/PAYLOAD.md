@@ -185,7 +185,43 @@ Produces the following notification.
 
 ## Sound
 
-For Android there are two special values for sound you can use. The first is `default` which will play the phones default notification sound. Then second is `ringtone` which will play the phones default ringtone sound.
+For Android there are three special values for sound you can use. The first is `default` which will play the phones default notification sound.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Default",
+    	"message": "Plays default notification sound",
+    	"soundname": "default"
+    }
+}
+```
+
+Then second is `ringtone` which will play the phones default ringtone sound.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Ringtone",
+    	"message": "Plays default ringtone sound",
+    	"soundname": "ringtone"
+    }
+}
+```
+The third is the empty string which will cause for the playing of sound to be skipped.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Silece",
+    	"message": "Skips playing any sound",
+    	"soundname": ""
+    }
+}
+```
 
 In order for your your notification to play a custom sound you will need to add the files to your Android project's `res/raw` directory. Then send the follow JSON from GCM:
 
@@ -946,4 +982,3 @@ Here is an example of a sample toast notification payload containing the launch 
 ```
 
 This launch attribute string is passed on to the app as data.launchArgs through the on('notification') handler. It's important to note that due to the Windows platform design, the other visual payload is not available to the handler on cold start. So notification attributes like message, title etc. which are available through the on('notification') handler when the app is running, won't be available for background notifications.
-
