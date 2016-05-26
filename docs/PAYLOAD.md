@@ -511,7 +511,7 @@ Attribute | Type | Default | Description
 --------- | ---- | ------- | -----------
 `icon` | `string` | | Optional. The name of a drawable resource to use as the small-icon. The name should not include the extension.
 `title` | `string` | | Required. The label to display for the action button.
-`callback` | `string` | | Required. The function to be executed when the action button is pressed.
+`callback` | `string` | | Required. The function to be executed when the action button is pressed. The function must be accessible from the global namespace. If you provide `myCallback` then it amounts to calling `window.myCallback`. If you provide `app.myCallback` then there needs to be an object call `app`, with a function called `myCallback` accessible from the global namespace, i.e. `window.app.myCallback`.
 `foreground` | `boolean` | `true` | Optional. Whether or not to bring the app to the foreground when the action button is pressed.
 
 ## Led in Notifications
