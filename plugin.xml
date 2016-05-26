@@ -26,10 +26,10 @@
         <engine name="cordova-ios" version=">=4.0.0" />
     </engines>
 
-    <preference name="SENDER_ID" />
-
 	<!-- android -->
 	<platform name="android">
+
+        <preference name="SENDER_ID" />
 
 		<config-file target="res/xml/config.xml" parent="/*">
 			<feature name="PushNotification" >
@@ -52,9 +52,9 @@
 		</config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
-			<activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true"/>
+			<meta-data android:name="google_app_id" android:value="$SENDER_ID" />
+            <activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true"/>
             <receiver android:name="com.adobe.phonegap.push.BackgroundActionButtonHandler"/>
-
             <receiver
                 android:name="com.google.android.gms.gcm.GcmReceiver"
                 android:exported="true"
