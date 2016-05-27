@@ -49,6 +49,12 @@ describe('phonegap-plugin-push', function () {
             expect(push.setApplicationIconBadgeNumber).toBeDefined();
             expect(typeof push.setApplicationIconBadgeNumber === 'function').toBe(true);
         });
+
+        it('should contain a clearAllNotifications function', function () {
+            var push = PushNotification.init({});
+            expect(push.clearAllNotifications).toBeDefined();
+            expect(typeof push.clearAllNotifications === 'function').toBe(true);
+        });
     });
 
     describe('PushNotification instance', function () {

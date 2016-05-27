@@ -193,6 +193,14 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                     callbackContext.success();
                 }
             });
+        } else if (CLEAR_ALL_NOTIFICATIONS.equals(action)) {
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    Log.v(LOG_TAG, "clearAllNotifications");
+                    clearAllNotifications();
+                    callbackContext.success();
+                }
+            });
         } else {
             Log.e(LOG_TAG, "Invalid action : " + action);
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
@@ -254,8 +262,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
         SharedPreferences prefs = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
         if (prefs.getBoolean(CLEAR_NOTIFICATIONS, true)) {
-            final NotificationManager notificationManager = (NotificationManager) cordova.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancelAll();
+            clearAllNotifications();
         }
     }
 
@@ -270,6 +277,11 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         super.onDestroy();
         gForeground = false;
         gWebView = null;
+    }
+
+    private void clearAllNotifications() {
+        final NotificationManager notificationManager = (NotificationManager) cordova.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
     }
 
     private void subscribeToTopics(JSONArray topics, String registrationToken) {
