@@ -56,7 +56,7 @@
             <receiver android:name="com.adobe.phonegap.push.BackgroundActionButtonHandler"/>
 
             <receiver
-                android:name="com.google.android.gms.gcm.GcmReceiver"
+                android:name="com.adobe.phonegap.push.BackgroundNotificationHandler"
                 android:exported="true"
                 android:permission="com.google.android.c2dm.permission.SEND" >
                 <intent-filter>
