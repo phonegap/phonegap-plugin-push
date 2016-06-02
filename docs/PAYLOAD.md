@@ -1,4 +1,7 @@
 - [Overview](#overview)
+   - [Foreground Events](#push-message-arrives-with-app-in-foreground)
+   - [Background Events](#push-message-arrives-with-app-in-background)
+   - [Tap Events](#user-clicks-on-notification-in-notification-center)
 - [Android Behaviour](#android-behaviour)
   - [Images](#images)
   - [Sound](#sound)
