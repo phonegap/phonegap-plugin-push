@@ -799,6 +799,39 @@ These phones have a particular quirk that when the app is force closed that you 
 - On your Xiaomi makes sure your phone has the "Auto-start" property enabled for your app.
 
 
+## Visibility of Notifications
+
+You can set a visibility parameter for your notifications. Just add a `visibility` field in your notification. -1: secret, 0: private (default), 1: public
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "This is a maximum public Notification",
+    	"message": "This notification should appear in front of all others",
+    	"visibility": 1
+    }
+}
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'This is a public Notification');
+message.addData('message', 'You should be able to read this notification on your lock screen');
+message.addData('visibility', 1);
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
+```
+
 # iOS Behaviour
 
 ## Sound

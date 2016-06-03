@@ -346,6 +346,11 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         setNotificationCount(context, extras, mBuilder);
 
         /*
+         * Notification count
+         */
+        setVisibility(context, extras, mBuilder);
+
+        /*
          * Notification add actions
          */
         createActions(extras, mBuilder, resources, packageName, notId);
@@ -405,6 +410,23 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         if (count >= 0) {
             Log.d(LOG_TAG, "count =[" + count + "]");
             mBuilder.setNumber(count);
+        }
+    }
+
+
+    private void setVisibility(Context context, Bundle extras, NotificationCompat.Builder mBuilder) {
+        String visibilityStr = extras.getString(VISIBILITY);
+        if (visibilityStr != null) {
+            try {
+                Integer visibility = Integer.parseInt(visibilityStr);
+                if (visibility >= NotificationCompat.VISIBILITY_SECRET && visibility <= NotificationCompat.VISIBILITY_PUBLIC) {
+                    mBuilder.setVisibility(visibility);
+                } else {
+                    Log.e(LOG_TAG, "Visibility parameter must be between -1 and 1");
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -653,7 +675,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
         return retval;
     }
-    
+
     private Spanned fromHtml(String source) {
         if (source != null)
             return Html.fromHtml(source);
