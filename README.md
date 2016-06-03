@@ -12,7 +12,7 @@ This plugin offers support to receive and handle native push notifications with 
 - [Typescript support](docs/TYPESCRIPT.md)
 - [Examples](docs/EXAMPLES.md)
 - [Platform support](docs/PLATFORM_SUPPORT.md)
-- [PhoneGap Build support](docs/PHONEGAP_BUILD.md)
+- [Cloud build support (PG Build, IntelXDK)](docs/PHONEGAP_BUILD.md)
 - [Push notification payload details](docs/PAYLOAD.md)
 - [Contributing](.github/CONTRIBUTING.md)
 - [License (MIT)](MIT-LICENSE)
