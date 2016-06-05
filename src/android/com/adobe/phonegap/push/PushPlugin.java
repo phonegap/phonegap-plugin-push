@@ -6,8 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.gms.gcm.GcmPubSub;
-import com.google.android.gms.iid.InstanceID;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -67,21 +66,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                         Log.v(LOG_TAG, "execute: senderID=" + senderID);
 
-                        String savedSenderID = sharedPref.getString(SENDER_ID, "");
-                        String savedRegID = sharedPref.getString(REGISTRATION_ID, "");
-
-                        // first time run get new token
-                        if ("".equals(savedRegID)) {
-                            token = InstanceID.getInstance(getApplicationContext()).getToken(senderID, GCM);
-                        }
-                        // new sender ID, re-register
-                        else if (!savedSenderID.equals(senderID)) {
-                            token = InstanceID.getInstance(getApplicationContext()).getToken(senderID, GCM);
-                        }
-                        // use the saved one
-                        else {
-                            token = sharedPref.getString(REGISTRATION_ID, "");
-                        }
+                        token = FirebaseInstanceId.getInstance().getToken();
 
                         if (!"".equals(token)) {
                             JSONObject json = new JSONObject().put(REGISTRATION_ID, token);
@@ -93,13 +78,10 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                             PushPlugin.sendEvent( json );
                         } else {
-                            callbackContext.error("Empty registration ID received from GCM");
+                            callbackContext.error("Empty registration ID received from FCM");
                             return;
                         }
                     } catch (JSONException e) {
-                        Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
-                        callbackContext.error(e.getMessage());
-                    } catch (IOException e) {
                         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
                         callbackContext.error(e.getMessage());
                     }
@@ -142,7 +124,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         if (topics != null && !"".equals(token)) {
                             unsubscribeFromTopics(topics, token);
                         } else {
-                            InstanceID.getInstance(getApplicationContext()).deleteInstanceID();
+                            FirebaseInstanceId.getInstance().deleteInstanceId();
                             Log.v(LOG_TAG, "UNREGISTER");
 
                             // Remove shared prefs
@@ -288,15 +270,15 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         if (topics != null) {
             String topic = null;
             for (int i=0; i<topics.length(); i++) {
-                try {
+              //  try {
                     topic = topics.optString(i, null);
                     if (topic != null) {
                         Log.d(LOG_TAG, "Subscribing to topic: " + topic);
-                        GcmPubSub.getInstance(getApplicationContext()).subscribe(registrationToken, "/topics/" + topic, null);
+                        //GcmPubSub.getInstance(getApplicationContext()).subscribe(registrationToken, "/topics/" + topic, null);
                     }
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "Failed to subscribe to topic: " + topic, e);
-                }
+                //   } catch (IOException e) {
+                //    Log.e(LOG_TAG, "Failed to subscribe to topic: " + topic, e);
+                //}
             }
         }
     }
@@ -305,15 +287,15 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         if (topics != null) {
             String topic = null;
             for (int i=0; i<topics.length(); i++) {
-                try {
+             //   try {
                     topic = topics.optString(i, null);
                     if (topic != null) {
                         Log.d(LOG_TAG, "Unsubscribing to topic: " + topic);
-                        GcmPubSub.getInstance(getApplicationContext()).unsubscribe(registrationToken, "/topics/" + topic);
+                        //GcmPubSub.getInstance(getApplicationContext()).unsubscribe(registrationToken, "/topics/" + topic);
                     }
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "Failed to unsubscribe to topic: " + topic, e);
-                }
+              //  } catch (IOException e) {
+              //      Log.e(LOG_TAG, "Failed to unsubscribe to topic: " + topic, e);
+              //  }
             }
         }
     }
