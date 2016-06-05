@@ -62,10 +62,6 @@
                     <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
                 </intent-filter>
             </service>
-            <service
-                android:name="com.adobe.phonegap.push.RegistrationIntentService"
-                android:exported="false">
-            </service>
 		</config-file>
 
         <framework src="push.gradle" custom="true" type="gradleReference" />
@@ -79,7 +75,6 @@
 		<source-file src="src/android/com/adobe/phonegap/push/PushHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushInstanceIDListenerService.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushPlugin.java" target-dir="src/com/adobe/phonegap/push/" />
-        <source-file src="src/android/com/adobe/phonegap/push/RegistrationIntentService.java" target-dir="src/com/adobe/phonegap/push/" />
         <source-file src="src/android/com/adobe/phonegap/push/PermissionUtils.java" target-dir="src/com/adobe/phonegap/push/" />
         <source-file src="src/android/com/adobe/phonegap/push/BackgroundActionButtonHandler.java" target-dir="src/com/adobe/phonegap/push/" />
 
