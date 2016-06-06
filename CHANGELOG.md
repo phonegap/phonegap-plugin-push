@@ -1,5 +1,30 @@
 # Change Log
 
+## [1.7.0](https://github.com/phonegap/phonegap-plugin-push/tree/1.7.0) (2016-06-06)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.6.4...1.7.0)
+
+**Closed issues:**
+
+- disable notification's sounds on a per notification basis [\#885](https://github.com/phonegap/phonegap-plugin-push/issues/885)
+- Android GCM Action Buttons lack of documentation [\#884](https://github.com/phonegap/phonegap-plugin-push/issues/884)
+- Android double on('notification') fired [\#828](https://github.com/phonegap/phonegap-plugin-push/issues/828)
+- Device should register, Push Notification should receive on IOS (IntelXDK) [\#926](https://github.com/phonegap/phonegap-plugin-push/issues/926)
+- Use cordova-ios 4.1.0 in Milestone 1.7.0 [\#751](https://github.com/phonegap/phonegap-plugin-push/issues/751)
+- Badge on android [\#190](https://github.com/phonegap/phonegap-plugin-push/issues/190)
+- JS error in Success callbackId: PushNotifiation###.. whenever a notification is sent to the device [\#824](https://github.com/phonegap/phonegap-plugin-push/issues/824)
+- coldstart flag always set to true if the app has been opened through an alert, on ios 9.3.1, plugin version 1.6.2 cordova 6.1.0 cordova ios 4.1.1 [\#795](https://github.com/phonegap/phonegap-plugin-push/issues/795)
+- Is there any way to clear notifications out from the app? [\#346](https://github.com/phonegap/phonegap-plugin-push/issues/346)
+- Show contents of notification when phone is locked [\#750](https://github.com/phonegap/phonegap-plugin-push/issues/750)
+- PushPlugin.m init() should send pending notification when js side is ready [\#658](https://github.com/phonegap/phonegap-plugin-push/issues/658)
+
+## [1.6.4](https://github.com/phonegap/phonegap-plugin-push/tree/1.6.4) (2016-05-24)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.6.3...1.6.4)
+
+**Closed issues:**
+
+- hasPermission() for windows [\#874](https://github.com/phonegap/phonegap-plugin-push/issues/874)
+- Latest Play store service breaks phonegap-plugin-push [\#909](https://github.com/phonegap/phonegap-plugin-push/issues/909)
+
 ## [1.6.3](https://github.com/phonegap/phonegap-plugin-push/tree/1.6.3) (2016-04-27)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.6.2...1.6.3)
 
