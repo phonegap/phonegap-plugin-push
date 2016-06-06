@@ -315,9 +315,12 @@
             [self setGcmSandbox:@YES];
         }
 
-        if (notificationMessage)			// if there is a pending startup notification
-            [self notificationReceived];	// go ahead and process it
-
+        if (notificationMessage) {			// if there is a pending startup notification
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // delay to allow JS event handlers to be setup
+                [self performSelector:@selector(notificationReceived) withObject:nil afterDelay: 0.5];
+            });
+        }
     }];
 }
 
