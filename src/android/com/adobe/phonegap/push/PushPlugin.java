@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -270,15 +271,11 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         if (topics != null) {
             String topic = null;
             for (int i=0; i<topics.length(); i++) {
-              //  try {
-                    topic = topics.optString(i, null);
-                    if (topic != null) {
-                        Log.d(LOG_TAG, "Subscribing to topic: " + topic);
-                        //GcmPubSub.getInstance(getApplicationContext()).subscribe(registrationToken, "/topics/" + topic, null);
-                    }
-                //   } catch (IOException e) {
-                //    Log.e(LOG_TAG, "Failed to subscribe to topic: " + topic, e);
-                //}
+                topic = topics.optString(i, null);
+                if (topic != null) {
+                    Log.d(LOG_TAG, "Subscribing to topic: " + topic);
+                    FirebaseMessaging.getInstance().subscribeToTopic(topic);
+                }
             }
         }
     }
@@ -287,15 +284,12 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         if (topics != null) {
             String topic = null;
             for (int i=0; i<topics.length(); i++) {
-             //   try {
-                    topic = topics.optString(i, null);
-                    if (topic != null) {
-                        Log.d(LOG_TAG, "Unsubscribing to topic: " + topic);
-                        //GcmPubSub.getInstance(getApplicationContext()).unsubscribe(registrationToken, "/topics/" + topic);
-                    }
-              //  } catch (IOException e) {
-              //      Log.e(LOG_TAG, "Failed to unsubscribe to topic: " + topic, e);
-              //  }
+                topic = topics.optString(i, null);
+                if (topic != null) {
+                    Log.d(LOG_TAG, "Unsubscribing to topic: " + topic);
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(topic);
+
+                }
             }
         }
     }

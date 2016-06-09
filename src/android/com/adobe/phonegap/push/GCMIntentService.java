@@ -61,8 +61,15 @@ public class GCMIntentService extends FirebaseMessagingService implements PushCo
 
     @Override
     public void onMessageReceived(RemoteMessage message){
+
         Log.d(LOG_TAG, "onMessage - from: " + message.getFrom());
+
         Bundle extras = new Bundle();
+
+        if (message.getNotification()!=null) {
+            extras.putString(TITLE,message.getNotification().getTitle());
+            extras.putString(MESSAGE,message.getNotification().getBody());
+        }
         for (Map.Entry<String, String> entry : message.getData().entrySet()) {
             extras.putString(entry.getKey(), entry.getValue());
         }
