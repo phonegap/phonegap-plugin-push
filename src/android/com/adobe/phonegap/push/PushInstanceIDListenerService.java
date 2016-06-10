@@ -5,23 +5,22 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.google.android.gms.iid.InstanceID;
-import com.google.android.gms.iid.InstanceIDListenerService;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.FirebaseInstanceIdService;
 
 import org.json.JSONException;
 
 import java.io.IOException;
 
-public class PushInstanceIDListenerService extends InstanceIDListenerService implements PushConstants {
-    public static final String LOG_TAG = "Push_InstanceIDListener";
+public class PushInstanceIDListenerService extends FirebaseInstanceIdService implements PushConstants {
+    public static final String LOG_TAG = "Push_InsIdService";
 
     @Override
     public void onTokenRefresh() {
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
-        String senderID = sharedPref.getString(SENDER_ID, "");
-        if (!"".equals(senderID)) {
-            Intent intent = new Intent(this, RegistrationIntentService.class);
-                startService(intent);
-        }
+        // Get updated InstanceID token.
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        Log.d(LOG_TAG, "Refreshed token: " + refreshedToken);
+        // TODO: Implement this method to send any registration to your app's servers.
+        //sendRegistrationToServer(refreshedToken);
     }
 }

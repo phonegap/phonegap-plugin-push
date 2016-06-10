@@ -28,7 +28,8 @@ import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 
-import com.google.android.gms.gcm.GcmListenerService;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,12 +42,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 
 @SuppressLint("NewApi")
-public class GCMIntentService extends GcmListenerService implements PushConstants {
+public class GCMIntentService extends FirebaseMessagingService implements PushConstants {
 
-    private static final String LOG_TAG = "Push_GCMIntentService";
+    private static final String LOG_TAG = "Push_FCMService";
     private static HashMap<Integer, ArrayList<String>> messageMap = new HashMap<Integer, ArrayList<String>>();
 
     public void setNotification(int notId, String message){
@@ -64,8 +66,19 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     }
 
     @Override
-    public void onMessageReceived(String from, Bundle extras) {
-        Log.d(LOG_TAG, "onMessage - from: " + from);
+    public void onMessageReceived(RemoteMessage message){
+
+        Log.d(LOG_TAG, "onMessage - from: " + message.getFrom());
+
+        Bundle extras = new Bundle();
+
+        if (message.getNotification()!=null) {
+            extras.putString(TITLE,message.getNotification().getTitle());
+            extras.putString(MESSAGE,message.getNotification().getBody());
+        }
+        for (Map.Entry<String, String> entry : message.getData().entrySet()) {
+            extras.putString(entry.getKey(), entry.getValue());
+        }
 
         if (extras != null && isAvailableSender(from)) {
             Context applicationContext = getApplicationContext();
