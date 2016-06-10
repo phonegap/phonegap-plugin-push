@@ -6,8 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.gms.gcm.GcmPubSub;
-import com.google.android.gms.iid.InstanceID;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -70,10 +70,10 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                         Log.v(LOG_TAG, "execute: senderID=" + senderID);
 
-                        registration_id = InstanceID.getInstance(getApplicationContext()).getToken(senderID, GCM);
+                        token = FirebaseInstanceId.getInstance().getToken();
 
-                        if (!"".equals(registration_id)) {
-                            JSONObject json = new JSONObject().put(REGISTRATION_ID, registration_id);
+                        if (!"".equals(token)) {
+                            JSONObject json = new JSONObject().put(REGISTRATION_ID, token);
 
                             Log.v(LOG_TAG, "onRegistered: " + json.toString());
 
@@ -82,13 +82,10 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                             PushPlugin.sendEvent( json );
                         } else {
-                            callbackContext.error("Empty registration ID received from GCM");
+                            callbackContext.error("Empty registration ID received from FCM");
                             return;
                         }
                     } catch (JSONException e) {
-                        Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
-                        callbackContext.error(e.getMessage());
-                    } catch (IOException e) {
                         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
                         callbackContext.error(e.getMessage());
                     }
@@ -144,7 +141,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         if (topics != null && !"".equals(registration_id)) {
                             unsubscribeFromTopics(topics, registration_id);
                         } else {
-                            InstanceID.getInstance(getApplicationContext()).deleteInstanceID();
+                            FirebaseInstanceId.getInstance().deleteInstanceId();
                             Log.v(LOG_TAG, "UNREGISTER");
 
                             // Remove shared prefs
@@ -288,7 +285,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         SharedPreferences settings = context.getSharedPreferences(BADGE, Context.MODE_PRIVATE);
         return settings.getInt(BADGE, 0);
     }
-	
+
 	/*
      * Sets badge count on application icon and in SharedPreferences
      */
@@ -298,7 +295,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         }else{
             ShortcutBadger.removeCount(context);
         }
-		
+
         SharedPreferences.Editor editor = context.getSharedPreferences(BADGE, Context.MODE_PRIVATE).edit();
         editor.putInt(BADGE, Math.max(badgeCount, 0));
         editor.apply();
@@ -365,7 +362,10 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
             String topic = null;
             for (int i=0; i<topics.length(); i++) {
                 topic = topics.optString(i, null);
-                subscribeToTopic(topic, registrationToken);
+                if (topic != null) {
+                    Log.d(LOG_TAG, "Subscribing to topic: " + topic);
+                    FirebaseMessaging.getInstance().subscribeToTopic(topic);
+                }
             }
         }
     }
@@ -389,14 +389,10 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         if (topics != null) {
             String topic = null;
             for (int i=0; i<topics.length(); i++) {
-                try {
-                    topic = topics.optString(i, null);
-                    if (topic != null) {
-                        Log.d(LOG_TAG, "Unsubscribing to topic: " + topic);
-                        GcmPubSub.getInstance(getApplicationContext()).unsubscribe(registrationToken, getTopicPath(topic));
-                    }
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "Failed to unsubscribe to topic: " + topic, e);
+                topic = topics.optString(i, null);
+                if (topic != null) {
+                    Log.d(LOG_TAG, "Unsubscribing to topic: " + topic);
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(topic);
                 }
             }
         }
