@@ -346,7 +346,10 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
             String topic = null;
             for (int i=0; i<topics.length(); i++) {
                 topic = topics.optString(i, null);
-                subscribeToTopic(topic, registrationToken);
+                if (topic != null) {
+                    Log.d(LOG_TAG, "Subscribing to topic: " + topic);
+                    FirebaseMessaging.getInstance().subscribeToTopic(topic);
+                }
             }
         }
     }
