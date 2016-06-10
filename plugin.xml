@@ -1,5 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads" xmlns:rim="http://www.blackberry.com/ns/widgets" id="phonegap-plugin-push" version="2.0.0-rc2">
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads"
+    xmlns:rim="http://www.blackberry.com/ns/widgets"
+    id="phonegap-plugin-push"
+    version="2.0.0">
+
   <name>PushPlugin</name>
   <description>
     This plugin allows your application to receive push notifications on Android, iOS and Windows devices.
@@ -44,7 +50,7 @@
       </service>
     </config-file>
     <framework src="com.android.support:support-v13:25.1.0"/>
-    <framework src="me.leolin:ShortcutBadger:1.1.11@aar"/>
+    <framework src="me.leolin:ShortcutBadger:1.1.14@aar"/>
     <framework src="com.google.firebase:firebase-messaging:9.8.0"/>
     <framework src="push.gradle" custom="true" type="gradleReference"/>
     <source-file src="src/android/com/adobe/phonegap/push/FCMService.java" target-dir="src/com/adobe/phonegap/push/"/>
