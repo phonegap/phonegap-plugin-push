@@ -1,12 +1,19 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads" xmlns:rim="http://www.blackberry.com/ns/widgets" id="phonegap-plugin-push" version="1.9.0">
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads"
+    xmlns:rim="http://www.blackberry.com/ns/widgets"
+    id="phonegap-plugin-push"
+    version="2.0.0">
+
   <name>PushPlugin</name>
   <description>
-		This plugin allows your application to receive push notifications on Android, iOS and Windows devices.
-    Android uses Google Cloud Messaging.
+    This plugin allows your application to receive push notifications on Android, iOS and Windows devices.
+    Android uses Firebase Cloud Messaging.
     iOS uses Apple APNS Notifications.
     Windows uses Microsoft WNS Notifications.
-	</description>
+  </description>
+
   <license>MIT</license>
   <js-module src="www/push.js" name="PushNotification">
     <clobbers target="PushNotification"/>
@@ -40,34 +47,34 @@
     <config-file target="AndroidManifest.xml" parent="/manifest/application">
       <activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true" android:permission="${applicationId}.permission.PushHandlerActivity"/>
       <receiver android:name="com.adobe.phonegap.push.BackgroundActionButtonHandler"/>
-      <receiver android:name="com.google.android.gms.gcm.GcmReceiver" android:exported="true" android:permission="com.google.android.c2dm.permission.SEND">
+      <!-- receiver android:name="com.google.android.gms.gcm.GcmReceiver" android:exported="true" android:permission="com.google.android.c2dm.permission.SEND">
         <intent-filter>
           <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
           <category android:name="${applicationId}"/>
         </intent-filter>
-      </receiver>
+    </receiver -->
       <service android:name="com.adobe.phonegap.push.GCMIntentService" android:exported="false">
         <intent-filter>
-          <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+          <action android:name="com.google.firebase.MESSAGING_EVENT"/>
         </intent-filter>
       </service>
       <service android:name="com.adobe.phonegap.push.PushInstanceIDListenerService" android:exported="false">
         <intent-filter>
-          <action android:name="com.google.android.gms.iid.InstanceID"/>
+          <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
         </intent-filter>
       </service>
-      <service android:name="com.adobe.phonegap.push.RegistrationIntentService" android:exported="false"/>
+      <!-- service android:name="com.adobe.phonegap.push.RegistrationIntentService" android:exported="false"/ -->
     </config-file>
     <framework src="push.gradle" custom="true" type="gradleReference"/>
     <framework src="com.android.support:support-v13:23+"/>
-    <framework src="com.google.android.gms:play-services-gcm:9.8+"/>
+    <framework src="com.google.firebase:firebase-messaging:9.0.0" />
     <framework src="me.leolin:ShortcutBadger:1.1.11@aar"/>
     <source-file src="src/android/com/adobe/phonegap/push/GCMIntentService.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushInstanceIDListenerService.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushPlugin.java" target-dir="src/com/adobe/phonegap/push/"/>
-    <source-file src="src/android/com/adobe/phonegap/push/RegistrationIntentService.java" target-dir="src/com/adobe/phonegap/push/"/>
+    <!-- source-file src="src/android/com/adobe/phonegap/push/RegistrationIntentService.java" target-dir="src/com/adobe/phonegap/push/"/ -->
     <source-file src="src/android/com/adobe/phonegap/push/PermissionUtils.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/BackgroundActionButtonHandler.java" target-dir="src/com/adobe/phonegap/push/"/>
   </platform>
