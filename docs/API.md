@@ -180,7 +180,7 @@ Parameter | Type | Description
 --------- | ---- | -----------
 `data.message` | `string` | The text of the push message sent from the 3rd party service.
 `data.title` | `string` | The optional title of the push message sent from the 3rd party service.
-`data.count` | `string` | The number of messages to be displayed in the badge iOS or message count in the notification shade in Android. For windows, it represents the value in the badge notification which could be a number or a status glyph.
+`data.count` | `string` | The number of messages to be displayed in the badge in iOS/Android or message count in the notification shade in Android. For windows, it represents the value in the badge notification which could be a number or a status glyph.
 `data.sound` | `string` | The name of the sound file to be played upon receipt of the notification.
 `data.image` | `string` | The path of the image file to be displayed in the notification.
 `data.launchArgs` | `string` | The args to be passed to the application on launch from push notification. This works when notification is received in background. (Windows Only)
@@ -267,7 +267,7 @@ push.unregister(function() {
 });
 ```
 
-## push.setApplicationIconBadgeNumber(successHandler, errorHandler, count) - iOS only
+## push.setApplicationIconBadgeNumber(successHandler, errorHandler, count) - iOS & Android only
 
 Set the badge count visible when the app is not running
 
