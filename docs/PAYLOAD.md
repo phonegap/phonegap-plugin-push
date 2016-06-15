@@ -727,7 +727,7 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 });
 ```
 
-or
+or if you want the payload to be delivered directly to your app without anything showing up in the notification center omit the tite/message from the payload like so:
 
 
 ```javascript
