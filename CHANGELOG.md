@@ -1,5 +1,14 @@
 # Change Log
 
+## [1.7.1](https://github.com/phonegap/phonegap-plugin-push/tree/1.7.1) (2016-06-17)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.7.0...1.7.1)
+
+**Closed issues:**
+
+- Update docs for Android badges [\#982](https://github.com/phonegap/phonegap-plugin-push/issues/982)
+- visibility not working [\#987](https://github.com/phonegap/phonegap-plugin-push/issues/982)
+- Revert pinning of support-v13 [\#983](https://github.com/phonegap/phonegap-plugin-push/issues/983)
+
 ## [1.7.0](https://github.com/phonegap/phonegap-plugin-push/tree/1.7.0) (2016-06-06)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.6.4...1.7.0)
 
