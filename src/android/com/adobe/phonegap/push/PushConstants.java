@@ -55,7 +55,7 @@ public interface PushConstants {
     public static final String FROM = "from";
     public static final String COLLAPSE_KEY = "collapse_key";
     public static final String FORCE_SHOW = "forceShow";
-    public static final String GCM = "GCM";
+    public static final String FCM = "FCM";
     public static final String CONTENT_AVAILABLE = "content-available";
     public static final String TOPICS = "topics";
     public static final String SET_APPLICATION_ICON_BADGE_NUMBER = "setApplicationIconBadgeNumber";
