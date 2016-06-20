@@ -73,6 +73,10 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                             token = FirebaseInstanceId.getInstance().getToken(senderID,FCM);
                         }
 
+                        if (token == null) {
+                            token = FirebaseInstanceId.getInstance().getToken(senderID,FCM);
+                        }
+
                         if (!"".equals(token)) {
                             JSONObject json = new JSONObject().put(REGISTRATION_ID, token);
 
