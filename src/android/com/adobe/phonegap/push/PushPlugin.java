@@ -72,6 +72,10 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                         token = FirebaseInstanceId.getInstance().getToken();
 
+                        if (token == null) {
+                            token = FirebaseInstanceId.getInstance().getToken(senderID,FCM);
+                        }
+
                         if (!"".equals(token)) {
                             JSONObject json = new JSONObject().put(REGISTRATION_ID, token);
 
@@ -87,6 +91,9 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         }
                     } catch (JSONException e) {
                         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
+                        callbackContext.error(e.getMessage());
+                    } catch (IOException e) {
+                        Log.e(LOG_TAG, "execute: Got IO Exception " + e.getMessage());
                         callbackContext.error(e.getMessage());
                     }
 
