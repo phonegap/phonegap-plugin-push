@@ -727,7 +727,7 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 });
 ```
 
-or
+or if you want the payload to be delivered directly to your app without anything showing up in the notification center omit the tite/message from the payload like so:
 
 
 ```javascript
@@ -801,7 +801,7 @@ These phones have a particular quirk that when the app is force closed that you 
 
 ## Visibility of Notifications
 
-You can set a visibility parameter for your notifications. Just add a `visibility` field in your notification. -1: secret, 0: private (default), 1: public
+You can set a visibility parameter for your notifications. Just add a `visibility` field in your notification. -1: secret, 0: private (default), 1: public. `Secret` shows only the most minimal information, excluding even the notification's icon. `Private` shows basic information about the existence of this notification, including its icon and the name of the app that posted it. The rest of the notification's details are not displayed. `Public` Shows the notification's full content.
 
 ```javascript
 {
