@@ -46,6 +46,12 @@ Attribute | Type | Default | Description
 `android.forceShow` | `boolean` | `false` | Optional. Controls the behavior of the notification when app is in foreground. If `true` and app is in foreground, it will show a notification in the notification drawer, the same way as when the app is in background (and `on('notification')` callback will be called *only when the user clicks the notification*). When `false` and app is in foreground, the `on('notification')` callback will be called immediately.
 `android.topics` | `array` | `[]` | Optional. If the array contains one or more strings each string will be used to subscribe to a GcmPubSub topic.
 
+#### Browser
+
+Attribute | Type | Default | Description
+--------- | ---- | ------- | -----------
+`browser.pushServiceURL` | `string` | `http://push.api.phongeap.com/v1/push` | Optional. URL for the push server you want to use.
+
 #### iOS
 
 All iOS boolean options can also be specified as `string`
@@ -92,6 +98,9 @@ var push = PushNotification.init({
 	android: {
 		senderID: "12345679"
 	},
+    browser: {
+        pushServiceURL: 'https://yourPushServer.com/push'
+    },
 	ios: {
 		alert: "true",
 		badge: true,

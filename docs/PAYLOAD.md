@@ -69,6 +69,9 @@ var push = PushNotification.init({
 	"android": {
 		"senderID": "12345679"
 	},
+    browser: {
+        pushServiceURL: 'https://yourPushServer.com/push'
+    },
 	"ios": {
 		"alert": "true",
 		"badge": "true",
@@ -93,6 +96,9 @@ var push = PushNotification.init({
 		"icon": "phonegap",
 		"iconColor": "blue"
 	},
+    browser: {
+        pushServiceURL: 'https://yourPushServer.com/push'
+    },
     "ios": {
 		"alert": "true",
 		"badge": "true",
@@ -969,7 +975,7 @@ app.accept = function(data) {
         console.log('accept callback finished');
     }, function() {
         console.log('accept callback failed');
-    }, data.additionalData.notId);    
+    }, data.additionalData.notId);
 };
 ```
 

@@ -13,6 +13,9 @@ var push = PushNotification.init({
 	android: {
 		senderID: "12345679"
 	},
+    browser: {
+        pushServiceURL: 'https://yourPushServer.com/push'
+    },
 	ios: {
 		alert: "true",
 		badge: "true",
