@@ -158,6 +158,12 @@ push.on('registration', function(data) {
 });
 ```
 
+For APNS users: the `registrationId` you will get will be a production or sandbox id according to how the app was built. ([Source](https://developer.apple.com/library/ios/technotes/tn2265/_index.html))
+
+> Note: There is a separate persistent connection to the push service for each environment. The operating system establishes a persistent connection to the sandbox environment for development builds; ad hoc and distribution builds connect to the production environment.
+
+
+
 ### Common Problems
 
 #### Got JSON Exception TIMEOUT
