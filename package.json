@@ -1,46 +1,58 @@
 {
-    "name": "phonegap-plugin-push",
-    "description": "Register and receive push notifications.",
-    "version": "1.7.1",
-    "homepage": "http://github.com/phonegap/phonegap-plugin-push#readme",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/phonegap/phonegap-plugin-push.git"
-    },
-    "bugs": {
-        "url": "https://github.com/phonegap/phonegap-plugin-push/issues"
-    },
-    "cordova": {
-        "id": "phonegap-plugin-push",
-        "platforms": [
-            "ios",
-            "android",
-            "windows",
-            "browser"
-        ]
-    },
-    "keywords": [
-        "ecosystem:cordova",
-        "ecosystem:phonegap",
-        "cordova-ios",
-        "cordova-android",
-        "cordova-windows8",
-        "cordova-windows",
-        "cordova-wp8",
-        "cordova-browser"
-    ],
-    "engines": [
-        {
-            "name": "cordova",
-            "version": ">=3.0.0"
-        }
-    ],
-    "author": "Adobe PhoneGap Team",
-    "license": "APL",
-    "scripts": {
-        "test": "jasmine-node --color spec"
-    },
-    "devDependencies": {
-        "jasmine-node": "1.14.5"
+  "name": "phonegap-plugin-push",
+  "description": "Register and receive push notifications.",
+  "version": "1.7.1",
+  "homepage": "http://github.com/phonegap/phonegap-plugin-push#readme",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/phonegap/phonegap-plugin-push.git"
+  },
+  "bugs": {
+    "url": "https://github.com/phonegap/phonegap-plugin-push/issues"
+  },
+  "cordova": {
+    "id": "phonegap-plugin-push",
+    "platforms": [
+      "ios",
+      "android",
+      "windows",
+      "browser"
+    ]
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "ecosystem:phonegap",
+    "cordova-ios",
+    "cordova-android",
+    "cordova-windows8",
+    "cordova-windows",
+    "cordova-wp8",
+    "cordova-browser"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.0.0"
     }
+  ],
+  "author": "Adobe PhoneGap Team",
+  "license": "APL",
+  "scripts": {
+    "build": "babel src/js --out-dir www",
+    "build:watch": "nodemon -w ./src/js -e js -x npm run build",
+    "test": "jasmine-node --color spec"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.10.1",
+    "babel-core": "^6.10.4",
+    "babel-eslint": "^6.1.0",
+    "babel-preset-es2015": "^6.9.0",
+    "eslint": "^2.13.1",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.9.2",
+    "eslint-plugin-jsx-a11y": "^1.5.3",
+    "eslint-plugin-react": "^5.2.2",
+    "jasmine-node": "1.14.5",
+    "nodemon": "^1.9.2"
+  }
 }
