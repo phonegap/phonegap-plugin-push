@@ -60,7 +60,7 @@ public class PushHandlerActivity extends Activity implements PushConstants {
 
             originalExtras.putBoolean(FOREGROUND, false);
             originalExtras.putBoolean(COLDSTART, !isPushPluginActive);
-            originalExtras.putString(CALLBACK, extras.getString("callback"));
+            originalExtras.putString(ACTION_CALLBACK, extras.getString(CALLBACK));
 
             PushPlugin.sendExtras(originalExtras);
         }

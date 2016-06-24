@@ -34,7 +34,7 @@ var PushNotification = function(options) {
     var success = function(result) {
         if (result && typeof result.registrationId !== 'undefined') {
             that.emit('registration', result);
-        } else if (result && result.additionalData && typeof result.additionalData.callback !== 'undefined') {
+        } else if (result && result.additionalData && typeof result.additionalData.actionCallback !== 'undefined') {
             var executeFunctionByName = function(functionName, context /*, args */) {
                 var args = Array.prototype.slice.call(arguments, 2);
                 var namespaces = functionName.split('.');
@@ -45,7 +45,7 @@ var PushNotification = function(options) {
                 return context[func].apply(context, args);
             };
 
-            executeFunctionByName(result.additionalData.callback, window, result);
+            executeFunctionByName(result.additionalData.actionCallback, window, result);
         } else if (result) {
             that.emit('notification', result);
         }

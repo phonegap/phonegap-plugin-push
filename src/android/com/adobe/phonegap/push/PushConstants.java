@@ -15,6 +15,7 @@ public interface PushConstants {
     public static final String VIBRATE = "vibrate";
     public static final String ACTIONS = "actions";
     public static final String CALLBACK = "callback";
+    public static final String ACTION_CALLBACK = "actionCallback";
     public static final String DRAWABLE = "drawable";
     public static final String MSGCNT = "msgcnt";
     public static final String VIBRATION_PATTERN = "vibrationPattern";
