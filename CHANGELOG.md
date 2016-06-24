@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.7.2](https://github.com/phonegap/phonegap-plugin-push/tree/1.7.2) (2016-06-24)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.7.1...1.7.2)
+
+**Closed issues:**
+
+- FYI: Resumed iOS 10 Notifications results in an error [\#1002](https://github.com/phonegap/phonegap-plugin-push/issues/1002)
+
 ## [1.7.1](https://github.com/phonegap/phonegap-plugin-push/tree/1.7.1) (2016-06-17)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.7.0...1.7.1)
 
