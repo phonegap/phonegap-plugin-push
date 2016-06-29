@@ -116,13 +116,21 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         } catch (JSONException e) {
                             Log.d(LOG_TAG, "no iconColor option");
                         }
+                        
+                        boolean clearBadge = jo.optBoolean(CLEAR_BADGE, false);
+                        if (clearBadge) {
+                            setApplicationIconBadgeNumber(getApplicationContext(), 0);
+                        }
+
                         editor.putBoolean(SOUND, jo.optBoolean(SOUND, true));
                         editor.putBoolean(VIBRATE, jo.optBoolean(VIBRATE, true));
+                        editor.putBoolean(CLEAR_BADGE, clearBadge);
                         editor.putBoolean(CLEAR_NOTIFICATIONS, jo.optBoolean(CLEAR_NOTIFICATIONS, true));
                         editor.putBoolean(FORCE_SHOW, jo.optBoolean(FORCE_SHOW, false));
                         editor.putString(SENDER_ID, senderID);
                         editor.putString(REGISTRATION_ID, token);
                         editor.commit();
+
                     }
 
                     if (gCachedExtras != null) {
@@ -149,6 +157,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.remove(SOUND);
                             editor.remove(VIBRATE);
+                            editor.remove(CLEAR_BADGE);
                             editor.remove(CLEAR_NOTIFICATIONS);
                             editor.remove(FORCE_SHOW);
                             editor.remove(SENDER_ID);

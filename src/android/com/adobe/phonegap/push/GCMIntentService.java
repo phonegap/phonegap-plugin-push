@@ -65,8 +65,13 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
             SharedPreferences prefs = getApplicationContext().getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
             boolean forceShow = prefs.getBoolean(FORCE_SHOW, false);
+            boolean clearBadge = prefs.getBoolean(CLEAR_BADGE, false);
 
             extras = normalizeExtras(extras);
+
+            if (clearBadge) {
+                PushPlugin.setApplicationIconBadgeNumber(getApplicationContext(), 0);
+            }
 
             // if we are in the foreground and forceShow is `false` only send data
             if (!forceShow && PushPlugin.isInForeground()) {
