@@ -42,7 +42,7 @@ Attribute | Type | Default | Description
 `android.iconColor` | `string` | | Optional. Sets the background color of the small icon on Android 5.0 and greater. [Supported Formats](http://developer.android.com/reference/android/graphics/Color.html#parseColor(java.lang.String))
 `android.sound` | `boolean` | `true` | Optional. If `true` it plays the sound specified in the push data or the default system sound.
 `android.vibrate` | `boolean` | `true` | Optional. If `true` the device vibrates on receipt of notification.
-`android.clearBadge` | `boolean` | `true` | Optional. If `true` the icon badge will be cleared on init and before push messages are processed.
+`android.clearBadge` | `boolean` | `false` | Optional. If `true` the icon badge will be cleared on init and before push messages are processed.
 `android.clearNotifications` | `boolean` | `true` | Optional. If `true` the app clears all pending notifications when it is closed.
 `android.forceShow` | `boolean` | `false` | Optional. Controls the behavior of the notification when app is in foreground. If `true` and app is in foreground, it will show a notification in the notification drawer, the same way as when the app is in background (and `on('notification')` callback will be called *only when the user clicks the notification*). When `false` and app is in foreground, the `on('notification')` callback will be called immediately.
 `android.topics` | `array` | `[]` | Optional. If the array contains one or more strings each string will be used to subscribe to a GcmPubSub topic.
