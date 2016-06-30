@@ -691,6 +691,7 @@ This will produce the following notification in your tray:
 
 ![2015-08-25 16 08 00](https://cloud.githubusercontent.com/assets/353180/9472260/3655fa7a-4b22-11e5-8d87-20528112de16.png)
 
+> Note: When the notification arrives you will see the title and message like normally. You will only see the picture when the notification is expanded. Once expanded not only will you see the picture but the message portion will disappear and you'll see the summary text portion.
 
 ## Background Notifications
 
