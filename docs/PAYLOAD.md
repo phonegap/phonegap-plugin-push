@@ -832,6 +832,41 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 });
 ```
 
+## Badges
+
+On Android not all launchers support badges. In order for us to set badges we use [ShortcutBadger](https://github.com/leolin310148/ShortcutBadger) in order to set the badge. Check out their website to see which launchers are supported.
+
+In order to set the badge number you will need to include the `badge` property in your push payload as below:
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Badge Test",
+    	"message": "Badges, we don't need no stinking badges",
+    	"badge": 7
+    }
+}
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Badge Test');
+message.addData('message', 'Badges, we don\'t need no stinking badges');
+message.addData('badge', 7);
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
+```
+
 # iOS Behaviour
 
 ## Sound
