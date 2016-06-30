@@ -14,6 +14,7 @@
   - [Picture Messages](#picture-messages)
   - [Background Notifications](#background-notifications)
     - [Use of content-available: true](#use-of-content-available-true)
+  - [Badges](#badges)
 - [iOS Behaviour](#ios-behaviour)
   - [Sound](#sound-1)
   - [Background Notifications](#background-notifications-1)
