@@ -1,5 +1,16 @@
 # Change Log
 
+## [1.7.3](https://github.com/phonegap/phonegap-plugin-push/tree/1.7.3) (2016-07-06)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.7.2...1.7.3)
+
+**Closed issues:**
+
+- Implemented clearBadge for Android [\#1030](https://github.com/phonegap/phonegap-plugin-push/issues/1030)
+- update badge number even if the app is totally closed [\#1027](https://github.com/phonegap/phonegap-plugin-push/issues/1027)
+- Documentation issue of Android pictures push [\#1028](https://github.com/phonegap/phonegap-plugin-push/issues/1028)
+- [iOS] unregister for a topic: parameter is not consistent between ios/android [\#1029](https://github.com/phonegap/phonegap-plugin-push/issues/1029)
+- [doc] Error installing in IOS, version requirement: >=4.1.0 [\#1047](https://github.com/phonegap/phonegap-plugin-push/issues/1047)
+
 ## [1.7.2](https://github.com/phonegap/phonegap-plugin-push/tree/1.7.2) (2016-06-24)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.7.1...1.7.2)
 
