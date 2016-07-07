@@ -1,17 +1,17 @@
 # API
 
 - [.init()](#pushnotificationinitoptions)
-- [.hasPermission()](#pushnotificationhaspermissionsuccesshandler)
+- [.hasPermission() - Android & iOS only](#pushnotificationhaspermissionsuccesshandler---android--ios-only)
 - [push.on()](#pushonevent-callback)
   - [push.on('registration')](#pushonregistration-callback)
   - [push.on('notification')](#pushonnotification-callback)
   - [push.on('error')](#pushonerror-callback)
 - [push.off()](#pushoffevent-callback)
 - [push.unregister()](#pushunregistersuccesshandler-errorhandler-topics)
-- [push.setApplicationIconBadgeNumber()](#pushsetapplicationiconbadgenumbersuccesshandler-errorhandler-count---ios-only)
-- [push.getApplicationIconBadgeNumber()](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios-only)
-- [push.finish()](#pushfinishsuccesshandler-errorhandler-id---ios-only)
-- [push.clearAllNotifications()](#pushclearallnotificationssuccesshandler-errorhandler---ios-android-only)
+- [push.setApplicationIconBadgeNumber() - iOS & Android only](#pushsetapplicationiconbadgenumbersuccesshandler-errorhandler-count---ios--android-only)
+- [push.getApplicationIconBadgeNumber() - iOS only](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios-only)
+- [push.finish() - iOS only](#pushfinishsuccesshandler-errorhandler-id---ios-only)
+- [push.clearAllNotifications() - iOS & Android only](#pushclearallnotificationssuccesshandler-errorhandler---ios--android-only)
 
 ## PushNotification.init(options)
 
@@ -347,7 +347,7 @@ push.finish(function() {
 }, 'push-1');
 ```
 
-## push.clearAllNotifications(successHandler, errorHandler) - iOS, Android only
+## push.clearAllNotifications(successHandler, errorHandler) - iOS & Android only
 
 Tells the OS to clear all notifications from the Notification Center
 
