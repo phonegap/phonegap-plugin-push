@@ -1,5 +1,15 @@
 # Change Log
 
+## [1.9.0](https://github.com/phonegap/phonegap-plugin-push/tree/1.9.0) (2016-07-09)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.7.4...1.9.0)
+
+- 1.7.4 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/6304938aaeadc7080cb7ac7fe9799145f24e408d)
+- Bumping plugin version to 1.7.4 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/98c1d98cb924fa31c08e66deb476b4c687e9c8aa)
+- [doc] Remove stable version from docs [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/3e23bc613207bf39ab3f6e05c667fddc5e75f9d1)
+- Use pluginpub [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/1965f46c450bdd15428d1a8ff3bac3d9edc59722)
+- Issue #1002: FYI: Resumed iOS 10 Notifications results in an error [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/5fa46534249d0b1cab7f44c6918de26af91f7d01)
+- [doc] Fix API.md Table of Contents links (#1056) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/350f7a494b91405281270ec06c74279f75490543)
+
 ## [1.7.4](https://github.com/phonegap/phonegap-plugin-push/tree/v1.7.4) (2016-07-09)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.7.3...v1.7.4)
 
