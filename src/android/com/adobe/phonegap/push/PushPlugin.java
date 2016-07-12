@@ -210,6 +210,40 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                     callbackContext.success();
                 }
             });
+        } else if (SUBSCRIBE.equals(action)){
+            // Subscribing for a topic
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {                    
+                    try {
+                        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
+                        String token = sharedPref.getString(REGISTRATION_ID, "");
+                        String topic = data.getString(0);
+                        subscribeToTopic(topic, token);
+                        callbackContext.success();                        
+                    } catch (JSONException e) {
+                        callbackContext.error(e.getMessage());
+                    } catch (IOException e) {
+                        callbackContext.error(e.getMessage());
+                    }
+                }
+            });
+        } else if (UNSUBSCRIBE.equals(action)){
+            // un-subscribing for a topic
+            cordova.getThreadPool().execute(new Runnable(){
+                public void run() {                    
+                    try {
+                        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
+                        String token = sharedPref.getString(REGISTRATION_ID, "");
+                        String topic = data.getString(0);
+                        unsubscribeFromTopic(topic, token);
+                        callbackContext.success();                        
+                    } catch (JSONException e) {
+                        callbackContext.error(e.getMessage());
+                    } catch (IOException e) {
+                        callbackContext.error(e.getMessage());
+                    }
+                }
+            });
         } else {
             Log.e(LOG_TAG, "Invalid action : " + action);
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
@@ -293,20 +327,42 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         notificationManager.cancelAll();
     }
 
-    private void subscribeToTopics(JSONArray topics, String registrationToken) {
+    /**
+    * Transform `topic name` to `topic path`
+    * Normally, the `topic` inputed from end-user is `topic name` only.
+    * We should convert them to GCM `topic path`
+    * Example: 
+    *  when	    topic name = 'my-topic'
+    *  then	    topic path = '/topics/my-topic'
+    *
+    * @param    String  topic The topic name
+    * @return           The topic path
+    */
+    private String getTopicPath(String topic)
+    {
+        return "/topics/" + topic;
+    }
+
+    private void subscribeToTopics(JSONArray topics, String registrationToken) throws IOException {
         if (topics != null) {
             String topic = null;
             for (int i=0; i<topics.length(); i++) {
-                try {
-                    topic = topics.optString(i, null);
-                    if (topic != null) {
-                        Log.d(LOG_TAG, "Subscribing to topic: " + topic);
-                        GcmPubSub.getInstance(getApplicationContext()).subscribe(registrationToken, "/topics/" + topic, null);
-                    }
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "Failed to subscribe to topic: " + topic, e);
-                }
+                topic = topics.optString(i, null);
+                subscribeToTopic(topic, registrationToken);
             }
+        }
+    }
+
+    private void subscribeToTopic(String topic, String registrationToken) throws IOException
+    {
+        try {
+            if (topic != null) {
+                Log.d(LOG_TAG, "Subscribing to topic: " + topic);
+                GcmPubSub.getInstance(getApplicationContext()).subscribe(registrationToken, getTopicPath(topic), null);
+            }
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Failed to subscribe to topic: " + topic, e);
+			throw e;
         }
     }
 
@@ -318,12 +374,25 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                     topic = topics.optString(i, null);
                     if (topic != null) {
                         Log.d(LOG_TAG, "Unsubscribing to topic: " + topic);
-                        GcmPubSub.getInstance(getApplicationContext()).unsubscribe(registrationToken, "/topics/" + topic);
+                        GcmPubSub.getInstance(getApplicationContext()).unsubscribe(registrationToken, getTopicPath(topic));
                     }
                 } catch (IOException e) {
                     Log.e(LOG_TAG, "Failed to unsubscribe to topic: " + topic, e);
                 }
             }
+        }
+    }
+
+    private void unsubscribeFromTopic(String topic, String registrationToken) throws IOException
+    {
+        try {
+            if (topic != null) {
+                Log.d(LOG_TAG, "Unsubscribing to topic: " + topic);
+                GcmPubSub.getInstance(getApplicationContext()).unsubscribe(registrationToken, getTopicPath(topic));
+            }
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Failed to unsubscribe to topic: " + topic, e);
+			throw e;
         }
     }
 
