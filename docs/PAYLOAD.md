@@ -8,6 +8,7 @@
   - [Stacking](#stacking)
   - [Inbox Stacking](#inbox-stacking)
   - [Action Buttons](#action-buttons)
+    - [In Line Replies](#in-line-replies)
   - [Led in Notifications](#led-in-notifications)
   - [Vibration Pattern in Notifications](#vibration-pattern-in-notifications)
   - [Priority in Notifications](#priority-in-notifications)
@@ -548,7 +549,84 @@ This will produce the following notification in your tray:
 
 If your users clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed. In this case it is `app.emailGuests` and `app.snooze` respectively. If you set the `foreground` property to `true` the app will be brought to the front, if `foreground` is `false` then the callback is run without the app being brought to the foreground.
 
-### Attributes
+### In Line Replies
+
+Android N introduces a new capability for push notifications, the in line reply text field. If you wish to get some text data from the user when the action button is called send the following type of payload:
+
+Your notification can include action buttons. If you wish to include an icon along with the button name they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from GCM:
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "AUX Scrum",
+    	"message": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
+        "actions": [
+    		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests", "foreground": false, "inline": true },
+    		{ "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze", "foreground": false}
+    	]
+    }
+}
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'AUX Scrum');
+message.addData('message', 'Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.');
+message.addData('actions', [
+    { "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests", "foreground": false, "inline": true},
+    { "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze", "foreground": false},
+]);
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
+```
+
+On Android M and earlier the action buttons will work exactly the same as before but on Android N and greater when the user clicks on the Email Guests button you will see the following:
+
+![inline_reply](https://cloud.githubusercontent.com/assets/353180/17107608/f35c208e-525d-11e6-94de-a3590c6f500d.png)
+
+Then your app's `on('notification')` event handler will be called without the app being brought to the foreground and the event data would be:
+
+```
+{
+  "title": "AUX Scrum",
+  "message": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
+  "additionalData": {
+    "inlineReply": "Sounds good",
+    "actions": [
+      {
+        "inline": true,
+        "callback": "app.accept",
+        "foreground": false,
+        "title": "Accept"
+      },
+      {
+        "icon": "snooze",
+        "callback": "app.reject",
+        "foreground": false,
+        "title": "Reject"
+      }
+    ],
+    "actionCallback": "app.accept",
+    "coldstart": false,
+    "collapse_key": "do_not_collapse",
+    "foreground": false
+  }
+}
+```
+
+and the text data that the user typed would be located in `data.additionalData.inlineReply`.
+
+#### Attributes
 
 Attribute | Type | Default | Description
 --------- | ---- | ------- | -----------
@@ -556,6 +634,7 @@ Attribute | Type | Default | Description
 `title` | `string` | | Required. The label to display for the action button.
 `callback` | `string` | | Required. The function to be executed when the action button is pressed. The function must be accessible from the global namespace. If you provide `myCallback` then it amounts to calling `window.myCallback`. If you provide `app.myCallback` then there needs to be an object call `app`, with a function called `myCallback` accessible from the global namespace, i.e. `window.app.myCallback`.
 `foreground` | `boolean` | `true` | Optional. Whether or not to bring the app to the foreground when the action button is pressed.
+`inline` | `boolean` | `false` | Optional. Whether or not to provide a quick reply text field to the user when the button is clicked.
 
 ## Led in Notifications
 

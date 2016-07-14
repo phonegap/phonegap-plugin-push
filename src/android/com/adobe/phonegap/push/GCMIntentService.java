@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.NotificationCompat.WearableExtender;
+import android.support.v4.app.RemoteInput;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -363,8 +364,15 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         mNotificationManager.notify(appName, notId, mBuilder.build());
     }
 
+    private void updateIntent(Intent intent, String callback, Bundle extras, boolean foreground, int notId) {
+        intent.putExtra(CALLBACK, callback);
+        intent.putExtra(PUSH_BUNDLE, extras);
+        intent.putExtra(FOREGROUND, foreground);
+        intent.putExtra(NOT_ID, notId);
+    }
+
     private void createActions(Bundle extras, NotificationCompat.Builder mBuilder, Resources resources, String packageName, int notId) {
-        Log.d(LOG_TAG, "create actions");
+        Log.d(LOG_TAG, "create actions: with in-line");
         String actions = extras.getString(ACTIONS);
         if (actions != null) {
             try {
@@ -375,30 +383,62 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                     JSONObject action = actionsArray.getJSONObject(i);
                     Log.d(LOG_TAG, "adding callback = " + action.getString(CALLBACK));
                     boolean foreground = action.optBoolean(FOREGROUND, true);
+                    boolean inline = action.optBoolean("inline", false);
                     Intent intent = null;
                     PendingIntent pIntent = null;
-                    if (foreground) {
+                    if (inline) {
+                        Log.d(LOG_TAG, "Version: " + android.os.Build.VERSION.SDK_INT + " = " + android.os.Build.VERSION_CODES.M);
+                        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.M) {
+                            Log.d(LOG_TAG, "push activity");
+                            intent = new Intent(this, PushHandlerActivity.class);
+                        } else {
+                            Log.d(LOG_TAG, "push receiver");
+                            intent = new Intent(this, BackgroundActionButtonHandler.class);
+                        }
+
+                        updateIntent(intent, action.getString(CALLBACK), extras, foreground, notId);
+
+                        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.M) {
+                            Log.d(LOG_TAG, "push activity");
+                            pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
+                        } else {
+                            Log.d(LOG_TAG, "push receiver");
+                            pIntent = PendingIntent.getBroadcast(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
+                        }
+                    } else if (foreground) {
                         intent = new Intent(this, PushHandlerActivity.class);
-                        intent.putExtra(CALLBACK, action.getString(CALLBACK));
-                        intent.putExtra(PUSH_BUNDLE, extras);
-                        intent.putExtra(FOREGROUND, foreground);
-                        intent.putExtra(NOT_ID, notId);
+                        updateIntent(intent, action.getString(CALLBACK), extras, foreground, notId);
                         pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     } else {
                         intent = new Intent(this, BackgroundActionButtonHandler.class);
-                        intent.putExtra(CALLBACK, action.getString(CALLBACK));
-                        intent.putExtra(PUSH_BUNDLE, extras);
-                        intent.putExtra(FOREGROUND, foreground);
-                        intent.putExtra(NOT_ID, notId);
+                        updateIntent(intent, action.getString(CALLBACK), extras, foreground, notId);
                         pIntent = PendingIntent.getBroadcast(this, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     }
-                    NotificationCompat.Action wAction =
-                            new NotificationCompat.Action.Builder(resources.getIdentifier(action.optString(ICON, ""), DRAWABLE, packageName),
-                                    action.getString(TITLE), pIntent)
-                                    .build();
-                    wActions.add(wAction);
-                    mBuilder.addAction(resources.getIdentifier(action.optString(ICON, ""), DRAWABLE, packageName),
+
+                    NotificationCompat.Action.Builder actionBuilder =
+                        new NotificationCompat.Action.Builder(resources.getIdentifier(action.optString(ICON, ""), DRAWABLE, packageName),
                             action.getString(TITLE), pIntent);
+
+                    RemoteInput remoteInput = null;
+                    if (inline) {
+                        Log.d(LOG_TAG, "create remote input");
+                        String replyLabel = "Enter your reply here";
+                        remoteInput =
+                                new RemoteInput.Builder(INLINE_REPLY)
+                                .setLabel(replyLabel)
+                                .build();
+                        actionBuilder.addRemoteInput(remoteInput);
+                    }
+
+                    NotificationCompat.Action wAction = actionBuilder.build();
+                    wActions.add(actionBuilder.build());
+
+                    if (inline) {
+                        mBuilder.addAction(wAction);
+                    } else {
+                        mBuilder.addAction(resources.getIdentifier(action.optString(ICON, ""), DRAWABLE, packageName),
+                                action.getString(TITLE), pIntent);
+                    }
                     wAction = null;
                     pIntent = null;
                 }
