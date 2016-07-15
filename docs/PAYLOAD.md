@@ -22,6 +22,7 @@
   - [Action Buttons](#action-buttons-1)
     - [Action Buttons using GCM on iOS](#action-buttons-using-gcm-on-ios)
     - [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
+    - [Application force closed](#application-force-closed)
 - [Windows Behaviour](#windows-behaviour)
   - [Notifications](#notifications)
   - [Setting Toast Capable Option for Windows](#setting-toast-capable-option-for-windows)
@@ -801,6 +802,9 @@ These phones have a particular quirk that when the app is force closed that you 
 - On your Huawei device go to Settings > Protected apps > check "My App" where.
 - On your Xiaomi makes sure your phone has the "Auto-start" property enabled for your app.
 
+### Application force closed
+
+It is possible to add `force-start: true` to the data payload to restart application in background even if force closed.
 
 ## Visibility of Notifications
 

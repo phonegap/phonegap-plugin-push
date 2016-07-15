@@ -59,4 +59,6 @@ public interface PushConstants {
     public static final String SET_APPLICATION_ICON_BADGE_NUMBER = "setApplicationIconBadgeNumber";
     public static final String CLEAR_ALL_NOTIFICATIONS = "clearAllNotifications";
     public static final String VISIBILITY = "visibility";
+    public static final String START_ON_BACKGROUND = "start-on-background";
+    public static final String FORCE_START = "force-start";
 }
