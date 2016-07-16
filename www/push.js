@@ -140,6 +140,7 @@ PushNotification.prototype.getApplicationIconBadgeNumber = function(successCallb
  */
 
 PushNotification.prototype.clearAllNotifications = function(successCallback, errorCallback) {
+    if (!successCallback) { successCallback = function() {}; }
     if (!errorCallback) { errorCallback = function() {}; }
 
     if (typeof errorCallback !== 'function')  {
