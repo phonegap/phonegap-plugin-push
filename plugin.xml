@@ -111,13 +111,13 @@
         <!--  Start FCM Related Files -->
         <header-file target-dir="FCM/Headers" src="src/ios/Firebase/Headers/Firebase.h" />
 
-        <source-file target-dir="FCM/Libraries" src="src/ios/Firebase/Analytics/FirebaseAnalytics.framework" framework="true" />
-        <source-file target-dir="FCM/Libraries" src="src/ios/Firebase/Analytics/FirebaseInstanceID.framework" framework="true" />
-        <source-file target-dir="FCM/Libraries" src="src/ios/Firebase/Analytics/GoogleInterchangeUtilities.framework" framework="true" />
-        <source-file target-dir="FCM/Libraries" src="src/ios/Firebase/Analytics/GoogleSymbolUtilities.framework" framework="true" />
-        <source-file target-dir="FCM/Libraries" src="src/ios/Firebase/Analytics/GoogleUtilities.framework" framework="true" />
-        <source-file target-dir="FCM/Libraries" src="src/ios/Firebase/Messaging/FirebaseMessaging.framework" framework="true" />
-        <source-file target-dir="FCM/Libraries" src="src/ios/Firebase/Messaging/GoogleIPhoneUtilities.framework" framework="true" />
+        <framework src="src/ios/Firebase/Analytics/FirebaseAnalytics.framework" custom="true" />
+        <framework src="src/ios/Firebase/Analytics/FirebaseInstanceID.framework" custom="true" />
+        <framework src="src/ios/Firebase/Analytics/GoogleInterchangeUtilities.framework" custom="true" />
+        <framework src="src/ios/Firebase/Analytics/GoogleSymbolUtilities.framework" custom="true" />
+        <framework src="src/ios/Firebase/Analytics/GoogleUtilities.framework" custom="true" />
+        <framework src="src/ios/Firebase/Messaging/FirebaseMessaging.framework" custom="true" />
+        <framework src="src/ios/Firebase/Messaging/GoogleIPhoneUtilities.framework" custom="true" />
         <!--  End FCM Related Files -->
 	</platform>
 
