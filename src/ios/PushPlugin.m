@@ -52,7 +52,6 @@
 
 -(void)initRegistration;
 {
-
     NSString * registrationToken = [[FIRInstanceID instanceID] token];
 
     if (registrationToken != nil) {
@@ -439,7 +438,11 @@
     [results setValue:dev.model forKey:@"deviceModel"];
     [results setValue:dev.systemVersion forKey:@"deviceSystemVersion"];
 
-    if(![self usesFCM]) {
+    if([self usesFCM]) {
+
+        NSLog(@"token FCM %@",[[FIRInstanceID instanceID] token]);
+
+    } else {
         [self registerWithToken: token];
     }
 #endif
