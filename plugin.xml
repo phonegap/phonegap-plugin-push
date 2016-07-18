@@ -12,6 +12,7 @@
     Android uses Firebase Cloud Messaging.
     iOS uses Apple APNS Notifications.
     Windows uses Microsoft WNS Notifications.
+<<<<<<< HEAD
   </description>
 
   <license>MIT</license>
@@ -115,8 +116,19 @@
     <framework src="AddressBook.framework"/>
     <framework src="libsqlite3.tbd"/>
     <framework src="libz.tbd"/>
-    <framework src="GoogleCloudMessaging" type="podspec" spec="~> 1.2.0"/>
-    <framework src="GGLInstanceID" type="podspec" spec="~> 1.2.1"/>
+    <!-- framework src="GoogleCloudMessaging" type="podspec" spec="~> 1.2.0"/>
+    <framework src="GGLInstanceID" type="podspec" spec="~> 1.2.1"/ -->
+    <!--  Start FCM Related Files -->
+    <header-file target-dir="FCM/Headers" src="src/ios/Firebase/Headers/Firebase.h" />
+
+    <source-file target-dir="FCM/Libraries" src="src/ios/Firebase/Analytics/FirebaseAnalytics.framework" framework="true" />
+    <source-file target-dir="FCM/Libraries" src="src/ios/Firebase/Analytics/FirebaseInstanceID.framework" framework="true" />
+    <source-file target-dir="FCM/Libraries" src="src/ios/Firebase/Analytics/GoogleInterchangeUtilities.framework" framework="true" />
+    <source-file target-dir="FCM/Libraries" src="src/ios/Firebase/Analytics/GoogleSymbolUtilities.framework" framework="true" />
+    <source-file target-dir="FCM/Libraries" src="src/ios/Firebase/Analytics/GoogleUtilities.framework" framework="true" />
+    <source-file target-dir="FCM/Libraries" src="src/ios/Firebase/Messaging/FirebaseMessaging.framework" framework="true" />
+    <source-file target-dir="FCM/Libraries" src="src/ios/Firebase/Messaging/GoogleIPhoneUtilities.framework" framework="true" />
+    <!--  End FCM Related Files -->
   </platform>
   <platform name="windows">
     <hook type="after_plugin_install" src="hooks/windows/setToastCapable.js"/>
