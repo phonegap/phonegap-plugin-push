@@ -29,7 +29,7 @@
 
 @protocol GGLInstanceIDDelegate;
 @protocol GCMReceiverDelegate;
-@interface PushPlugin : CDVPlugin<GGLInstanceIDDelegate, GCMReceiverDelegate>
+@interface PushPlugin : CDVPlugin
 {
     NSDictionary *notificationMessage;
     BOOL    isInline;
@@ -69,7 +69,7 @@
 - (void)didDeleteMessagesOnServer;
 
 //  GCM Features
-@property(nonatomic, assign) BOOL usesGCM;
+@property(nonatomic, assign) BOOL usesFCM;
 @property(nonatomic, strong) NSNumber* gcmSandbox;
 @property(nonatomic, strong) NSString *gcmSenderId;
 @property(nonatomic, strong) NSDictionary *gcmRegistrationOptions;
