@@ -12,7 +12,6 @@
     Android uses Firebase Cloud Messaging.
     iOS uses Apple APNS Notifications.
     Windows uses Microsoft WNS Notifications.
-<<<<<<< HEAD
   </description>
 
   <license>MIT</license>
