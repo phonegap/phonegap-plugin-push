@@ -52,7 +52,6 @@
 
 -(void)initRegistration;
 {
-
     NSString * registrationToken = [[FIRInstanceID instanceID] token];
 
     if (registrationToken != nil) {
