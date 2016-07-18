@@ -27,8 +27,7 @@
 #define GMP_NO_MODULES true
 
 #import "PushPlugin.h"
-#import "GoogleCloudMessaging.h"
-#import "GGLInstanceIDHeaders.h"
+#import "Firebase.h"
 
 @implementation PushPlugin : CDVPlugin
 
@@ -42,7 +41,7 @@
 @synthesize clearBadge;
 @synthesize handlerObj;
 
-@synthesize usesGCM;
+@synthesize usesFCM;
 @synthesize gcmSandbox;
 @synthesize gcmSenderId;
 @synthesize gcmRegistrationOptions;
@@ -62,22 +61,8 @@
             if (topics != nil) {
                 for (NSString *topic in topics) {
                     NSLog(@"subscribe from topic: %@", topic);
-                    id pubSub = [GCMPubSub sharedInstance];
-                    [pubSub subscribeWithToken: [weakSelf gcmRegistrationToken]
-                        topic:[NSString stringWithFormat:@"/topics/%@", topic]
-                        options:nil
-                        handler:^void(NSError *error) {
-                            if (error) {
-                                if (error.code == 3001) {
-                                    NSLog(@"Already subscribed to %@", topic);
-                                } else {
-                                    NSLog(@"Failed to subscribe to topic %@: %@", topic, error);
-                                }
-                            }
-                            else {
-                                NSLog(@"Successfully subscribe to topic %@", topic);
-                            }
-                    }];
+                    id pubSub = [FIRInstanceID instanceID];
+                    [pubSub subscribeToTopic:[NSString stringWithFormat:@"/topics/%@", topic]];
                 }
             }
 
@@ -89,31 +74,29 @@
     };
 }
 
-//  GCM refresh token
+//  FCM refresh token
 //  Unclear how this is testable under normal circumstances
 - (void)onTokenRefresh {
 #if !TARGET_IPHONE_SIMULATOR
     // A rotation of the registration tokens is happening, so the app needs to request a new token.
-    NSLog(@"The GCM registration token needs to be changed.");
-    [[GGLInstanceID sharedInstance] tokenWithAuthorizedEntity:[self gcmSenderId]
-                                                        scope:kGGLInstanceIDScopeGCM
-                                                      options:[self gcmRegistrationOptions]
-                                                      handler:[self gcmRegistrationHandler]];
+    NSLog(@"The FCM registration token needs to be changed.");
+    [[FIRInstanceID instanceID] token];
+    [self gcmRegistrationHandler];
 #endif
 }
 
-- (void)willSendDataMessageWithID:(NSString *)messageID error:(NSError *)error {
-    NSLog(@"willSendDataMessageWithID");
-    if (error) {
-        // Failed to send the message.
-    } else {
-        // Will send message, you can save the messageID to track the message
-    }
+// contains error info
+- (void)sendDataMessageFailure:(NSNotification *)notification {
+    NSString *messageID = (NSString *)notification.object;
+    NSDictionary *userInfo = notification.userInfo;
+    NSLog(@"sendDataMessageFailure");
+    // Did fail send message
 }
-
-- (void)didSendDataMessageWithID:(NSString *)messageID {
-    NSLog(@"willSendDataMessageWithID");
-    // Did successfully send message identified by messageID
+- (void)sendDataMessageSuccess:(NSNotification *)notification {
+    NSString *messageID = (NSString *)notification.object;
+    NSDictionary *userInfo = notification.userInfo;
+    NSLog(@"sendDataMessageSuccess");
+    // Did successfully send message
 }
 
 - (void)didDeleteMessagesOnServer {
@@ -128,20 +111,10 @@
     NSArray* topics = [command argumentAtIndex:0];
 
     if (topics != nil) {
-        id pubSub = [GCMPubSub sharedInstance];
+        id pubSub = [FIRInstanceID instanceID];
         for (NSString *topic in topics) {
             NSLog(@"unsubscribe from topic: %@", topic);
-            [pubSub unsubscribeWithToken: [self gcmRegistrationToken]
-                topic:[NSString stringWithFormat:@"/topics/%@", topic]
-                options:nil
-                handler:^void(NSError *error) {
-                    if (error) {
-                        NSLog(@"Failed to unsubscribe from topic %@: %@", topic, error);
-                    }
-                    else {
-                        NSLog(@"Successfully unsubscribe from topic %@", topic);
-                    }
-            }];
+            [pubSub unsubscribeFromTopic:topic];
         }
     } else {
         [[UIApplication sharedApplication] unregisterForRemoteNotifications];
@@ -207,6 +180,22 @@
 
 - (void)init:(CDVInvokedUrlCommand*)command;
 {
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self selector:@selector(onTokenRefresh)
+     name:kFIRInstanceIDTokenRefreshNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self selector:@selector(sendDataMessageFailure:)
+     name:FIRMessagingSendErrorNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self selector:@selector(sendDataMessageSuccess:)
+     name:FIRMessagingSendSuccessNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self selector:@selector(didDeleteMessagesOnServer)
+     name:FIRMessagingMessagesDeletedNotification object:nil];
+
     [self.commandDelegate runInBackground:^ {
 
         NSLog(@"Push Plugin register called");
@@ -350,19 +339,22 @@
 
         //  GCM options
         [self setGcmSenderId: [iosOptions objectForKey:@"senderID"]];
-        NSLog(@"GCM Sender ID %@", gcmSenderId);
+        NSLog(@"FCM Sender ID %@", gcmSenderId);
         if([[self gcmSenderId] length] > 0) {
-            NSLog(@"Using GCM Notification");
-            [self setUsesGCM: YES];
+            NSLog(@"Using FCM Notification");
+            [self setUsesFCM: YES];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [FIRApp configure];
+            });
             [self initGCMRegistrationHandler];
         } else {
             NSLog(@"Using APNS Notification");
-            [self setUsesGCM:NO];
+            [self setUsesFCM:NO];
         }
         id gcmSandBoxArg = [iosOptions objectForKey:@"gcmSandbox"];
 
         [self setGcmSandbox:@NO];
-        if ([self usesGCM] &&
+        if ([self usesFCM] &&
             (([gcmSandBoxArg isKindOfClass:[NSString class]] && [gcmSandBoxArg isEqualToString:@"true"]) ||
              [gcmSandBoxArg boolValue]))
         {
@@ -460,22 +452,9 @@
     [results setValue:dev.model forKey:@"deviceModel"];
     [results setValue:dev.systemVersion forKey:@"deviceSystemVersion"];
 
-    if([self usesGCM]) {
-        GGLInstanceIDConfig *instanceIDConfig = [GGLInstanceIDConfig defaultConfig];
-        instanceIDConfig.delegate = self;
-        [[GGLInstanceID sharedInstance] startWithConfig:instanceIDConfig];
+    if([self usesFCM]) {
 
-        [self setGcmRegistrationOptions: @{kGGLInstanceIDRegisterAPNSOption:deviceToken,
-                                           kGGLInstanceIDAPNSServerTypeSandboxOption:[self gcmSandbox]}];
-
-        [[GGLInstanceID sharedInstance] tokenWithAuthorizedEntity:[self gcmSenderId]
-                                                            scope:kGGLInstanceIDScopeGCM
-                                                          options:[self gcmRegistrationOptions]
-                                                          handler:[self gcmRegistrationHandler]];
-
-        GCMConfig *gcmConfig = [GCMConfig defaultConfig];
-        gcmConfig.receiverDelegate = self;
-        [[GCMService sharedInstance] startWithConfig:gcmConfig];
+        NSLog(@"token FCM %@",[[FIRInstanceID instanceID] token]);
 
     } else {
         [self registerWithToken: token];
