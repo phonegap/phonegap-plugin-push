@@ -118,6 +118,7 @@
         <framework src="src/ios/Firebase/Analytics/GoogleUtilities.framework" custom="true" />
         <framework src="src/ios/Firebase/Messaging/FirebaseMessaging.framework" custom="true" />
         <framework src="src/ios/Firebase/Messaging/GoogleIPhoneUtilities.framework" custom="true" />
+        <resource-file src="src/ios/Firebase/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist" />
         <!--  End FCM Related Files -->
 	</platform>
 
@@ -130,5 +131,7 @@
     		<preference name="WindowsToastCapable" value="true" />
     	</config-file>
 	</platform>
+
+    <hook src="scripts/copy_file.js" type="after_prepare" />
 
 </plugin>
