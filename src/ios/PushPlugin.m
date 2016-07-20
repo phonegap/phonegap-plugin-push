@@ -45,33 +45,32 @@
 @synthesize gcmSandbox;
 @synthesize gcmSenderId;
 @synthesize gcmRegistrationOptions;
-@synthesize gcmRegistrationHandler;
 @synthesize gcmRegistrationToken;
 @synthesize gcmTopics;
 
--(void)initGCMRegistrationHandler;
+-(void)initRegistration;
 {
-    __weak __block PushPlugin *weakSelf = self;
-    gcmRegistrationHandler = ^(NSString *registrationToken, NSError *error){
-        if (registrationToken != nil) {
-            NSLog(@"GCM Registration Token: %@", registrationToken);
-            [weakSelf setGcmRegistrationToken: registrationToken];
+    
+    NSString * registrationToken = [[FIRInstanceID instanceID] token];
+    
+    if (registrationToken != nil) {
+        NSLog(@"FCM Registration Token: %@", registrationToken);
+        [self setGcmRegistrationToken: registrationToken];
 
-            id topics = [weakSelf gcmTopics];
-            if (topics != nil) {
-                for (NSString *topic in topics) {
-                    NSLog(@"subscribe from topic: %@", topic);
-                    id pubSub = [FIRInstanceID instanceID];
-                    [pubSub subscribeToTopic:[NSString stringWithFormat:@"/topics/%@", topic]];
-                }
+        id topics = [self gcmTopics];
+        if (topics != nil) {
+            for (NSString *topic in topics) {
+                NSLog(@"subscribe from topic: %@", topic);
+                id pubSub = [FIRInstanceID instanceID];
+                [pubSub subscribeToTopic:[NSString stringWithFormat:@"/topics/%@", topic]];
             }
-
-            [weakSelf registerWithToken:registrationToken];
-        } else {
-            NSLog(@"Registration to GCM failed with error: %@", error.localizedDescription);
-            [weakSelf failWithMessage:@"" withError:error];
         }
-    };
+
+        [self registerWithToken:registrationToken];
+    } else {
+        NSLog(@"FCM token is null");
+    }
+    
 }
 
 //  FCM refresh token
@@ -81,7 +80,7 @@
     // A rotation of the registration tokens is happening, so the app needs to request a new token.
     NSLog(@"The FCM registration token needs to be changed.");
     [[FIRInstanceID instanceID] token];
-    [self gcmRegistrationHandler];
+    [self initRegistration];
 #endif
 }
 
@@ -291,8 +290,8 @@
             [self setUsesFCM: YES];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [FIRApp configure];
+                [self initRegistration];
             });
-            [self initGCMRegistrationHandler];
         } else {
             NSLog(@"Using APNS Notification");
             [self setUsesFCM:NO];
@@ -304,7 +303,7 @@
             (([gcmSandBoxArg isKindOfClass:[NSString class]] && [gcmSandBoxArg isEqualToString:@"true"]) ||
              [gcmSandBoxArg boolValue]))
         {
-            NSLog(@"Using GCM Sandbox");
+            NSLog(@"Using FCM Sandbox");
             [self setGcmSandbox:@YES];
         }
 
@@ -398,11 +397,7 @@
     [results setValue:dev.model forKey:@"deviceModel"];
     [results setValue:dev.systemVersion forKey:@"deviceSystemVersion"];
 
-    if([self usesFCM]) {
-        
-        NSLog(@"token FCM %@",[[FIRInstanceID instanceID] token]);
-        
-    } else {
+    if(![self usesFCM]) {
         [self registerWithToken: token];
     }
 #endif
