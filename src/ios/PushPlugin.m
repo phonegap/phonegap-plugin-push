@@ -438,11 +438,7 @@
     [results setValue:dev.model forKey:@"deviceModel"];
     [results setValue:dev.systemVersion forKey:@"deviceSystemVersion"];
 
-    if([self usesFCM]) {
-
-        NSLog(@"token FCM %@",[[FIRInstanceID instanceID] token]);
-
-    } else {
+    if(![self usesFCM]) {
         [self registerWithToken: token];
     }
 #endif
