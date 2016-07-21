@@ -7,6 +7,9 @@
     - [minSdkVersion === 14](#minsdkversion--14)
 	- [Multidex](#multidex)
 	- [More than one library with package name 'com.google.android.gms'](#more-than-one-library-with-package-name-comgoogleandroidgms)
+- [Browser details](#browser-details)
+  - [Browser quirks](#browser-quirks)
+  - [Browser Support](#browser-support)
 - [iOS details](#ios-details)
   - [XCode](#xcode)
   - [Bitcode](#bitcode)
@@ -174,6 +177,17 @@ Alternatively, switch to another plugin that provides the same functionality but
 
 [https://github.com/danwilson/google-analytics-plugin](https://github.com/danwilson/google-analytics-plugin)
 [https://github.com/cmackay/google-analytics-plugin](https://github.com/cmackay/google-analytics-plugin)
+
+## Browser details
+
+### Browser quirks
+
+For the time being push support on the browser will only work using the PhoneGap push server.
+
+### Browser Support
+
+Chrome  49+
+Firefox 46+
 
 ## iOS details
 
