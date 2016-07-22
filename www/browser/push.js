@@ -57,7 +57,7 @@ var PushNotification = function(options) {
 
                 // send encryption keys to push server
                 var xmlHttp = new XMLHttpRequest();
-                var xmlURL = (options.browser.pushServiceURL || 'http://push.api.phongap.com/v1/push') + '/keys';
+                var xmlURL = (options.browser.pushServiceURL || 'http://push.api.phonegap.com/v1/push') + '/keys';
                 xmlHttp.open('POST', xmlURL, true);
 
                 var formData = new FormData();
@@ -112,7 +112,7 @@ PushNotification.prototype.unregister = function(successCallback, errorCallback,
     serviceWorker.unregister().then(function(isSuccess) {
         if (isSuccess) {
             var xmlHttp = new XMLHttpRequest();
-            var xmlURL = (that.options.browser.pushServiceURL || 'http://push.api.phongap.com/v1/push') + '/keys/remove';
+            var xmlURL = (that.options.browser.pushServiceURL || 'http://push.api.phonegap.com/v1/push') + '/keys/remove';
             xmlHttp.open('POST', xmlURL, true);
 
             var formData = new FormData();
