@@ -14,7 +14,7 @@ var push = PushNotification.init({
 		senderID: "12345679"
 	},
     browser: {
-        pushServiceURL: 'https://yourPushServer.com/push'
+        pushServiceURL: 'http://push.api.phongap.com/v1/push'
     },
 	ios: {
 		alert: "true",

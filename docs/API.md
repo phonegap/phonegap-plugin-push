@@ -51,7 +51,7 @@ Attribute | Type | Default | Description
 
 Attribute | Type | Default | Description
 --------- | ---- | ------- | -----------
-`browser.pushServiceURL` | `string` | `http://push.api.phongeap.com/v1/push` | Optional. URL for the push server you want to use.
+`browser.pushServiceURL` | `string` | `http://push.api.phongap.com/v1/push` | Optional. URL for the push server you want to use.
 
 #### iOS
 
@@ -100,7 +100,7 @@ var push = PushNotification.init({
 		senderID: "12345679"
 	},
     browser: {
-        pushServiceURL: 'https://yourPushServer.com/push'
+        pushServiceURL: 'http://push.api.phongap.com/v1/push'
     },
 	ios: {
 		alert: "true",
