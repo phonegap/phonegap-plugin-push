@@ -144,7 +144,7 @@ PushNotification.prototype.setApplicationIconBadgeNumber = function(successCallb
         return;
     }
 
-    exec(successCallback, errorCallback, 'PushNotification', 'setApplicationIconBadgeNumber', [{badge: badge}]);
+    successCallback();
 };
 
 /**
@@ -164,7 +164,7 @@ PushNotification.prototype.getApplicationIconBadgeNumber = function(successCallb
         return;
     }
 
-    exec(successCallback, errorCallback, 'PushNotification', 'getApplicationIconBadgeNumber', []);
+    successCallback();
 };
 
 /**
@@ -184,7 +184,7 @@ PushNotification.prototype.clearAllNotifications = function(successCallback, err
         return;
     }
 
-    exec(successCallback, errorCallback, 'PushNotification', 'clearAllNotifications', []);
+    successCallback();
 };
 
 /**
@@ -268,7 +268,7 @@ PushNotification.prototype.finish = function(successCallback, errorCallback, id)
         return;
     }
 
-    exec(successCallback, errorCallback, 'PushNotification', 'finish', [id]);
+    successCallback();
 };
 
 /*!
@@ -291,7 +291,7 @@ module.exports = {
     },
 
     hasPermission: function(successCallback, errorCallback) {
-        exec(successCallback, errorCallback, 'PushNotification', 'hasPermission', []);
+        successCallback(true);
     },
 
     unregister: function(successCallback, errorCallback, options) {
