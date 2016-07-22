@@ -14,7 +14,7 @@ self.addEventListener('push', function(event) {
     // Need to figure out a way to make these configurable
     var title = obj.title || 'Default title';
     var body = obj.body || 'This is the default body';
-    var icon = 'https://avatars1.githubusercontent.com/u/60365?v=3&s=200';
+    var icon = obj.image || 'https://avatars1.githubusercontent.com/u/60365?v=3&s=200';
     var tag = 'simple-push-demo-notification-tag';
 
     event.waitUntil(

@@ -111,14 +111,12 @@ PushNotification.prototype.unregister = function(successCallback, errorCallback,
 
     serviceWorker.unregister().then(function(isSuccess) {
         if (isSuccess) {
+            var deviceID = subscription.endpoint.substring(subscription.endpoint.lastIndexOf('/') + 1);
             var xmlHttp = new XMLHttpRequest();
-            var xmlURL = (that.options.browser.pushServiceURL || 'http://push.api.phonegap.com/v1/push') + '/keys/remove';
-            xmlHttp.open('POST', xmlURL, true);
-
-            var formData = new FormData();
-            formData.append('subscription', JSON.stringify(subscription));
-
-            xmlHttp.send(formData);
+            var xmlURL = (that.options.browser.pushServiceURL || 'http://push.api.phonegap.com/v1/push')
+                + '/keys/' + deviceID;
+            xmlHttp.open('DELETE', xmlURL, true);
+            xmlHttp.send();
 
             successCallback();
         } else {
