@@ -61,7 +61,7 @@ If you are not creating an Android application you can put in anything for this 
 
 ```
 <plugin name="phonegap-plugin-push" spec="1.6.0">
-    <variable name="SENDER_ID" value="XXXXXXX" />
+    <param name="SENDER_ID" value="XXXXXXX" />
 </plugin>
 ```
 
