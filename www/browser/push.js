@@ -76,6 +76,7 @@ var PushNotification = function(options) {
                 throw new Error('Error subscribing for Push notifications.');
             });
         }).catch(function(error) {
+            console.log(error);
             throw new Error('Error registering Service Worker');
         });
     } else {
@@ -109,20 +110,22 @@ PushNotification.prototype.unregister = function(successCallback, errorCallback,
         };
     }
 
-    serviceWorker.unregister().then(function(isSuccess) {
-        if (isSuccess) {
-            var deviceID = subscription.endpoint.substring(subscription.endpoint.lastIndexOf('/') + 1);
-            var xmlHttp = new XMLHttpRequest();
-            var xmlURL = (that.options.browser.pushServiceURL || 'http://push.api.phonegap.com/v1/push')
-                + '/keys/' + deviceID;
-            xmlHttp.open('DELETE', xmlURL, true);
-            xmlHttp.send();
+    if (serviceWorker) {
+        serviceWorker.unregister().then(function(isSuccess) {
+            if (isSuccess) {
+                var deviceID = subscription.endpoint.substring(subscription.endpoint.lastIndexOf('/') + 1);
+                var xmlHttp = new XMLHttpRequest();
+                var xmlURL = (that.options.browser.pushServiceURL || 'http://push.api.phonegap.com/v1/push')
+                    + '/keys/' + deviceID;
+                xmlHttp.open('DELETE', xmlURL, true);
+                xmlHttp.send();
 
-            successCallback();
-        } else {
-            errorCallback();
-        }
-    });
+                successCallback();
+            } else {
+                errorCallback();
+            }
+        });
+    }
 };
 
 /**
