@@ -1,5 +1,27 @@
 # Change Log
 
+## [v1.8.0](https://github.com/phonegap/phonegap-plugin-push/tree/v1.8.0) (2016-07-09)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.7.4...v1.8.0)
+
+- 1.8.0 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/d5a8480e6e230c959d8079554a6366f3605cb97e)
+- Bumping plugin version to 1.8.0 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/f8c784536e40ce6dddf14edeff7ad2a9ee944156)
+- Check that serviceWorker exists before unregistering [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/ef004002d60d8028ed6aad2cef79d4d8ac6aed49)
+- Populate additionalData on browser platform [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/63a29cdbbc0cd0374552d51e0e2d2217f5361f79)
+- Issue #683:  Support Android N inline reply actions [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/e835ca31ac02a3455ece8c96938260935e2e7100)
+- Issue #1109: Installation.MD has a mistake [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/89834b78a63ad6c927295eb5699204a0ccb49a73)
+- Use push server DELETE route to remove browser keys [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/4615ea694bd5858bfdb8553c9a9390e1e30c2c36)
+- [chore] fix mis-spelling [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/efdef52deec4f7e8b6b4ee87460bd87cc0479c74)
+- Browser: always call success on unimplemented methods [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/1b8bf267674508361c68fb03b12f97608e87456b)
+- Update push url [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/e1d8774f760d7a72a547d68e1b2ac367572e2b6d)
+- Merge branch 'browser' [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/a2ad8da9a25a02a1b674e6adf0a37e18cde185ab)
+- Add browser platform support [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/e8e0fe47001e461cf7fb7274d4c2b3dc687cd90e)
+- Issue #1080: clearAllNotifications not working on iOS [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/4bea2a7469ab2bd677e12d440b457e1d5383b1f0)
+- [whoops] revert accidental commit of a pluginpub test [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/da301e8a43a0a659947294c9d94f7fd09f5ac4b2)
+- [doc] remove deprecation notice on hasPermission [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/d4b79a81c5ad85a4b566e5a23a19b10fa78dcf17)
+- Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/8512a6cb7be3c0bb2b5db813c7aaff4c49fc52a2)
+- Bumping plugin version to 1.9.0 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/b015543b8a06526b7b70357407e635c180c473ee)
+- Update CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/e6f87a50d9f9cb3bd7c9ba599b3d3afbc0fd7aaf)
+
 ## [1.7.4](https://github.com/phonegap/phonegap-plugin-push/tree/v1.7.4) (2016-07-09)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.7.3...v1.7.4)
 
