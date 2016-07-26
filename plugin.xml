@@ -119,8 +119,8 @@
     <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_UIFont+LineHeight.a" framework="false"/>
     <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_core.a" framework="false"/>
     <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTM_iPhone.a" framework="false"/>
-    <source-file target-dir="GCM/Libraries" src="src/ios/GoogleCloudMessaging/Libraries/libGcmLib.a" framework="false"/>
-    <source-file target-dir="GCM/Libraries" src="src/ios/GoogleInterchangeUtilities/Libraries/libProtocolBuffers.a" framework="false"/>
+    <source-file target-dir="GCM/Libraries" src="src/ios/GoogleCloudMessaging/Libraries/libGcmLib.a" framework="true"/>
+    <source-file target-dir="GCM/Libraries" src="src/ios/GoogleInterchangeUtilities/Libraries/libProtocolBuffers.a" framework="true"/>
     <header-file src="src/ios/AppDelegate+notification.h"/>
     <header-file src="src/ios/PushPlugin.h"/>
     <header-file target-dir="GCM/Headers" src="src/ios/GGLInstanceID/Headers/Public/GGLInstanceID.h"/>
