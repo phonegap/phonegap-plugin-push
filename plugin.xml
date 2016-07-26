@@ -138,7 +138,6 @@
     <header-file target-dir="GCM/Headers" src="src/ios/GoogleCloudMessaging/Headers/Public/GCMReceiverDelegate.h"/>
     <header-file target-dir="GCM/Headers" src="src/ios/GoogleCloudMessaging/Headers/Public/GCMService.h"/>
     <header-file target-dir="GCM/Headers" src="src/ios/GoogleCloudMessaging/Headers/Public/GoogleCloudMessaging.h"/>
-    <framework src="AddressBook.framework"/>
     <framework src="libsqlite3.tbd"/>
     <framework src="libz.tbd"/>
   </platform>
