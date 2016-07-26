@@ -95,11 +95,11 @@
     </config-file>
     <source-file src="src/ios/AppDelegate+notification.m"/>
     <source-file src="src/ios/PushPlugin.m"/>
-    <source-file target-dir="GCM/Libraries" src="src/ios/Google/Libraries/libGGLCloudMessaging.a" framework="false"/>
-    <source-file target-dir="GCM/Libraries" src="src/ios/Google/Libraries/libGGLCore.a" framework="false"/>
-    <source-file target-dir="GCM/Libraries" src="src/ios/GGLInstanceID/Libraries/libGGLInstanceIDLib.a" framework="false"/>
-    <source-file target-dir="GCM/Libraries" src="src/ios/GoogleIPhoneUtilities/Libraries/libGIP_Reachability.a" framework="false"/>
-    <source-file target-dir="GCM/Libraries" src="src/ios/GoogleSymbolUtilities/Libraries/libGSDK_Overload.a" framework="false"/>
+    <source-file target-dir="GCM/Libraries" src="src/ios/Google/Libraries/libGGLCloudMessaging.a" framework="true"/>
+    <source-file target-dir="GCM/Libraries" src="src/ios/Google/Libraries/libGGLCore.a" framework="true"/>
+    <source-file target-dir="GCM/Libraries" src="src/ios/GGLInstanceID/Libraries/libGGLInstanceIDLib.a" framework="true"/>
+    <source-file target-dir="GCM/Libraries" src="src/ios/GoogleIPhoneUtilities/Libraries/libGIP_Reachability.a" framework="true"/>
+    <source-file target-dir="GCM/Libraries" src="src/ios/GoogleSymbolUtilities/Libraries/libGSDK_Overload.a" framework="true"/>
     <source-file target-dir="GCM/Libraries" src="src/ios/GoogleNetworkingUtilities/Libraries/libGTMSessionFetcher_core.a" framework="false"/>
     <source-file target-dir="GCM/Libraries" src="src/ios/GoogleNetworkingUtilities/Libraries/libGTMSessionFetcher_full.a" framework="false"/>
     <source-file target-dir="GCM/Libraries" src="src/ios/GoogleUtilities/Libraries/libGTMStackTrace.a" framework="false"/>
