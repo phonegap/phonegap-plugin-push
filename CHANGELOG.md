@@ -1,5 +1,13 @@
 # Change Log
 
+## [v1.8.1](https://github.com/phonegap/phonegap-plugin-push/tree/v1.8.1) (2016-07-09)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.8.0...v1.8.1)
+
+- 1.8.1 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/95c27d29ef37bfd750972561022db53de256840d)
+- Bumping plugin version to 1.8.1 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/e4ba55ff310d4d931503de2547738cc169b6f968)
+- [Windows] Added a check on activation context existence (#1129) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/151c8cd97aa71742798e969dd9e6c2208b8c1f15)
+- Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/4cd4ee00e2eb081d0d29d001e580009fba5c341a)
+
 ## [v1.8.0](https://github.com/phonegap/phonegap-plugin-push/tree/v1.8.0) (2016-07-09)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.7.4...v1.8.0)
 
