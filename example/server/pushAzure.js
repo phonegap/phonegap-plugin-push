@@ -1,7 +1,3 @@
-// ----------------------------------------------------------------------------
-// Copyright (c) 2015 Microsoft Corporation. All rights reserved.
-// ----------------------------------------------------------------------------
-
 /*
 ** Sample Table Definition - this supports the Azure Mobile Apps
 ** TodoItem product
@@ -17,7 +13,7 @@ var table = azureMobileApps.table();
 // In the TodoItem product, sends a push notification
 // when a new item inserted into the table.
 table.insert(function (context) {
-    // For more information about the Notification Hubs JavaScript SDK, 
+    // For more information about the Notification Hubs JavaScript SDK,
     // see http://aka.ms/nodejshubs
     logger.info('Running TodoItem.insert');
 
