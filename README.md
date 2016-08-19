@@ -20,4 +20,5 @@ This plugin offers support to receive and handle native push notifications with 
 
 # Do you like tutorial? You get tutorial!
 
- - [PhoneGap Day EU/US Push Workshop 2016](http://macdonst.github.io/push-workshop/)
+ - [PhoneGap Day US Push Workshop 2016 (using node-gcm)](http://macdonst.github.io/push-workshop/)
+ - [PhoneGap Day EU Push Workshop 2016 (using PhoneGap Push)](http://macdonst.github.io/push-workshop-eu/)
