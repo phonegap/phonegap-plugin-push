@@ -16,3 +16,8 @@ This plugin offers support to receive and handle native push notifications with 
 - [Push notification payload details](docs/PAYLOAD.md)
 - [Contributing](.github/CONTRIBUTING.md)
 - [License (MIT)](MIT-LICENSE)
+
+
+# Do you like tutorial? You get tutorial!
+
+ - [PhoneGap Day EU/US Push Workshop 2016](http://macdonst.github.io/push-workshop/)
