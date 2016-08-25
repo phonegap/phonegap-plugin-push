@@ -45,7 +45,7 @@ The following flowchart attempts to give you a picture of what happens when a pu
 
 - The push plugin receives the data from the remote push service and checks to see if there is a title or message in the data received. If there is then the message will be displayed in the devices notification center.
 - Then the push plugin checks to see if the app is running. If the user has killed the application then no further processing of the push data will occur.
-- If they app is running in the background the push plugin then checks to see if `content-available` exists in the push data.
+- If the app is running in the background the push plugin then checks to see if `content-available` exists in the push data.
 - If `content-available` is set to `1` then the plugin calls all of your `notification` event handlers.
 
 ## User clicks on notification in notification center
@@ -424,7 +424,7 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 });
 ```
 
-You will only see both "Push number 1" and "Push number 2" in the shade.
+You will see both "Push number 1" and "Push number 2" in the shade.
 
 ## Inbox Stacking
 
