@@ -63,12 +63,13 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         Log.d(LOG_TAG, "onMessage - from: " + from);
 
         if (extras != null) {
+            Context applicationContext = getApplicationContext();
 
-            SharedPreferences prefs = getApplicationContext().getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
+            SharedPreferences prefs = applicationContext.getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
             boolean forceShow = prefs.getBoolean(FORCE_SHOW, false);
             boolean clearBadge = prefs.getBoolean(CLEAR_BADGE, false);
 
-            extras = normalizeExtras(extras);
+            extras = normalizeExtras(applicationContext, extras);
 
             if (clearBadge) {
                 PushPlugin.setApplicationIconBadgeNumber(getApplicationContext(), 0);
@@ -87,7 +88,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                 extras.putBoolean(FOREGROUND, true);
                 extras.putBoolean(COLDSTART, false);
 
-                showNotificationIfPossible(getApplicationContext(), extras);
+                showNotificationIfPossible(applicationContext, extras);
             }
             // if we are not in the foreground always send notification if the data has at least a message or title
             else {
@@ -95,7 +96,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                 extras.putBoolean(FOREGROUND, false);
                 extras.putBoolean(COLDSTART, PushPlugin.isActive());
 
-                showNotificationIfPossible(getApplicationContext(), extras);
+                showNotificationIfPossible(applicationContext, extras);
             }
         }
     }
@@ -115,6 +116,48 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             } else {
                 newExtras.putString(newKey, String.valueOf(value));
             }
+        }
+    }
+
+    /*
+     * Normalize localization for key
+     */
+    private void localizeKey(Context context, String key, String value) {
+        if (key.equals(TITLE) || key.equals(MESSAGE) || key.equals(SUMMARY_TEXT)) {
+            try {
+                JSONObject localeObject = new JSONObject(value);
+
+                String localeKey = localeObject.getString("locKey");
+                String localeData = localeObject.getString("locData");
+                ArrayList<String> localeFormatData = new ArrayList<String>();
+
+                if (localeData) {
+                    JSONArray localeDataArray = new JSONArray(localeData);
+                    for (int i = 0 ; i < localeDataArray.length(); i++) {
+                        localeFormatData.add(localeDataArray.getString(i));
+                    }
+                }
+
+                String packageName = context.getPackageName();
+                Resources resources = context.getResources();
+
+                int resourceId = resources.getIdentifier(localeKey, "string", packageName);
+
+                if (resourceId != 0) {
+                    resources.getString(resourceId, localeFormatData.toArray());
+                }
+                else {
+                    Log.d(LOG_TAG, "can't find resource for locale key = " + localeKey);
+
+                    return value;
+                }
+            }
+            catch(JSONException e) {
+                return value;
+            }
+        }
+        else {
+            return value;
         }
     }
 
@@ -143,7 +186,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     /*
      * Parse bundle into normalized keys.
      */
-    private Bundle normalizeExtras(Bundle extras) {
+    private Bundle normalizeExtras(Context context, Bundle extras) {
         Log.d(LOG_TAG, "normalize extras");
         Iterator<String> it = extras.keySet().iterator();
         Bundle newExtras = new Bundle();
@@ -172,6 +215,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
                                 String value = data.getString(jsonKey);
                                 jsonKey = normalizeKey(jsonKey);
+                                value = localizeKey(context, jsonKey, value);
                                 newExtras.putString(jsonKey, value);
                             }
                         }
