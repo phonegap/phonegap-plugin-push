@@ -3,6 +3,7 @@
    - [Background Events](#push-message-arrives-with-app-in-background)
    - [Tap Events](#user-clicks-on-notification-in-notification-center)
 - [Android Behaviour](#android-behaviour)
+  - [Localization](#localization)
   - [Images](#images)
   - [Sound](#sound)
   - [Stacking](#stacking)
@@ -62,6 +63,59 @@ Some ways to handle this *double* event are:
 - include a unique ID in your push so you can check to see if you've already processed this event.
 
 # Android Behaviour
+
+## Localization
+
+Plugin supported localization from resources for: title, message and summaryText.
+
+You may use simple link to locale constant.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+        "title": {"locKey": "push_app_title"},
+        "message": "Simple non-localizable text for message!"
+    }
+}
+```
+
+Or use localization with formatted constants.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+        "title": {"locKey": "push_app_title"},
+        "message": {"locKey": "push_message_fox", "locData": ["fox", "dog"]}
+    }
+}
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', {"locKey": "push_app_title", "locData": ["custom data"]});
+message.addData('message', 'Simple non-localizable text for message!');
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+    if(err) console.error(err);
+    else    console.log(response);
+});
+```
+
+Localization must store in strings.xml
+
+```xml
+<string name="push_app_title">@string/app_name</string>
+<string name="push_message_fox">The quick brown %1$s jumps over the lazy %2$s</string>
+<string name="push_summary_text">%%n%% new message(s)</string>
+```
 
 ## Images
 
