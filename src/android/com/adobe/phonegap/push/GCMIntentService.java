@@ -104,10 +104,12 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     /*
      * Change a values key in the extras bundle
      */
-    private void replaceKey(String oldKey, String newKey, Bundle extras, Bundle newExtras) {
+    private void replaceKey(Context context, String oldKey, String newKey, Bundle extras, Bundle newExtras) {
         Object value = extras.get(oldKey);
         if ( value != null ) {
             if (value instanceof String) {
+                value = localizeKey(context, newKey, (String) value);
+
                 newExtras.putString(newKey, (String) value);
             } else if (value instanceof Boolean) {
                 newExtras.putBoolean(newKey, (Boolean) value);
@@ -122,16 +124,16 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     /*
      * Normalize localization for key
      */
-    private void localizeKey(Context context, String key, String value) {
+    private String localizeKey(Context context, String key, String value) {
         if (key.equals(TITLE) || key.equals(MESSAGE) || key.equals(SUMMARY_TEXT)) {
             try {
                 JSONObject localeObject = new JSONObject(value);
 
                 String localeKey = localeObject.getString("locKey");
-                String localeData = localeObject.getString("locData");
+                
                 ArrayList<String> localeFormatData = new ArrayList<String>();
-
-                if (localeData) {
+                if (!localeObject.isNull("locData")) {
+                    String localeData = localeObject.getString("locData");
                     JSONArray localeDataArray = new JSONArray(localeData);
                     for (int i = 0 ; i < localeDataArray.length(); i++) {
                         localeFormatData.add(localeDataArray.getString(i));
@@ -144,7 +146,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                 int resourceId = resources.getIdentifier(localeKey, "string", packageName);
 
                 if (resourceId != 0) {
-                    resources.getString(resourceId, localeFormatData.toArray());
+                    return resources.getString(resourceId, localeFormatData.toArray());
                 }
                 else {
                     Log.d(LOG_TAG, "can't find resource for locale key = " + localeKey);
@@ -153,12 +155,13 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                 }
             }
             catch(JSONException e) {
+                Log.d(LOG_TAG, "no locale found for key = " + key + ", error " + e.getMessage());
+
                 return value;
             }
         }
-        else {
-            return value;
-        }
+
+        return value;
     }
 
     /*
@@ -216,6 +219,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                                 String value = data.getString(jsonKey);
                                 jsonKey = normalizeKey(jsonKey);
                                 value = localizeKey(context, jsonKey, value);
+
                                 newExtras.putString(jsonKey, value);
                             }
                         }
@@ -233,14 +237,17 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                     String newKey = normalizeKey(notifkey);
                     Log.d(LOG_TAG, "replace key " + notifkey + " with " + newKey);
 
-                    newExtras.putString(newKey, value.getString(notifkey));
+                    String valueData = value.getString(notifkey);
+                    valueData = localizeKey(context, newKey, valueData);
+
+                    newExtras.putString(newKey, valueData);
                 }
                 continue;
             }
 
             String newKey = normalizeKey(key);
             Log.d(LOG_TAG, "replace key " + key + " with " + newKey);
-            replaceKey(key, newKey, extras, newExtras);
+            replaceKey(context, key, newKey, extras, newExtras);
 
         } // while
 
