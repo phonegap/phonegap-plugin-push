@@ -15,6 +15,7 @@
   - [Picture Messages](#picture-messages)
   - [Background Notifications](#background-notifications)
     - [Use of content-available: true](#use-of-content-available-true)
+  - [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
   - [Visibility](#visibility-of-notifications)
   - [Badges](#badges)
 - [iOS Behaviour](#ios-behaviour)
@@ -22,7 +23,7 @@
   - [Background Notifications](#background-notifications-1)
   - [Action Buttons](#action-buttons-1)
     - [Action Buttons using GCM on iOS](#action-buttons-using-gcm-on-ios)
-    - [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
+  - [GCM and Additional Data](#gcm-and-additional-data)
 - [Windows Behaviour](#windows-behaviour)
   - [Notifications](#notifications)
   - [Setting Toast Capable Option for Windows](#setting-toast-capable-option-for-windows)
@@ -1130,6 +1131,53 @@ If you are using GCM to send push messages on iOS you will need to send a differ
     }
 }
 ```
+
+## GCM and Additional Data
+
+GCM on iOS is a different animal. The way you send data via GCM on Android is like:
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "My Title",
+    	"message": "My message",
+    	"key1": "data 1",
+    	"key2": "data 2"
+    }
+}
+```
+
+will produce a `notification` event with the following data:
+
+```javascript
+{
+    "title": "My Title",
+    "message": "My message",
+    "additionalData": {
+        "key1": "data 1",
+        "key2": "data 2"
+    }
+}
+```
+
+but in order for the same `notification` event you would need to send your push to GCM iOS in a slight different format:
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "notification": {
+        "title": "My Title",
+    	"body": "My message"        
+    }
+    "data": {
+    	"key1": "data 1",
+    	"key2": "data 2"
+    }
+}
+```
+
+The `title` and `body` need to be in the `notification` part of the payload in order for the OS to pick them up correctly. Everything else should be in the `data` part of the payload.
 
 # Windows Behaviour
 
