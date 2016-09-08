@@ -1179,6 +1179,21 @@ but in order for the same `notification` event you would need to send your push 
 
 The `title` and `body` need to be in the `notification` part of the payload in order for the OS to pick them up correctly. Everything else should be in the `data` part of the payload.
 
+## GCM Messages Not Arriving
+
+For some users of the plugin they are unable to get messages sent via GCM to show up on their devices. If you are running into this issue try setting the `priority` of the message to `high` in the payload.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "notification": {
+        "title": "My Title",
+    	"body": "My message"        
+    },
+    "priority": "high"
+}
+```
+
 # Windows Behaviour
 
 ## Notifications
