@@ -705,7 +705,7 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 
 ## Priority in Notifications
 
-You can set a priority parameter for your notifications. Just add a `priority` field in your notification. -2: minimum, -1: low, 0: default , 1: high, 2: maximum priority:
+You can set a priority parameter for your notifications. This priority value determines where the push notification will be put in the notification shade. Low-priority notifications may be hidden from the user in certain situations, while the user might be interrupted for a higher-priority notification. Add a `priority` field in your notification. -2: minimum, -1: low, 0: default , 1: high, 2: maximum priority.
 
 ```javascript
 {
@@ -735,6 +735,8 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 	else 	console.log(response);
 });
 ```
+
+Do not confuse this with the GCM option of setting the [delivery priority of the message](https://developers.google.com/cloud-messaging/concept-options#setting-the-priority-of-a-message). Which is used by GCM to tell the device whether or not it should wake up to deal with the message.
 
 ## Picture Messages
 
