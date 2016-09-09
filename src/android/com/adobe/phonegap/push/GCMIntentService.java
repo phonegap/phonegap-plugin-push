@@ -129,11 +129,11 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             try {
                 JSONObject localeObject = new JSONObject(value);
 
-                String localeKey = localeObject.getString("locKey");
+                String localeKey = localeObject.getString(LOC_KEY);
                 
                 ArrayList<String> localeFormatData = new ArrayList<String>();
-                if (!localeObject.isNull("locData")) {
-                    String localeData = localeObject.getString("locData");
+                if (!localeObject.isNull(LOC_DATA)) {
+                    String localeData = localeObject.getString(LOC_DATA);
                     JSONArray localeDataArray = new JSONArray(localeData);
                     for (int i = 0 ; i < localeDataArray.length(); i++) {
                         localeFormatData.add(localeDataArray.getString(i));

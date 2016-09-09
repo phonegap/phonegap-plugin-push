@@ -101,8 +101,10 @@ var apiKey = "replace with API key";
 var deviceID = "my device id";
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
-message.addData('title', {"locKey": "push_app_title", "locData": ["custom data"]});
+message.addData('title', {"locKey": "push_app_title"});
 message.addData('message', 'Simple non-localizable text for message!');
+// Constant with formatted params
+// message.addData('message', {"locKey": "push_message_fox", "locData": ["fox", "dog"]});
 service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
     if(err) console.error(err);
     else    console.log(response);
