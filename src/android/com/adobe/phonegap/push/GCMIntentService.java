@@ -379,6 +379,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                 JSONArray actionsArray = new JSONArray(actions);
                 ArrayList<NotificationCompat.Action> wActions = new ArrayList<NotificationCompat.Action>();
                 for (int i=0; i < actionsArray.length(); i++) {
+                    int uniquePendingIntentRequestCode = i + notId;
                     Log.d(LOG_TAG, "adding action");
                     JSONObject action = actionsArray.getJSONObject(i);
                     Log.d(LOG_TAG, "adding callback = " + action.getString(CALLBACK));
@@ -399,20 +400,20 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                         updateIntent(intent, action.getString(CALLBACK), extras, foreground, notId);
 
                         if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.M) {
-                            Log.d(LOG_TAG, "push activity");
-                            pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
+                            Log.d(LOG_TAG, "push activity for notId " + notId);
+                            pIntent = PendingIntent.getActivity(this, uniquePendingIntentRequestCode, intent, PendingIntent.FLAG_ONE_SHOT);
                         } else {
-                            Log.d(LOG_TAG, "push receiver");
-                            pIntent = PendingIntent.getBroadcast(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
+                            Log.d(LOG_TAG, "push receiver for notId " + notId);
+                            pIntent = PendingIntent.getBroadcast(this, uniquePendingIntentRequestCode, intent, PendingIntent.FLAG_ONE_SHOT);
                         }
                     } else if (foreground) {
                         intent = new Intent(this, PushHandlerActivity.class);
                         updateIntent(intent, action.getString(CALLBACK), extras, foreground, notId);
-                        pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        pIntent = PendingIntent.getActivity(this, uniquePendingIntentRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     } else {
                         intent = new Intent(this, BackgroundActionButtonHandler.class);
                         updateIntent(intent, action.getString(CALLBACK), extras, foreground, notId);
-                        pIntent = PendingIntent.getBroadcast(this, i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        pIntent = PendingIntent.getBroadcast(this, uniquePendingIntentRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     }
 
                     NotificationCompat.Action.Builder actionBuilder =
