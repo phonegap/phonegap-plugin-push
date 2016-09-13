@@ -90,13 +90,18 @@ android update sdk --no-ui --filter "extra"
 To use payload parameter "force-start" this code must be added in MainActivity.java:
 
 ```
+boolean startOnBackground = false;
 Bundle extras = getIntent().getExtras();
 if (extras != null) {
-	boolean startOnBackground = extras.getBoolean(PushConstants.START_ON_BACKGROUND);
+	startOnBackground = extras.getBoolean(PushConstants.START_ON_BACKGROUND);
 	if(startOnBackground) {
 		moveTaskToBack(true);
 	}
 }
+
+// Set by <content src="index.html" /> in config.xml
+loadUrl(launchUrl);
+super.loadUrl("javascript: { window.startOnBackground = "+(startOnBackground?1:0)+"; }");
 ```
 
 right after
