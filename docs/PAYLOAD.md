@@ -3,6 +3,7 @@
    - [Background Events](#push-message-arrives-with-app-in-background)
    - [Tap Events](#user-clicks-on-notification-in-notification-center)
 - [Android Behaviour](#android-behaviour)
+  - [Localization](#localization)
   - [Images](#images)
   - [Sound](#sound)
   - [Stacking](#stacking)
@@ -15,6 +16,7 @@
   - [Picture Messages](#picture-messages)
   - [Background Notifications](#background-notifications)
     - [Use of content-available: true](#use-of-content-available-true)
+  - [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
   - [Visibility](#visibility-of-notifications)
   - [Badges](#badges)
 - [iOS Behaviour](#ios-behaviour)
@@ -22,7 +24,7 @@
   - [Background Notifications](#background-notifications-1)
   - [Action Buttons](#action-buttons-1)
     - [Action Buttons using GCM on iOS](#action-buttons-using-gcm-on-ios)
-    - [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
+  - [GCM and Additional Data](#gcm-and-additional-data)
 - [Windows Behaviour](#windows-behaviour)
   - [Notifications](#notifications)
   - [Setting Toast Capable Option for Windows](#setting-toast-capable-option-for-windows)
@@ -62,6 +64,61 @@ Some ways to handle this *double* event are:
 - include a unique ID in your push so you can check to see if you've already processed this event.
 
 # Android Behaviour
+
+## Localization
+
+Plugin supported localization from resources for: title, message and summaryText.
+
+You may use simple link to locale constant.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+        "title": {"locKey": "push_app_title"},
+        "message": "Simple non-localizable text for message!"
+    }
+}
+```
+
+Or use localization with formatted constants.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+        "title": {"locKey": "push_app_title"},
+        "message": {"locKey": "push_message_fox", "locData": ["fox", "dog"]}
+    }
+}
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', {"locKey": "push_app_title"});
+message.addData('message', 'Simple non-localizable text for message!');
+// Constant with formatted params
+// message.addData('message', {"locKey": "push_message_fox", "locData": ["fox", "dog"]});
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+    if(err) console.error(err);
+    else    console.log(response);
+});
+```
+
+Localization must store in strings.xml
+
+```xml
+<string name="push_app_title">@string/app_name</string>
+<string name="push_message_fox">The quick brown %1$s jumps over the lazy %2$s</string>
+<string name="push_summary_text">%%n%% new message(s)</string>
+```
 
 ## Images
 
@@ -704,7 +761,7 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 
 ## Priority in Notifications
 
-You can set a priority parameter for your notifications. Just add a `priority` field in your notification. -2: minimum, -1: low, 0: default , 1: high, 2: maximum priority:
+You can set a priority parameter for your notifications. This priority value determines where the push notification will be put in the notification shade. Low-priority notifications may be hidden from the user in certain situations, while the user might be interrupted for a higher-priority notification. Add a `priority` field in your notification. -2: minimum, -1: low, 0: default , 1: high, 2: maximum priority.
 
 ```javascript
 {
@@ -734,6 +791,8 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 	else 	console.log(response);
 });
 ```
+
+Do not confuse this with the GCM option of setting the [delivery priority of the message](https://developers.google.com/cloud-messaging/concept-options#setting-the-priority-of-a-message). Which is used by GCM to tell the device whether or not it should wake up to deal with the message.
 
 ## Picture Messages
 
@@ -1128,6 +1187,68 @@ If you are using GCM to send push messages on iOS you will need to send a differ
     	"body": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
         "click-action": "invite"
     }
+}
+```
+
+## GCM and Additional Data
+
+GCM on iOS is a different animal. The way you send data via GCM on Android is like:
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "My Title",
+    	"message": "My message",
+    	"key1": "data 1",
+    	"key2": "data 2"
+    }
+}
+```
+
+will produce a `notification` event with the following data:
+
+```javascript
+{
+    "title": "My Title",
+    "message": "My message",
+    "additionalData": {
+        "key1": "data 1",
+        "key2": "data 2"
+    }
+}
+```
+
+but in order for the same `notification` event you would need to send your push to GCM iOS in a slight different format:
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "notification": {
+        "title": "My Title",
+    	"body": "My message"        
+    }
+    "data": {
+    	"key1": "data 1",
+    	"key2": "data 2"
+    }
+}
+```
+
+The `title` and `body` need to be in the `notification` part of the payload in order for the OS to pick them up correctly. Everything else should be in the `data` part of the payload.
+
+## GCM Messages Not Arriving
+
+For some users of the plugin they are unable to get messages sent via GCM to show up on their devices. If you are running into this issue try setting the `priority` of the message to `high` in the payload.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "notification": {
+        "title": "My Title",
+    	"body": "My message"        
+    },
+    "priority": "high"
 }
 ```
 
