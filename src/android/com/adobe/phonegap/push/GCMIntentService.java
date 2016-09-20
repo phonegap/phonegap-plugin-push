@@ -430,7 +430,10 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                 JSONArray actionsArray = new JSONArray(actions);
                 ArrayList<NotificationCompat.Action> wActions = new ArrayList<NotificationCompat.Action>();
                 for (int i=0; i < actionsArray.length(); i++) {
-                    int uniquePendingIntentRequestCode = i + notId;
+                    int min = 1;
+                    int max = 2000000000;
+                    Random random = new Random();
+                    int uniquePendingIntentRequestCode = random.nextInt((max - min) + 1) + min;
                     Log.d(LOG_TAG, "adding action");
                     JSONObject action = actionsArray.getJSONObject(i);
                     Log.d(LOG_TAG, "adding callback = " + action.getString(CALLBACK));
