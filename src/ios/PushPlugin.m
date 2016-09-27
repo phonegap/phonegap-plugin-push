@@ -566,8 +566,18 @@
 
 -(void)registerWithToken:(NSString*)token; {
     // Send result to trigger 'registration' event but keep callback
-    NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:1];
+    NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:3];
     [message setObject:token forKey:@"registrationId"];
+
+    // Retrieve APNS environment (sandbox or production)
+    NSDictionary *mobileProvision = [self getMobileProvision];
+    if (mobileProvision) {
+        NSDictionary *entitlements = mobileProvision[@"Entitlements"];
+        NSString *apsEnvironment = entitlements[@"aps-environment"];
+        message[@"apsEnvironment"] = apsEnvironment;
+        message[@"apsIsProduction"] = @(entitlements && apsEnvironment && [apsEnvironment isEqualToString:@"production"]);
+    }
+
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
     [pluginResult setKeepCallbackAsBool:YES];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
@@ -619,6 +629,37 @@
             completionHandler = nil;
         }
     }
+}
+
+- (NSDictionary *)getMobileProvision {
+	NSError *error = nil;
+
+	NSString *provisioningPath = [[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"];
+	if (!provisioningPath) {
+		return nil;
+	}
+	NSData *data = [NSData dataWithContentsOfFile:provisioningPath options:0 error:&error];
+	if (!data) {
+		NSLog(@"error reading embedded %@: %@", provisioningPath, error);
+		return nil;
+	}
+	NSRange startRange = [data rangeOfData:[NSData dataWithBytes:"<plist" length: 6] options:0 range:NSMakeRange(0,data.length)];
+	if (startRange.location == NSNotFound) {
+		NSLog(@"unable to find beginning of plist");
+		return nil;
+	}
+	NSRange endRange = [data rangeOfData:[NSData dataWithBytes:"</plist>" length: 8] options:0 range:NSMakeRange(startRange.location,data.length - startRange.location)];
+	if (endRange.location == NSNotFound) {
+		NSLog(@"unable to find end of plist");
+		return nil;
+	}
+	NSData *plistData = [data subdataWithRange:NSMakeRange(startRange.location, endRange.location + 8 - startRange.location)];
+	NSDictionary *mobileProvision = [NSPropertyListSerialization propertyListWithData:plistData options:NSPropertyListImmutable format:NULL error:&error];
+	if (error) {
+		NSLog(@"error parsing extracted plist: %@", error);
+		return nil;
+	}
+	return mobileProvision;
 }
 
 @end
