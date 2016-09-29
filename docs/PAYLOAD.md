@@ -563,7 +563,7 @@ If you use `%n%` in the `summaryText` of the JSON coming down from GCM it will b
 
 ## Action Buttons
 
-Your notification can include action buttons. If you wish to include an icon along with the button name they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from GCM:
+Your notification can include a maximum of three action buttons. If you wish to include an icon along with the button name they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from GCM:
 
 ```javascript
 {
