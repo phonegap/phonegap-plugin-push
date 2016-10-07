@@ -29,12 +29,18 @@
     "cordova-wp8",
     "cordova-browser"
   ],
-  "engines": [
-    {
-      "name": "cordova",
-      "version": ">=3.0.0"
+  "engines": {
+    "cordovaDependencies": {
+      "1.8.2": {
+        "cordova": ">=3.6.3",
+        "cordova-android": ">=4.0.0",
+        "cordova-ios": ">=4.1.0"
+      },
+      "2.0.0": {
+        "cordova": ">100"
+      }
     }
-  ],
+  },
   "author": "Adobe PhoneGap Team",
   "license": "APL",
   "scripts": {
