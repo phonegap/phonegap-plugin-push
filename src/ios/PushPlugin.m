@@ -589,8 +589,6 @@
     [self.commandDelegate runInBackground:^ {
         NSString* notId = [command.arguments objectAtIndex:0];
 
-        UIApplication *app = [UIApplication sharedApplication];
-
         dispatch_async(dispatch_get_main_queue(), ^{
             [NSTimer scheduledTimerWithTimeInterval:0.1
                                              target:self
