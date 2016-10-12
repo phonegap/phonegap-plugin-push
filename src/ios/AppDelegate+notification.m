@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate+notification.h"
+#import <UserNotifications/UserNotifications.h>
+
 #import "PushPlugin.h"
 #import <objc/runtime.h>
 
@@ -53,6 +55,9 @@ static char coldstartKey;
 
 - (AppDelegate *)pushPluginSwizzledInit
 {
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    center.delegate = self;
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(createNotificationChecker:)
                                                  name:UIApplicationDidFinishLaunchingNotification
@@ -86,6 +91,9 @@ static char coldstartKey;
     }
 }
 
+
+
+
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
     [pushHandler didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
@@ -96,17 +104,82 @@ static char coldstartKey;
     [pushHandler didFailToRegisterForRemoteNotificationsWithError:error];
 }
 
-- (void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    NSLog(@"clicked on the shade");
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+       willPresentNotification:(UNNotification *)notification
+         withCompletionHandler:(void (^)())completionHandler
+{
+    NSLog( @"NotificationCenter Handle push from foreground" );
+    // custom code to handle push while app is in the foreground
     PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
-    pushHandler.notificationMessage = userInfo;
-    pushHandler.isInline = NO;
+    pushHandler.notificationMessage = notification.request.content.userInfo;
+    pushHandler.isInline = YES;
     [pushHandler notificationReceived];
+    
+    completionHandler(UIBackgroundFetchResultNewData);
+}
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+didReceiveNotificationResponse:(UNNotificationResponse *)response
+         withCompletionHandler:(void (^)())completionHandler
+{
+    NSLog( @"NotificationCenter Handle push from background or closed" );
+    // if you set a member variable in didReceiveRemoteNotification, you will know if this is from closed or background
+    NSLog(@"app in-active");
+    NSDictionary *userInfo  = response.notification.request.content.userInfo;
+    // do some convoluted logic to find out if this should be a silent push.
+    long silent = 0;
+    id aps = [userInfo objectForKey:@"aps"];
+    id contentAvailable = [aps objectForKey:@"content-available"];
+    if ([contentAvailable isKindOfClass:[NSString class]] && [contentAvailable isEqualToString:@"1"]) {
+        silent = 1;
+    } else if ([contentAvailable isKindOfClass:[NSNumber class]]) {
+        silent = [contentAvailable integerValue];
+    }
+    
+    if (silent == 1) {
+        NSLog(@"this should be a silent push");
+        void (^safeHandler)(UIBackgroundFetchResult) = ^(UIBackgroundFetchResult result){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionHandler(result);
+            });
+        };
+        
+        PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+        
+        if (pushHandler.handlerObj == nil) {
+            pushHandler.handlerObj = [NSMutableDictionary dictionaryWithCapacity:2];
+        }
+        
+        id notId = [userInfo objectForKey:@"notId"];
+        if (notId != nil) {
+            NSLog(@"Push Plugin notId %@", notId);
+            [pushHandler.handlerObj setObject:safeHandler forKey:notId];
+        } else {
+            NSLog(@"Push Plugin notId handler");
+            [pushHandler.handlerObj setObject:safeHandler forKey:@"handler"];
+        }
+        
+        pushHandler.notificationMessage = userInfo;
+        pushHandler.isInline = NO;
+        [pushHandler notificationReceived];
+    } else {
+        NSLog(@"just put it in the shade");
+        //save it for later
+        self.launchNotification = userInfo;
+        
+        completionHandler(UIBackgroundFetchResultNewData);
+    }
+
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     NSLog(@"didReceiveNotification with fetchCompletionHandler");
-
+    if( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO( @"10.0" ) )
+    {
+        NSLog( @"iOS version >= 10. Let NotificationCenter handle this one." );
+        // set a member variable to tell the new delegate that this is background
+        return;
+    }
     // app is in the foreground so call notification callback
     if (application.applicationState == UIApplicationStateActive) {
         NSLog(@"app active");
