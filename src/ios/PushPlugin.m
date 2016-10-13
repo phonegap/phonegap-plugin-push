@@ -28,6 +28,7 @@
 
 #import "PushPlugin.h"
 #import "CloudMessaging.h"
+#import <UserNotifications/UserNotifications.h>
 
 @implementation PushPlugin : CDVPlugin
 
@@ -56,30 +57,30 @@
         if (registrationToken != nil) {
             NSLog(@"GCM Registration Token: %@", registrationToken);
             [weakSelf setGcmRegistrationToken: registrationToken];
-
+            
             id topics = [weakSelf gcmTopics];
             if (topics != nil) {
                 for (NSString *topic in topics) {
                     NSLog(@"subscribe from topic: %@", topic);
                     id pubSub = [GCMPubSub sharedInstance];
                     [pubSub subscribeWithToken: [weakSelf gcmRegistrationToken]
-                        topic:[NSString stringWithFormat:@"/topics/%@", topic]
-                        options:nil
-                        handler:^void(NSError *error) {
-                            if (error) {
-                                if (error.code == 3001) {
-                                    NSLog(@"Already subscribed to %@", topic);
-                                } else {
-                                    NSLog(@"Failed to subscribe to topic %@: %@", topic, error);
-                                }
-                            }
-                            else {
-                                NSLog(@"Successfully subscribe to topic %@", topic);
-                            }
-                    }];
+                                         topic:[NSString stringWithFormat:@"/topics/%@", topic]
+                                       options:nil
+                                       handler:^void(NSError *error) {
+                                           if (error) {
+                                               if (error.code == 3001) {
+                                                   NSLog(@"Already subscribed to %@", topic);
+                                               } else {
+                                                   NSLog(@"Failed to subscribe to topic %@: %@", topic, error);
+                                               }
+                                           }
+                                           else {
+                                               NSLog(@"Successfully subscribe to topic %@", topic);
+                                           }
+                                       }];
                 }
             }
-
+            
             [weakSelf registerWithToken:registrationToken];
         } else {
             NSLog(@"Registration to GCM failed with error: %@", error.localizedDescription);
@@ -125,24 +126,24 @@
 - (void)unregister:(CDVInvokedUrlCommand*)command;
 {
     self.callbackId = command.callbackId;
-
+    
     NSArray* topics = [command argumentAtIndex:0];
-
+    
     if (topics != nil) {
         id pubSub = [GCMPubSub sharedInstance];
         for (NSString *topic in topics) {
             NSLog(@"unsubscribe from topic: %@", topic);
             [pubSub unsubscribeWithToken: [self gcmRegistrationToken]
-                topic:[NSString stringWithFormat:@"/topics/%@", topic]
-                options:nil
-                handler:^void(NSError *error) {
-                    if (error) {
-                        NSLog(@"Failed to unsubscribe from topic %@: %@", topic, error);
-                    }
-                    else {
-                        NSLog(@"Successfully unsubscribe from topic %@", topic);
-                    }
-            }];
+                                   topic:[NSString stringWithFormat:@"/topics/%@", topic]
+                                 options:nil
+                                 handler:^void(NSError *error) {
+                                     if (error) {
+                                         NSLog(@"Failed to unsubscribe from topic %@: %@", topic, error);
+                                     }
+                                     else {
+                                         NSLog(@"Successfully unsubscribe from topic %@", topic);
+                                     }
+                                 }];
         }
     } else {
         [[UIApplication sharedApplication] unregisterForRemoteNotifications];
@@ -153,26 +154,26 @@
 - (void)init:(CDVInvokedUrlCommand*)command;
 {
     [self.commandDelegate runInBackground:^ {
-
+        
         NSLog(@"Push Plugin register called");
         self.callbackId = command.callbackId;
-
+        
         NSMutableDictionary* options = [command.arguments objectAtIndex:0];
         NSMutableDictionary* iosOptions = [options objectForKey:@"ios"];
-
-    NSArray* topics = [iosOptions objectForKey:@"topics"];
-    [self setGcmTopics:topics];
-
+        
+        NSArray* topics = [iosOptions objectForKey:@"topics"];
+        [self setGcmTopics:topics];
+        
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         UIUserNotificationType UserNotificationTypes = UIUserNotificationTypeNone;
 #endif
         UIRemoteNotificationType notificationTypes = UIRemoteNotificationTypeNone;
-
+        
         id badgeArg = [iosOptions objectForKey:@"badge"];
         id soundArg = [iosOptions objectForKey:@"sound"];
         id alertArg = [iosOptions objectForKey:@"alert"];
         id clearBadgeArg = [iosOptions objectForKey:@"clearBadge"];
-
+        
         if (([badgeArg isKindOfClass:[NSString class]] && [badgeArg isEqualToString:@"true"]) || [badgeArg boolValue])
         {
             notificationTypes |= UIRemoteNotificationTypeBadge;
@@ -262,37 +263,58 @@
                 if (maybeButton != nil) {
                     [categoryArray addObject:maybeAction];
                 }
-
+                
                 // Add the actions to the category and set the action context
                 [notificationCategory setActions:categoryArray forContext:UIUserNotificationActionContextDefault];
-
+                
                 // Set the actions to present in a minimal context
                 [notificationCategory setActions:minimalCategoryArray forContext:UIUserNotificationActionContextMinimal];
-
+                
                 NSLog(@"Adding category %@", key);
                 [categories addObject:notificationCategory];
             }
-
+            
         }
 #else
         NSLog(@"PushPlugin.register: action buttons only supported on iOS8 and above");
 #endif
-
-
+        
+        
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-        if ([[UIApplication sharedApplication]respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-            UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UserNotificationTypes categories:categories];
-            [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-            [[UIApplication sharedApplication] registerForRemoteNotifications];
-        } else {
-            [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-             (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+        if( SYSTEM_VERSION_LESS_THAN( @"10.0" ) )  {
+            if ([[UIApplication sharedApplication]respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+                UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UserNotificationTypes categories:categories];
+                [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+                [[UIApplication sharedApplication] registerForRemoteNotifications];
+            } else {
+                [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+                 (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+            }
+            
+        }else{
+            UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+//            center.delegate = self;
+            [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error)
+             {
+                 if( !error )
+                 {
+                     [[UIApplication sharedApplication] registerForRemoteNotifications]; // required to get the app to do anything at all about push notifications
+                     NSLog( @"Push registration success." );
+                 }
+                 else
+                 {
+                     NSLog( @"Push registration FAILED" );
+                     NSLog( @"ERROR: %@ - %@", error.localizedFailureReason, error.localizedDescription );
+                     NSLog( @"SUGGESTIONS: %@ - %@", error.localizedRecoveryOptions, error.localizedRecoverySuggestion );
+                 }
+             }];
+            
         }
 #else
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
          (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 #endif
-
+        
         //  GCM options
         [self setGcmSenderId: [iosOptions objectForKey:@"senderID"]];
         NSLog(@"GCM Sender ID %@", gcmSenderId);
