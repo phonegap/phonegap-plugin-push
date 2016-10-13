@@ -290,6 +290,10 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
             Log.d(LOG_TAG, "create notification");
 
+            if(title == null || title.isEmpty()){
+                extras.putString(TITLE, getAppName(this));
+            }
+
             createNotification(context, extras);
         }
 
