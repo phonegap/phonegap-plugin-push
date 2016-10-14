@@ -39,6 +39,8 @@ public interface PushConstants {
     public static final String STYLE_TEXT = "text";
     public static final String BADGE = "badge";
     public static final String INITIALIZE = "init";
+    public static final String SUBSCRIBE = "subscribe";
+    public static final String UNSUBSCRIBE = "unsubscribe";
     public static final String UNREGISTER = "unregister";
     public static final String EXIT = "exit";
     public static final String FINISH = "finish";

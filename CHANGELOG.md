@@ -1,5 +1,21 @@
 # Change Log
 
+## [v1.8.3](https://github.com/phonegap/phonegap-plugin-push/tree/v1.8.3) (2016-07-09)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.8.2...v1.8.3)
+
+- 1.8.3 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/a0cfba9f85b7d7dfa3c244c9e78a03872ff938f9)
+- Bumping plugin version to 1.8.3 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/cc7d5abe55957cebfdd3b39ba670f8093bdac564)
+- Update pluginpub version [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/0d8548d3166b7b4d34b32944b800c96e4aadf70a)
+- Issue#1282 Show app name if title is empty (#1285) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/3d7a3a39fb931aafa86be6b1568a682133c36de7)
+- Note about background app refresh (#1267) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/4f13533deb0c1b927dab9d9cddb13c53fdefd9b0)
+- Issue #1213: XDK instructions link for www template is incorrect (#1283) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/d2ede2bab4cd6462f7dffc4e2bc733d585107e89)
+- Merge pull request #1277 from dannywillems/patch-1 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/ea5ae88f3fcfa8fc605cf2c974b52d793bd2c4c9)
+- Unused variable app. Caused warnings. [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/09dedb43481d207d0b17de4eb26c5a1904d08f65)
+- Issue #1254: [Question] Is it possible to get more than 3 action buttons on Android notifications? [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/d8ab6665d878c8dec3ff9914c11a9329c8a415e7)
+- Use unique pending intent request code to enable multiple... (#1225) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/475883833556eb001e2e0adb986bd96b78bdcb2f)
+- Add `cordovaDependencies` section to package.json (#1232) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/6b343e78e9bfca921cef78eb504755477ecaeff9)
+- Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/14afb94126acb51a6f10a2094f7f391f2f17dee5)
+
 ## [v1.8.2](https://github.com/phonegap/phonegap-plugin-push/tree/v1.8.2) (2016-07-09)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.8.1...v1.8.2)
 

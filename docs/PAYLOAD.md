@@ -1062,6 +1062,8 @@ For instance the following JSON:
 
 will produce a notification in the notification shade and call your `on('notification')` event handler.
 
+**NOTE:** The `on('notification')` event handler will **not** be called if Background App Refresh is disabled on the user's iOS device. (Settings > General > Background App Refresh)
+
 However if you want your `on('notification')` event handler called but no notification to be shown in the shader you would omit the `alert` property and send the following JSON to APNS:
 
 ```javascript
