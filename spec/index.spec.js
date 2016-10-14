@@ -102,14 +102,14 @@ describe('phonegap-plugin-push', function () {
         describe('on "notification" event', function () {
             beforeEach(function () {
                 execSpy.andCallFake(function (win, fail, service, id, args) {
-                    win([{
+                    win({
                         message: 'Message',
                         title: 'Title',
                         count: 1,
                         sound: 'beep',
                         image: 'Image',
                         additionalData: {}
-                    }]);
+                    });
                 });
             });
 
@@ -120,18 +120,10 @@ describe('phonegap-plugin-push', function () {
                 });
             });
 
-            it('should return a notification array on success', function (done) {
-                var push = PushNotification.init(options);
-                push.on('notification', function (data) {
-                    expect(data.constructor).toBe(Array);
-                    done();
-                });
-            });
-
             it('should provide the data.message argument', function (done) {
                 var push = PushNotification.init(options);
                 push.on('notification', function (data) {
-                    expect(data[0].message).toEqual('Message');
+                    expect(data.message).toEqual('Message');
                     done();
                 });
             });
@@ -139,7 +131,7 @@ describe('phonegap-plugin-push', function () {
             it('should provide the data.title argument', function (done) {
                 var push = PushNotification.init(options);
                 push.on('notification', function (data) {
-                    expect(data[0].title).toEqual('Title');
+                    expect(data.title).toEqual('Title');
                     done();
                 });
             });
@@ -147,7 +139,7 @@ describe('phonegap-plugin-push', function () {
             it('should provide the data.count argument', function (done) {
                 var push = PushNotification.init(options);
                 push.on('notification', function (data) {
-                    expect(data[0].count).toEqual(1);
+                    expect(data.count).toEqual(1);
                     done();
                 });
             });
@@ -155,7 +147,7 @@ describe('phonegap-plugin-push', function () {
             it('should provide the data.sound argument', function (done) {
                 var push = PushNotification.init(options);
                 push.on('notification', function (data) {
-                    expect(data[0].sound).toEqual('beep');
+                    expect(data.sound).toEqual('beep');
                     done();
                 });
             });
@@ -163,7 +155,7 @@ describe('phonegap-plugin-push', function () {
             it('should provide the data.image argument', function (done) {
                 var push = PushNotification.init(options);
                 push.on('notification', function (data) {
-                    expect(data[0].image).toEqual('Image');
+                    expect(data.image).toEqual('Image');
                     done();
                 });
             });
@@ -171,7 +163,7 @@ describe('phonegap-plugin-push', function () {
             it('should provide the data.additionalData argument', function (done) {
                 var push = PushNotification.init(options);
                 push.on('notification', function (data) {
-                    expect(data[0].additionalData).toEqual({});
+                    expect(data.additionalData).toEqual({});
                     done();
                 });
             });
