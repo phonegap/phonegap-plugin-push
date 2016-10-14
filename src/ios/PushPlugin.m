@@ -50,9 +50,9 @@
 
 -(void)initRegistration;
 {
-    
+
     NSString * registrationToken = [[FIRInstanceID instanceID] token];
-    
+
     if (registrationToken != nil) {
         NSLog(@"FCM Registration Token: %@", registrationToken);
         [self setGcmRegistrationToken: registrationToken];
@@ -70,7 +70,7 @@
     } else {
         NSLog(@"FCM token is null");
     }
-    
+
 }
 
 //  FCM refresh token
@@ -86,14 +86,10 @@
 
 // contains error info
 - (void)sendDataMessageFailure:(NSNotification *)notification {
-    NSString *messageID = (NSString *)notification.object;
-    NSDictionary *userInfo = notification.userInfo;
     NSLog(@"sendDataMessageFailure");
     // Did fail send message
 }
 - (void)sendDataMessageSuccess:(NSNotification *)notification {
-    NSString *messageID = (NSString *)notification.object;
-    NSDictionary *userInfo = notification.userInfo;
     NSLog(@"sendDataMessageSuccess");
     // Did successfully send message
 }
@@ -128,15 +124,15 @@
     [[NSNotificationCenter defaultCenter]
      addObserver:self selector:@selector(onTokenRefresh)
      name:kFIRInstanceIDTokenRefreshNotification object:nil];
-    
+
     [[NSNotificationCenter defaultCenter]
      addObserver:self selector:@selector(sendDataMessageFailure:)
      name:FIRMessagingSendErrorNotification object:nil];
-    
+
     [[NSNotificationCenter defaultCenter]
      addObserver:self selector:@selector(sendDataMessageSuccess:)
      name:FIRMessagingSendSuccessNotification object:nil];
-    
+
     [[NSNotificationCenter defaultCenter]
      addObserver:self selector:@selector(didDeleteMessagesOnServer)
      name:FIRMessagingMessagesDeletedNotification object:nil];
