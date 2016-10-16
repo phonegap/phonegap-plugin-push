@@ -64,4 +64,7 @@ public interface PushConstants {
     public static final String INLINE_REPLY = "inlineReply";
     public static final String LOC_KEY = "locKey";
     public static final String LOC_DATA = "locData";
+    public static final String TWILIO_BODY = "twi_body";
+    public static final String TWILIO_TITLE = "twi_title";
+    public static final String TWILIO_SOUND = "twi_sound";
 }
