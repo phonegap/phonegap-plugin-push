@@ -12,6 +12,7 @@
 
 static char launchNotificationKey;
 static char coldstartKey;
+static char inactiveKey;
 
 @implementation AppDelegate (notification)
 
@@ -60,6 +61,16 @@ static char coldstartKey;
     [[NSNotificationCenter defaultCenter]addObserver:self
                                             selector:@selector(pushPluginOnApplicationDidBecomeActive:)
                                                 name:UIApplicationDidBecomeActiveNotification
+                                              object:nil];
+
+    [[NSNotificationCenter defaultCenter]addObserver:self
+                                            selector:@selector(pushPluginOnApplicationDidEnterBackground:)
+                                                name:UIApplicationDidEnterBackgroundNotification
+                                              object:nil];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self
+                                            selector:@selector(pushPluginOnApplicationWillResignActive:)
+                                                name:UIApplicationWillResignActiveNotification
                                               object:nil];
 
     // This actually calls the original init method over in AppDelegate. Equivilent to calling super
@@ -197,11 +208,26 @@ static char coldstartKey;
     if (self.launchNotification) {
         pushHandler.isInline = NO;
         pushHandler.coldstart = [self.coldstart boolValue];
+        pushHandler.inactive = [self.inactive boolValue];
         pushHandler.notificationMessage = self.launchNotification;
         self.launchNotification = nil;
         self.coldstart = [NSNumber numberWithBool:NO];
         [pushHandler performSelectorOnMainThread:@selector(notificationReceived) withObject:pushHandler waitUntilDone:NO];
     }
+
+    self.inactive = [NSNumber numberWithBool:NO];
+}
+
+- (void)pushPluginOnApplicationDidEnterBackground:(NSNotification *)notification {
+    
+    NSLog(@"background");
+    self.inactive = [NSNumber numberWithBool:NO];
+}
+
+- (void)pushPluginOnApplicationWillResignActive:(NSNotification *)notification {
+    
+    NSLog(@"inactive");
+    self.inactive = [NSNumber numberWithBool:YES];
 }
 
 
@@ -269,10 +295,21 @@ forRemoteNotification: (NSDictionary *) notification completionHandler: (void (^
     objc_setAssociatedObject(self, &coldstartKey, aNumber, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (NSNumber *)inactive
+{
+    return objc_getAssociatedObject(self, &inactiveKey);
+}
+
+- (void)setInactive:(NSNumber *)aNumber
+{
+    objc_setAssociatedObject(self, &inactiveKey, aNumber, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 - (void)dealloc
 {
     self.launchNotification = nil; // clear the association and release the object
     self.coldstart = nil;
+    self.inactive = nil;
 }
 
 @end

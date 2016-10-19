@@ -18,5 +18,6 @@
 
 @property (nonatomic, retain) NSDictionary  *launchNotification;
 @property (nonatomic, retain) NSNumber  *coldstart;
+@property (nonatomic, retain) NSNumber  *inactive;
 
 @end
