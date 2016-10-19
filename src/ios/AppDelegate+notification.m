@@ -13,6 +13,7 @@
 static char launchNotificationKey;
 static char coldstartKey;
 static char inactiveKey;
+static char inactivePushKey;
 
 @implementation AppDelegate (notification)
 
@@ -172,7 +173,7 @@ static char inactiveKey;
             NSLog(@"just put it in the shade");
             //save it for later
             self.launchNotification = userInfo;
-
+            self.inactivePush = self.inactive;
             completionHandler(UIBackgroundFetchResultNewData);
         }
     }
@@ -208,7 +209,7 @@ static char inactiveKey;
     if (self.launchNotification) {
         pushHandler.isInline = NO;
         pushHandler.coldstart = [self.coldstart boolValue];
-        pushHandler.inactive = [self.inactive boolValue];
+        pushHandler.inactive = [self.inactivePush boolValue];
         pushHandler.notificationMessage = self.launchNotification;
         self.launchNotification = nil;
         self.coldstart = [NSNumber numberWithBool:NO];
@@ -216,6 +217,7 @@ static char inactiveKey;
     }
 
     self.inactive = [NSNumber numberWithBool:NO];
+    self.inactivePush = [NSNumber numberWithBool:NO];
 }
 
 - (void)pushPluginOnApplicationDidEnterBackground:(NSNotification *)notification {
@@ -305,11 +307,22 @@ forRemoteNotification: (NSDictionary *) notification completionHandler: (void (^
     objc_setAssociatedObject(self, &inactiveKey, aNumber, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (NSNumber *)inactivePush
+{
+    return objc_getAssociatedObject(self, &inactivePushKey);
+}
+
+- (void)setInactivePush:(NSNumber *)aNumber
+{
+    objc_setAssociatedObject(self, &inactivePushKey, aNumber, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 - (void)dealloc
 {
     self.launchNotification = nil; // clear the association and release the object
     self.coldstart = nil;
     self.inactive = nil;
+    self.inactivePush = nil;
 }
 
 @end
