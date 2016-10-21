@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 
@@ -31,7 +33,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
     private static CallbackContext pushContext;
     private static CordovaWebView gWebView;
-    private static Bundle gCachedExtras = null;
+    private static List<Bundle> gCachedExtras = Collections.synchronizedList(new ArrayList<Bundle>());
     private static boolean gForeground = false;
 
     /**
@@ -133,10 +135,15 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                     }
 
-                    if (gCachedExtras != null) {
+                    if (!gCachedExtras.isEmpty()) {
                         Log.v(LOG_TAG, "sending cached extras");
-                        sendExtras(gCachedExtras);
-                        gCachedExtras = null;
+                        synchronized(gCachedExtras) {
+                            Iterator<Bundle> gCachedExtrasIterator = gCachedExtras.iterator();
+                            while (gCachedExtrasIterator.hasNext()) {
+                                sendExtras(gCachedExtrasIterator.next());
+                            }
+                        }
+                        gCachedExtras.clear();
                     }
                 }
             });
@@ -169,8 +176,8 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                     } catch (IOException e) {
                         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
                         callbackContext.error(e.getMessage());
+                    }
                 }
-            }
             });
         } else if (FINISH.equals(action)) {
             callbackContext.success();
@@ -279,7 +286,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                 sendEvent(convertBundleToJson(extras));
             } else {
                 Log.v(LOG_TAG, "sendExtras: caching extras to send at a later time.");
-                gCachedExtras = extras;
+                gCachedExtras.add(extras);
             }
         }
     }
