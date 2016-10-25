@@ -1031,7 +1031,7 @@ curl 'https://notify.twilio.com/v1/Services/IS1e928b239609199df31d461071fd3d23/N
 --data-urlencode 'Body=Hello Bob! Twilio Notify + Phonegap is awesome!' \
 --data-urlencode 'Title=Hello Bob!' \
 --data-urlencode 'Sound=chime' \
--u ACddd55023e95e245f47506b888118f8f8:[AuthToken]
+-u [AccountSID]:[AuthToken]
 ```
 
 The JSON received by your app will comply with the standards described in the sections above:
