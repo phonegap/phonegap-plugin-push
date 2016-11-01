@@ -89,31 +89,6 @@ For more detailed instructions on how to install the Android Support Library vis
 android update sdk --no-ui --filter "extra"
 ```
 
-### Notification after forced closing
-
-To use payload parameter "force-start" this code must be added in MainActivity.java:
-
-```
-boolean startOnBackground = false;
-Bundle extras = getIntent().getExtras();
-if (extras != null) {
-	startOnBackground = extras.getBoolean(PushConstants.START_ON_BACKGROUND);
-	if(startOnBackground) {
-		moveTaskToBack(true);
-	}
-}
-
-// Set by <content src="index.html" /> in config.xml
-loadUrl(launchUrl);
-super.loadUrl("javascript: { window.startOnBackground = "+(startOnBackground?1:0)+"; }");
-```
-
-right after
-
-```
-super.onCreate(savedInstanceState);
-```
-
 ### Co-existing with Facebook Plugin
 
 There are a number of Cordova Facebook Plugins available but the one that we recommend is [Jeduan's fork](https://github.com/jeduan/cordova-plugin-facebook4) of the original Wizcorp plugin. It is setup to use Gradle/Maven and the latest Facebook SDK properly.
@@ -241,9 +216,9 @@ Required `cordova-cli` version: `6.4.0`
 
 Required `cordova-ios` version: `4.3.0`
 
-Version `1.9.0` (and above) of this plugin supports [CocoaPods](https://cocoapods.org) installation of the [Google Cloud Messaging](https://cocoapods.org/pods/GoogleCloudMessaging) library. 
+Version `1.9.0` (and above) of this plugin supports [CocoaPods](https://cocoapods.org) installation of the [Google Cloud Messaging](https://cocoapods.org/pods/GoogleCloudMessaging) library.
 
-If you are installing this plugin using `npm`, and you are using version `6.1.0` or greater of the `cordova-cli`, it will automatically download the right version of this plugin for both your platform and cli. 
+If you are installing this plugin using `npm`, and you are using version `6.1.0` or greater of the `cordova-cli`, it will automatically download the right version of this plugin for both your platform and cli.
 
 If you are on a `cordova-cli` version less than `6.1.0`, you will either have to upgrade your `cordova-cli` version, or install the plugin explicitly:
 

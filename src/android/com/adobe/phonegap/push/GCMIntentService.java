@@ -277,7 +277,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         String message = extras.getString(MESSAGE);
         String title = extras.getString(TITLE);
         String contentAvailable = extras.getString(CONTENT_AVAILABLE);
-        String forceStart = "1"; //extras.getString(FORCE_START);
+        String forceStart = extras.getString(FORCE_START);
         int badgeCount = extractBadgeCount(extras);
         if (badgeCount >= 0) {
             Log.d(LOG_TAG, "count =[" + badgeCount + "]");
@@ -287,6 +287,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         Log.d(LOG_TAG, "message =[" + message + "]");
         Log.d(LOG_TAG, "title =[" + title + "]");
         Log.d(LOG_TAG, "contentAvailable =[" + contentAvailable + "]");
+        Log.d(LOG_TAG, "forceStart =[" + forceStart + "]");
 
         if ((message != null && message.length() != 0) ||
                 (title != null && title.length() != 0)) {
@@ -300,18 +301,19 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             createNotification(context, extras);
         }
 
-        if ("1".equals(contentAvailable)) {
-            Log.d(LOG_TAG, "send notification event");
-            PushPlugin.sendExtras(extras);
-        }
-
 		if(!PushPlugin.isActive() && "1".equals(forceStart)){
+            Log.d(LOG_TAG, "app is not running but we should start it and put in background");
 			Intent intent = new Intent(this, PushHandlerActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra(PUSH_BUNDLE, extras);
-			intent.putExtra(START_ON_BACKGROUND, true);
+			intent.putExtra(START_IN_BACKGROUND, true);
+            intent.putExtra(FOREGROUND, false);
             startActivity(intent);
-		}
+		} else if ("1".equals(contentAvailable)) {
+            Log.d(LOG_TAG, "app is not running and content available true");
+            Log.d(LOG_TAG, "send notification event");
+            PushPlugin.sendExtras(extras);
+        }
     }
 
     public void createNotification(Context context, Bundle extras) {

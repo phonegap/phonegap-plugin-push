@@ -33,7 +33,7 @@ public class PushHandlerActivity extends Activity implements PushConstants {
         String callback = getIntent().getExtras().getString("callback");
         Log.d(LOG_TAG, "callback = " + callback);
         boolean foreground = getIntent().getExtras().getBoolean("foreground", true);
-        boolean startOnBackground = getIntent().getExtras().getBoolean(START_ON_BACKGROUND, true);
+        boolean startOnBackground = getIntent().getExtras().getBoolean(START_IN_BACKGROUND, false);
 
         if(!startOnBackground){
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -101,7 +101,7 @@ public class PushHandlerActivity extends Activity implements PushConstants {
             }
             launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             launchIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
-            launchIntent.putExtra(START_ON_BACKGROUND, true);
+            launchIntent.putExtra(START_IN_BACKGROUND, startOnBackground);
         }
 
         startActivity(launchIntent);

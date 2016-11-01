@@ -13,7 +13,7 @@
   </js-module>
   <engines>
     <engine name="cordova" version=">=6.4.0"/>
-    <engine name="cordova-android" version=">=4.0.0"/>
+    <engine name="cordova-android" version=">=6.0.0"/>
     <engine name="cordova-ios" version=">=4.3.0"/>
   </engines>
   <preference name="SENDER_ID"/>
@@ -102,7 +102,7 @@
     <framework src="libz.tbd"/>
     <framework src="GoogleCloudMessaging" type="podspec" spec="~> 1.2.0"/>
     <framework src="GGLInstanceID" type="podspec" spec="~> 1.2.1"/>
-    
+
   </platform>
   <platform name="windows">
     <hook type="after_plugin_install" src="hooks/windows/setToastCapable.js"/>
