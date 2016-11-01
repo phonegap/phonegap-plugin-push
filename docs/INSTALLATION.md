@@ -11,8 +11,9 @@
   - [Browser quirks](#browser-quirks)
   - [Browser Support](#browser-support)
 - [iOS details](#ios-details)
-  - [XCode](#xcode)
+  - [Xcode](#xcode)
   - [Bitcode](#bitcode)
+  - [CocoaPods](#cocoapods)
 - [Additional Resources](#additional-resources)
 
 This requires phonegap/cordova CLI 5.0+
@@ -191,9 +192,9 @@ Firefox 46+
 
 ## iOS details
 
-### XCode
+### Xcode
 
-XCode version 7.0 or greater is required for building this plugin.
+Xcode version 7.0 or greater is required for building this plugin.
 
 ### Bitcode
 
@@ -208,6 +209,25 @@ You have two options. The first is to [disable bitcode as per this StackOverflow
 ```
 cordova platform update ios@4.0.0
 ```
+
+### CocoaPods
+
+Required `cordova-cli` version: `6.4.0`
+
+Required `cordova-ios` version: `4.3.0`
+
+Version `1.9.0` (and above) of this plugin supports [CocoaPods](https://cocoapods.org) installation of the [Google Cloud Messaging](https://cocoapods.org/pods/GoogleCloudMessaging) library. 
+
+If you are installing this plugin using `npm`, and you are using version `6.1.0` or greater of the `cordova-cli`, it will automatically download the right version of this plugin for both your platform and cli. 
+
+If you are on a `cordova-cli` version less than `6.1.0`, you will either have to upgrade your `cordova-cli` version, or install the plugin explicitly:
+
+i.e.
+```
+cordova plugin add phonegap-plugin-push@1.8.1
+```
+
+If you are installing this plugin using a `local file reference` or a `git url`, you will have to specify the version of this plugin explicitly (see above) if you don't fulfill the `cordova-cli` and `cordova-ios` requirements.
 
 ## Additional Resources
 
