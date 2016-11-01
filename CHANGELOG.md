@@ -1,5 +1,19 @@
 # Change Log
 
+## [v1.8.4](https://github.com/phonegap/phonegap-plugin-push/tree/v1.8.4) (2016-07-09)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.8.3...v1.8.4)
+
+- 1.8.4 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/4b18505a2c30e17564c0e80060f0524968aa0d40)
+- Bumping plugin version to 1.8.4 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/046c727f58a6fa675a5f49c10334095cd4282884)
+- Issue #1251: [Android] deviceId persists between uninstalls, but is invalid after an uninstall [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/8a7bbe5cba186d9685f31adc07e25bd908409498)
+- Merge pull request #1323 from hung-doan/issue-1319 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/021f0abd9a49fb83d19faca3ffb7d142759bb01a)
+- Update GCM to 9.8+  issue #1319 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/450e0e01b9bcd747a49081c4a0d6ce998c37478a)
+- Support Twilio Notify (#1306) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/a9bb3bf0a2ca57f68eafc39070fc125746bbbb23)
+- Cache multiple Android action button pushes if app is not running (#1272) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/d0547bab04c292024dc6ed41939590fba01115ff)
+- Add sub/unsub tests [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/3bf9ff5f04e10622d7d9ff47a9bd57a829ee9eef)
+- Add features: push.subscribe, push.unsubscribe (issue #1040) (#1227) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/bb0d3ed087e13e24af57e682776930cea2f577a8)
+- Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/cf7ce8e716fe60de121634abc164b509100a9d15)
+
 ## [v1.8.3](https://github.com/phonegap/phonegap-plugin-push/tree/v1.8.3) (2016-07-09)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.8.2...v1.8.3)
 
