@@ -28,13 +28,17 @@ public class PushHandlerActivity extends Activity implements PushConstants {
         int notId = intent.getExtras().getInt(NOT_ID, 0);
         Log.d(LOG_TAG, "not id = " + notId);
         gcm.setNotification(notId, "");
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(GCMIntentService.getAppName(this), notId);
         super.onCreate(savedInstanceState);
         Log.v(LOG_TAG, "onCreate");
         String callback = getIntent().getExtras().getString("callback");
         Log.d(LOG_TAG, "callback = " + callback);
         boolean foreground = getIntent().getExtras().getBoolean("foreground", true);
+        boolean startOnBackground = getIntent().getExtras().getBoolean(START_ON_BACKGROUND, true);
+
+        if(!startOnBackground){
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(GCMIntentService.getAppName(this), notId);
+        }
 
         Log.d(LOG_TAG, "bringToForeground = " + foreground);
 
@@ -47,7 +51,9 @@ public class PushHandlerActivity extends Activity implements PushConstants {
 
         if (!isPushPluginActive && foreground && inline) {
             Log.d(LOG_TAG, "forceMainActivityReload");
-            forceMainActivityReload();
+            forceMainActivityReload(false);
+        } else if(startOnBackground) {
+            forceMainActivityReload(true);
         } else {
             Log.d(LOG_TAG, "don't want main activity");
         }
@@ -83,9 +89,21 @@ public class PushHandlerActivity extends Activity implements PushConstants {
     /**
      * Forces the main activity to re-launch if it's unloaded.
      */
-    private void forceMainActivityReload() {
+    private void forceMainActivityReload(boolean startOnBackground) {
         PackageManager pm = getPackageManager();
         Intent launchIntent = pm.getLaunchIntentForPackage(getApplicationContext().getPackageName());
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            Bundle originalExtras = extras.getBundle(PUSH_BUNDLE);
+            if (originalExtras != null) {
+                launchIntent.putExtras(originalExtras);
+            }
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            launchIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
+            launchIntent.putExtra(START_ON_BACKGROUND, true);
+        }
+
         startActivity(launchIntent);
     }
 

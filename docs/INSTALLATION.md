@@ -89,6 +89,31 @@ For more detailed instructions on how to install the Android Support Library vis
 android update sdk --no-ui --filter "extra"
 ```
 
+### Notification after forced closing
+
+To use payload parameter "force-start" this code must be added in MainActivity.java:
+
+```
+boolean startOnBackground = false;
+Bundle extras = getIntent().getExtras();
+if (extras != null) {
+	startOnBackground = extras.getBoolean(PushConstants.START_ON_BACKGROUND);
+	if(startOnBackground) {
+		moveTaskToBack(true);
+	}
+}
+
+// Set by <content src="index.html" /> in config.xml
+loadUrl(launchUrl);
+super.loadUrl("javascript: { window.startOnBackground = "+(startOnBackground?1:0)+"; }");
+```
+
+right after
+
+```
+super.onCreate(savedInstanceState);
+```
+
 ### Co-existing with Facebook Plugin
 
 There are a number of Cordova Facebook Plugins available but the one that we recommend is [Jeduan's fork](https://github.com/jeduan/cordova-plugin-facebook4) of the original Wizcorp plugin. It is setup to use Gradle/Maven and the latest Facebook SDK properly.

@@ -277,6 +277,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         String message = extras.getString(MESSAGE);
         String title = extras.getString(TITLE);
         String contentAvailable = extras.getString(CONTENT_AVAILABLE);
+        String forceStart = "1"; //extras.getString(FORCE_START);
         int badgeCount = extractBadgeCount(extras);
         if (badgeCount >= 0) {
             Log.d(LOG_TAG, "count =[" + badgeCount + "]");
@@ -303,6 +304,14 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             Log.d(LOG_TAG, "send notification event");
             PushPlugin.sendExtras(extras);
         }
+
+		if(!PushPlugin.isActive() && "1".equals(forceStart)){
+			Intent intent = new Intent(this, PushHandlerActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(PUSH_BUNDLE, extras);
+			intent.putExtra(START_ON_BACKGROUND, true);
+            startActivity(intent);
+		}
     }
 
     public void createNotification(Context context, Bundle extras) {

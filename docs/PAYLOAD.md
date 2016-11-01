@@ -17,6 +17,7 @@
   - [Background Notifications](#background-notifications)
     - [Use of content-available: true](#use-of-content-available-true)
   - [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
+  - [Application force closed](#application-force-closed)
   - [Visibility](#visibility-of-notifications)
   - [Badges](#badges)
   - [Support for Twilio Notify](#support-for-twilio-notify)
@@ -946,6 +947,9 @@ These phones have a particular quirk that when the app is force closed that you 
 - On your Huawei device go to Settings > Protected apps > check "My App" where.
 - On your Xiaomi makes sure your phone has the "Auto-start" property enabled for your app.
 
+### Application force closed
+
+It is possible to add `force-start: true` to the data payload to restart application in background even if force closed.
 
 ## Visibility of Notifications
 
