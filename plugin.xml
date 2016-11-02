@@ -16,7 +16,8 @@
     <engine name="cordova-android" version=">=6.0.0"/>
     <engine name="cordova-ios" version=">=4.3.0"/>
   </engines>
-  <preference name="SENDER_ID"/>
+  <!-- default Sender ID for PhoneGap CLI push command -->
+  <preference name="SENDER_ID" default="85075801930"/>
   <platform name="android">
     <config-file target="res/xml/config.xml" parent="/*">
       <feature name="PushNotification">
