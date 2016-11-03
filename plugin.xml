@@ -16,7 +16,6 @@
     <engine name="cordova-android" version=">=6.0.0"/>
     <engine name="cordova-ios" version=">=4.3.0"/>
   </engines>
-  <!-- default Sender ID for PhoneGap CLI push command -->
   <preference name="SENDER_ID" default="85075801930"/>
   <platform name="android">
     <config-file target="res/xml/config.xml" parent="/*">
@@ -109,7 +108,6 @@
     <framework src="libz.tbd"/>
     <framework src="GoogleCloudMessaging" type="podspec" spec="~> 1.2.0"/>
     <framework src="GGLInstanceID" type="podspec" spec="~> 1.2.1"/>
-
   </platform>
   <platform name="windows">
     <hook type="after_plugin_install" src="hooks/windows/setToastCapable.js"/>
