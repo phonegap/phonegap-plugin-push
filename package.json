@@ -43,6 +43,7 @@
       },
       "2.0.0": {
         "cordova": ">100"
+      }
     }
   },
   "author": "Adobe PhoneGap Team",
