@@ -21,9 +21,9 @@
 	</js-module>
 
 	<engines>
-        <engine name="cordova" version=">=3.6.3" />
-        <engine name="cordova-android" version=">=4.0.0" />
-        <engine name="cordova-ios" version=">=4.1.0" />
+        <engine name="cordova" version=">=6.4.0"/>
+        <engine name="cordova-android" version=">=6.0.0"/>
+        <engine name="cordova-ios" version=">=4.3.0"/>
     </engines>
 
     <preference name="SENDER_ID" />
@@ -109,16 +109,9 @@
 		<header-file src="src/ios/PushPlugin.h" />
 
         <!--  Start FCM Related Files -->
-        <header-file target-dir="FCM/Headers" src="src/ios/Firebase/Headers/Firebase.h" />
+        <framework src="FirebaseMessaging" type="podspec" spec="~> 1.2.1"/>
 
-        <framework src="src/ios/Firebase/Analytics/FirebaseAnalytics.framework" custom="true" />
-        <framework src="src/ios/Firebase/Analytics/FirebaseInstanceID.framework" custom="true" />
-        <framework src="src/ios/Firebase/Analytics/GoogleInterchangeUtilities.framework" custom="true" />
-        <framework src="src/ios/Firebase/Analytics/GoogleSymbolUtilities.framework" custom="true" />
-        <framework src="src/ios/Firebase/Analytics/GoogleUtilities.framework" custom="true" />
-        <framework src="src/ios/Firebase/Messaging/FirebaseMessaging.framework" custom="true" />
-        <framework src="src/ios/Firebase/Messaging/GoogleIPhoneUtilities.framework" custom="true" />
-        <resource-file src="src/ios/Firebase/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist" />
+        <resource-file src="src/ios/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist" />
         <!--  End FCM Related Files -->
 	</platform>
 
