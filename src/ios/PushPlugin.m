@@ -27,7 +27,9 @@
 #define GMP_NO_MODULES true
 
 #import "PushPlugin.h"
-#import "Firebase.h"
+@import FirebaseInstanceID;
+@import FirebaseMessaging;
+@import FirebaseAnalytics;
 
 @implementation PushPlugin : CDVPlugin
 
