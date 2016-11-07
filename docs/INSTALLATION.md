@@ -1,5 +1,6 @@
 # Installation
 
+- [Installation Requirements](#installation-requirements)
 - [Android details](#android-details)
   - [Compilation](#compilation)
   - [Co-existing with Facebook Plugin](#co-existing-with-facebook-plugin)
@@ -16,7 +17,14 @@
   - [CocoaPods](#cocoapods)
 - [Additional Resources](#additional-resources)
 
-This requires phonegap/cordova CLI 5.0+
+## Installation Requirements
+
+Plugin verssion | Cordova CLI | Cordova Android | Cordova iOS | CococaPods
+---- | ---- | ---- | ---- | ----
+1.9.0 | 6.4.0 | 6.0.0 | 4.3.0 | 1.1.1
+1.8.0 | 3.6.3 | 4.0.0 | 4.1.0 | N/A
+
+To install from the command line:
 
 ```
 phonegap plugin add phonegap-plugin-push --variable SENDER_ID="XXXXXXX"
@@ -194,7 +202,7 @@ Firefox 46+
 
 ### Xcode
 
-Xcode version 7.0 or greater is required for building this plugin.
+Xcode version 8.0 or greater is required for building this plugin.
 
 ### Bitcode
 
