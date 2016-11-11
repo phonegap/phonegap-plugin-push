@@ -19,7 +19,7 @@
 
 ## Installation Requirements
 
-Plugin verssion | Cordova CLI | Cordova Android | Cordova iOS | CococaPods
+Plugin version | Cordova CLI | Cordova Android | Cordova iOS | CocoaPods
 ---- | ---- | ---- | ---- | ----
 1.9.0 | 6.4.0 | 6.0.0 | 4.3.0 | 1.1.1
 1.8.0 | 3.6.3 | 4.0.0 | 4.1.0 | N/A
@@ -53,7 +53,7 @@ Where the `XXXXXXX` in `SENDER_ID="XXXXXXX"` maps to the project number in the [
 
 If you are not creating an Android application you can put in anything for this value.
 
-> Note: if you are using ionic you may need to specify the SENDER_ID variable in your package.json.
+> Note: if you are using Ionic you may need to specify the SENDER_ID variable in your package.json.
 
 ```
   "cordovaPlugins": [
