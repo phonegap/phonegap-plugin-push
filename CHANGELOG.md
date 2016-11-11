@@ -1,5 +1,53 @@
 # Change Log
 
+## [v1.9.0](https://github.com/phonegap/phonegap-plugin-push/tree/v1.9.0) (2016-07-09)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.8.4...v1.9.0)
+
+- 1.9.0 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/e5b7f22299d900a37064a783da43905ad73c58bf)
+- Bumping plugin version to 1.9.0 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/dc6a11db4157e1070e48e073a8a78401f185d324)
+- Prepare for 1.9.0 release [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/0f889bfb5e612ef3ffbc1466deabfe9eb99b760b)
+- Update gitignore [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/d70bad64564444c01e59ff494b8ba09d190d3dbb)
+- Bumping plugin version to 1.9.0 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/600993e7739a0a84ef77b60c4a1457f8aea084b6)
+- Issue #1154: Register fail iOS 10 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/e6013d49ecf0025be10fb6bb87152ee4025b5df4)
+- Issue #1337: Build failed, invalid package.json [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/8631666e4654fd6acafa6cf160cc59424e912ceb)
+- Set default SENDER_ID [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/82ca365f4d6d91b18fc28c338a647a2622e60f6e)
+- Issue #158: Notification Event Not Firing When Closed Through App Launcher [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/ca18653d6ff332db41f48824a2d65bd2699ed8bc)
+- Merge branch 'master' of https://github.com/hanicker/phonegap-plugin-push into hanicker-master [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/43402909d3b2d5c6ff518cc69e401dc918b585aa)
+- Update plugin to use GCM Cocoapods <framework> reference in plugin.xml (#1183) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/b639d83fe125d5b77720d130ccec53af3a5f3d91)
+- Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/e4779de2a5996703ba70656630f35d79415d1af8)
+- feat(forced restart, notify javascript) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/8c03beff9a5a83927b7020ee04c3ed541de04edd)
+- restart application after force close (#158 #333) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/8b7c972dbf617f22218c178d74368b35521eecb9)
+
+## [v1.8.4](https://github.com/phonegap/phonegap-plugin-push/tree/v1.8.4) (2016-07-09)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.8.3...v1.8.4)
+
+- 1.8.4 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/4b18505a2c30e17564c0e80060f0524968aa0d40)
+- Bumping plugin version to 1.8.4 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/046c727f58a6fa675a5f49c10334095cd4282884)
+- Issue #1251: [Android] deviceId persists between uninstalls, but is invalid after an uninstall [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/8a7bbe5cba186d9685f31adc07e25bd908409498)
+- Merge pull request #1323 from hung-doan/issue-1319 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/021f0abd9a49fb83d19faca3ffb7d142759bb01a)
+- Update GCM to 9.8+  issue #1319 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/450e0e01b9bcd747a49081c4a0d6ce998c37478a)
+- Support Twilio Notify (#1306) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/a9bb3bf0a2ca57f68eafc39070fc125746bbbb23)
+- Cache multiple Android action button pushes if app is not running (#1272) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/d0547bab04c292024dc6ed41939590fba01115ff)
+- Add sub/unsub tests [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/3bf9ff5f04e10622d7d9ff47a9bd57a829ee9eef)
+- Add features: push.subscribe, push.unsubscribe (issue #1040) (#1227) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/bb0d3ed087e13e24af57e682776930cea2f577a8)
+- Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/cf7ce8e716fe60de121634abc164b509100a9d15)
+
+## [v1.8.3](https://github.com/phonegap/phonegap-plugin-push/tree/v1.8.3) (2016-07-09)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.8.2...v1.8.3)
+
+- 1.8.3 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/a0cfba9f85b7d7dfa3c244c9e78a03872ff938f9)
+- Bumping plugin version to 1.8.3 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/cc7d5abe55957cebfdd3b39ba670f8093bdac564)
+- Update pluginpub version [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/0d8548d3166b7b4d34b32944b800c96e4aadf70a)
+- Issue#1282 Show app name if title is empty (#1285) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/3d7a3a39fb931aafa86be6b1568a682133c36de7)
+- Note about background app refresh (#1267) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/4f13533deb0c1b927dab9d9cddb13c53fdefd9b0)
+- Issue #1213: XDK instructions link for www template is incorrect (#1283) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/d2ede2bab4cd6462f7dffc4e2bc733d585107e89)
+- Merge pull request #1277 from dannywillems/patch-1 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/ea5ae88f3fcfa8fc605cf2c974b52d793bd2c4c9)
+- Unused variable app. Caused warnings. [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/09dedb43481d207d0b17de4eb26c5a1904d08f65)
+- Issue #1254: [Question] Is it possible to get more than 3 action buttons on Android notifications? [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/d8ab6665d878c8dec3ff9914c11a9329c8a415e7)
+- Use unique pending intent request code to enable multiple... (#1225) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/475883833556eb001e2e0adb986bd96b78bdcb2f)
+- Add `cordovaDependencies` section to package.json (#1232) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/6b343e78e9bfca921cef78eb504755477ecaeff9)
+- Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/14afb94126acb51a6f10a2094f7f391f2f17dee5)
+
 ## [v1.8.2](https://github.com/phonegap/phonegap-plugin-push/tree/v1.8.2) (2016-07-09)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.8.1...v1.8.2)
 

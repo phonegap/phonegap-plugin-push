@@ -27,7 +27,8 @@
 #define GMP_NO_MODULES true
 
 #import "PushPlugin.h"
-#import "CloudMessaging.h"
+#import "GoogleCloudMessaging.h"
+#import "GGLInstanceIDHeaders.h"
 
 @implementation PushPlugin : CDVPlugin
 
@@ -83,7 +84,7 @@
             [weakSelf registerWithToken:registrationToken];
         } else {
             NSLog(@"Registration to GCM failed with error: %@", error.localizedDescription);
-            [weakSelf failWithMessage:@"" withError:error];
+            [weakSelf failWithMessage:self.callbackId withMsg:@"" withError:error];
         }
     };
 }
@@ -124,8 +125,6 @@
 
 - (void)unregister:(CDVInvokedUrlCommand*)command;
 {
-    self.callbackId = command.callbackId;
-
     NSArray* topics = [command argumentAtIndex:0];
 
     if (topics != nil) {
@@ -146,7 +145,63 @@
         }
     } else {
         [[UIApplication sharedApplication] unregisterForRemoteNotifications];
-        [self successWithMessage:@"unregistered"];
+        [self successWithMessage:command.callbackId withMsg:@"unregistered"];
+    }
+}
+
+- (void)subscribe:(CDVInvokedUrlCommand*)command;
+{
+    NSString* topic = [command argumentAtIndex:0];
+
+    if (topic != nil) {
+        NSLog(@"subscribe from topic: %@", topic);
+        id pubSub = [GCMPubSub sharedInstance];
+        [pubSub subscribeWithToken: [self gcmRegistrationToken]
+            topic:[NSString stringWithFormat:@"/topics/%@", topic]
+            options:nil
+            handler:^void(NSError *error) {
+                if (error) {
+                    if (error.code == 3001) {
+                        NSLog(@"Already subscribed to %@", topic);
+                        [self successWithMessage:command.callbackId withMsg:[NSString stringWithFormat:@"Already subscribed to %@", topic]];
+                    } else {
+                        NSLog(@"Failed to subscribe to topic %@: %@", topic, error);
+                        [self failWithMessage:command.callbackId withMsg:[NSString stringWithFormat:@"Failed to subscribe to topic %@", topic] withError:error];
+                    }
+                }
+                else {
+                    NSLog(@"Successfully subscribe to topic %@", topic);
+                    [self successWithMessage:command.callbackId withMsg:[NSString stringWithFormat:@"Successfully subscribe to topic %@", topic]];
+                }
+        }];
+    } else {
+        NSLog(@"There is no topic to subscribe");
+        [self successWithMessage:command.callbackId withMsg:@"There is no topic to subscribe"];
+    }
+}
+
+- (void)unsubscribe:(CDVInvokedUrlCommand*)command;
+{
+    NSString* topic = [command argumentAtIndex:0];
+
+    if (topic != nil) {
+        NSLog(@"unsubscribe from topic: %@", topic);
+        id pubSub = [GCMPubSub sharedInstance];
+        [pubSub unsubscribeWithToken: [self gcmRegistrationToken]
+            topic:[NSString stringWithFormat:@"/topics/%@", topic]
+            options:nil
+            handler:^void(NSError *error) {
+                if (error) {
+                    NSLog(@"Failed to unsubscribe to topic %@: %@", topic, error);
+                    [self failWithMessage:command.callbackId withMsg:[NSString stringWithFormat:@"Failed to unsubscribe to topic %@", topic] withError:error];
+                } else {
+                    NSLog(@"Successfully unsubscribe to topic %@", topic);
+                    [self successWithMessage:command.callbackId withMsg:[NSString stringWithFormat:@"Successfully unsubscribe to topic %@", topic]];
+                }
+        }];
+    } else {
+        NSLog(@"There is no topic to unsubscribe");
+        [self successWithMessage:command.callbackId withMsg:@"There is no topic to unsubscribe"];
     }
 }
 
@@ -435,7 +490,7 @@
         return;
     }
     NSLog(@"Push Plugin register failed");
-    [self failWithMessage:@"" withError:error];
+    [self failWithMessage:self.callbackId withMsg:@"" withError:error];
 }
 
 - (void)notificationReceived {
@@ -555,12 +610,12 @@
     [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
 }
 
--(void)successWithMessage:(NSString *)message
+-(void)successWithMessage:(NSString *)callbackId withMsg:(NSString *)message
 {
-    if (self.callbackId != nil)
+    if (callbackId != nil)
     {
         CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message];
-        [self.commandDelegate sendPluginResult:commandResult callbackId:self.callbackId];
+        [self.commandDelegate sendPluginResult:commandResult callbackId:callbackId];
     }
 }
 
@@ -574,12 +629,12 @@
 }
 
 
--(void)failWithMessage:(NSString *)message withError:(NSError *)error
+-(void)failWithMessage:(NSString *)callbackId withMsg:(NSString *)message withError:(NSError *)error
 {
     NSString        *errorMessage = (error) ? [NSString stringWithFormat:@"%@ - %@", message, [error localizedDescription]] : message;
     CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:errorMessage];
 
-    [self.commandDelegate sendPluginResult:commandResult callbackId:self.callbackId];
+    [self.commandDelegate sendPluginResult:commandResult callbackId:callbackId];
 }
 
 -(void) finish:(CDVInvokedUrlCommand*)command
@@ -588,8 +643,6 @@
 
     [self.commandDelegate runInBackground:^ {
         NSString* notId = [command.arguments objectAtIndex:0];
-
-        UIApplication *app = [UIApplication sharedApplication];
 
         dispatch_async(dispatch_get_main_queue(), ^{
             [NSTimer scheduledTimerWithTimeInterval:0.1
