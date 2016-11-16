@@ -59,7 +59,7 @@
     <framework src="push.gradle" custom="true" type="gradleReference"/>
     <framework src="com.android.support:support-v13:23+"/>
     <framework src="com.google.android.gms:play-services-gcm:9.8+"/>
-    <framework src="me.leolin:ShortcutBadger:1.1.4@aar"/>
+    <framework src="me.leolin:ShortcutBadger:1.1.11@aar"/>
     <source-file src="src/android/com/adobe/phonegap/push/GCMIntentService.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/"/>
