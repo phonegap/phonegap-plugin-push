@@ -55,6 +55,18 @@ describe('phonegap-plugin-push', function () {
             expect(push.clearAllNotifications).toBeDefined();
             expect(typeof push.clearAllNotifications === 'function').toBe(true);
         });
+
+        it('should contain a subscribe function', function () {
+            var push = PushNotification.init({});
+            expect(push.subscribe).toBeDefined();
+            expect(typeof push.subscribe === 'function').toBe(true);
+        });
+
+        it('should contain a unsubscribe function', function () {
+            var push = PushNotification.init({});
+            expect(push.unsubscribe).toBeDefined();
+            expect(typeof push.unsubscribe === 'function').toBe(true);
+        });
     });
 
     describe('PushNotification instance', function () {
@@ -348,6 +360,45 @@ describe('phonegap-plugin-push', function () {
                     expect(push._handlers.error.indexOf(eventHandler)).toBeGreaterThan(-1);
                     done();
                 }, null, ['foo', 'bar']);
+            });
+        });
+
+        describe('subscribe topic method', function () {
+            describe('cordova.exec', function () {
+                it('should call cordova.exec on next process tick', function (done) {
+                    var push = PushNotification.init(options);
+                    push.subscribe('foo', function() {}, function() {});
+                    setTimeout(function () {
+                        expect(execSpy).toHaveBeenCalledWith(
+                            jasmine.any(Function),
+                            jasmine.any(Function),
+                            'PushNotification',
+                            'subscribe',
+                            jasmine.any(Object)
+                        );
+                        done();
+                    }, 100);
+                });
+            });
+        });
+
+
+        describe('unsubscribe topic method', function () {
+            describe('cordova.exec', function () {
+                it('should call cordova.exec on next process tick', function (done) {
+                    var push = PushNotification.init(options);
+                    push.unsubscribe('foo', function() {}, function() {});
+                    setTimeout(function () {
+                        expect(execSpy).toHaveBeenCalledWith(
+                            jasmine.any(Function),
+                            jasmine.any(Function),
+                            'PushNotification',
+                            'unsubscribe',
+                            jasmine.any(Object)
+                        );
+                        done();
+                    }, 100);
+                });
             });
         });
     });
