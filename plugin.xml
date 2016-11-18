@@ -46,7 +46,7 @@
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
             <uses-permission android:name="android.permission.VIBRATE"/>
         </config-file>
-        
+
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
 			<activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true"/>
             <receiver android:name="com.adobe.phonegap.push.BackgroundActionButtonHandler"/>
@@ -67,7 +67,7 @@
         <framework src="push.gradle" custom="true" type="gradleReference" />
         <framework src="com.android.support:support-v13:23+" />
         <framework src="me.leolin:ShortcutBadger:1.1.4@aar" />
-        <framework src="com.google.firebase:firebase-messaging:9.0.0" />
+        <framework src="com.google.firebase:firebase-messaging:9+" />
 
 		<source-file src="src/android/com/adobe/phonegap/push/GCMIntentService.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/" />
