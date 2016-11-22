@@ -129,25 +129,10 @@
 
     if (topic != nil) {
         NSLog(@"subscribe from topic: %@", topic);
-        id pubSub = [GCMPubSub sharedInstance];
-        [pubSub subscribeWithToken: [self gcmRegistrationToken]
-            topic:[NSString stringWithFormat:@"/topics/%@", topic]
-            options:nil
-            handler:^void(NSError *error) {
-                if (error) {
-                    if (error.code == 3001) {
-                        NSLog(@"Already subscribed to %@", topic);
-                        [self successWithMessage:command.callbackId withMsg:[NSString stringWithFormat:@"Already subscribed to %@", topic]];
-                    } else {
-                        NSLog(@"Failed to subscribe to topic %@: %@", topic, error);
-                        [self failWithMessage:command.callbackId withMsg:[NSString stringWithFormat:@"Failed to subscribe to topic %@", topic] withError:error];
-                    }
-                }
-                else {
-                    NSLog(@"Successfully subscribe to topic %@", topic);
-                    [self successWithMessage:command.callbackId withMsg:[NSString stringWithFormat:@"Successfully subscribe to topic %@", topic]];
-                }
-        }];
+        id pubSub = [FIRInstanceID instanceID];
+        [pubSub subscribeToTopic:[NSString stringWithFormat:@"/topics/%@", topic]];
+        NSLog(@"Successfully subscribe to topic %@", topic);
+        [self successWithMessage:command.callbackId withMsg:[NSString stringWithFormat:@"Successfully subscribe to topic %@", topic]];
     } else {
         NSLog(@"There is no topic to subscribe");
         [self successWithMessage:command.callbackId withMsg:@"There is no topic to subscribe"];
@@ -160,19 +145,10 @@
 
     if (topic != nil) {
         NSLog(@"unsubscribe from topic: %@", topic);
-        id pubSub = [GCMPubSub sharedInstance];
-        [pubSub unsubscribeWithToken: [self gcmRegistrationToken]
-            topic:[NSString stringWithFormat:@"/topics/%@", topic]
-            options:nil
-            handler:^void(NSError *error) {
-                if (error) {
-                    NSLog(@"Failed to unsubscribe to topic %@: %@", topic, error);
-                    [self failWithMessage:command.callbackId withMsg:[NSString stringWithFormat:@"Failed to unsubscribe to topic %@", topic] withError:error];
-                } else {
-                    NSLog(@"Successfully unsubscribe to topic %@", topic);
-                    [self successWithMessage:command.callbackId withMsg:[NSString stringWithFormat:@"Successfully unsubscribe to topic %@", topic]];
-                }
-        }];
+        id pubSub = [FIRInstanceID instanceID];
+        [pubSub unsubscribeFromTopic:[NSString stringWithFormat:@"/topics/%@", topic]];
+        NSLog(@"Successfully unsubscribe to topic %@", topic);
+        [self successWithMessage:command.callbackId withMsg:[NSString stringWithFormat:@"Successfully unsubscribe from topic %@", topic]];
     } else {
         NSLog(@"There is no topic to unsubscribe");
         [self successWithMessage:command.callbackId withMsg:@"There is no topic to unsubscribe"];
