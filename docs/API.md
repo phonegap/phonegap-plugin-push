@@ -332,6 +332,8 @@ push.unsubscribe('my-topic', function() {
 
 Set the badge count visible when the app is not running
 
+> Note: badges are not supported on all Android devices. See [our payload documentation](PAYLOAD.md#badges) for more details.
+
 ### Parameters
 
 Parameter | Type | Default | Description
