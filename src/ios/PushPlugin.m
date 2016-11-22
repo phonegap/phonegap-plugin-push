@@ -291,7 +291,8 @@
             NSLog(@"Using FCM Notification");
             [self setUsesFCM: YES];
             dispatch_async(dispatch_get_main_queue(), ^{
-                [FIRApp configure];
+                if([FIRApp defaultApp] == nil)
+                    [FIRApp configure];
                 [self initRegistration];
             });
         } else {
