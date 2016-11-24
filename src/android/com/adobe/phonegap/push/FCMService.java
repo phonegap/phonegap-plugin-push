@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.Random;
 
 @SuppressLint("NewApi")
-public class GCMIntentService extends FirebaseMessagingService implements PushConstants {
+public class FCMService extends FirebaseMessagingService implements PushConstants {
 
     private static final String LOG_TAG = "PushPlugin_FCMService";
     private static HashMap<Integer, ArrayList<String>> messageMap = new HashMap<Integer, ArrayList<String>>();
