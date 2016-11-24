@@ -21,7 +21,7 @@ public class PushHandlerActivity extends Activity implements PushConstants {
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        GCMIntentService gcm = new GCMIntentService();
+        FCMService gcm = new FCMService();
 
         Intent intent = getIntent();
 
@@ -37,7 +37,7 @@ public class PushHandlerActivity extends Activity implements PushConstants {
 
         if(!startOnBackground){
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancel(GCMIntentService.getAppName(this), notId);
+            notificationManager.cancel(FCMService.getAppName(this), notId);
         }
 
         Log.d(LOG_TAG, "bringToForeground = " + foreground);
