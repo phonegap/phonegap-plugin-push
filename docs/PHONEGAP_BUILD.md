@@ -7,6 +7,8 @@
 
 ## PhoneGap Build Support
 
+> Currently PhoneGap Build does not support version 1.9.0 of the plugin. Updates are being made to PGB to support the latest release.
+
 ### Including the plugin
 
 Including this plugin in a project that is built by PhoneGap Build is as easy as adding:
