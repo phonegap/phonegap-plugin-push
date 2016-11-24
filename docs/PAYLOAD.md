@@ -192,9 +192,8 @@ By default the icon displayed in your push notification will be your apps icon. 
 ```javascript
 var push = PushNotification.init({
 	"android": {
-		"senderID": "12345679"
 	},
-    browser: {
+    "browser": {
         pushServiceURL: 'http://push.api.phonegap.com/v1/push'
     },
 	"ios": {
@@ -217,11 +216,10 @@ In order to get a better user experience you can specify an alternate icon and b
 ```javascript
 var push = PushNotification.init({
 	"android": {
-		"senderID": "123456789",
 		"icon": "phonegap",
 		"iconColor": "blue"
 	},
-    browser: {
+    "browser": {
         pushServiceURL: 'http://push.api.phonegap.com/v1/push'
     },
     "ios": {

@@ -11,7 +11,6 @@ phonegap create my-app --template phonegap-template-push
 ```javascript
 var push = PushNotification.init({
 	android: {
-		senderID: "12345679"
 	},
     browser: {
         pushServiceURL: 'http://push.api.phonegap.com/v1/push'

@@ -78,4 +78,5 @@ public interface PushConstants {
     public static final String IMAGE_TYPE = "image-type";
     public static final String IMAGE_TYPE_SQUARE = "square";
     public static final String IMAGE_TYPE_CIRCLE = "circle";
+    public static final String GOOGLE_APP_ID = "google_app_id";
 }
