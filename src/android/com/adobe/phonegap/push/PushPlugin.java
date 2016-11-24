@@ -1,5 +1,6 @@
 package com.adobe.phonegap.push;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -67,7 +68,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                         Log.v(LOG_TAG, "execute: jo=" + jo.toString());
 
-                        senderID = jo.getString(SENDER_ID);
+                        senderID = getStringResourceByName(GOOGLE_APP_ID);
 
                         Log.v(LOG_TAG, "execute: senderID=" + senderID);
 
@@ -407,6 +408,13 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
             Log.e(LOG_TAG, "extrasToJSON: JSON exception");
         }
         return null;
+    }
+
+    private String getStringResourceByName(String aString) {
+        Activity activity = cordova.getActivity();
+        String packageName = activity.getPackageName();
+        int resId = activity.getResources().getIdentifier(aString, "string", packageName);
+        return activity.getString(resId);
     }
 
     public static boolean isInForeground() {
