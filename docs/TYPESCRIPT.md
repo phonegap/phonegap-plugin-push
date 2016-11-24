@@ -11,7 +11,6 @@ All available attributes and properties will have autocomplete support and type 
 ```typescript
 let push = PushNotification.init({
 	android: {
-		senderID: "12345679"
 	},
 	ios: {
 		alert: "true",
@@ -69,4 +68,4 @@ push.on('notification', (data: my.custom.NotificationEventResponse) => {
 ## Outdated definitions
 
 Is our definition file at DefinitelyTyped outdated? Is there any improvements that could be done?
-We welcome any contribution, and they should be done through issues created [there](https://github.com/DefinitelyTyped/DefinitelyTyped/issues/new). 
+We welcome any contribution, and they should be done through issues created [there](https://github.com/DefinitelyTyped/DefinitelyTyped/issues/new).
