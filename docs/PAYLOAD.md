@@ -949,6 +949,35 @@ These phones have a particular quirk that when the app is force closed that you 
 
 ### Application force closed
 
+In order to take advantage of this feature you will need to be using cordova-android 6.0.0 or higher. In order to check if the change has been properly applied look at `platforms/android/**/MainActivity.java`. You should see an `onCreate` method that looks like this:
+
+```java
+@Override
+public void onCreate(Bundle savedInstanceState)
+{
+    super.onCreate(savedInstanceState);
+
+    // enable Cordova apps to be started in the background
+    Bundle extras = getIntent().getExtras();
+    if (extras != null && extras.getBoolean("cdvStartInBackground", false)) {
+        moveTaskToBack(true);
+    }
+
+    // Set by <content src="index.html" /> in config.xml
+    loadUrl(launchUrl);
+}
+```
+
+If you don't see the `if` statement that checks for the appearance of `cdvStartInBackground` you will probably need to do:
+
+```
+phonegap platform rm android
+phonegap platform add android
+phonegap build android
+```
+
+This should add the correct code to the `MainActivity` class.
+
 If you add `force-start: 1` to the data payload the application will be restarted in background even if it was force closed.
 
 ```javascript
