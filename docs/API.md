@@ -46,7 +46,7 @@ Attribute | Type | Default | Description
 `android.clearBadge` | `boolean` | `false` | Optional. If `true` the icon badge will be cleared on init and before push messages are processed.
 `android.clearNotifications` | `boolean` | `true` | Optional. If `true` the app clears all pending notifications when it is closed.
 `android.forceShow` | `boolean` | `false` | Optional. Controls the behavior of the notification when app is in foreground. If `true` and app is in foreground, it will show a notification in the notification drawer, the same way as when the app is in background (and `on('notification')` callback will be called *only when the user clicks the notification*). When `false` and app is in foreground, the `on('notification')` callback will be called immediately.
-`android.topics` | `array` | `[]` | Optional. If the array contains one or more strings each string will be used to subscribe to a GcmPubSub topic. Note: you should omit the `/topics/` prefix from each element of the array as the plugin will handle that for you.
+`android.topics` | `array` | `[]` | Optional. If the array contains one or more strings each string will be used to subscribe to a FcmPubSub topic.
 `android.messageKey` | `string` | `message` | Optional. The key to search for text of notification.
 `android.titleKey` | `string` | `'title'` | Optional. The key to search for title of notification.
 
@@ -76,6 +76,7 @@ The following properties are used if you want use GCM on iOS.
 Attribute | Type | Default | Description
 --------- | ---- | ------- | -----------
 `ios.fcmSandbox` | `boolean` | `false` | Whether to use prod or sandbox GCM setting.  Defaults to false.
+Android options
 `ios.topics` | `array` | `[]` | Optional. If the array contains one or more strings each string will be used to subscribe to a FcmPubSub topic.
 
 ##### How GCM on iOS works.
