@@ -44,11 +44,11 @@
 @synthesize handlerObj;
 
 @synthesize usesFCM;
-@synthesize gcmSandbox;
-@synthesize gcmSenderId;
-@synthesize gcmRegistrationOptions;
-@synthesize gcmRegistrationToken;
-@synthesize gcmTopics;
+@synthesize fcmSandbox;
+@synthesize fcmSenderId;
+@synthesize fcmRegistrationOptions;
+@synthesize fcmRegistrationToken;
+@synthesize fcmTopics;
 
 -(void)initRegistration;
 {
@@ -57,9 +57,9 @@
 
     if (registrationToken != nil) {
         NSLog(@"FCM Registration Token: %@", registrationToken);
-        [self setGcmRegistrationToken: registrationToken];
+        [self setFcmRegistrationToken: registrationToken];
 
-        id topics = [self gcmTopics];
+        id topics = [self fcmTopics];
         if (topics != nil) {
             for (NSString *topic in topics) {
                 NSLog(@"subscribe from topic: %@", topic);
@@ -181,8 +181,8 @@
         NSMutableDictionary* options = [command.arguments objectAtIndex:0];
         NSMutableDictionary* iosOptions = [options objectForKey:@"ios"];
 
-    NSArray* topics = [iosOptions objectForKey:@"topics"];
-    [self setGcmTopics:topics];
+        NSArray* topics = [iosOptions objectForKey:@"topics"];
+        [self setFcmTopics:topics];
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         UIUserNotificationType UserNotificationTypes = UIUserNotificationTypeNone;
@@ -314,10 +314,19 @@
          (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 #endif
 
+
+        // Read GoogleService-Info.plist
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info" ofType:@"plist"];
+
+        // Load the file content and read the data into arrays
+        NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:path];
+        fcmSenderId = [dict objectForKey:@"GCM_SENDER_ID"];
+
+        NSLog(@"FCM Sender ID %@", fcmSenderId);
+
         //  GCM options
-        [self setGcmSenderId: [iosOptions objectForKey:@"senderID"]];
-        NSLog(@"FCM Sender ID %@", gcmSenderId);
-        if([[self gcmSenderId] length] > 0) {
+        [self setFcmSenderId: fcmSenderId];
+        if([[self fcmSenderId] length] > 0) {
             NSLog(@"Using FCM Notification");
             [self setUsesFCM: YES];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -328,15 +337,15 @@
             NSLog(@"Using APNS Notification");
             [self setUsesFCM:NO];
         }
-        id gcmSandBoxArg = [iosOptions objectForKey:@"gcmSandbox"];
+        id fcmSandboxArg = [iosOptions objectForKey:@"fcmSandbox"];
 
-        [self setGcmSandbox:@NO];
+        [self setFcmSandbox:@NO];
         if ([self usesFCM] &&
-            (([gcmSandBoxArg isKindOfClass:[NSString class]] && [gcmSandBoxArg isEqualToString:@"true"]) ||
-             [gcmSandBoxArg boolValue]))
+            (([fcmSandboxArg isKindOfClass:[NSString class]] && [fcmSandboxArg isEqualToString:@"true"]) ||
+             [fcmSandboxArg boolValue]))
         {
             NSLog(@"Using FCM Sandbox");
-            [self setGcmSandbox:@YES];
+            [self setFcmSandbox:@YES];
         }
 
         if (notificationMessage) {			// if there is a pending startup notification
