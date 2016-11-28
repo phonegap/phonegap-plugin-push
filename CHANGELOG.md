@@ -1,5 +1,24 @@
 # Change Log
 
+## [v1.9.1](https://github.com/phonegap/phonegap-plugin-push/tree/v1.9.1) (2016-07-09)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.9.0...v1.9.1)
+
+- 1.9.1 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/6178688d10fc9fd5770795e5caa3f402d3fec574)
+- Bumping plugin version to 1.9.1 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/4d0d2d0c0f19305189bbc7db11c56abfcb0e629a)
+- :bug: Issue #1412: push.subscribe 'not a function' error [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/1c0c0bcac7ae4a0fe8a7c54e2f00fdba90ff5207)
+- :memo: Add emoji guide to CONTRIBUTING [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/dce845fde55429c36a885a4711e04a73904ab9c0)
+- Issue #1342: Fail to add 1.9.0 to ios platform [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/7481e286607dacf01327c9f6d5a7c21acc5eeba1)
+- Issue #1402: force-start:1 brings a killed application to foreground, not background [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/256f28fa08da4aab9691d628a3150022b67da02d)
+- Issue #1400: Version 1.9.0 on PGB not working [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/c45228a892c602b8616d165ccf142eac0ff2f7f2)
+- Merge pull request #1398 from getlarky/android-badge-documentation [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/6884df95602a15c219846bbcdb01ce1285d660bb)
+- Warn about android badge support in documentation [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/2842de212b11a76580865c6ee0d6a1b7b42d030e)
+- Enahancement : Add custom permission for PushHandlerActivity (#1362) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/e15fdc442030648daabc79a44ae72b2d14b7c1d2)
+- Issue #1248: upgrade ShortcutBadger version to latest [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/4ab1cf0f0747b1f122f1f43c4af67db37dd0e443)
+- Merge pull request #1361 from pataar/master [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/29ec1e241036611c6a3a2c71d2a61860427be5d0)
+- Fix minor typos in INSTALLATION.md [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/840b0e06cb2643635cfb882de9a35202799f3953)
+- Add mimimum cordova versions to installation docs [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/dcb528384dfd7f65410545b842e16ef89277ff7b)
+- Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/e268a0dceff248b703ae75ff7923b7b3d673aeee)
+
 ## [v1.9.0](https://github.com/phonegap/phonegap-plugin-push/tree/v1.9.0) (2016-07-09)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.8.4...v1.9.0)
 
