@@ -42,9 +42,13 @@ git commit -m "Cool stuff"
 
 Consider starting the commit message with an applicable emoji:
     * :art: `:art:` when improving the format/structure of the code
-    * :racehorse: `:racehorse:` when improving performance
+    * :zap: `:zap:` when improving performance
     * :non-potable_water: `:non-potable_water:` when plugging memory leaks
     * :memo: `:memo:` when writing docs
+    * :ambulance: `:ambulance:` a critical hotfix.
+    * :sparkles: `:sparkles:` when introducing new features
+    * :bookmark: `:bookmark:` when releasing / version tags
+    * :rocket: `:rocket:` when deploying stuff
     * :penguin: `:penguin:` when fixing something on Android
     * :apple: `:apple:` when fixing something on iOS
     * :checkered_flag: `:checkered_flag:` when fixing something on Windows
