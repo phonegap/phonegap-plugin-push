@@ -26,20 +26,15 @@
         <engine name="cordova-ios" version=">=4.3.0"/>
     </engines>
 
-    <preference name="SENDER_ID" default="85075801930"/>
-
 	<!-- android -->
 	<platform name="android">
+        <hook type="before_plugin_install" src="scripts/copyAndroidFile.js" />
 
 		<config-file target="res/xml/config.xml" parent="/*">
 			<feature name="PushNotification" >
 				<param name="android-package" value="com.adobe.phonegap.push.PushPlugin"/>
 			</feature>
 		</config-file>
-
-        <config-file target="res/values/strings.xml" parent="/resources">
-            <string name="google_app_id">$SENDER_ID</string>
-        </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest">
             <uses-permission android:name="android.permission.INTERNET"/>
@@ -65,10 +60,11 @@
             </service>
 		</config-file>
 
-        <framework src="push.gradle" custom="true" type="gradleReference" />
         <framework src="com.android.support:support-v13:23+" />
         <framework src="me.leolin:ShortcutBadger:1.1.11@aar"/>
+        <!-- framework src="com.google.gms:google-services:3.0.0" /-->
         <framework src="com.google.firebase:firebase-messaging:9+" />
+        <framework src="push.gradle" custom="true" type="gradleReference" />
 
 		<source-file src="src/android/com/adobe/phonegap/push/FCMService.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/" />
@@ -104,7 +100,8 @@
         <!--  Start FCM Related Files -->
         <framework src="FirebaseMessaging" type="podspec" spec="~> 1.2.1"/>
 
-        <resource-file src="src/ios/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist" />
+        <!-- resource-file src="src/ios/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist" / -->
+        <hook src="scripts/copy_file.js" type="after_prepare" />
         <!--  End FCM Related Files -->
 	</platform>
 
@@ -117,6 +114,4 @@
     		<preference name="WindowsToastCapable" value="true" />
     	</config-file>
 	</platform>
-
-    <hook src="scripts/copy_file.js" type="after_prepare" />
 </plugin>
