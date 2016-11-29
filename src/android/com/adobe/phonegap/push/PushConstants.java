@@ -70,5 +70,5 @@ public interface PushConstants {
     public static final String MP_MESSAGE = "mp_message";
     public static final String START_IN_BACKGROUND = "cdvStartInBackground";
     public static final String FORCE_START = "force-start";
-    public static final String GOOGLE_APP_ID = "google_app_id";
+    public static final String GCM_DEFAULT_SENDER_ID = "gcm_defaultSenderId";
 }

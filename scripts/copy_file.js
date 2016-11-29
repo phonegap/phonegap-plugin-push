@@ -41,3 +41,12 @@ if(fileExists("GoogleService-Info.plist") && directoryExists("platforms/ios/")){
     process.stdout.write(err);
   }
 }
+
+if(fileExists("google-services.json") && directoryExists("platforms/android/")){
+  try {
+  	var contents = fs.readFileSync("google-services.json").toString();
+    fs.writeFileSync("platforms/android/google-services.json", contents);
+  } catch(err) {
+    process.stdout.write(err);
+  }
+}

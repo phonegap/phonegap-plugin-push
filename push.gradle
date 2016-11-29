@@ -8,6 +8,10 @@ def doExtractStringFromManifest(name) {
     return matcher.group(1)
 }
 
+cdvPluginPostBuildExtras << {
+    apply plugin: 'com.google.gms.google-services'
+}
+
 android {
     sourceSets {
         main {
