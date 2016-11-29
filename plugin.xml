@@ -100,7 +100,7 @@
         <!--  Start FCM Related Files -->
         <framework src="FirebaseMessaging" type="podspec" spec="~> 1.2.1"/>
 
-        <!-- resource-file src="src/ios/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist" / -->
+        <resource-file src="src/ios/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist" />
         <hook src="scripts/copy_file.js" type="after_prepare" />
         <!--  End FCM Related Files -->
 	</platform>
