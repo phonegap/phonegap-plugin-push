@@ -68,7 +68,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                         Log.v(LOG_TAG, "execute: jo=" + jo.toString());
 
-                        senderID = getStringResourceByName(GOOGLE_APP_ID);
+                        senderID = getStringResourceByName(GCM_DEFAULT_SENDER_ID);
 
                         Log.v(LOG_TAG, "execute: senderID=" + senderID);
 
