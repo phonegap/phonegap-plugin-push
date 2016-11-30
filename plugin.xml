@@ -52,13 +52,10 @@
       <!-- service android:name="com.adobe.phonegap.push.RegistrationIntentService" android:exported="false"/ -->
     </config-file>
     <framework src="com.android.support:support-v13:25.1.0"/>
-    <framework src="me.leolin:ShortcutBadger:1.1.11@aar"/>
+    <framework src="me.leolin:ShortcutBadger:1.1.14@aar"/>
     <framework src="com.google.firebase:firebase-messaging:9.8.0"/>
     <framework src="push.gradle" custom="true" type="gradleReference"/>
     <source-file src="src/android/com/adobe/phonegap/push/FCMService.java" target-dir="src/com/adobe/phonegap/push/"/>
-    <framework src="com.android.support:support-v13:23+"/>
-    <framework src="com.google.firebase:firebase-messaging:9.0.0" />
-    <framework src="me.leolin:ShortcutBadger:1.1.14@aar"/>
     <source-file src="src/android/com/adobe/phonegap/push/GCMIntentService.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/"/>
