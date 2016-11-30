@@ -62,8 +62,7 @@
 
         <framework src="com.android.support:support-v13:23+" />
         <framework src="me.leolin:ShortcutBadger:1.1.11@aar"/>
-        <!-- framework src="com.google.gms:google-services:3.0.0" /-->
-        <framework src="com.google.firebase:firebase-messaging:9+" />
+        <framework src="com.google.firebase:firebase-messaging:9.8.0" />
         <framework src="push.gradle" custom="true" type="gradleReference" />
 
 		<source-file src="src/android/com/adobe/phonegap/push/FCMService.java" target-dir="src/com/adobe/phonegap/push/" />
