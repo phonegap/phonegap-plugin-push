@@ -1143,8 +1143,7 @@ If you want the default sound to play upon receipt of push use this payload:
 
 On iOS if you want your `on('notification')` event handler to be called when your app is in the background you will need to do a few things.
 
-First the JSON you send from APNS will need to include `"content-available": 1` to the `aps` object. The `"content-available": 1` property in your push message is a signal to iOS to wake up your app and give it up to 30 seconds of background processing. If do not want this type of behaviour just omit `"content-available": 1` from your push data.
-
+First the JSON you send from APNS will need to include `"content-available": 1` to the `aps` object. The `"content-available": 1` property in your push message is a signal to iOS to wake up your app and give it up to 30 seconds of background processing. If do not want this type of behaviour just omit `"content-available": 1` from your push data. As well you *should* set a `notId` property in the root of payload object. This is the parameter you pass to the `finish` method in order to tell the operating system that the processing of the push event is done.
 
 For instance the following JSON:
 
@@ -1153,7 +1152,8 @@ For instance the following JSON:
 	"aps": {
 		"alert": "Test background push",
 		"content-available": 1
-	}
+	},
+  "notId": 1 // unique ID you generate
 }
 ```
 
@@ -1169,7 +1169,8 @@ However if you want your `on('notification')` event handler called but no notifi
 		"data": "Test silent background push",
 		"moredata": "Do more stuff",
 		"content-available": 1
-	}
+	},
+  "notId": 2 // unique ID you generate
 }
 ```
 
@@ -1197,7 +1198,9 @@ push.on('notification', function(data) {
 	// then call finish to let the OS know we are done
 	push.finish(function() {
 		console.log("processing of push data is finished");
-	});
+	}, function() {
+    console.log("something went wrong with push.finish for ID = " + data.additionalData.notId)
+  }, data.additionalData.notId);
 });
 ```
 
