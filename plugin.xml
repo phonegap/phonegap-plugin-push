@@ -75,6 +75,15 @@
 
 	</platform>
 
+    <!-- browser -->
+    <platform name="browser">
+      <js-module src="www/browser/push.js" name="BrowserPush">
+        <clobbers target="PushNotification"/>
+      </js-module>
+      <asset src="src/browser/ServiceWorker.js" target="ServiceWorker.js"/>
+      <asset src="src/browser/manifest.json" target="manifest.json"/>
+    </platform>
+
 	<!-- ios -->
 	<platform name="ios">
 
