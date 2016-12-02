@@ -41,33 +41,33 @@ git commit -m "Cool stuff"
 ```
 
 Consider starting the commit message with an applicable emoji:
-    * :art: `:art:` when improving the format/structure of the code
-    * :zap: `:zap:` when improving performance
-    * :non-potable_water: `:non-potable_water:` when plugging memory leaks
-    * :memo: `:memo:` when writing docs
-    * :ambulance: `:ambulance:` a critical hotfix.
-    * :sparkles: `:sparkles:` when introducing new features
-    * :bookmark: `:bookmark:` when releasing / version tags
-    * :rocket: `:rocket:` when deploying stuff
-    * :penguin: `:penguin:` when fixing something on Android
-    * :apple: `:apple:` when fixing something on iOS
-    * :checkered_flag: `:checkered_flag:` when fixing something on Windows
-    * :bug: `:bug:` when fixing a bug
-    * :fire: `:fire:` when removing code or files
-    * :green_heart: `:green_heart:` when fixing the CI build
-    * :white_check_mark: `:white_check_mark:` when adding tests
-    * :lock: `:lock:` when dealing with security
-    * :arrow_up: `:arrow_up:` when upgrading dependencies
-    * :arrow_down: `:arrow_down:` when downgrading dependencies
-    * :shirt: `:shirt:` when removing linter warnings
-    * :hammer: `:hammer:` when doing heavy refactoring
-    * :heavy_minus_sign: `:heavy_minus_sign:` when removing a dependency.
-    * :heavy_plus_sign: `:heavy_plus_sign:` when adding a dependency.
-    * :wrench: `:wrench:` when changing configuration files.
-    * :globe_with_meridians: `:globe_with_meridians:` when dealing with internationalization and localization.
-    * :pencil2: `:pencil2:` when fixing typos.
-    * :hankey: `:hankey:` when writing bad code that needs to be improved.
-    * :package: `:package:` when updating compiled files or packages.
+* :art: `:art:` when improving the format/structure of the code
+* :zap: `:zap:` when improving performance
+* :non-potable_water: `:non-potable_water:` when plugging memory leaks
+* :memo: `:memo:` when writing docs
+* :ambulance: `:ambulance:` a critical hotfix.
+* :sparkles: `:sparkles:` when introducing new features
+* :bookmark: `:bookmark:` when releasing / version tags
+* :rocket: `:rocket:` when deploying stuff
+* :penguin: `:penguin:` when fixing something on Android
+* :apple: `:apple:` when fixing something on iOS
+* :checkered_flag: `:checkered_flag:` when fixing something on Windows
+* :bug: `:bug:` when fixing a bug
+* :fire: `:fire:` when removing code or files
+* :green_heart: `:green_heart:` when fixing the CI build
+* :white_check_mark: `:white_check_mark:` when adding tests
+* :lock: `:lock:` when dealing with security
+* :arrow_up: `:arrow_up:` when upgrading dependencies
+* :arrow_down: `:arrow_down:` when downgrading dependencies
+* :shirt: `:shirt:` when removing linter warnings
+* :hammer: `:hammer:` when doing heavy refactoring
+* :heavy_minus_sign: `:heavy_minus_sign:` when removing a dependency.
+* :heavy_plus_sign: `:heavy_plus_sign:` when adding a dependency.
+* :wrench: `:wrench:` when changing configuration files.
+* :globe_with_meridians: `:globe_with_meridians:` when dealing with internationalization and localization.
+* :pencil2: `:pencil2:` when fixing typos.
+* :hankey: `:hankey:` when writing bad code that needs to be improved.
+* :package: `:package:` when updating compiled files or packages.
 
 Make sure your branch is up to date with the original repo:
 
@@ -100,23 +100,8 @@ The project uses [.editorconfig](http://editorconfig.org/) to define the coding
 style of each file. We recommend that you install the Editor Config extension
 for your preferred IDE. Consistency is key.
 
-## JSHint
+## ESLint
 
-The project uses [.jshint](http://jshint.com/docs) to define the JavaScript
-coding conventions. Most editors now have a JSHint add-on to provide on-save
+The project uses [.eslint](http://eslint.org/) to define the JavaScript
+coding conventions. Most editors now have a ESLint add-on to provide on-save
 or on-edit linting.
-
-### Install JSHint for vim
-
-1. Install [jshint](https://www.npmjs.com/package/jshint).
-1. Install [jshint.vim](https://github.com/wookiehangover/jshint.vim).
-
-### Install JSHint for Sublime
-
-1. Install [Package Control](https://packagecontrol.io/installation)
-1. Restart Sublime
-1. Type `CMD+SHIFT+P`
-1. Type _Install Package_
-1. Type _JSHint Gutter_
-1. Sublime -> Preferences -> Package Settings -> JSHint Gutter
-1. Set `lint_on_load` and `lint_on_save` to `true`

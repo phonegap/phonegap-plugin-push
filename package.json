@@ -49,10 +49,28 @@
   "author": "Adobe PhoneGap Team",
   "license": "APL",
   "scripts": {
-    "test": "jasmine-node --color spec"
+    "build": "babel src/js --out-dir www",
+    "build:watch": "nodemon -w ./src/js -e js -x npm run build",
+    "jasmine": "jasmine-node --color spec",
+    "test": "npm run build && npm run jasmine"
   },
   "devDependencies": {
+    "babel-cli": "^6.10.1",
+    "babel-core": "^6.10.4",
+    "babel-eslint": "^6.1.0",
+    "babel-preset-es2015": "^6.9.0",
+    "eslint": "^2.13.1",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.9.2",
+    "eslint-plugin-jsx-a11y": "^1.5.3",
+    "eslint-plugin-react": "^5.2.2",
     "jasmine-node": "1.14.5",
-    "pluginpub": "^0.0.5"
+    "nodemon": "^1.9.2",
+    "pluginpub": "^0.0.6"
+  },
+  "dependencies": {
+    "babel-plugin-add-header-comment": "^1.0.3",
+    "install": "^0.8.2",
+    "npm": "^4.0.2"
   }
 }
