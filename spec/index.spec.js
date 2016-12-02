@@ -193,7 +193,7 @@ describe('phonegap-plugin-push', function () {
 
                 push.off('notification', eventHandler);
 
-                expect(push._handlers.notification.indexOf(eventHandler)).toEqual(-1);
+                expect(push.handlers.notification.indexOf(eventHandler)).toEqual(-1);
                 done();
             });
         });
@@ -208,7 +208,7 @@ describe('phonegap-plugin-push', function () {
 
                 push.off('registration', eventHandler);
 
-                expect(push._handlers.registration.indexOf(eventHandler)).toEqual(-1);
+                expect(push.handlers.registration.indexOf(eventHandler)).toEqual(-1);
                 done();
             });
         });
@@ -222,7 +222,7 @@ describe('phonegap-plugin-push', function () {
                 push.on('error', eventHandler);
                 push.off('error', eventHandler);
 
-                expect(push._handlers.error.indexOf(eventHandler)).toEqual(-1);
+                expect(push.handlers.error.indexOf(eventHandler)).toEqual(-1);
                 done();
             });
         });
@@ -233,19 +233,19 @@ describe('phonegap-plugin-push', function () {
                     eventHandler = function () {
                     };
 
-                expect(push._handlers.registration.length).toEqual(0);
+                expect(push.handlers.registration.length).toEqual(0);
 
                 push.on('registration',eventHandler);
 
-                expect(push._handlers.registration.length).toEqual(1);
-                expect(push._handlers.registration.indexOf(eventHandler)).toBeGreaterThan(-1);
+                expect(push.handlers.registration.length).toEqual(1);
+                expect(push.handlers.registration.indexOf(eventHandler)).toBeGreaterThan(-1);
 
                 execSpy.andCallFake(function (win, fail, service, id, args) {
                     win();
                 });
                 push.unregister(function() {
-                    expect(push._handlers.registration.length).toEqual(0);
-                    expect(push._handlers.registration.indexOf(eventHandler)).toEqual(-1);
+                    expect(push.handlers.registration.length).toEqual(0);
+                    expect(push.handlers.registration.indexOf(eventHandler)).toEqual(-1);
                     done();
                 });
             });
@@ -255,19 +255,19 @@ describe('phonegap-plugin-push', function () {
                     eventHandler = function () {
                     };
 
-                expect(push._handlers.notification.length).toEqual(0);
+                expect(push.handlers.notification.length).toEqual(0);
 
                 push.on('notification', eventHandler);
 
-                expect(push._handlers.notification.length).toEqual(1);
-                expect(push._handlers.notification.indexOf(eventHandler)).toBeGreaterThan(-1);
+                expect(push.handlers.notification.length).toEqual(1);
+                expect(push.handlers.notification.indexOf(eventHandler)).toBeGreaterThan(-1);
 
                 execSpy.andCallFake(function (win, fail, service, id, args) {
                     win();
                 });
                 push.unregister(function() {
-                    expect(push._handlers.notification.length).toEqual(0);
-                    expect(push._handlers.notification.indexOf(eventHandler)).toEqual(-1);
+                    expect(push.handlers.notification.length).toEqual(0);
+                    expect(push.handlers.notification.indexOf(eventHandler)).toEqual(-1);
                     done();
                 });
             });
@@ -277,19 +277,19 @@ describe('phonegap-plugin-push', function () {
                     eventHandler = function () {
                     };
 
-                expect(push._handlers.error.length).toEqual(0);
+                expect(push.handlers.error.length).toEqual(0);
 
                 push.on('error', eventHandler);
 
-                expect(push._handlers.error.length).toEqual(1);
-                expect(push._handlers.error.indexOf(eventHandler)).toBeGreaterThan(-1);
+                expect(push.handlers.error.length).toEqual(1);
+                expect(push.handlers.error.indexOf(eventHandler)).toBeGreaterThan(-1);
 
                 execSpy.andCallFake(function (win, fail, service, id, args) {
                     win();
                 });
                 push.unregister(function() {
-                    expect(push._handlers.error.length).toEqual(0);
-                    expect(push._handlers.error.indexOf(eventHandler)).toEqual(-1);
+                    expect(push.handlers.error.length).toEqual(0);
+                    expect(push.handlers.error.indexOf(eventHandler)).toEqual(-1);
                     done();
                 });
             });
@@ -301,21 +301,21 @@ describe('phonegap-plugin-push', function () {
                     eventHandler = function () {
                     };
 
-                expect(push._handlers.registration.length).toEqual(0);
+                expect(push.handlers.registration.length).toEqual(0);
 
                 push.on('registration',eventHandler);
 
-                expect(push._handlers.registration.length).toEqual(1);
-                expect(push._handlers.registration.indexOf(eventHandler)).toBeGreaterThan(-1);
+                expect(push.handlers.registration.length).toEqual(1);
+                expect(push.handlers.registration.indexOf(eventHandler)).toBeGreaterThan(-1);
 
                 execSpy.andCallFake(function (win, fail, service, id, args) {
                     win();
                 });
                 push.unregister(function() {
-                    expect(push._handlers.registration.length).toEqual(1);
-                    expect(push._handlers.registration.indexOf(eventHandler)).toBeGreaterThan(-1);
+                    expect(push.handlers.registration.length).toEqual(1);
+                    expect(push.handlers.registration.indexOf(eventHandler)).toBeGreaterThan(-1);
                     done();
-                }, null, ['foo', 'bar']);
+                }, function() {}, ['foo', 'bar']);
             });
 
             it('should not clear "notification" event handlers', function (done) {
@@ -323,21 +323,21 @@ describe('phonegap-plugin-push', function () {
                     eventHandler = function () {
                     };
 
-                expect(push._handlers.notification.length).toEqual(0);
+                expect(push.handlers.notification.length).toEqual(0);
 
                 push.on('notification', eventHandler);
 
-                expect(push._handlers.notification.length).toEqual(1);
-                expect(push._handlers.notification.indexOf(eventHandler)).toBeGreaterThan(-1);
+                expect(push.handlers.notification.length).toEqual(1);
+                expect(push.handlers.notification.indexOf(eventHandler)).toBeGreaterThan(-1);
 
                 execSpy.andCallFake(function (win, fail, service, id, args) {
                     win();
                 });
                 push.unregister(function() {
-                    expect(push._handlers.notification.length).toEqual(1);
-                    expect(push._handlers.notification.indexOf(eventHandler)).toBeGreaterThan(-1);
+                    expect(push.handlers.notification.length).toEqual(1);
+                    expect(push.handlers.notification.indexOf(eventHandler)).toBeGreaterThan(-1);
                     done();
-                }, null, ['foo', 'bar']);
+                }, function() {}, ['foo', 'bar']);
             });
 
             it('should not clear "error" event handlers', function (done) {
@@ -345,21 +345,21 @@ describe('phonegap-plugin-push', function () {
                     eventHandler = function () {
                     };
 
-                expect(push._handlers.error.length).toEqual(0);
+                expect(push.handlers.error.length).toEqual(0);
 
                 push.on('error', eventHandler);
 
-                expect(push._handlers.error.length).toEqual(1);
-                expect(push._handlers.error.indexOf(eventHandler)).toBeGreaterThan(-1);
+                expect(push.handlers.error.length).toEqual(1);
+                expect(push.handlers.error.indexOf(eventHandler)).toBeGreaterThan(-1);
 
                 execSpy.andCallFake(function (win, fail, service, id, args) {
                     win();
                 });
                 push.unregister(function() {
-                    expect(push._handlers.error.length).toEqual(1);
-                    expect(push._handlers.error.indexOf(eventHandler)).toBeGreaterThan(-1);
+                    expect(push.handlers.error.length).toEqual(1);
+                    expect(push.handlers.error.indexOf(eventHandler)).toBeGreaterThan(-1);
                     done();
-                }, null, ['foo', 'bar']);
+                }, function() {}, ['foo', 'bar']);
             });
         });
 
