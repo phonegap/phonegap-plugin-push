@@ -66,8 +66,8 @@
     "eslint-plugin-jsx-a11y": "^1.5.3",
     "eslint-plugin-react": "^5.2.2",
     "jasmine-node": "1.14.5",
-    "pluginpub": "^0.0.8",
     "nodemon": "^1.9.2",
+    "pluginpub": "^0.0.8"
   },
   "dependencies": {
     "babel-plugin-add-header-comment": "^1.0.3",
