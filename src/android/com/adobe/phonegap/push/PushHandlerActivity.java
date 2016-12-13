@@ -44,8 +44,7 @@ public class PushHandlerActivity extends Activity implements PushConstants {
         boolean inline = processPushBundle(isPushPluginActive, intent);
 
         if(inline && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.N){
-                    Log.d(LOG_TAG, "BradsConditionTrue");
-                    foreground = true;
+            foreground = true;
         }
 
         Log.d(LOG_TAG, "bringToForeground = " + foreground);
