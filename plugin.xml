@@ -4,7 +4,7 @@
     xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads"
     xmlns:rim="http://www.blackberry.com/ns/widgets"
     id="phonegap-plugin-push"
-    version="2.0.0">
+    version="1.9.1">
 
   <name>PushPlugin</name>
   <description>
