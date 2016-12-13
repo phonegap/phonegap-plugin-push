@@ -40,10 +40,18 @@ public class PushHandlerActivity extends Activity implements PushConstants {
             notificationManager.cancel(GCMIntentService.getAppName(this), notId);
         }
 
-        Log.d(LOG_TAG, "bringToForeground = " + foreground);
-
         boolean isPushPluginActive = PushPlugin.isActive();
         boolean inline = processPushBundle(isPushPluginActive, intent);
+
+        Log.d(LOG_TAG, "LessThanAndroidN: " + android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.N);
+        Log.d(LOG_TAG, "inlineValue: " + inline);
+
+        if(inline && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.N){
+                    Log.d(LOG_TAG, "BradsConditionTrue");
+                    boolean foreground = true;
+        }
+
+        Log.d(LOG_TAG, "bringToForeground = " + foreground);
 
         finish();
 
@@ -51,7 +59,8 @@ public class PushHandlerActivity extends Activity implements PushConstants {
         if (!isPushPluginActive && foreground && inline) {
             Log.d(LOG_TAG, "forceMainActivityReload");
             forceMainActivityReload(false);
-        } else if(startOnBackground || inline && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.N) {
+        } else if(startOnBackground) {
+            Log.d(LOG_TAG, "startOnBackgroundTrue");
             forceMainActivityReload(true);
         } else {
             Log.d(LOG_TAG, "don't want main activity");
@@ -66,7 +75,7 @@ public class PushHandlerActivity extends Activity implements PushConstants {
         Bundle extras = getIntent().getExtras();
         Bundle remoteInput = null;
 
-        if (extras != null)	{
+        if (extras != null) {
             Bundle originalExtras = extras.getBundle(PUSH_BUNDLE);
 
             originalExtras.putBoolean(FOREGROUND, false);
