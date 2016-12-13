@@ -1,11 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads"
-    xmlns:rim="http://www.blackberry.com/ns/widgets"
-    id="phonegap-plugin-push"
-    version="1.9.1">
-
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads" xmlns:rim="http://www.blackberry.com/ns/widgets" id="phonegap-plugin-push" version="2.0.0-rc1">
   <name>PushPlugin</name>
   <description>
     This plugin allows your application to receive push notifications on Android, iOS and Windows devices.
@@ -13,7 +7,10 @@
     iOS uses Apple APNS Notifications.
     Windows uses Microsoft WNS Notifications.
   </description>
+<<<<<<< HEAD
 
+=======
+>>>>>>> :bookmark: Bumping plugin version to 2.0.0-rc1
   <license>MIT</license>
   <js-module src="www/push.js" name="PushNotification">
     <clobbers target="PushNotification"/>
@@ -81,12 +78,15 @@
         <string>remote-notification</string>
       </array>
     </config-file>
+<<<<<<< HEAD
     <config-file target="*-Debug.plist" parent="aps-environment">
       <string>development</string>
     </config-file>
     <config-file target="*-Release.plist" parent="aps-environment">
       <string>production</string>
     </config-file>
+=======
+>>>>>>> :bookmark: Bumping plugin version to 2.0.0-rc1
     <source-file src="src/ios/AppDelegate+notification.m"/>
     <source-file src="src/ios/PushPlugin.m"/>
     <header-file src="src/ios/AppDelegate+notification.h"/>
@@ -103,4 +103,8 @@
       <preference name="WindowsToastCapable" value="true"/>
     </config-file>
   </platform>
+<<<<<<< HEAD
 </plugin>
+=======
+</plugin>
+>>>>>>> :bookmark: Bumping plugin version to 2.0.0-rc1
