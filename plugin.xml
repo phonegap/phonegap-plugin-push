@@ -1,11 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads"
-    xmlns:rim="http://www.blackberry.com/ns/widgets"
-    id="phonegap-plugin-push"
-    version="1.9.1">
-
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads" xmlns:rim="http://www.blackberry.com/ns/widgets" id="phonegap-plugin-push" version="2.0.0-rc1">
   <name>PushPlugin</name>
   <description>
     This plugin allows your application to receive push notifications on Android, iOS and Windows devices.
@@ -13,113 +7,86 @@
     iOS uses Apple APNS Notifications.
     Windows uses Microsoft WNS Notifications.
   </description>
-
-	<license>MIT</license>
-
-	<js-module src="www/push.js" name="PushNotification">
-        <clobbers target="PushNotification" />
-	</js-module>
-
-	<engines>
-        <engine name="cordova" version=">=6.4.0"/>
-        <engine name="cordova-android" version=">=6.0.0"/>
-        <engine name="cordova-ios" version=">=4.3.0"/>
-    </engines>
-
-	<!-- android -->
-	<platform name="android">
-        <hook type="before_plugin_install" src="scripts/copyAndroidFile.js" />
-
-		<config-file target="res/xml/config.xml" parent="/*">
-			<feature name="PushNotification" >
-				<param name="android-package" value="com.adobe.phonegap.push.PushPlugin"/>
-			</feature>
-		</config-file>
-
-        <config-file target="AndroidManifest.xml" parent="/manifest">
-            <uses-permission android:name="android.permission.INTERNET"/>
-            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-            <uses-permission android:name="android.permission.WAKE_LOCK"/>
-            <uses-permission android:name="android.permission.VIBRATE"/>
-        </config-file>
-
-		<config-file target="AndroidManifest.xml" parent="/manifest/application">
-			<activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true"/>
-            <receiver android:name="com.adobe.phonegap.push.BackgroundActionButtonHandler"/>
-            <service
-                android:name="com.adobe.phonegap.push.FCMService">
-                <intent-filter>
-                    <action android:name="com.google.firebase.MESSAGING_EVENT" />
-                </intent-filter>
-            </service>
-            <service
-                android:name="com.adobe.phonegap.push.PushInstanceIDListenerService">
-                <intent-filter>
-                    <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-                </intent-filter>
-            </service>
-		</config-file>
-
-        <framework src="com.android.support:support-v13:23+" />
-        <framework src="me.leolin:ShortcutBadger:1.1.11@aar"/>
-        <framework src="com.google.firebase:firebase-messaging:9.8.0" />
-        <framework src="push.gradle" custom="true" type="gradleReference" />
-
-		<source-file src="src/android/com/adobe/phonegap/push/FCMService.java" target-dir="src/com/adobe/phonegap/push/" />
-		<source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/" />
-		<source-file src="src/android/com/adobe/phonegap/push/PushHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/" />
-		<source-file src="src/android/com/adobe/phonegap/push/PushInstanceIDListenerService.java" target-dir="src/com/adobe/phonegap/push/" />
-		<source-file src="src/android/com/adobe/phonegap/push/PushPlugin.java" target-dir="src/com/adobe/phonegap/push/" />
-        <source-file src="src/android/com/adobe/phonegap/push/PermissionUtils.java" target-dir="src/com/adobe/phonegap/push/" />
-        <source-file src="src/android/com/adobe/phonegap/push/BackgroundActionButtonHandler.java" target-dir="src/com/adobe/phonegap/push/" />
-
-	</platform>
-
-    <!-- browser -->
-    <platform name="browser">
-      <js-module src="www/browser/push.js" name="BrowserPush">
-        <clobbers target="PushNotification"/>
-      </js-module>
-      <asset src="src/browser/ServiceWorker.js" target="ServiceWorker.js"/>
-      <asset src="src/browser/manifest.json" target="manifest.json"/>
-    </platform>
-
-	<!-- ios -->
-	<platform name="ios">
-
-		<config-file target="config.xml" parent="/*">
-			<feature name="PushNotification">
-				<param name="ios-package" value="PushPlugin"/>
-			</feature>
-		</config-file>
-
-        <config-file target="*-Info.plist" parent="UIBackgroundModes">
-            <array>
-                <string>remote-notification</string>
-            </array>
-        </config-file>
-
-		<source-file src="src/ios/AppDelegate+notification.m" />
-		<source-file src="src/ios/PushPlugin.m" />
-
-		<header-file src="src/ios/AppDelegate+notification.h" />
-		<header-file src="src/ios/PushPlugin.h" />
-
-        <!--  Start FCM Related Files -->
-        <framework src="FirebaseMessaging" type="podspec" spec="~> 1.2.1"/>
-
-        <resource-file src="src/ios/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist" />
-        <hook src="scripts/copy_file.js" type="after_prepare" />
-        <!--  End FCM Related Files -->
-	</platform>
-
-  	<!-- windows -->
-  	<platform name="windows">
-    	<js-module src="src/windows/PushPluginProxy.js" name="PushPlugin">
-    		<merges target="" />
-    	</js-module>
-    	<config-file target="config.xml" parent="/*">
-    		<preference name="WindowsToastCapable" value="true" />
-    	</config-file>
-	</platform>
+  <license>MIT</license>
+  <js-module src="www/push.js" name="PushNotification">
+    <clobbers target="PushNotification"/>
+  </js-module>
+  <engines>
+    <engine name="cordova" version=">=6.4.0"/>
+    <engine name="cordova-android" version=">=6.0.0"/>
+    <engine name="cordova-ios" version=">=4.3.0"/>
+  </engines>
+  <platform name="android">
+    <hook type="before_plugin_install" src="scripts/copyAndroidFile.js"/>
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="PushNotification">
+        <param name="android-package" value="com.adobe.phonegap.push.PushPlugin"/>
+      </feature>
+    </config-file>
+    <config-file target="AndroidManifest.xml" parent="/manifest">
+      <uses-permission android:name="android.permission.INTERNET"/>
+      <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+      <uses-permission android:name="android.permission.WAKE_LOCK"/>
+      <uses-permission android:name="android.permission.VIBRATE"/>
+    </config-file>
+    <config-file target="AndroidManifest.xml" parent="/manifest/application">
+      <activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true"/>
+      <receiver android:name="com.adobe.phonegap.push.BackgroundActionButtonHandler"/>
+      <service android:name="com.adobe.phonegap.push.FCMService">
+        <intent-filter>
+          <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+        </intent-filter>
+      </service>
+      <service android:name="com.adobe.phonegap.push.PushInstanceIDListenerService">
+        <intent-filter>
+          <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+        </intent-filter>
+      </service>
+    </config-file>
+    <framework src="com.android.support:support-v13:23+"/>
+    <framework src="me.leolin:ShortcutBadger:1.1.11@aar"/>
+    <framework src="com.google.firebase:firebase-messaging:9.8.0"/>
+    <framework src="push.gradle" custom="true" type="gradleReference"/>
+    <source-file src="src/android/com/adobe/phonegap/push/FCMService.java" target-dir="src/com/adobe/phonegap/push/"/>
+    <source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/"/>
+    <source-file src="src/android/com/adobe/phonegap/push/PushHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/"/>
+    <source-file src="src/android/com/adobe/phonegap/push/PushInstanceIDListenerService.java" target-dir="src/com/adobe/phonegap/push/"/>
+    <source-file src="src/android/com/adobe/phonegap/push/PushPlugin.java" target-dir="src/com/adobe/phonegap/push/"/>
+    <source-file src="src/android/com/adobe/phonegap/push/PermissionUtils.java" target-dir="src/com/adobe/phonegap/push/"/>
+    <source-file src="src/android/com/adobe/phonegap/push/BackgroundActionButtonHandler.java" target-dir="src/com/adobe/phonegap/push/"/>
+  </platform>
+  <platform name="browser">
+    <js-module src="www/browser/push.js" name="BrowserPush">
+      <clobbers target="PushNotification"/>
+    </js-module>
+    <asset src="src/browser/ServiceWorker.js" target="ServiceWorker.js"/>
+    <asset src="src/browser/manifest.json" target="manifest.json"/>
+  </platform>
+  <platform name="ios">
+    <config-file target="config.xml" parent="/*">
+      <feature name="PushNotification">
+        <param name="ios-package" value="PushPlugin"/>
+      </feature>
+    </config-file>
+    <config-file target="*-Info.plist" parent="UIBackgroundModes">
+      <array>
+        <string>remote-notification</string>
+      </array>
+    </config-file>
+    <source-file src="src/ios/AppDelegate+notification.m"/>
+    <source-file src="src/ios/PushPlugin.m"/>
+    <header-file src="src/ios/AppDelegate+notification.h"/>
+    <header-file src="src/ios/PushPlugin.h"/>
+    <framework src="FirebaseMessaging" type="podspec" spec="~> 1.2.1"/>
+    <resource-file src="src/ios/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist"/>
+    <hook src="scripts/copy_file.js" type="after_prepare"/>
+  </platform>
+  <platform name="windows">
+    <js-module src="src/windows/PushPluginProxy.js" name="PushPlugin">
+      <merges target=""/>
+    </js-module>
+    <config-file target="config.xml" parent="/*">
+      <preference name="WindowsToastCapable" value="true"/>
+    </config-file>
+  </platform>
 </plugin>
