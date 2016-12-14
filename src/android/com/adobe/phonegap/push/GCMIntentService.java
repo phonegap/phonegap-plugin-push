@@ -13,6 +13,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -717,8 +718,8 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     }
 
     private void setNotificationLargeIcon(Bundle extras, String packageName, Resources resources, NotificationCompat.Builder mBuilder) {
-        String gcmLargeIcon = extras.getString(IMG_SHAPE); // from gcm
-        String gcmLargeIconShape = extras.getString(SHAPE); // from gcm
+        String gcmLargeIcon = extras.getString(IMAGE); // from gcm
+        String gcmLargeIconShape = extras.getString(IMG_SHAPE); // from gcm
         if (gcmLargeIcon != null && !"".equals(gcmLargeIcon)) {
             if (gcmLargeIcon.startsWith("http://") || gcmLargeIcon.startsWith("https://")) {
                 Bitmap bitmap = getBitmapFromURL(gcmLargeIcon);
