@@ -606,7 +606,7 @@ This will produce the following notification in your tray:
 
 ![action_combo](https://cloud.githubusercontent.com/assets/353180/9313435/02554d2a-44f1-11e5-8cd9-0aadd1e02b18.png)
 
-If your users clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed if there is a function defined, and if there isn't an event will be emitted with the callback name. In this case it is `app.emailGuests` and `app.snooze` respectively. If you set the `foreground` property to `true` the app will be brought to the front, if `foreground` is `false` then the callback is run without the app being brought to the foreground.
+If your user clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed if there is a function defined, and if there isn't an event will be emitted with the callback name. In this case it is `app.emailGuests` and `app.snooze` respectively. If you set the `foreground` property to `true` the app will be brought to the front, if `foreground` is `false` then the callback is run without the app being brought to the foreground.
 
 ### In Line Replies
 
@@ -649,7 +649,7 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 });
 ```
 
-On Android M and earlier the action buttons will work exactly the same as before but on Android N and greater when the user clicks on the Email Guests button you will see the following:
+On Android N and greater when the user clicks on the Email Guests button they will see the following:
 
 ![inline_reply](https://cloud.githubusercontent.com/assets/353180/17107608/f35c208e-525d-11e6-94de-a3590c6f500d.png)
 
@@ -684,6 +684,8 @@ Then your app's `on('notification')` event handler will be called without the ap
 ```
 
 and the text data that the user typed would be located in `data.additionalData.inlineReply`.
+
+**Note:** On Android M and earlier the above in line behavior is not supported. As a fallback when `inline` is set to `true` the `foreground` setting will be changed to the default `true` setting. This allows your app to be launched from a closed state into the foreground where any behavior desired as a result of the user selecting the in line reply action button can be handled through the associated `callback`.
 
 #### Attributes
 
@@ -949,6 +951,35 @@ These phones have a particular quirk that when the app is force closed that you 
 
 ### Application force closed
 
+In order to take advantage of this feature you will need to be using cordova-android 6.0.0 or higher. In order to check if the change has been properly applied look at `platforms/android/**/MainActivity.java`. You should see an `onCreate` method that looks like this:
+
+```java
+@Override
+public void onCreate(Bundle savedInstanceState)
+{
+    super.onCreate(savedInstanceState);
+
+    // enable Cordova apps to be started in the background
+    Bundle extras = getIntent().getExtras();
+    if (extras != null && extras.getBoolean("cdvStartInBackground", false)) {
+        moveTaskToBack(true);
+    }
+
+    // Set by <content src="index.html" /> in config.xml
+    loadUrl(launchUrl);
+}
+```
+
+If you don't see the `if` statement that checks for the appearance of `cdvStartInBackground` you will probably need to do:
+
+```
+phonegap platform rm android
+phonegap platform add android
+phonegap build android
+```
+
+This should add the correct code to the `MainActivity` class.
+
 If you add `force-start: 1` to the data payload the application will be restarted in background even if it was force closed.
 
 ```javascript
@@ -1114,8 +1145,7 @@ If you want the default sound to play upon receipt of push use this payload:
 
 On iOS if you want your `on('notification')` event handler to be called when your app is in the background you will need to do a few things.
 
-First the JSON you send from APNS will need to include `"content-available": 1` to the `aps` object. The `"content-available": 1` property in your push message is a signal to iOS to wake up your app and give it up to 30 seconds of background processing. If do not want this type of behaviour just omit `"content-available": 1` from your push data.
-
+First the JSON you send from APNS will need to include `"content-available": 1` to the `aps` object. The `"content-available": 1` property in your push message is a signal to iOS to wake up your app and give it up to 30 seconds of background processing. If do not want this type of behaviour just omit `"content-available": 1` from your push data. As well you *should* set a `notId` property in the root of payload object. This is the parameter you pass to the `finish` method in order to tell the operating system that the processing of the push event is done.
 
 For instance the following JSON:
 
@@ -1124,7 +1154,8 @@ For instance the following JSON:
 	"aps": {
 		"alert": "Test background push",
 		"content-available": 1
-	}
+	},
+  "notId": 1 // unique ID you generate
 }
 ```
 
@@ -1140,7 +1171,8 @@ However if you want your `on('notification')` event handler called but no notifi
 		"data": "Test silent background push",
 		"moredata": "Do more stuff",
 		"content-available": 1
-	}
+	},
+  "notId": 2 // unique ID you generate
 }
 ```
 
@@ -1168,7 +1200,9 @@ push.on('notification', function(data) {
 	// then call finish to let the OS know we are done
 	push.finish(function() {
 		console.log("processing of push data is finished");
-	});
+	}, function() {
+    console.log("something went wrong with push.finish for ID = " + data.additionalData.notId)
+  }, data.additionalData.notId);
 });
 ```
 

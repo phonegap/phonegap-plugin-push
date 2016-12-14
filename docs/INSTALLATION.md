@@ -15,6 +15,7 @@
   - [Xcode](#xcode)
   - [Bitcode](#bitcode)
   - [CocoaPods](#cocoapods)
+    - [Common CocoaPod Installation issues](#common-cocoapod-installation-issues)
 - [Additional Resources](#additional-resources)
 
 ## Installation Requirements
@@ -193,6 +194,8 @@ Alternatively, switch to another plugin that provides the same functionality but
 
 For the time being push support on the browser will only work using the PhoneGap push server.
 
+When you run `phonegap serve` to test browser push point your browser at `http://localhost:3000`. The browser push implementation uses the W3C Push Spec's implementation which relies on ServiceWorkers and ServiceWorkers can only be accessed via the `https` protocol or via `http://localhost`. Pointing your browser at `localhost` will be the easiest way to test.
+
 ### Browser Support
 
 Chrome  49+
@@ -236,6 +239,23 @@ cordova plugin add phonegap-plugin-push@1.8.1
 ```
 
 If you are installing this plugin using a `local file reference` or a `git url`, you will have to specify the version of this plugin explicitly (see above) if you don't fulfill the `cordova-cli` and `cordova-ios` requirements.
+
+#### Common CocoaPod Installation issues
+
+If you are attempting to install this plugin and you run into this error:
+
+```
+Installing "phonegap-plugin-push" for ios
+Failed to install 'phonegap-plugin-push':Error: pod: Command failed with exit code 1
+    at ChildProcess.whenDone (/Users/smacdona/code/push151/platforms/ios/cordova/node_modules/cordova-common/src/superspawn.js:169:23)
+    at emitTwo (events.js:87:13)
+    at ChildProcess.emit (events.js:172:7)
+    at maybeClose (internal/child_process.js:818:16)
+    at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
+Error: pod: Command failed with exit code 1
+```
+
+Please run the command `pod repo update` and re-install the plugin.
 
 ## Additional Resources
 
