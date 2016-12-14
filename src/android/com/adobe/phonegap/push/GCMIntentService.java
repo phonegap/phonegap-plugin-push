@@ -724,9 +724,11 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             if (gcmLargeIcon.startsWith("http://") || gcmLargeIcon.startsWith("https://")) {
                 Bitmap bitmap = getBitmapFromURL(gcmLargeIcon);
                 if(gcmLargeIconRound){
+                    Log.d(LOG_TAG, "using round icon");
                     Bitmap bm = getCircleBitmap(bitmap);
                     mBuilder.setLargeIcon(bm);
                 } else {
+                    Log.d(LOG_TAG, "using square icon");
                     mBuilder.setLargeIcon(bitmap);
                 }
                 Log.d(LOG_TAG, "using remote large-icon from gcm");
@@ -737,9 +739,11 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                     istr = assetManager.open(gcmLargeIcon);
                     Bitmap bitmap = BitmapFactory.decodeStream(istr);
                     if(gcmLargeIconRound){
+                        Log.d(LOG_TAG, "using round icon");
                         Bitmap bm = getCircleBitmap(bitmap);
                         mBuilder.setLargeIcon(bm);
                     } else {
+                        Log.d(LOG_TAG, "using square icon");
                         mBuilder.setLargeIcon(bitmap);
                     }
                     Log.d(LOG_TAG, "using assets large-icon from gcm");
