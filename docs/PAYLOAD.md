@@ -606,7 +606,7 @@ This will produce the following notification in your tray:
 
 ![action_combo](https://cloud.githubusercontent.com/assets/353180/9313435/02554d2a-44f1-11e5-8cd9-0aadd1e02b18.png)
 
-If your users clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed. In this case it is `app.emailGuests` and `app.snooze` respectively. If you set the `foreground` property to `true` the app will be brought to the front, if `foreground` is `false` then the callback is run without the app being brought to the foreground.
+If your user clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed. In this case it is `app.emailGuests` and `app.snooze` respectively. If you set the `foreground` property to `true` the app will be brought to the front, if `foreground` is `false` then the callback is run without the app being brought to the foreground.
 
 ### In Line Replies
 
@@ -649,7 +649,7 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 });
 ```
 
-On Android M and earlier the action buttons will work exactly the same as before but on Android N and greater when the user clicks on the Email Guests button you will see the following:
+On Android N and greater when the user clicks on the Email Guests button they will see the following:
 
 ![inline_reply](https://cloud.githubusercontent.com/assets/353180/17107608/f35c208e-525d-11e6-94de-a3590c6f500d.png)
 
@@ -684,6 +684,8 @@ Then your app's `on('notification')` event handler will be called without the ap
 ```
 
 and the text data that the user typed would be located in `data.additionalData.inlineReply`.
+
+**Note:** On Android M and earlier the above in line behavior is not supported. As a fallback when `inline` is set to `true` the `foreground` setting will be changed to the default `true` setting. This allows your app to be launched from a closed state into the foreground where any behavior desired as a result of the user selecting the in line reply action button can be handled through the associated `callback`.
 
 #### Attributes
 
