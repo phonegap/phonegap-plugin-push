@@ -719,7 +719,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
     private void setNotificationLargeIcon(Bundle extras, String packageName, Resources resources, NotificationCompat.Builder mBuilder) {
         String gcmLargeIcon = extras.getString(IMAGE); // from gcm
-        boolean gcmLargeIconRound = extras.getBoolean(ROUND_IMG, false); // from gcm
+        boolean gcmLargeIconRound = extras.getBoolean(ROUND_IMAGE, false); // from gcm
         if (gcmLargeIcon != null && !"".equals(gcmLargeIcon)) {
             if (gcmLargeIcon.startsWith("http://") || gcmLargeIcon.startsWith("https://")) {
                 Bitmap bitmap = getBitmapFromURL(gcmLargeIcon);
