@@ -258,9 +258,10 @@ var PushNotification = function () {
   }, {
     key: 'on',
     value: function on(eventName, callback) {
-      if (this.handlers.hasOwnProperty(eventName)) {
-        this.handlers[eventName].push(callback);
+      if (!this.handlers.hasOwnProperty(eventName)) {
+        this.handlers[eventName] = [];
       }
+      this.handlers[eventName].push(callback);
     }
 
     /**
