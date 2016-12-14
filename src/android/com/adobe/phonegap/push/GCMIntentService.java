@@ -719,18 +719,11 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
     private void setNotificationLargeIcon(Bundle extras, String packageName, Resources resources, NotificationCompat.Builder mBuilder) {
         String gcmLargeIcon = extras.getString(IMAGE); // from gcm
-        boolean gcmLargeIconRound = extras.getBoolean(ROUND_IMAGE, false); // from gcm
         if (gcmLargeIcon != null && !"".equals(gcmLargeIcon)) {
             if (gcmLargeIcon.startsWith("http://") || gcmLargeIcon.startsWith("https://")) {
                 Bitmap bitmap = getBitmapFromURL(gcmLargeIcon);
-                if(gcmLargeIconRound){
-                    Log.d(LOG_TAG, "using round icon");
-                    Bitmap bm = getCircleBitmap(bitmap);
-                    mBuilder.setLargeIcon(bm);
-                } else {
-                    Log.d(LOG_TAG, "using square icon");
-                    mBuilder.setLargeIcon(bitmap);
-                }
+                Bitmap bm = getCircleBitmap(bitmap);
+                mBuilder.setLargeIcon(bm);
                 Log.d(LOG_TAG, "using remote large-icon from gcm");
             } else {
                 AssetManager assetManager = getAssets();
@@ -738,14 +731,8 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                 try {
                     istr = assetManager.open(gcmLargeIcon);
                     Bitmap bitmap = BitmapFactory.decodeStream(istr);
-                    if(gcmLargeIconRound){
-                        Log.d(LOG_TAG, "using round icon");
-                        Bitmap bm = getCircleBitmap(bitmap);
-                        mBuilder.setLargeIcon(bm);
-                    } else {
-                        Log.d(LOG_TAG, "using square icon");
-                        mBuilder.setLargeIcon(bitmap);
-                    }
+                    Bitmap bm = getCircleBitmap(bitmap);
+                    mBuilder.setLargeIcon(bm);
                     Log.d(LOG_TAG, "using assets large-icon from gcm");
                 } catch (IOException e) {
                     int largeIconId = 0;
