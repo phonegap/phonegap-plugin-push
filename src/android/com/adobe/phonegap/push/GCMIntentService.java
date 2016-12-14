@@ -719,14 +719,16 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
     private void setNotificationLargeIcon(Bundle extras, String packageName, Resources resources, NotificationCompat.Builder mBuilder) {
         String gcmLargeIcon = extras.getString(IMAGE); // from gcm
-        String gcmLargeIconShape = extras.getString(IMG_SHAPE); // from gcm
+        boolean gcmLargeIconRound = extras.getBoolean(ROUND_IMG, false); // from gcm
         if (gcmLargeIcon != null && !"".equals(gcmLargeIcon)) {
             if (gcmLargeIcon.startsWith("http://") || gcmLargeIcon.startsWith("https://")) {
                 Bitmap bitmap = getBitmapFromURL(gcmLargeIcon);
-                if(gcmLargeIconShape == "round"){
-                    bitmap = getCircleBitmap(bitmap);
+                if(gcmLargeIconRound){
+                    Bitmap bm = getCircleBitmap(bitmap);
+                    mBuilder.setLargeIcon(bm);
+                } else {
+                    mBuilder.setLargeIcon(bitmap);
                 }
-                mBuilder.setLargeIcon(bitmap);
                 Log.d(LOG_TAG, "using remote large-icon from gcm");
             } else {
                 AssetManager assetManager = getAssets();
@@ -734,10 +736,12 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                 try {
                     istr = assetManager.open(gcmLargeIcon);
                     Bitmap bitmap = BitmapFactory.decodeStream(istr);
-                    if(gcmLargeIconShape == "round"){
-                        bitmap = getCircleBitmap(bitmap);
+                    if(gcmLargeIconRound){
+                        Bitmap bm = getCircleBitmap(bitmap);
+                        mBuilder.setLargeIcon(bm);
+                    } else {
+                        mBuilder.setLargeIcon(bitmap);
                     }
-                    mBuilder.setLargeIcon(bitmap);
                     Log.d(LOG_TAG, "using assets large-icon from gcm");
                 } catch (IOException e) {
                     int largeIconId = 0;
