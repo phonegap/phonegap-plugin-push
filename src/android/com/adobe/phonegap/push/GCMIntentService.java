@@ -690,11 +690,37 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         }
     }
 
+    private Bitmap getCircleBitmap(Bitmap bitmap) {
+        final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(output);
+        final int color = Color.RED;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawOval(rectF, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        bitmap.recycle();
+
+        return output;
+    }
+
     private void setNotificationLargeIcon(Bundle extras, String packageName, Resources resources, NotificationCompat.Builder mBuilder) {
         String gcmLargeIcon = extras.getString(IMAGE); // from gcm
+        String gcmLargeIconShape = extras.getString(SHAPE); // from gcm
         if (gcmLargeIcon != null && !"".equals(gcmLargeIcon)) {
             if (gcmLargeIcon.startsWith("http://") || gcmLargeIcon.startsWith("https://")) {
-                mBuilder.setLargeIcon(getBitmapFromURL(gcmLargeIcon));
+                Bitmap bitmap = getBitmapFromURL(gcmLargeIcon);
+                if(gcmLargeIconShape == "round"){
+                    bitmap = getCircleBitmap(bitmap);
+                }
+                mBuilder.setLargeIcon(bitmap);
                 Log.d(LOG_TAG, "using remote large-icon from gcm");
             } else {
                 AssetManager assetManager = getAssets();
@@ -702,6 +728,9 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                 try {
                     istr = assetManager.open(gcmLargeIcon);
                     Bitmap bitmap = BitmapFactory.decodeStream(istr);
+                    if(gcmLargeIconShape == "round"){
+                        bitmap = getCircleBitmap(bitmap);
+                    }
                     mBuilder.setLargeIcon(bitmap);
                     Log.d(LOG_TAG, "using assets large-icon from gcm");
                 } catch (IOException e) {
