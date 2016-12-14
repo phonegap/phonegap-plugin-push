@@ -34,6 +34,7 @@ public interface PushConstants {
     public static final String LED_COLOR = "ledColor";
     public static final String PRIORITY = "priority";
     public static final String IMAGE = "image";
+    public static final String IMG_SHAPE = "imgShape";
     public static final String STYLE_INBOX = "inbox";
     public static final String STYLE_PICTURE = "picture";
     public static final String STYLE_TEXT = "text";
