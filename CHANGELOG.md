@@ -1,5 +1,18 @@
 # Change Log
 
+## [v1.9.2](https://github.com/phonegap/phonegap-plugin-push/tree/v1.9.2) (2016-07-09)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.9.1...v1.9.2)
+
+- 1.9.2 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/ef3de3281205b1fd56c57c71db31dc06a95da7a9)
+- :bookmark: Bumping plugin version to 1.9.2 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/24650bad4db49525505e9a2624ff1b5500e6b3ef)
+- Optional event emit instead of function call for action buttons (#1378) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/e92e951e759fe64d17d01e152575b6262973380a)
+- Ensures foreground is true when inline is set to true and Android version is earlier than N   (#1459) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/dd61ec34c0ca5c3fadf6797a8e192b9343324f68)
+- :memo: Issue #1235: SecurityError: Only secure origins are allowed (see: https://goo.gl/Y0ZkNV) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/5241a6f3868b4b15f79c6d5c0b5b5ea45e6301f9)
+- :memo: Issue #1415: What is the id in push.finish? [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/2660b51da66e791ff342d027ea6afa4313281e28)
+- :memo: Issue #1420: Update PLATFORM_SUPPORT.md [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/60ad23affaf2dc4c9c2bf48b6cbb702b0217aeb7)
+- :memo: Adding more emoji for commit messages [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/eb6b7b7d52770769719392b9b5226ee9a7caef75)
+- Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/f38fd3d4d9f5f4f8de602b6aa07089b706884ca5)
+
 ## [v1.9.1](https://github.com/phonegap/phonegap-plugin-push/tree/v1.9.1) (2016-07-09)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.9.0...v1.9.1)
 
