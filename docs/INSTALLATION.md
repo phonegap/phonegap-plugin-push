@@ -79,14 +79,10 @@ If you are not creating an Android application you can put in anything for this 
 
 ### Compilation
 
-As of version 1.3.0 the plugin has been switched to using Gradle/Maven for building.
+As of version 2.0.0 the plugin has been switched to using pinned version of Gradle libraries. You will need to ensure that you have installed the following items through the Android SDK Manager:
 
-You will need to ensure that you have installed the following items through the Android SDK Manager:
-
-- Android Support Library version 23 or greater
-- Local Maven repository for Support Libraries (formerly Android Support Repository) version 20 or greater
-- Google Play Services version 27 or greater
-- Google Repository version 22 or greater
+- Android Support Library version 25.1.0
+- FirebaseMessaging Library version 9.8.0
 
 ![android support library](https://cloud.githubusercontent.com/assets/353180/10230226/0627931e-684a-11e5-9a6b-72d72997f655.png)
 
