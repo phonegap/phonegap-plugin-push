@@ -7,10 +7,6 @@
     iOS uses Apple APNS Notifications.
     Windows uses Microsoft WNS Notifications.
   </description>
-<<<<<<< HEAD
-
-=======
->>>>>>> :bookmark: Bumping plugin version to 2.0.0-rc1
   <license>MIT</license>
   <js-module src="www/push.js" name="PushNotification">
     <clobbers target="PushNotification"/>
@@ -78,15 +74,12 @@
         <string>remote-notification</string>
       </array>
     </config-file>
-<<<<<<< HEAD
     <config-file target="*-Debug.plist" parent="aps-environment">
       <string>development</string>
     </config-file>
     <config-file target="*-Release.plist" parent="aps-environment">
       <string>production</string>
     </config-file>
-=======
->>>>>>> :bookmark: Bumping plugin version to 2.0.0-rc1
     <source-file src="src/ios/AppDelegate+notification.m"/>
     <source-file src="src/ios/PushPlugin.m"/>
     <header-file src="src/ios/AppDelegate+notification.h"/>
@@ -103,8 +96,4 @@
       <preference name="WindowsToastCapable" value="true"/>
     </config-file>
   </platform>
-<<<<<<< HEAD
 </plugin>
-=======
-</plugin>
->>>>>>> :bookmark: Bumping plugin version to 2.0.0-rc1
