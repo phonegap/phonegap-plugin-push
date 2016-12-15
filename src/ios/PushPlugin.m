@@ -63,7 +63,7 @@
         if (topics != nil) {
             for (NSString *topic in topics) {
                 NSLog(@"subscribe from topic: %@", topic);
-                id pubSub = [FIRInstanceID instanceID];
+                id pubSub = [FIRMessaging messaging];
                 [pubSub subscribeToTopic:[NSString stringWithFormat:@"/topics/%@", topic]];
             }
         }
@@ -112,7 +112,7 @@
     NSArray* topics = [command argumentAtIndex:0];
 
     if (topics != nil) {
-        id pubSub = [FIRInstanceID instanceID];
+        id pubSub = [FIRMessaging messaging];
         for (NSString *topic in topics) {
             NSLog(@"unsubscribe from topic: %@", topic);
             [pubSub unsubscribeFromTopic:topic];
@@ -129,7 +129,7 @@
 
     if (topic != nil) {
         NSLog(@"subscribe from topic: %@", topic);
-        id pubSub = [FIRInstanceID instanceID];
+        id pubSub = [FIRMessaging messaging];
         [pubSub subscribeToTopic:[NSString stringWithFormat:@"/topics/%@", topic]];
         NSLog(@"Successfully subscribe to topic %@", topic);
         [self successWithMessage:command.callbackId withMsg:[NSString stringWithFormat:@"Successfully subscribe to topic %@", topic]];
@@ -145,7 +145,7 @@
 
     if (topic != nil) {
         NSLog(@"unsubscribe from topic: %@", topic);
-        id pubSub = [FIRInstanceID instanceID];
+        id pubSub = [FIRMessaging messaging];
         [pubSub unsubscribeFromTopic:[NSString stringWithFormat:@"/topics/%@", topic]];
         NSLog(@"Successfully unsubscribe to topic %@", topic);
         [self successWithMessage:command.callbackId withMsg:[NSString stringWithFormat:@"Successfully unsubscribe from topic %@", topic]];
