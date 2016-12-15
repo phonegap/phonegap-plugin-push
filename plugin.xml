@@ -43,7 +43,7 @@
         </intent-filter>
       </service>
     </config-file>
-    <framework src="com.android.support:support-v13:23+"/>
+    <framework src="com.android.support:support-v13:25.1.0"/>
     <framework src="me.leolin:ShortcutBadger:1.1.11@aar"/>
     <framework src="com.google.firebase:firebase-messaging:9.8.0"/>
     <framework src="push.gradle" custom="true" type="gradleReference"/>
