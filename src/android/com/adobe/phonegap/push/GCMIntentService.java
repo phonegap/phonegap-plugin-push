@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.List;
 
 @SuppressLint("NewApi")
 public class GCMIntentService extends GcmListenerService implements PushConstants {
@@ -62,7 +63,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     public void onMessageReceived(String from, Bundle extras) {
         Log.d(LOG_TAG, "onMessage - from: " + from);
 
-        if (extras != null) {
+        if (extras != null && !isIgnoreSender(from)) {
             Context applicationContext = getApplicationContext();
 
             SharedPreferences prefs = applicationContext.getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
@@ -798,5 +799,11 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             return Html.fromHtml(source);
         else
             return null;
+    }
+
+    private boolean isIgnoreSender(String from) {
+        List ignoreSendersList = PushPlugin.getIgnoreSenders();
+
+        return ignoreSendersList.contains(from);
     }
 }
