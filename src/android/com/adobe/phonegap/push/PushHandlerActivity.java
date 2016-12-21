@@ -43,7 +43,7 @@ public class PushHandlerActivity extends Activity implements PushConstants {
         boolean isPushPluginActive = PushPlugin.isActive();
         boolean inline = processPushBundle(isPushPluginActive, intent);
 
-        if(inline && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.N){
+        if(inline && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.N && !startOnBackground){
             foreground = true;
         }
 
