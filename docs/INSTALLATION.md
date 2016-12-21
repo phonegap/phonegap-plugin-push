@@ -64,7 +64,7 @@ As of version 2.0.0 the SENDER_ID parameter has been removed at install time. In
 > Note: You need to specify the SENDER_ID variable in your config.xml if you plan on installing/restoring plugins using the prepare method.  The prepare method will skip installing the plugin otherwise.
 
 ```
-<plugin name="phonegap-plugin-push" spec="1.6.0" />
+<plugin name="phonegap-plugin-push" spec="2.0.0" />
 ```
 
 ## Android details
