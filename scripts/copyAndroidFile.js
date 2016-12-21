@@ -9,7 +9,7 @@ module.exports = function(ctx) {
 
     fs.stat(settingsFile, function(err,stats) {
         if (err) {
-            deferral.reject("To use this plugin on android you'll need to add a google-services.json file with the FCM project_info and place that into your www folder");
+            deferral.reject("To use this plugin on android you'll need to add a google-services.json file with the FCM project_info and place that into your project's root folder");
         } else {
 
             fs.createReadStream(settingsFile).pipe(fs.createWriteStream('platforms/android/google-services.json'));
