@@ -95,7 +95,10 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                 Log.d(LOG_TAG, "background");
                 extras.putBoolean(FOREGROUND, false);
                 extras.putBoolean(COLDSTART, PushPlugin.isActive());
-
+                /*Added by Eby
+				To send intent to app even when its in background*/
+				PushPlugin.sendExtras(extras);
+				/*Added by Eby*/
                 showNotificationIfPossible(applicationContext, extras);
             }
         }
