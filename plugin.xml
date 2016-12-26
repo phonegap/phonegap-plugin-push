@@ -24,7 +24,7 @@
       </feature>
     </config-file>
     <config-file target="res/values/strings.xml" parent="/resources">
-      <string name="google_app_id">$SENDER_ID</string>
+      <string name="google_app_id" translatable="false">$SENDER_ID</string>
     </config-file>
     <config-file target="AndroidManifest.xml" parent="/manifest">
       <uses-permission android:name="android.permission.INTERNET"/>
