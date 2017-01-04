@@ -110,7 +110,6 @@
 - Removed GCM files and added FCM files [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/2bd37d1b31ca0b2c76c89a04a803b22186d1f8ad)
 - Fixed empty token on android first run (#1008) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/fda1f905c4364a3ac100486dc639fdd5c3bae9ca)
 - Added partial Android FCM support (#975) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/b6acbfeacf851bab256962616ba2bd93150982ba)
->>>>>>> Updating CHANGELOG
 - :memo: Issue #1235: SecurityError: Only secure origins are allowed (see: https://goo.gl/Y0ZkNV) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/5241a6f3868b4b15f79c6d5c0b5b5ea45e6301f9)
 - :memo: Issue #1415: What is the id in push.finish? [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/2660b51da66e791ff342d027ea6afa4313281e28)
 - :memo: Issue #1420: Update PLATFORM_SUPPORT.md [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/60ad23affaf2dc4c9c2bf48b6cbb702b0217aeb7)
