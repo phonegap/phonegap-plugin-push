@@ -97,6 +97,20 @@
 - :penguin::bug: Issue #1474: Android: force-start starts the app in Foreground instead of Background [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/2bb5f53a8478353ed1f5f97756adff336fb9a710)
 - Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/e02ff6703a53cb18e53060e2d7f6f64ebc8588b6)
 
+## [v2.0.0-rc2](https://github.com/phonegap/phonegap-plugin-push/tree/v2.0.0-rc2) (2016-07-09)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v2.0.0-rc1...v2.0.0-rc2)
+
+- 2.0.0-rc2 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/67041a994d70fd3a04149003607b88947e8cc994)
+- Bumping plugin version to 2.0.0-rc2 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/7dea689ba17ebb901ee12da62801f051a99cc368)
+- :apple::bug: Issue #1497: App crashes after refreshing when using FCM (v2) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/ea92e039b1d7640b70ca94e5f8748e7d2abbf13a)
+- :pencil2: fixing error in CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/498bb038799bd687d8c492154bd3b34d72edd322)
+- :memo: Using a newer version on the examples [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/74aba315b4cbb1e06c902e76891bce5582cbe690)
+- :penguin::memo::bug: Issue #1470: Cannot install phonegap-plugin-push on master [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/e2f8a62c431af26c4d2fa487daa704067a088643)
+- :bug::apple::wrench: Fixing a merge issue where aps-environment was accidentally removed [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/cb9839740c4cbff5711224eed4b91b55aba77612)
+- :bug::penguin::memo::arrow_up: #1460: Build Issue Android [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/1bef8b37ef7bc017571924edc9e05fe09cd25e29)
+- :bug::apple: Issue #1461: App crashes when initialising with topics (v2.0.0-rc1) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/ca5c281897c664b0bd98097ec2fc8c19c33b2c63)
+- Fixing my merge error for PR #1378 Optional event emit instead of function call for action buttons [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/170d7dd43fe047c6caf84ec0f59da6c2c0cdeb6f)
+
 ## [v2.0.0-rc1](https://github.com/phonegap/phonegap-plugin-push/tree/v2.0.0-rc1) (2016-07-09)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.9.1...v2.0.0-rc1)
 
