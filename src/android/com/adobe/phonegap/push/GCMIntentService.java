@@ -762,6 +762,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         try {
             URL url = new URL(strURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(15000);
             connection.setDoInput(true);
             connection.connect();
             InputStream input = connection.getInputStream();
