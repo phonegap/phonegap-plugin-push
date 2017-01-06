@@ -326,9 +326,14 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     * @param    String  topic The topic name
     * @return           The topic path
     */
-    private String getTopicPath(String topic)
-    {
-        return "/topics/" + topic;
+    private String getTopicPath(String topic) {
+        if (topic.startsWith("/topics/")) {
+            return topic;
+        } else if (topic.startsWith("/topic/")) {
+            return topic.replace("/topic/", "/topics/");
+        } else {
+            return "/topics/" + topic;
+        }
     }
 
     private void subscribeToTopics(JSONArray topics, String registrationToken) throws IOException {
@@ -351,6 +356,8 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         } catch (IOException e) {
             Log.e(LOG_TAG, "Failed to subscribe to topic: " + topic, e);
 			throw e;
+        } catch (IllegalArgumentException argException) {
+            Log.e(LOG_TAG, "Cannot subscribe to topic [" + topic + "], illegal topic name");
         }
     }
 
