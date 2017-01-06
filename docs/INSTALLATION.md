@@ -16,6 +16,7 @@
   - [Bitcode](#bitcode)
   - [CocoaPods](#cocoapods)
     - [Common CocoaPod Installation issues](#common-cocoapod-installation-issues)
+    - [CocoaPod Disk Space](#cocoapod-disk-space)
 - [Additional Resources](#additional-resources)
 
 ## Installation Requirements
@@ -256,6 +257,15 @@ Error: pod: Command failed with exit code 1
 ```
 
 Please run the command `pod repo update` and re-install the plugin.
+
+##### CocoaPod Disk Space
+
+Running `pod setup` can take over 1 GB of disk space and that can take quite some time to download over a slow internet connection. If you are having issues with disk space/network try this neat hack from @VinceOPS.
+
+```
+git clone --verbose --depth=1 https://github.com/CocoaPods/Specs.git ~/.cocoapods/repos/master
+pod setup --verbose
+```
 
 ## Additional Resources
 
