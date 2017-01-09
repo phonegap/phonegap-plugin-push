@@ -11,12 +11,12 @@
 
 ### Including the plugin
 
-Including this plugin in a project that is built by PhoneGap Build is as easy as adding:
+Including this plugin in a project that is built by PhoneGap Build is as easy as adding (replacing `123456789` with your own, that is):
 
 ```xml
 <preference name="android-build-tool" value="gradle" />
 <plugin name="phonegap-plugin-push" source="npm">
-    <param name="SENDER_ID" value="<Your Sender ID>" />
+    <param name="SENDER_ID" value="123456789" />
 </plugin>
 ```
 
