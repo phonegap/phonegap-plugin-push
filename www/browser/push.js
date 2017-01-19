@@ -29,6 +29,12 @@ var PushNotification = function(options) {
     // store the options to this object instance
     this.options = options;
 
+    // subscription options
+    var subOptions = {userVisibleOnly: true};
+    if (this.options.browser.applicationServerKey) {
+        subOptions.applicationServerKey = urlBase64ToUint8Array(this.options.browser.applicationServerKey);
+    }
+
     // triggered on registration and notification
     var that = this;
 
@@ -50,20 +56,25 @@ var PushNotification = function(options) {
         })
         .then(function(reg) {
             serviceWorker = reg;
-            reg.pushManager.subscribe({userVisibleOnly: true}).then(function(sub) {
+            reg.pushManager.subscribe(subOptions).then(function(sub) {
                 subscription = sub;
-                result = { 'registrationId': sub.endpoint.substring(sub.endpoint.lastIndexOf('/') + 1) };
-                that.emit('registration', result);
+                if (!subOptions.applicationServerKey) {
+                    result = { 'registrationId': sub.endpoint.substring(sub.endpoint.lastIndexOf('/') + 1) };
+                    that.emit('registration', result);
 
-                // send encryption keys to push server
-                var xmlHttp = new XMLHttpRequest();
-                var xmlURL = (options.browser.pushServiceURL || 'http://push.api.phonegap.com/v1/push') + '/keys';
-                xmlHttp.open('POST', xmlURL, true);
+                    // send encryption keys to push server
+                    var xmlHttp = new XMLHttpRequest();
+                    var xmlURL = (options.browser.pushServiceURL || 'http://push.api.phonegap.com/v1/push') + '/keys';
+                    xmlHttp.open('POST', xmlURL, true);
 
-                var formData = new FormData();
-                formData.append('subscription', JSON.stringify(sub));
+                    var formData = new FormData();
+                    formData.append('subscription', JSON.stringify(sub));
 
-                xmlHttp.send(formData);
+                    xmlHttp.send(formData);
+                } else {
+                    result = { 'registrationId': JSON.stringify(sub) };
+                    that.emit('registration', result);
+                }
 
                 navigator.serviceWorker.controller.postMessage(result, [channel.port2]);
             }).catch(function(error) {
@@ -321,6 +332,29 @@ PushNotification.prototype.finish = function(successCallback, errorCallback, id)
 /*!
  * Push Notification Plugin.
  */
+
+/**
+ * Converts the server key to an Uint8Array
+ *
+ * @param base64String
+ *
+ * @returns {Uint8Array}
+ */
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (var i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
 
 module.exports = {
     /**
