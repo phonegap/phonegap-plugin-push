@@ -114,7 +114,7 @@
   <platform name="windows">
     <hook type="after_plugin_install" src="hooks/windows/setToastCapable.js"/>
     <js-module src="src/windows/PushPluginProxy.js" name="PushPlugin">
-      <merges target=""/>
+      <runs />
     </js-module>
     <config-file target="config.xml" parent="/*">
       <preference name="WindowsToastCapable" value="true"/>
