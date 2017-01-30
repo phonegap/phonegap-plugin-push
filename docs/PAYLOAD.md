@@ -3,6 +3,7 @@
    - [Background Events](#push-message-arrives-with-app-in-background)
    - [Tap Events](#user-clicks-on-notification-in-notification-center)
 - [Android Behaviour](#android-behaviour)
+  - [Notification vs Data Payloads](#notification-vs-data-payloads)
   - [Localization](#localization)
   - [Images](#images)
   - [Sound](#sound)
@@ -66,6 +67,66 @@ Some ways to handle this *double* event are:
 - include a unique ID in your push so you can check to see if you've already processed this event.
 
 # Android Behaviour
+
+## Notification vs Data Payloads
+
+Notifications behave differently depending on the foreground/background state of the receiving app and the payload you send to the app.
+
+For instance if you send the following payload:
+
+```
+{
+    "notification": {
+        "title": "Test Notification",
+        "body": "This offer expires at 11:30 or whatever",
+        "notId": 10
+    }
+}
+```
+
+When your app is in the foreground any `on('notification')` handlers you have registered will be called. However if your app is in the background the notification will show up in the system tray. Clicking on the notification in the system tray will start the app but your `on('notification')` handler will not be called as messages with only `notification` payloads will not cause the plugins `onMessageReceived` method to be called.
+
+If you send a payload with a mix of `notification` & `data` objects like this:
+
+```
+{
+    "notification": {
+        "title": "Test Notification",
+        "body": "This offer expires at 11:30 or whatever",
+        "notId": 10
+    },
+    "data" : {
+        "surveyID": "ewtawgreg-gragrag-rgarhthgbad"
+    }
+}
+```
+
+When your app is in the foreground any `on('notification')` handlers you have registered will be called. If your app is in the background the notification will show up in the system tray. Clicking on the notification in the system tray will start the app and your `on('notification')` handler will be called but there is a possibility that the fields in the `notification` object will be missing from the event received by your `on('notification')` handler.
+
+However, my recommended format for your push payload when using this plugin (while it differs from Google's docs) works 100% of the time:
+
+```
+{
+    "data" : {
+        "title": "Test Notification",
+        "body": "This offer expires at 11:30 or whatever",
+        "notId": 10,
+        "surveyID": "ewtawgreg-gragrag-rgarhthgbad"
+    }
+}
+```
+
+When your app is in the foreground any `on('notification')` handlers you have registered will be called. If your app is in the background the notification will show up in the system tray. Clicking on the notification in the system tray will start the app and your `on('notification')` handler will be called and the event received by your `on('notification')` handler will get the following data:
+
+```
+{
+    "message": "This offer expires at 11:30 or whatever",
+    "title": "Test Notification",
+    "additionalData": {
+        "surveyID": "ewtawgreg-gragrag-rgarhthgbad"
+    }
+}
+```
 
 ## Localization
 
