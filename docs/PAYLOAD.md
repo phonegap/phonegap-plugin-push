@@ -101,9 +101,9 @@ If you send a payload with a mix of `notification` & `data` objects like this:
 }
 ```
 
-When your app is in the foreground any `on('notification')` handlers you have registered will be called. If your app is in the background the notification will show up in the system tray. Clicking on the notification in the system tray will start the app and your `on('notification')` handler will be called but there is a possibility that the fields in the `notification` object will be missing from the event received by your `on('notification')` handler.
+When your app is in the foreground any `on('notification')` handlers you have registered will be called. If your app is in the background the notification will show up in the system tray. Clicking on the notification in the system tray will start the app and your `on('notification')` handler will not be called as messages with only `notification` payloads will not cause the plugins `onMessageReceived` method to be called.
 
-However, my recommended format for your push payload when using this plugin (while it differs from Google's docs) works 100% of the time:
+My recommended format for your push payload when using this plugin (while it differs from Google's docs) works 100% of the time:
 
 ```
 {
