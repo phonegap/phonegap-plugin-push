@@ -1,5 +1,25 @@
 # Change Log
 
+## [v1.9.3](https://github.com/phonegap/phonegap-plugin-push/tree/v1.9.3) (2016-07-09)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.9.2...v1.9.3)
+
+- 1.9.3 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/42723d6609862aa950abce67b2a637736bdd9e99)
+- :bookmark: Bumping plugin version to 1.9.3 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/8f7b7dc003a2bc5bab7a316b0e2b0cf475c5a449)
+- :wrench: Add valid SPDX license expression [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/4274d0759acd7110ed2592ed1d2ce3bf692711d3)
+- :memo: Issue #1587: v2.0.0-rc2: .on('notification') event not fired when background notification in Android [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/7e90853a09a2c49f29e12eed03977b08b1295387)
+- :arrow_up: Issue #1560: setApplicationIconBadgeNumber not working on Android but firing success function [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/3188a3907f50dcf625b7663ecf74ea9a9209d437)
+- :memo: Issue #1557: push.on('notification') not triggered - Ionic [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/b91e9420fb68c4efc943cc5f8ecbd81274ffcbec)
+- :memo: Issue #1407: Uncaught (in promise): Error: Push plugin not found! [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/adf3eabb8871980d2dead7ecb8185ad0da1d6b46)
+- Corrected merges usage to prevent possible conflicts with other plugins (#1538) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/00c67cb2c85e97dfe4f7020f28ad4d954458599f)
+- :penguin: android mixpanel pushnotification suport added (#1523) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/951cb6921a717d847c279ad6896c28772c70103f)
+- :memo: Making string replacement clearer [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/abdb656315bd4457c7ae43aaa52e2357df85d139)
+- :bug::penguin::memo: Issue #1433: Cordova Push V5 register () crashes App when initialized with topicList [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/1d5723c81ad7a1e9d76fdce22161e8e8aa8da262)
+- :bug::penguin: Issue #1421: Notification delay caused by icon bitmap timeout [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/fb4b533f2b31daebc7ed57c16228458def3d2af9)
+- :memo: Issue #1442: CocoaPods support vs requirement [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/5912b1ea911fbe3b45a3a47ed005b7048a487ba6)
+- make google_app_id non translatable string (#1485) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/d9890fa52ecdb41b344f06f1dd081d05ea784bea)
+- :penguin::bug: Issue #1474: Android: force-start starts the app in Foreground instead of Background [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/2bb5f53a8478353ed1f5f97756adff336fb9a710)
+- Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/e02ff6703a53cb18e53060e2d7f6f64ebc8588b6)
+
 ## [v1.9.2](https://github.com/phonegap/phonegap-plugin-push/tree/v1.9.2) (2016-07-09)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.9.1...v1.9.2)
 
