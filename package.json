@@ -47,7 +47,7 @@
     }
   },
   "author": "Adobe PhoneGap Team",
-  "license": "APL",
+  "license": "MIT",
   "scripts": {
     "test": "jasmine-node --color spec"
   },
