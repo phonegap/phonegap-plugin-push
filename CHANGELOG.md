@@ -1,5 +1,13 @@
 # Change Log
 
+## [v1.9.4](https://github.com/phonegap/phonegap-plugin-push/tree/v1.9.4) (2016-07-09)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.9.3...v1.9.4)
+
+- 1.9.4 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/2241c7431cd60a68d2f35e7b4a5bfd797d5161b6)
+- Bumping plugin version to 1.9.4 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/ec47932bf8fdf9cd96db076fe56306ab230048d9)
+- Issue #1591: App crashes with the latest updates of Android SDK with plugin v-1.9.2 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/514c21366ab37001ca323bec58261e023edaefd7)
+- Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/3a218e4c68ebc1088461c2cfec966e57eaa24089)
+
 ## [v1.9.3](https://github.com/phonegap/phonegap-plugin-push/tree/v1.9.3) (2016-07-09)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.9.2...v1.9.3)
 
