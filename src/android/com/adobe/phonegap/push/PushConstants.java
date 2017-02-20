@@ -70,4 +70,5 @@ public interface PushConstants {
     public static final String MP_MESSAGE = "mp_message";
     public static final String START_IN_BACKGROUND = "cdvStartInBackground";
     public static final String FORCE_START = "force-start";
+    public static final String APPCELERATOR_PAYLOAD = "payload";
 }
