@@ -229,6 +229,21 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                         Log.e(LOG_TAG, "normalizeExtras: JSON exception");
                     }
                 }
+            } else if (key.equals(APPCELERATOR_PAYLOAD)) {
+                try {
+                    String json = extras.getString(key);
+                    JSONObject data = new JSONObject((String) json);
+                    JSONObject android = data.getJSONObject(ANDROID);
+
+                    newExtras.putString(MESSAGE, android.getString(ALERT));
+                    newExtras.putString(TITLE, android.getString(TITLE));
+                    newExtras.putString(ICON, android.getString(ICON));
+                    newExtras.putBoolean(FOREGROUND, false);
+                    newExtras.putBoolean(COLDSTART, PushPlugin.isActive());
+                }
+                catch(JSONException ex) {
+                    Log.d(LOG_TAG, "Error getting alert and/or title from inner payload from Appcelerator");
+                }
             } else if (key.equals(("notification"))) {
                 Bundle value = extras.getBundle(key);
                 Iterator<String> iterator = value.keySet().iterator();
