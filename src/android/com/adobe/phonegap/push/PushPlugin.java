@@ -37,6 +37,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     private static boolean gForeground = false;
 
     private static String registration_id = "";
+    private static List<String> ignoreSendersList;
 
     /**
      * Gets the application context from cordova's main activity.
@@ -80,6 +81,9 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                             JSONArray topics = jo.optJSONArray(TOPICS);
                             subscribeToTopics(topics, registration_id);
+
+                            JSONArray ignoreSenders = jo.optJSONArray(IGNORE_SENDERS);
+                            setIgnoreSenders(ignoreSenders);
 
                             PushPlugin.sendEvent( json );
                         } else {
@@ -457,6 +461,18 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
     public static boolean isActive() {
         return gWebView != null;
+    }
+
+    public static void setIgnoreSenders(JSONArray jSenders) throws JSONException {
+        ignoreSendersList = new ArrayList<String>();
+
+        for (int i = 0; i < jSenders.length(); i++) {
+            ignoreSendersList.add( jSenders.getString(i) );
+        }
+    }
+
+    public static List getIgnoreSenders() {
+        return ignoreSendersList;
     }
 
     protected static void setRegistrationID(String token) {
