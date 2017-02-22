@@ -23,7 +23,13 @@
         return;
     }
 
-    NSString *mediaUrl = userInfo[@"mediaUrl"];
+    NSString *mediaUrl = nil;
+    NSDictionary *data = userInfo[@"data"];
+    if (data == nil) {
+        mediaUrl = userInfo[@"media-attachment-url"];
+    } else {
+        mediaUrl = data[@"media-attachment-url"];
+    }
 
     if (mediaUrl == nil) {
         [self contentComplete];
