@@ -56,37 +56,21 @@
 
     if ([type isEqualToString:@"image/jpeg"]) {
         ext = @"jpg";
-    }
-
-    if ([type isEqualToString:@"image/gif"]) {
+    } else if ([type isEqualToString:@"image/gif"]) {
         ext = @"gif";
-    }
-
-    if ([type isEqualToString:@"image/png"]) {
+    } else if ([type isEqualToString:@"image/png"]) {
         ext = @"png";
-    }
-
-    if ([type isEqualToString:@"video/mpeg"]) {
+    } else if ([type isEqualToString:@"video/mpeg"]) {
         ext = @"mpg";
-    }
-
-    if ([type isEqualToString:@"video/avi"]) {
+    } else if ([type isEqualToString:@"video/avi"]) {
         ext = @"avi";
-    }
-
-    if ([type isEqualToString:@"audio/aiff"]) {
+    } else if ([type isEqualToString:@"audio/aiff"]) {
         ext = @"aiff";
-    }
-
-    if ([type isEqualToString:@"audio/aiff"]) {
+    } else if ([type isEqualToString:@"audio/aiff"]) {
         ext = @"aiff";
-    }
-
-    if ([type isEqualToString:@"audio/wav"]) {
+    } else if ([type isEqualToString:@"audio/wav"]) {
         ext = @"wav";
-    }
-
-    if ([type isEqualToString:@"audio/mpeg3"]) {
+    } else if ([type isEqualToString:@"audio/mpeg3"]) {
         ext = @"mp3";
     }
 
