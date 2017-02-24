@@ -559,11 +559,11 @@
     // Retrieve APNS environment (sandbox or production)
     NSDictionary *mobileProvision = [self getMobileProvision];
     if (mobileProvision) {
-	NSDictionary *entitlements = mobileprovision[@"Entitlements"];
+	NSDictionary *entitlements = mobileProvision[@"Entitlements"];
 	NSString *apsEnvironment = entitlements[@"aps-environment"];
 	message[@"apsEnvironment"] = apsEnvironment;
-	message[@"apsIsProduction"] = entitlements && apsEnvironment && [apsEnvironment isEqualToString:@"production"];
-	message[@"apsIsDevelopment"] = entitlements && apsEnvironment && [apsEnvironment isEqualToString:@"development"];
+	message[@"apsIsProduction"] = @(entitlements && apsEnvironment && [apsEnvironment isEqualToString:@"production"]);
+	message[@"apsIsDevelopment"] = @(entitlements && apsEnvironment && [apsEnvironment isEqualToString:@"development"]);
     }
 
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
@@ -626,17 +626,17 @@
 	if (!provisioningPath) {
 		return nil;
 	}
-	NSData *data = [NSData dataWithContentsOfFile:provisioningPath error:error];
+	NSData *data = [NSData dataWithContentsOfFile:provisioningPath];
 	if (!data) {
-		NSLog(@"error reading embedded %@: %@", provisioningPath, error);
+		NSLog(@"error reading %@", provisioningPath);
 		return nil;
 	}
-	NSRange startRange = [data rangeOfData:[NSData dataWithBytes:"<plist" length: 6] options:0 searchRange:NSMakeRange(0,data.length)];
+	NSRange startRange = [data rangeOfData:[NSData dataWithBytes:"<plist" length: 6] options:0 range:NSMakeRange(0,data.length)];
 	if (startRange.location == NSNotFound) {
 		NSLog(@"unable to find beginning of plist");
 		return nil;
 	}
-	NSRange endRange = [data rangeOfData:[NSData dataWithBytes:"</plist>" length: 8] options:0 searchRange:NSMakeRange(startRange.location,data.length - startRange.location)];
+	NSRange endRange = [data rangeOfData:[NSData dataWithBytes:"</plist>" length: 8] options:0 range:NSMakeRange(startRange.location,data.length - startRange.location)];
 	if (endRange.location == NSNotFound) {
 		NSLog(@"unable to find end of plist");
 		return nil;
