@@ -24,11 +24,14 @@
     }
 
     NSString *mediaUrl = nil;
+    NSString *mediaType = nil;
     NSDictionary *data = userInfo[@"data"];
     if (data == nil) {
         mediaUrl = userInfo[@"media-attachment-url"];
+        mediaType = userInfo[@"mime-type"];
     } else {
         mediaUrl = data[@"media-attachment-url"];
+        mediaType = data[@"mime-type"];
     }
 
     if (mediaUrl == nil) {
@@ -38,6 +41,7 @@
 
     // load the attachment
     [self loadAttachmentForUrlString:mediaUrl
+                            withType:mediaType
                    completionHandler:^(UNNotificationAttachment *attachment) {
                        if (attachment) {
                            self.bestAttemptContent.attachments = [NSArray arrayWithObject:attachment];
@@ -58,36 +62,33 @@
 }
 
 - (NSString *)fileExtensionForMediaType:(NSString *)type {
-    NSString *ext = type;
+    NSString *ext = nil;
 
     if ([type isEqualToString:@"image/jpeg"]) {
-        ext = @"jpg";
+        ext = @".jpg";
     } else if ([type isEqualToString:@"image/gif"]) {
-        ext = @"gif";
+        ext = @".gif";
     } else if ([type isEqualToString:@"image/png"]) {
-        ext = @"png";
+        ext = @".png";
     } else if ([type isEqualToString:@"video/mpeg"]) {
-        ext = @"mpg";
+        ext = @".mpg";
     } else if ([type isEqualToString:@"video/avi"]) {
-        ext = @"avi";
+        ext = @".avi";
     } else if ([type isEqualToString:@"audio/aiff"]) {
-        ext = @"aiff";
-    } else if ([type isEqualToString:@"audio/aiff"]) {
-        ext = @"aiff";
+        ext = @".aiff";
     } else if ([type isEqualToString:@"audio/wav"]) {
-        ext = @"wav";
+        ext = @".wav";
     } else if ([type isEqualToString:@"audio/mpeg3"]) {
-        ext = @"mp3";
+        ext = @".mp3";
     }
 
-    return [@"." stringByAppendingString:ext];
+    return ext;
 }
 
-- (void)loadAttachmentForUrlString:(NSString *)urlString completionHandler:(void(^)(UNNotificationAttachment *))completionHandler  {
+- (void)loadAttachmentForUrlString:(NSString *)urlString withType:(NSString *)mediaType completionHandler:(void(^)(UNNotificationAttachment *))completionHandler  {
 
     __block UNNotificationAttachment *attachment = nil;
     NSURL *attachmentURL = [NSURL URLWithString:urlString];
-    //NSString *fileExt = [self fileExtensionForMediaType:type];
 
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     [[session downloadTaskWithURL:attachmentURL
@@ -95,7 +96,14 @@
                     if (error != nil) {
                         NSLog(@"%@", error.localizedDescription);
                     } else {
+                        // determine file extension
                         NSString *fileExt = [self fileExtensionForMediaType:[response MIMEType]];
+                        if (fileExt == nil) {
+                            fileExt = [self fileExtensionForMediaType:mediaType];
+                            if (fileExt == nil) {
+                                fileExt = [@"." stringByAppendingString:[[response URL] pathExtension]];
+                            }
+                        }
 
                         NSFileManager *fileManager = [NSFileManager defaultManager];
                         NSURL *localURL = [NSURL fileURLWithPath:[temporaryFileLocation.path stringByAppendingString:fileExt]];
