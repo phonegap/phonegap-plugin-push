@@ -17,6 +17,7 @@
   - [Picture Messages](#picture-messages)
   - [Background Notifications](#background-notifications)
     - [Use of content-available: true](#use-of-content-available-true)
+  - [Caching](#caching)
   - [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
   - [Application force closed](#application-force-closed)
   - [Visibility](#visibility-of-notifications)
@@ -1070,6 +1071,22 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 	if(err) console.error(err);
 	else 	console.log(response);
 });
+```
+
+### Caching
+
+By default, when a notification arrives and 'content-available' is set to '1', the plugin will try to deliver the data payload even if the app is not running. In that case, the payload is cached and may be delivered when the app is started again. To disable this behavior, you can set a `no-cache` flag in the notification payload. 0: caching enabled (default), 1: caching disabled.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+        "title": "Push without cache",
+        "message": "When the app is closed, this notification will not be cached",
+        "content-available": "1",
+        "no-cache": "1"
+    }
+}
 ```
 
 ## Visibility of Notifications
