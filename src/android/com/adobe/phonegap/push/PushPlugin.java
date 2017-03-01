@@ -70,7 +70,6 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                         Log.v(LOG_TAG, "execute: senderID=" + senderID);
 
-                        String savedSenderID = sharedPref.getString(SENDER_ID, "");
                         registration_id = InstanceID.getInstance(getApplicationContext()).getToken(senderID, GCM);
 
                         if (!"".equals(registration_id)) {
