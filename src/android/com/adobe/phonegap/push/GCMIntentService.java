@@ -68,8 +68,8 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             SharedPreferences prefs = applicationContext.getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
             boolean forceShow = prefs.getBoolean(FORCE_SHOW, false);
             boolean clearBadge = prefs.getBoolean(CLEAR_BADGE, false);
-            String messageKey = prefs.getString(MESSAGE_KEY, "");
-            String titleKey = prefs.getString(TITLE_KEY, "");
+            String messageKey = prefs.getString(MESSAGE_KEY, MESSAGE);
+            String titleKey = prefs.getString(TITLE_KEY, TITLE);
 
             extras = normalizeExtras(applicationContext, extras, messageKey, titleKey);
 
@@ -239,7 +239,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                     String notifkey = iterator.next();
 
                     Log.d(LOG_TAG, "notifkey = " + notifkey);
-                    String newKey = normalizeKey(notifkey, null, null);
+                    String newKey = normalizeKey(notifkey, messageKey, titleKey);
                     Log.d(LOG_TAG, "replace key " + notifkey + " with " + newKey);
 
                     String valueData = value.getString(notifkey);
