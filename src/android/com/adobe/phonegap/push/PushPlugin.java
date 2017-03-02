@@ -70,7 +70,6 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                         Log.v(LOG_TAG, "execute: senderID=" + senderID);
 
-                        String savedSenderID = sharedPref.getString(SENDER_ID, "");
                         registration_id = InstanceID.getInstance(getApplicationContext()).getToken(senderID, GCM);
 
                         if (!"".equals(registration_id)) {
@@ -118,6 +117,8 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         editor.putBoolean(CLEAR_NOTIFICATIONS, jo.optBoolean(CLEAR_NOTIFICATIONS, true));
                         editor.putBoolean(FORCE_SHOW, jo.optBoolean(FORCE_SHOW, false));
                         editor.putString(SENDER_ID, senderID);
+                        editor.putString(MESSAGE_KEY, jo.optString(MESSAGE_KEY));
+                        editor.putString(TITLE_KEY, jo.optString(TITLE_KEY));
                         editor.commit();
 
                     }

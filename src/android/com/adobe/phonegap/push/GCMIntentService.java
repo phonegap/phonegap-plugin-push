@@ -68,8 +68,10 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             SharedPreferences prefs = applicationContext.getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
             boolean forceShow = prefs.getBoolean(FORCE_SHOW, false);
             boolean clearBadge = prefs.getBoolean(CLEAR_BADGE, false);
+            String messageKey = prefs.getString(MESSAGE_KEY, MESSAGE);
+            String titleKey = prefs.getString(TITLE_KEY, TITLE);
 
-            extras = normalizeExtras(applicationContext, extras);
+            extras = normalizeExtras(applicationContext, extras, messageKey, titleKey);
 
             if (clearBadge) {
                 PushPlugin.setApplicationIconBadgeNumber(getApplicationContext(), 0);
@@ -167,10 +169,10 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     /*
      * Replace alternate keys with our canonical value
      */
-    private String normalizeKey(String key) {
-        if (key.equals(BODY) || key.equals(ALERT) || key.equals(MP_MESSAGE) || key.equals(GCM_NOTIFICATION_BODY) || key.equals(TWILIO_BODY)) {
+    private String normalizeKey(String key, String messageKey, String titleKey) {
+        if (key.equals(BODY) || key.equals(ALERT) || key.equals(MP_MESSAGE) || key.equals(GCM_NOTIFICATION_BODY) || key.equals(TWILIO_BODY) || key.equals(messageKey)) {
             return MESSAGE;
-        } else if (key.equals(TWILIO_TITLE)) {
+        } else if (key.equals(TWILIO_TITLE) || key.equals(titleKey)) {
             return TITLE;
         }else if (key.equals(MSGCNT) || key.equals(BADGE)) {
             return COUNT;
@@ -191,7 +193,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     /*
      * Parse bundle into normalized keys.
      */
-    private Bundle normalizeExtras(Context context, Bundle extras) {
+    private Bundle normalizeExtras(Context context, Bundle extras, String messageKey, String titleKey) {
         Log.d(LOG_TAG, "normalize extras");
         Iterator<String> it = extras.keySet().iterator();
         Bundle newExtras = new Bundle();
@@ -203,7 +205,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
             // If normalizeKeythe key is "data" or "message" and the value is a json object extract
             // This is to support parse.com and other services. Issue #147 and pull #218
-            if (key.equals(PARSE_COM_DATA) || key.equals(MESSAGE)) {
+            if (key.equals(PARSE_COM_DATA) || key.equals(MESSAGE) || key.equals(messageKey)) {
                 Object json = extras.get(key);
                 // Make sure data is json object stringified
                 if ( json instanceof String && ((String) json).startsWith("{") ) {
@@ -211,7 +213,8 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                     try {
                         // If object contains message keys promote each value to the root of the bundle
                         JSONObject data = new JSONObject((String) json);
-                        if ( data.has(ALERT) || data.has(MESSAGE) || data.has(BODY) || data.has(TITLE) ) {
+                        if ( data.has(ALERT) || data.has(MESSAGE) || data.has(BODY) || data.has(TITLE) ||
+                            data.has(messageKey) || data.has(titleKey) ) {
                             Iterator<String> jsonIter = data.keys();
                             while (jsonIter.hasNext()) {
                                 String jsonKey = jsonIter.next();
@@ -219,7 +222,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                                 Log.d(LOG_TAG, "key = data/" + jsonKey);
 
                                 String value = data.getString(jsonKey);
-                                jsonKey = normalizeKey(jsonKey);
+                                jsonKey = normalizeKey(jsonKey, messageKey, titleKey);
                                 value = localizeKey(context, jsonKey, value);
 
                                 newExtras.putString(jsonKey, value);
@@ -236,7 +239,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                     String notifkey = iterator.next();
 
                     Log.d(LOG_TAG, "notifkey = " + notifkey);
-                    String newKey = normalizeKey(notifkey);
+                    String newKey = normalizeKey(notifkey, messageKey, titleKey);
                     Log.d(LOG_TAG, "replace key " + notifkey + " with " + newKey);
 
                     String valueData = value.getString(notifkey);
@@ -247,7 +250,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                 continue;
             }
 
-            String newKey = normalizeKey(key);
+            String newKey = normalizeKey(key, messageKey, titleKey);
             Log.d(LOG_TAG, "replace key " + key + " with " + newKey);
             replaceKey(context, key, newKey, extras, newExtras);
 
