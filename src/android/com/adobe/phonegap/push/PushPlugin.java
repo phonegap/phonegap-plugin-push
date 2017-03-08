@@ -422,6 +422,9 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                 else if (key.equals(FOREGROUND)) {
                     additionalData.put(key, extras.getBoolean(FOREGROUND));
                 }
+                else if (key.equals(DISMISSED)) {
+                    additionalData.put(key, extras.getBoolean(DISMISSED));
+                }
                 else if ( value instanceof String ) {
                     String strValue = (String)value;
                     try {
