@@ -62,7 +62,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     public void onMessageReceived(String from, Bundle extras) {
         Log.d(LOG_TAG, "onMessage - from: " + from);
 
-        if (extras != null) {
+        if (extras != null && isAvailableSender(from)) {
             Context applicationContext = getApplicationContext();
 
             SharedPreferences prefs = applicationContext.getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
@@ -809,5 +809,12 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             return Html.fromHtml(source);
         else
             return null;
+    }
+
+    private boolean isAvailableSender(String from) {
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
+        String savedSenderID = sharedPref.getString(SENDER_ID, "");
+
+        return from.equals(savedSenderID) || from.startsWith("/topics/");
     }
 }
