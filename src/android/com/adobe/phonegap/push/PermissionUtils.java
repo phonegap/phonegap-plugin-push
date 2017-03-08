@@ -10,8 +10,12 @@ import java.lang.reflect.Method;
 public class PermissionUtils {
 
     private static final String CHECK_OP_NO_THROW = "checkOpNoThrow";
+    private static final int MIN_API_LEVEL = 19; // required by AppOpsManager
 
     public static boolean hasPermission(Context appContext, String appOpsServiceId) throws UnknownError {
+        if (android.os.Build.VERSION.SDK_INT < MIN_API_LEVEL) {
+            return true;
+        }
 
         ApplicationInfo appInfo = appContext.getApplicationInfo();
 
