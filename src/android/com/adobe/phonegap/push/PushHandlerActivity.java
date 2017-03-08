@@ -82,6 +82,7 @@ public class PushHandlerActivity extends Activity implements PushConstants {
             originalExtras.putBoolean(COLDSTART, !isPushPluginActive);
             originalExtras.putBoolean(DISMISSED, extras.getBoolean(DISMISSED));
             originalExtras.putString(ACTION_CALLBACK, extras.getString(CALLBACK));
+            originalExtras.remove(NO_CACHE);
 
             remoteInput = RemoteInput.getResultsFromIntent(intent);
             if (remoteInput != null) {

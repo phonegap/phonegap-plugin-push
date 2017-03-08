@@ -260,13 +260,14 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
     /*
      * Sends the pushbundle extras to the client application.
-     * If the client application isn't currently active, it is cached for later processing.
+     * If the client application isn't currently active and the no-cache flag is not set, it is cached for later processing.
      */
     public static void sendExtras(Bundle extras) {
         if (extras != null) {
+            String noCache = extras.getString(NO_CACHE);
             if (gWebView != null) {
                 sendEvent(convertBundleToJson(extras));
-            } else {
+            } else if(!"1".equals(noCache)){
                 Log.v(LOG_TAG, "sendExtras: caching extras to send at a later time.");
                 gCachedExtras.add(extras);
             }
