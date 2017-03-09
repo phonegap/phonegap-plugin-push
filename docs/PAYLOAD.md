@@ -348,6 +348,43 @@ Produces the following notification.
 
 ![2015-07-24 02 17 55](https://cloud.githubusercontent.com/assets/353180/8866900/2df0ab06-3190-11e5-9a81-fdb85bb0f5a4.png)
 
+Finally the Material UI guidelines recommend using a circular icon for the large icon if the subject of the image is a person. This JSON sent from GCM:
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Large Circular Icon",
+    	"message": "Loaded from URL",
+        "image": "https://pbs.twimg.com/profile_images/837060031895896065/VHIQ4oUf_400x400.jpg",
+        "image-type": "circle"
+    }
+}
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Large Circular Icon');
+message.addData('message', 'Loaded from URL');
+message.addData('image', 'https://pbs.twimg.com/profile_images/837060031895896065/VHIQ4oUf_400x400.jpg');
+message.addData('image-type', 'circular');
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
+```
+
+Produces the following notification.
+
+![screenshot_20170308-214947](https://cloud.githubusercontent.com/assets/353180/23733917/902a4650-0449-11e7-924e-d45a38030c74.png)
+
 ## Sound
 
 For Android there are three special values for sound you can use. The first is `default` which will play the phones default notification sound.
