@@ -74,4 +74,7 @@ public interface PushConstants {
     public static final String TITLE_KEY = "titleKey";
     public static final String NO_CACHE = "no-cache";
     public static final String DISMISSED = "dismissed";
+    public static final String IMAGE_TYPE = "image-type";
+    public static final String IMAGE_TYPE_SQUARE = "square";
+    public static final String IMAGE_TYPE_CIRCLE = "circle";
 }
