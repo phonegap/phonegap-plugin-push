@@ -1,5 +1,21 @@
 # Change Log
 
+## [v1.10.0](https://github.com/phonegap/phonegap-plugin-push/tree/v1.10.0) (2016-07-09)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.9.4...v1.10.0)
+
+- 1.10.0 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/6b9b862da8566c7717dfc79dd6b32d8a7e6774d8)
+- :bookmark: Bumping plugin version to 1.10.0 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/626e9615fbff6ea225569ab58353ac7f58aef495)
+- :heavy_plus_sign: update pluginpub version [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/c3c8058ffee888447017eb5d8c0f4f30cbcd090f)
+- Issue #1464: Create round bitmap icon for large icon image passed in from local resource or url (#1635) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/0dd0d468868f0b13c8d840c78dd89fca5920cd32)
+- Receive notification only from SENDER_ID (#1484) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/a0d51e54aac39b8c58e4c67080f174c0228947c9)
+- Add no-cache flag to payload (#1620) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/42f8cefbd187c36534e6ab59b6611fb7f15b91f0)
+- Add dismiss key to on notification data (#1621) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/4259bb3cacfe2561ed44e9f16bd74f8d5ae45ae2)
+- return true for old android versions, since AppOpsManager is available starting at 19 (#1634) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/945aa2ad6d266e82683e0bee86f53d258f2b31b6)
+- :art: remove reference to unused  String [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/75f2191632a7a51eda7510a172ae6cc9d477acb9)
+- Ability to use custom keys to find message title and text on Android (#1604) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/fd366296773906c91d5f8dfa3e8ba813c7c71b85)
+- :memo: Fixed URL of apples custom sound documentation (#1600) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/8c93f8622eb1c453cb0c681158a07deca32bf200)
+- Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/409020c90edf04e0a37232cff8aadb070d4ccaa9)
+
 ## [v1.9.4](https://github.com/phonegap/phonegap-plugin-push/tree/v1.9.4) (2016-07-09)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.9.3...v1.9.4)
 
