@@ -277,8 +277,20 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     public static void setApplicationIconBadgeNumber(Context context, int badgeCount) {
         if (badgeCount > 0) {
             ShortcutBadger.applyCount(context, badgeCount);
+
+			//This block is used to set the badge value in SharedPreferences key "badge", 
+            //in order for plugin cordova-plugin-badge to retrive it correctly
+			SharedPreferences.Editor editor = context.getSharedPreferences("badge", Context.MODE_PRIVATE).edit();
+			editor.putInt("badge", badgeCount);
+			editor.apply();
         } else {
             ShortcutBadger.removeCount(context);
+			
+			//This block is used to set the badge value in SharedPreferences key "badge", 
+            //in order for plugin cordova-plugin-badge to retrive it correctly
+			SharedPreferences.Editor editor = context.getSharedPreferences("badge", Context.MODE_PRIVATE).edit();
+			editor.putInt("badge", 0);
+			editor.apply();
         }
     }
 
