@@ -58,23 +58,18 @@ var PushNotification = function(options) {
             serviceWorker = reg;
             reg.pushManager.subscribe(subOptions).then(function(sub) {
                 subscription = sub;
-                if (!subOptions.applicationServerKey) {
-                    result = { 'registrationId': sub.endpoint.substring(sub.endpoint.lastIndexOf('/') + 1) };
-                    that.emit('registration', result);
+                result = { 'registrationId': sub.endpoint.substring(sub.endpoint.lastIndexOf('/') + 1) };
+                that.emit('registration', result);
 
-                    // send encryption keys to push server
-                    var xmlHttp = new XMLHttpRequest();
-                    var xmlURL = (options.browser.pushServiceURL || 'http://push.api.phonegap.com/v1/push') + '/keys';
-                    xmlHttp.open('POST', xmlURL, true);
+                // send encryption keys to push server
+                var xmlHttp = new XMLHttpRequest();
+                var xmlURL = (options.browser.pushServiceURL || 'http://push.api.phonegap.com/v1/push') + '/keys';
+                xmlHttp.open('POST', xmlURL, true);
 
-                    var formData = new FormData();
-                    formData.append('subscription', JSON.stringify(sub));
+                var formData = new FormData();
+                formData.append('subscription', JSON.stringify(sub));
 
-                    xmlHttp.send(formData);
-                } else {
-                    result = { 'registrationId': JSON.stringify(sub) };
-                    that.emit('registration', result);
-                }
+                xmlHttp.send(formData);
 
                 navigator.serviceWorker.controller.postMessage(result, [channel.port2]);
             }).catch(function(error) {
