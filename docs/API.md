@@ -355,7 +355,7 @@ push.setApplicationIconBadgeNumber(function() {
 }, 2);
 ```
 
-## push.getApplicationIconBadgeNumber(successHandler, errorHandler) - iOS only
+## push.getApplicationIconBadgeNumber(successHandler, errorHandler) - iOS & Android only
 
 Get the current badge count visible when the app is not running
 
