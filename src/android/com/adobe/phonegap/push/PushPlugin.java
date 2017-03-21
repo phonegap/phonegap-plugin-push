@@ -195,6 +195,18 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                     callbackContext.success();
                 }
             });
+        } else if (GET_APPLICATION_ICON_BADGE_NUMBER.equals(action)) {
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    Log.v(LOG_TAG, "getApplicationIconBadgeNumber");
+                    
+					int badgeCount = getApplicationIconBadgeNumber(getApplicationContext());
+					PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, badgeCount);
+					pluginResult.setKeepCallback(true);
+					callbackContext.sendPluginResult(pluginResult);
+
+                }
+            });
         } else if (CLEAR_ALL_NOTIFICATIONS.equals(action)) {
             cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
@@ -274,6 +286,18 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         }
     }
 
+	/*
+     * Retrives badge count from SharedPreferences
+     */
+	public static int getApplicationIconBadgeNumber(Context context){
+        SharedPreferences settings = context.getSharedPreferences("badge", Context.MODE_PRIVATE);
+        int badge = settings.getInt("badge", 0);
+        return badge;
+    }
+	
+	/*
+     * Sets badge count on application icon and in SharedPreferences
+     */
     public static void setApplicationIconBadgeNumber(Context context, int badgeCount) {
         if (badgeCount > 0) {
             ShortcutBadger.applyCount(context, badgeCount);
