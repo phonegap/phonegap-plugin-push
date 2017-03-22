@@ -1046,7 +1046,8 @@ Instead move `content-available: true` into the `data` object of the payload and
 These phones have a particular quirk that when the app is force closed that you will no longer be able to receive notifications until the app is restarted. In order for you to receive background notifications:
 
 - On your Huawei device go to Settings > Protected apps > check "My App" where.
-- On your Xiaomi makes sure your phone has the "Auto-start" property enabled for your app.
+- On your Xiaomi make sure your phone has the "Auto-start" property enabled for your app.
+- On your Asus make sure your phone has the "Auto-start" property enabled for your app.
 
 ### Application force closed
 
