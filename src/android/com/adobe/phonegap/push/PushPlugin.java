@@ -296,7 +296,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
      */
     public static void setApplicationIconBadgeNumber(Context context, int badgeCount) {
         SharedPreferences.Editor editor = context.getSharedPreferences("badge", Context.MODE_PRIVATE).edit();
-        editor.putInt("badge", Math.max(badge, 0));
+        editor.putInt("badge", Math.max(badgeCount, 0));
         editor.apply();
     }
 
