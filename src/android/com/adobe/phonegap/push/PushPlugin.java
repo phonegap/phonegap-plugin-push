@@ -200,10 +200,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                 public void run() {
                     Log.v(LOG_TAG, "getApplicationIconBadgeNumber");
                     
-					int badgeCount = getApplicationIconBadgeNumber(getApplicationContext());
-					PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, badgeCount);
-					pluginResult.setKeepCallback(true);
-					callbackContext.sendPluginResult(pluginResult);
+					callbackContext.success(getApplicationIconBadgeNumber(getApplicationContext()));
 
                 }
             });
@@ -291,31 +288,16 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
      */
 	public static int getApplicationIconBadgeNumber(Context context){
         SharedPreferences settings = context.getSharedPreferences("badge", Context.MODE_PRIVATE);
-        int badge = settings.getInt("badge", 0);
-        return badge;
+        return settings.getInt("badge", 0);
     }
 	
 	/*
      * Sets badge count on application icon and in SharedPreferences
      */
     public static void setApplicationIconBadgeNumber(Context context, int badgeCount) {
-        if (badgeCount > 0) {
-            ShortcutBadger.applyCount(context, badgeCount);
-
-			//This block is used to set the badge value in SharedPreferences key "badge", 
-            //in order for plugin cordova-plugin-badge to retrive it correctly
-			SharedPreferences.Editor editor = context.getSharedPreferences("badge", Context.MODE_PRIVATE).edit();
-			editor.putInt("badge", badgeCount);
-			editor.apply();
-        } else {
-            ShortcutBadger.removeCount(context);
-			
-			//This block is used to set the badge value in SharedPreferences key "badge", 
-            //in order for plugin cordova-plugin-badge to retrive it correctly
-			SharedPreferences.Editor editor = context.getSharedPreferences("badge", Context.MODE_PRIVATE).edit();
-			editor.putInt("badge", 0);
-			editor.apply();
-        }
+        SharedPreferences.Editor editor = context.getSharedPreferences("badge", Context.MODE_PRIVATE).edit();
+        editor.putInt("badge", Math.max(badge, 0));
+        editor.apply();
     }
 
     @Override
