@@ -23,6 +23,7 @@
   - [Visibility](#visibility-of-notifications)
   - [Badges](#badges)
   - [Support for Twilio Notify](#support-for-twilio-notify)
+  - [Notification ID](#notification-id)
 - [iOS Behaviour](#ios-behaviour)
   - [Sound](#sound-1)
   - [Background Notifications](#background-notifications-1)
@@ -1228,6 +1229,12 @@ The JSON received by your app will comply with the standards described in the se
 ```
 
 Note: "sound" and "soundname" are equivalent and are considered to be the same by the plugin.
+
+## Notification ID
+
+When setting the notification ID or `notId` please make sure that you are not exceeding the [MAX_INT](https://developer.android.com/reference/java/lang/Integer.html#MAX_VALUE) value for Android. Using a value larger than MAX_INT will throw an exception which will be caught by the plugin and it will use a default value of `0`.
+
+This means you can't use the JavaScript's `Date.getMilliseconds()` or Java's `System.currentTimeMillis()` as they will give you a value greater than MAX_INT.
 
 # iOS Behaviour
 
