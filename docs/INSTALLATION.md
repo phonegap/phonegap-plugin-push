@@ -295,6 +295,16 @@ var path = require('path');
 // no need to configure below
 var rootdir = process.argv[2];
 
+// Create res/raw directory so that copy does not fail.
+fs.mkdir('platforms/android/res/raw/',0777, function(err) {
+  if(err) {
+    console.error(err);
+  }
+  else {
+    console.log("the directory create success");
+  }
+});
+
 filestocopy.forEach(function(obj) {
     Object.keys(obj).forEach(function(key) {
         var val = obj[key];
