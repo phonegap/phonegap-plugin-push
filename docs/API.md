@@ -11,7 +11,7 @@
 - [push.subscribe()](#pushsubscribetopic-successhandler-errorhandler)
 - [push.unsubscribe()](#pushunsubscribetopic-successhandler-errorhandler)
 - [push.setApplicationIconBadgeNumber() - iOS & Android only](#pushsetapplicationiconbadgenumbersuccesshandler-errorhandler-count---ios--android-only)
-- [push.getApplicationIconBadgeNumber() - iOS only](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios-only)
+- [push.getApplicationIconBadgeNumber() - iOS & Android only](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios--android-only)
 - [push.finish() - iOS only](#pushfinishsuccesshandler-errorhandler-id---ios-only)
 - [push.clearAllNotifications() - iOS & Android only](#pushclearallnotificationssuccesshandler-errorhandler---ios--android-only)
 
@@ -355,7 +355,7 @@ push.setApplicationIconBadgeNumber(function() {
 }, 2);
 ```
 
-## push.getApplicationIconBadgeNumber(successHandler, errorHandler) - iOS only
+## push.getApplicationIconBadgeNumber(successHandler, errorHandler) - iOS & Android only
 
 Get the current badge count visible when the app is not running
 
