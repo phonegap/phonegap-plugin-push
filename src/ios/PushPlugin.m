@@ -351,7 +351,7 @@
         //  GCM options
         [self setGcmSenderId: [iosOptions objectForKey:@"senderID"]];
         NSLog(@"GCM Sender ID %@", gcmSenderId);
-        if([[self gcmSenderId] length] > 0) {
+        if([self gcmSenderId]) {
             NSLog(@"Using GCM Notification");
             [self setUsesGCM: YES];
             [self initGCMRegistrationHandler];
@@ -468,7 +468,7 @@
         [self setGcmRegistrationOptions: @{kGGLInstanceIDRegisterAPNSOption:deviceToken,
                                            kGGLInstanceIDAPNSServerTypeSandboxOption:[self gcmSandbox]}];
 
-        [[GGLInstanceID sharedInstance] tokenWithAuthorizedEntity:[self gcmSenderId]
+        [[GGLInstanceID sharedInstance] tokenWithAuthorizedEntity:[NSString stringWithFormat:@"%ld", [self gcmSenderId]]
                                                             scope:kGGLInstanceIDScopeGCM
                                                           options:[self gcmRegistrationOptions]
                                                           handler:[self gcmRegistrationHandler]];
