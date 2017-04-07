@@ -1,5 +1,21 @@
 # Change Log
 
+## [v1.10.1](https://github.com/phonegap/phonegap-plugin-push/tree/v1.10.1) (2016-07-09)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.10.0...v1.10.1)
+
+- 1.10.1 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/6211e8c3df8881a90d19b111a0e63f890d435df6)
+- :bookmark: Bumping plugin version to 1.10.1 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/6d710a06681ad84c13273fe5d20feb3033ac67b6)
+- :bug: Issue #1655: App opens on clearing notification (Android) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/ff417925f6d6678f0fcd8315d5f4b4b08fbb9085)
+- :memo: Issue #1118: Problem with notifications stacking [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/d669c44a863d86d0bb73b5ae086bc2fe6f8113a9)
+- :memo: Issue #1220: [Question] the hook setting seem not work [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/4ef137eea370da7c225ab2a5cf63b1e97a68f4a4)
+- Set get badge count android (#1644) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/630907cf3d8802bcd5d91b6bd768c989f6ef897a)
+- Add plugin typings from DefinitelyTyped (#1654) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/6ea70d9984e176a75602e72e1d26f5404c519e29)
+- :arrow_up: Issue #1560: setApplicationIconBadgeNumber not working on Android but firing success function [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/700701fd2151667905d860228cf954301186721a)
+- :memo: Issue #1618: No notification when app is closed on Android, not at all on iOS [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/7f64bf0ffbddf3ef20de2fe540ec2718be5d0c23)
+- :arrow_down: Issue #1560: setApplicationIconBadgeNumber not working on Android but firing success function [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/e450fd7b623f27f27858a7537ec7950aa0f618b5)
+- :arrow_up: Issue #1560: setApplicationIconBadgeNumber not working on Android but firing success function [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/4af3472263a5125cab6f08bbb59b83bf957144ec)
+- Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/ed25a3e3ad9fb6f2af63fd07957944f974eafaa1)
+
 ## [v1.10.0](https://github.com/phonegap/phonegap-plugin-push/tree/v1.10.0) (2016-07-09)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.9.4...v1.10.0)
 
