@@ -59,6 +59,7 @@ public interface PushConstants {
     public static final String CONTENT_AVAILABLE = "content-available";
     public static final String TOPICS = "topics";
     public static final String SET_APPLICATION_ICON_BADGE_NUMBER = "setApplicationIconBadgeNumber";
+    public static final String GET_APPLICATION_ICON_BADGE_NUMBER = "getApplicationIconBadgeNumber";
     public static final String CLEAR_ALL_NOTIFICATIONS = "clearAllNotifications";
     public static final String VISIBILITY = "visibility";
     public static final String INLINE_REPLY = "inlineReply";
@@ -67,4 +68,14 @@ public interface PushConstants {
     public static final String TWILIO_BODY = "twi_body";
     public static final String TWILIO_TITLE = "twi_title";
     public static final String TWILIO_SOUND = "twi_sound";
+    public static final String MP_MESSAGE = "mp_message";
+    public static final String START_IN_BACKGROUND = "cdvStartInBackground";
+    public static final String FORCE_START = "force-start";
+    public static final String MESSAGE_KEY = "messageKey";
+    public static final String TITLE_KEY = "titleKey";
+    public static final String NO_CACHE = "no-cache";
+    public static final String DISMISSED = "dismissed";
+    public static final String IMAGE_TYPE = "image-type";
+    public static final String IMAGE_TYPE_SQUARE = "square";
+    public static final String IMAGE_TYPE_CIRCLE = "circle";
 }

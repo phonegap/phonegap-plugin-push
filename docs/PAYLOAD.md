@@ -3,6 +3,7 @@
    - [Background Events](#push-message-arrives-with-app-in-background)
    - [Tap Events](#user-clicks-on-notification-in-notification-center)
 - [Android Behaviour](#android-behaviour)
+  - [Notification vs Data Payloads](#notification-vs-data-payloads)
   - [Localization](#localization)
   - [Images](#images)
   - [Sound](#sound)
@@ -16,10 +17,13 @@
   - [Picture Messages](#picture-messages)
   - [Background Notifications](#background-notifications)
     - [Use of content-available: true](#use-of-content-available-true)
+  - [Caching](#caching)
   - [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
+  - [Application force closed](#application-force-closed)
   - [Visibility](#visibility-of-notifications)
   - [Badges](#badges)
   - [Support for Twilio Notify](#support-for-twilio-notify)
+  - [Notification ID](#notification-id)
 - [iOS Behaviour](#ios-behaviour)
   - [Sound](#sound-1)
   - [Background Notifications](#background-notifications-1)
@@ -65,6 +69,66 @@ Some ways to handle this *double* event are:
 - include a unique ID in your push so you can check to see if you've already processed this event.
 
 # Android Behaviour
+
+## Notification vs Data Payloads
+
+Notifications behave differently depending on the foreground/background state of the receiving app and the payload you send to the app.
+
+For instance if you send the following payload:
+
+```
+{
+    "notification": {
+        "title": "Test Notification",
+        "body": "This offer expires at 11:30 or whatever",
+        "notId": 10
+    }
+}
+```
+
+When your app is in the foreground any `on('notification')` handlers you have registered will be called. However if your app is in the background the notification will show up in the system tray. Clicking on the notification in the system tray will start the app but your `on('notification')` handler will not be called as messages with only `notification` payloads will not cause the plugins `onMessageReceived` method to be called.
+
+If you send a payload with a mix of `notification` & `data` objects like this:
+
+```
+{
+    "notification": {
+        "title": "Test Notification",
+        "body": "This offer expires at 11:30 or whatever",
+        "notId": 10
+    },
+    "data" : {
+        "surveyID": "ewtawgreg-gragrag-rgarhthgbad"
+    }
+}
+```
+
+When your app is in the foreground any `on('notification')` handlers you have registered will be called. If your app is in the background the notification will show up in the system tray. Clicking on the notification in the system tray will start the app and your `on('notification')` handler will not be called as messages with only `notification` payloads will not cause the plugins `onMessageReceived` method to be called.
+
+My recommended format for your push payload when using this plugin (while it differs from Google's docs) works 100% of the time:
+
+```
+{
+    "data" : {
+        "title": "Test Notification",
+        "body": "This offer expires at 11:30 or whatever",
+        "notId": 10,
+        "surveyID": "ewtawgreg-gragrag-rgarhthgbad"
+    }
+}
+```
+
+When your app is in the foreground any `on('notification')` handlers you have registered will be called. If your app is in the background the notification will show up in the system tray. Clicking on the notification in the system tray will start the app and your `on('notification')` handler will be called and the event received by your `on('notification')` handler will get the following data:
+
+```
+{
+    "message": "This offer expires at 11:30 or whatever",
+    "title": "Test Notification",
+    "additionalData": {
+        "surveyID": "ewtawgreg-gragrag-rgarhthgbad"
+    }
+}
+```
 
 ## Localization
 
@@ -284,6 +348,43 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 Produces the following notification.
 
 ![2015-07-24 02 17 55](https://cloud.githubusercontent.com/assets/353180/8866900/2df0ab06-3190-11e5-9a81-fdb85bb0f5a4.png)
+
+Finally the Material UI guidelines recommend using a circular icon for the large icon if the subject of the image is a person. This JSON sent from GCM:
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Large Circular Icon",
+    	"message": "Loaded from URL",
+        "image": "https://pbs.twimg.com/profile_images/837060031895896065/VHIQ4oUf_400x400.jpg",
+        "image-type": "circle"
+    }
+}
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Large Circular Icon');
+message.addData('message', 'Loaded from URL');
+message.addData('image', 'https://pbs.twimg.com/profile_images/837060031895896065/VHIQ4oUf_400x400.jpg');
+message.addData('image-type', 'circular');
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
+```
+
+Produces the following notification.
+
+![screenshot_20170308-214947](https://cloud.githubusercontent.com/assets/353180/23733917/902a4650-0449-11e7-924e-d45a38030c74.png)
 
 ## Sound
 
@@ -605,7 +706,7 @@ This will produce the following notification in your tray:
 
 ![action_combo](https://cloud.githubusercontent.com/assets/353180/9313435/02554d2a-44f1-11e5-8cd9-0aadd1e02b18.png)
 
-If your users clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed. In this case it is `app.emailGuests` and `app.snooze` respectively. If you set the `foreground` property to `true` the app will be brought to the front, if `foreground` is `false` then the callback is run without the app being brought to the foreground.
+If your user clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed if there is a function defined, and if there isn't an event will be emitted with the callback name. In this case it is `app.emailGuests` and `app.snooze` respectively. If you set the `foreground` property to `true` the app will be brought to the front, if `foreground` is `false` then the callback is run without the app being brought to the foreground.
 
 ### In Line Replies
 
@@ -648,7 +749,7 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 });
 ```
 
-On Android M and earlier the action buttons will work exactly the same as before but on Android N and greater when the user clicks on the Email Guests button you will see the following:
+On Android N and greater when the user clicks on the Email Guests button they will see the following:
 
 ![inline_reply](https://cloud.githubusercontent.com/assets/353180/17107608/f35c208e-525d-11e6-94de-a3590c6f500d.png)
 
@@ -684,13 +785,15 @@ Then your app's `on('notification')` event handler will be called without the ap
 
 and the text data that the user typed would be located in `data.additionalData.inlineReply`.
 
+**Note:** On Android M and earlier the above in line behavior is not supported. As a fallback when `inline` is set to `true` the `foreground` setting will be changed to the default `true` setting. This allows your app to be launched from a closed state into the foreground where any behavior desired as a result of the user selecting the in line reply action button can be handled through the associated `callback`.
+
 #### Attributes
 
 Attribute | Type | Default | Description
 --------- | ---- | ------- | -----------
 `icon` | `string` | | Optional. The name of a drawable resource to use as the small-icon. The name should not include the extension.
 `title` | `string` | | Required. The label to display for the action button.
-`callback` | `string` | | Required. The function to be executed when the action button is pressed. The function must be accessible from the global namespace. If you provide `myCallback` then it amounts to calling `window.myCallback`. If you provide `app.myCallback` then there needs to be an object call `app`, with a function called `myCallback` accessible from the global namespace, i.e. `window.app.myCallback`.
+`callback` | `string` | | Required. The function to be executed or the event to be emitted when the action button is pressed. The function must be accessible from the global namespace. If you provide `myCallback` then it amounts to calling `window.myCallback`. If you provide `app.myCallback` then there needs to be an object call `app`, with a function called `myCallback` accessible from the global namespace, i.e. `window.app.myCallback`. If there isn't a function with the specified name an event will be emitted with the callback name.
 `foreground` | `boolean` | `true` | Optional. Whether or not to bring the app to the foreground when the action button is pressed.
 `inline` | `boolean` | `false` | Optional. Whether or not to provide a quick reply text field to the user when the button is clicked.
 
@@ -944,8 +1047,86 @@ Instead move `content-available: true` into the `data` object of the payload and
 These phones have a particular quirk that when the app is force closed that you will no longer be able to receive notifications until the app is restarted. In order for you to receive background notifications:
 
 - On your Huawei device go to Settings > Protected apps > check "My App" where.
-- On your Xiaomi makes sure your phone has the "Auto-start" property enabled for your app.
+- On your Xiaomi make sure your phone has the "Auto-start" property enabled for your app.
+- On your Asus make sure your phone has the "Auto-start" property enabled for your app.
 
+### Application force closed
+
+In order to take advantage of this feature you will need to be using cordova-android 6.0.0 or higher. In order to check if the change has been properly applied look at `platforms/android/**/MainActivity.java`. You should see an `onCreate` method that looks like this:
+
+```java
+@Override
+public void onCreate(Bundle savedInstanceState)
+{
+    super.onCreate(savedInstanceState);
+
+    // enable Cordova apps to be started in the background
+    Bundle extras = getIntent().getExtras();
+    if (extras != null && extras.getBoolean("cdvStartInBackground", false)) {
+        moveTaskToBack(true);
+    }
+
+    // Set by <content src="index.html" /> in config.xml
+    loadUrl(launchUrl);
+}
+```
+
+If you don't see the `if` statement that checks for the appearance of `cdvStartInBackground` you will probably need to do:
+
+```
+phonegap platform rm android
+phonegap platform add android
+phonegap build android
+```
+
+This should add the correct code to the `MainActivity` class.
+
+If you add `force-start: 1` to the data payload the application will be restarted in background even if it was force closed.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Force Start",
+    	"message": "This notification should restart the app",
+    	"force-start": 1
+    }
+}
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Force Start');
+message.addData('message', 'This notification should restart the app');
+message.addData('force-start', 1);
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
+```
+
+### Caching
+
+By default, when a notification arrives and 'content-available' is set to '1', the plugin will try to deliver the data payload even if the app is not running. In that case, the payload is cached and may be delivered when the app is started again. To disable this behavior, you can set a `no-cache` flag in the notification payload. 0: caching enabled (default), 1: caching disabled.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+        "title": "Push without cache",
+        "message": "When the app is closed, this notification will not be cached",
+        "content-available": "1",
+        "no-cache": "1"
+    }
+}
+```
 
 ## Visibility of Notifications
 
@@ -1049,11 +1230,17 @@ The JSON received by your app will comply with the standards described in the se
 
 Note: "sound" and "soundname" are equivalent and are considered to be the same by the plugin.
 
+## Notification ID
+
+When setting the notification ID or `notId` please make sure that you are not exceeding the [MAX_INT](https://developer.android.com/reference/java/lang/Integer.html#MAX_VALUE) value for Android. Using a value larger than MAX_INT will throw an exception which will be caught by the plugin and it will use a default value of `0`.
+
+This means you can't use the JavaScript's `Date.getMilliseconds()` or Java's `System.currentTimeMillis()` as they will give you a value greater than MAX_INT.
+
 # iOS Behaviour
 
 ## Sound
 
-In order for your notification to play a custom sound you will need to add the files to root of your iOS project. The files must be in the proper format. See the [Local and Remote Notification Programming Guide](https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/IPhoneOSClientImp.html#//apple_ref/doc/uid/TP40008194-CH103-SW6) for more info on proper file formats and how to convert existing sound files.
+In order for your notification to play a custom sound you will need to add the files to root of your iOS project. The files must be in the proper format. See the [Local and Remote Notification Programming Guide](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/SupportingNotificationsinYourApp.html#//apple_ref/doc/uid/TP40008194-CH4-SW10) for more info on proper file formats and how to convert existing sound files.
 
 Then send the follow JSON from APNS:
 
@@ -1081,8 +1268,7 @@ If you want the default sound to play upon receipt of push use this payload:
 
 On iOS if you want your `on('notification')` event handler to be called when your app is in the background you will need to do a few things.
 
-First the JSON you send from APNS will need to include `"content-available": 1` to the `aps` object. The `"content-available": 1` property in your push message is a signal to iOS to wake up your app and give it up to 30 seconds of background processing. If do not want this type of behaviour just omit `"content-available": 1` from your push data.
-
+First the JSON you send from APNS will need to include `"content-available": 1` to the `aps` object. The `"content-available": 1` property in your push message is a signal to iOS to wake up your app and give it up to 30 seconds of background processing. If do not want this type of behaviour just omit `"content-available": 1` from your push data. As well you *should* set a `notId` property in the root of payload object. This is the parameter you pass to the `finish` method in order to tell the operating system that the processing of the push event is done.
 
 For instance the following JSON:
 
@@ -1091,7 +1277,8 @@ For instance the following JSON:
 	"aps": {
 		"alert": "Test background push",
 		"content-available": 1
-	}
+	},
+  "notId": 1 // unique ID you generate
 }
 ```
 
@@ -1107,7 +1294,8 @@ However if you want your `on('notification')` event handler called but no notifi
 		"data": "Test silent background push",
 		"moredata": "Do more stuff",
 		"content-available": 1
-	}
+	},
+  "notId": 2 // unique ID you generate
 }
 ```
 
@@ -1135,7 +1323,9 @@ push.on('notification', function(data) {
 	// then call finish to let the OS know we are done
 	push.finish(function() {
 		console.log("processing of push data is finished");
-	});
+	}, function() {
+    console.log("something went wrong with push.finish for ID = " + data.additionalData.notId)
+  }, data.additionalData.notId);
 });
 ```
 
@@ -1263,7 +1453,7 @@ but in order for the same `notification` event you would need to send your push 
     "registration_ids": ["my device id"],
     "notification": {
         "title": "My Title",
-    	"body": "My message"        
+    	"body": "My message"
     }
     "data": {
     	"key1": "data 1",
@@ -1283,7 +1473,7 @@ For some users of the plugin they are unable to get messages sent via GCM to sho
     "registration_ids": ["my device id"],
     "notification": {
         "title": "My Title",
-    	"body": "My message"        
+    	"body": "My message"
     },
     "priority": "high"
 }

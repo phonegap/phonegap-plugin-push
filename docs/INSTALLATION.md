@@ -1,5 +1,6 @@
 # Installation
 
+- [Installation Requirements](#installation-requirements)
 - [Android details](#android-details)
   - [Compilation](#compilation)
   - [Co-existing with Facebook Plugin](#co-existing-with-facebook-plugin)
@@ -11,11 +12,21 @@
   - [Browser quirks](#browser-quirks)
   - [Browser Support](#browser-support)
 - [iOS details](#ios-details)
-  - [XCode](#xcode)
+  - [Xcode](#xcode)
   - [Bitcode](#bitcode)
+  - [CocoaPods](#cocoapods)
+    - [Common CocoaPod Installation issues](#common-cocoapod-installation-issues)
+    - [CocoaPod Disk Space](#cocoapod-disk-space)
 - [Additional Resources](#additional-resources)
 
-This requires phonegap/cordova CLI 5.0+
+## Installation Requirements
+
+Plugin version | Cordova CLI | Cordova Android | Cordova iOS | CocoaPods
+---- | ---- | ---- | ---- | ----
+1.9.0 | 6.4.0 | 6.0.0 | 4.3.0 | 1.1.1
+1.8.0 | 3.6.3 | 4.0.0 | 4.1.0 | N/A
+
+To install from the command line:
 
 ```
 phonegap plugin add phonegap-plugin-push --variable SENDER_ID="XXXXXXX"
@@ -44,7 +55,7 @@ Where the `XXXXXXX` in `SENDER_ID="XXXXXXX"` maps to the project number in the [
 
 If you are not creating an Android application you can put in anything for this value.
 
-> Note: if you are using ionic you may need to specify the SENDER_ID variable in your package.json.
+> Note: if you are using Ionic you may need to specify the SENDER_ID variable in your package.json.
 
 ```
   "cordovaPlugins": [
@@ -184,6 +195,8 @@ Alternatively, switch to another plugin that provides the same functionality but
 
 For the time being push support on the browser will only work using the PhoneGap push server.
 
+When you run `phonegap serve` to test browser push point your browser at `http://localhost:3000`. The browser push implementation uses the W3C Push Spec's implementation which relies on ServiceWorkers and ServiceWorkers can only be accessed via the `https` protocol or via `http://localhost`. Pointing your browser at `localhost` will be the easiest way to test.
+
 ### Browser Support
 
 Chrome  49+
@@ -191,9 +204,9 @@ Firefox 46+
 
 ## iOS details
 
-### XCode
+### Xcode
 
-XCode version 7.0 or greater is required for building this plugin.
+Xcode version 8.0 or greater is required for building this plugin.
 
 ### Bitcode
 
@@ -207,6 +220,51 @@ You have two options. The first is to [disable bitcode as per this StackOverflow
 
 ```
 cordova platform update ios@4.0.0
+```
+
+### CocoaPods
+
+Required `cordova-cli` version: `6.4.0`
+
+Required `cordova-ios` version: `4.3.0`
+
+Version `1.9.0` (and above) of this plugin supports [CocoaPods](https://cocoapods.org) installation of the [Google Cloud Messaging](https://cocoapods.org/pods/GoogleCloudMessaging) library.
+
+If you are installing this plugin using `npm`, and you are using version `6.1.0` or greater of the `cordova-cli`, it will automatically download the right version of this plugin for both your platform and cli.
+
+If you are on a `cordova-cli` version less than `6.1.0`, you will either have to upgrade your `cordova-cli` version, or install the plugin explicitly:
+
+i.e.
+```
+cordova plugin add phonegap-plugin-push@1.8.1
+```
+
+If you are installing this plugin using a `local file reference` or a `git url`, you will have to specify the version of this plugin explicitly (see above) if you don't fulfill the `cordova-cli` and `cordova-ios` requirements.
+
+#### Common CocoaPod Installation issues
+
+If you are attempting to install this plugin and you run into this error:
+
+```
+Installing "phonegap-plugin-push" for ios
+Failed to install 'phonegap-plugin-push':Error: pod: Command failed with exit code 1
+    at ChildProcess.whenDone (/Users/smacdona/code/push151/platforms/ios/cordova/node_modules/cordova-common/src/superspawn.js:169:23)
+    at emitTwo (events.js:87:13)
+    at ChildProcess.emit (events.js:172:7)
+    at maybeClose (internal/child_process.js:818:16)
+    at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
+Error: pod: Command failed with exit code 1
+```
+
+Please run the command `pod repo update` and re-install the plugin.
+
+##### CocoaPod Disk Space
+
+Running `pod setup` can take over 1 GB of disk space and that can take quite some time to download over a slow internet connection. If you are having issues with disk space/network try this neat hack from @VinceOPS.
+
+```
+git clone --verbose --depth=1 https://github.com/CocoaPods/Specs.git ~/.cocoapods/repos/master
+pod setup --verbose
 ```
 
 ## Additional Resources
@@ -236,6 +294,16 @@ var path = require('path');
 
 // no need to configure below
 var rootdir = process.argv[2];
+
+// Create res/raw directory so that copy does not fail.
+fs.mkdir('platforms/android/res/raw/',0777, function(err) {
+  if(err) {
+    console.error(err);
+  }
+  else {
+    console.log("the directory create success");
+  }
+});
 
 filestocopy.forEach(function(obj) {
     Object.keys(obj).forEach(function(key) {
