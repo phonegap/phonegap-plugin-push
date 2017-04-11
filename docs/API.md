@@ -56,6 +56,7 @@ Attribute | Type | Default | Description
 Attribute | Type | Default | Description
 --------- | ---- | ------- | -----------
 `browser.pushServiceURL` | `string` | `http://push.api.phonegap.com/v1/push` | Optional. URL for the push server you want to use.
+`browser.applicationServerKey` | `string` | `` | Optional. Your GCM API key if you are using VAPID keys.
 
 #### iOS
 

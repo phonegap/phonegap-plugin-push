@@ -29,6 +29,12 @@ var PushNotification = function(options) {
     // store the options to this object instance
     this.options = options;
 
+    // subscription options
+    var subOptions = {userVisibleOnly: true};
+    if (this.options.browser.applicationServerKey) {
+        subOptions.applicationServerKey = urlBase64ToUint8Array(this.options.browser.applicationServerKey);
+    }
+
     // triggered on registration and notification
     var that = this;
 
@@ -50,7 +56,7 @@ var PushNotification = function(options) {
         })
         .then(function(reg) {
             serviceWorker = reg;
-            reg.pushManager.subscribe({userVisibleOnly: true}).then(function(sub) {
+            reg.pushManager.subscribe(subOptions).then(function(sub) {
                 subscription = sub;
                 result = { 'registrationId': sub.endpoint.substring(sub.endpoint.lastIndexOf('/') + 1) };
                 that.emit('registration', result);
@@ -321,6 +327,29 @@ PushNotification.prototype.finish = function(successCallback, errorCallback, id)
 /*!
  * Push Notification Plugin.
  */
+
+/**
+ * Converts the server key to an Uint8Array
+ *
+ * @param base64String
+ *
+ * @returns {Uint8Array}
+ */
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (var i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
 
 module.exports = {
     /**
