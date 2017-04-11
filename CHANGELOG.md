@@ -1,6 +1,6 @@
 # Change Log
 
-## [v1.10.1](https://github.com/phonegap/phonegap-plugin-push/tree/v1.10.1) (2016-07-09)
+## [v1.10.1](https://github.com/phonegap/phonegap-plugin-push/tree/v1.10.1) (2017-04-07)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.10.0...v1.10.1)
 
 - 1.10.1 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/6211e8c3df8881a90d19b111a0e63f890d435df6)
@@ -16,7 +16,7 @@
 - :arrow_up: Issue #1560: setApplicationIconBadgeNumber not working on Android but firing success function [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/4af3472263a5125cab6f08bbb59b83bf957144ec)
 - Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/ed25a3e3ad9fb6f2af63fd07957944f974eafaa1)
 
-## [v1.10.0](https://github.com/phonegap/phonegap-plugin-push/tree/v1.10.0) (2016-07-09)
+## [v1.10.0](https://github.com/phonegap/phonegap-plugin-push/tree/v1.10.0) (2017-03-10)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.9.4...v1.10.0)
 
 - 1.10.0 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/6b9b862da8566c7717dfc79dd6b32d8a7e6774d8)
