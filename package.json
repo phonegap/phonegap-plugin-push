@@ -54,6 +54,6 @@
   },
   "devDependencies": {
     "jasmine-node": "1.14.5",
-    "pluginpub": "^0.0.7"
+    "pluginpub": "^0.0.8"
   }
 }
