@@ -1,6 +1,6 @@
 # Change Log
 
-## [v1.10.2](https://github.com/phonegap/phonegap-plugin-push/tree/v1.10.2) (2017-48-12)
+## [v1.10.2](https://github.com/phonegap/phonegap-plugin-push/tree/v1.10.2) (2017-04-12)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.10.1...v1.10.2)
 
 - 1.10.2 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/b5a7d4ec6e64abaed65de00be3e9bac9ab25791e)
