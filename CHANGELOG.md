@@ -1,5 +1,15 @@
 # Change Log
 
+## [v1.10.2](https://github.com/phonegap/phonegap-plugin-push/tree/v1.10.2) (2017-48-12)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.10.1...v1.10.2)
+
+- 1.10.2 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/b5a7d4ec6e64abaed65de00be3e9bac9ab25791e)
+- :bookmark: Bumping plugin version to 1.10.2 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/5b700ad9927c401081a5de49f2a6a27ba0dfaa9a)
+- :arrow_up: update pluginpub to 0.0.7 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/38564ce55e53e018c91f4063d680eedd2631b825)
+- Fix the dates on the CHANGELOG (the last 2 version) (#1676) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/c0f26192c906bfc1a60390333c96d5dc07433978)
+- Vapid Support (#1675) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/384b60bade628035b21d23f07e284eb6e1557a10)
+- Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/97d618fb53084cfae78f397def48df791131358f)
+
 ## [v1.10.1](https://github.com/phonegap/phonegap-plugin-push/tree/v1.10.1) (2017-04-07)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.10.0...v1.10.1)
 
