@@ -117,7 +117,7 @@ cordova plugin add --save cordova-plugin-facebook4 --variable APP_ID="App ID" --
 
 ### Co-existing with plugins that use Firebase
 
-Problems may arise when push plugin is used along plugins, that implement Firebase functionality (cordova-plugin-firebase-analytics, for example). Firebase uses `@string/google_app_id`, as does the push plugin, though the value format differs, causing problems like this: `Invalid google_app_id. Firebase Analytics disabled`.
+Problems may arise when push plugin is used along plugins that implement Firebase functionality (cordova-plugin-firebase-analytics, for example). Firebase uses `@string/google_app_id`, as does the push plugin, though the value format differs, causing problems like this: `Invalid google_app_id. Firebase Analytics disabled`.
 
 To make the two work together, you need to migrate your GCM project from Google console to Firebase console:
 
