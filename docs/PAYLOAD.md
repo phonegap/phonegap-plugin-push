@@ -401,22 +401,31 @@ Finally the Material UI guidelines recommend using a circular icon for the large
 }
 ```
 
-Here is an example using node-gcm that sends the above JSON:
+Here is an example using fcm-node that sends the above JSON:
 
 ```javascript
-var gcm = require('node-gcm');
+var FCM = require('fcm-node');
 // Replace these with your own values.
 var apiKey = "replace with API key";
 var deviceID = "my device id";
-var service = new gcm.Sender(apiKey);
-var message = new gcm.Message();
-message.addData('title', 'Large Circular Icon');
-message.addData('message', 'Loaded from URL');
-message.addData('image', 'https://pbs.twimg.com/profile_images/837060031895896065/VHIQ4oUf_400x400.jpg');
-message.addData('image-type', 'circular');
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+var fcm = new FCM(apiKey);
+
+var message = {
+    to: deviceID,
+    data: {
+        title: 'Large Icon',
+        message: 'Loaded from URL',
+        image: 'https://dl.dropboxusercontent.com/u/887989/antshot.png'
+    }
+};
+
+fcm.send(message, function(err, response){
+  if (err) {
+    console.log(err);
+    console.log("Something has gone wrong!");
+  } else {
+    console.log("Successfully sent with response: ", response);
+  }
 });
 ```
 

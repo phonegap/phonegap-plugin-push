@@ -80,6 +80,18 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
             extras.putString(entry.getKey(), entry.getValue());
         }
 
+        Log.d(LOG_TAG, "onMessage - from: " + message.getFrom());
+
+        Bundle extras = new Bundle();
+
+        if (message.getNotification()!=null) {
+            extras.putString(TITLE,message.getNotification().getTitle());
+            extras.putString(MESSAGE,message.getNotification().getBody());
+        }
+        for (Map.Entry<String, String> entry : message.getData().entrySet()) {
+            extras.putString(entry.getKey(), entry.getValue());
+        }
+
         if (extras != null && isAvailableSender(from)) {
             Context applicationContext = getApplicationContext();
 
