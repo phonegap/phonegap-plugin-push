@@ -13,11 +13,11 @@
   </js-module>
   <engines>
     <engine name="cordova" version=">=6.4.0"/>
-    <engine name="cordova-android" version=">=6.0.0"/>
-    <engine name="cordova-ios" version=">=4.3.0"/>
+    <engine name="cordova-android" version=">=6.2.1"/>
+    <engine name="cordova-ios" version=">=4.4.0"/>
   </engines>
   <platform name="android">
-    <hook type="before_plugin_install" src="scripts/copyAndroidFile.js"/>
+    <!-- hook type="before_plugin_install" src="scripts/copyAndroidFile.js"/ -->
     <config-file target="res/xml/config.xml" parent="/*">
       <feature name="PushNotification">
         <param name="android-package" value="com.adobe.phonegap.push.PushPlugin"/>
@@ -85,7 +85,7 @@
     <header-file src="src/ios/PushPlugin.h"/>
     <framework src="FirebaseMessaging" type="podspec" spec="~> 1.2.1"/>
     <resource-file src="src/ios/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist"/>
-    <hook src="scripts/copy_file.js" type="after_prepare"/>
+    <!-- hook src="scripts/copy_file.js" type="after_prepare"/ -->
   </platform>
   <platform name="windows">
     <js-module src="src/windows/PushPluginProxy.js" name="PushPlugin">
