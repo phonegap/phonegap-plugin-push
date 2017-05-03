@@ -11,7 +11,7 @@ import android.support.v4.app.RemoteInput;
 
 
 public class PushHandlerActivity extends Activity implements PushConstants {
-    private static String LOG_TAG = "PushPlugin_PushHandlerActivity";
+    private static String LOG_TAG = "Push_HandlerActivity";
 
     /*
      * this activity will be started if the user touches a notification that we own.
