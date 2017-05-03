@@ -29,7 +29,7 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class PushPlugin extends CordovaPlugin implements PushConstants {
 
-    public static final String LOG_TAG = "PushPlugin";
+    public static final String LOG_TAG = "Push_Plugin";
 
     private static CallbackContext pushContext;
     private static CordovaWebView gWebView;
@@ -288,7 +288,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         SharedPreferences settings = context.getSharedPreferences(BADGE, Context.MODE_PRIVATE);
         return settings.getInt(BADGE, 0);
     }
-	
+
 	/*
      * Sets badge count on application icon and in SharedPreferences
      */
@@ -298,7 +298,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         }else{
             ShortcutBadger.removeCount(context);
         }
-		
+
         SharedPreferences.Editor editor = context.getSharedPreferences(BADGE, Context.MODE_PRIVATE).edit();
         editor.putInt(BADGE, Math.max(badgeCount, 0));
         editor.apply();
