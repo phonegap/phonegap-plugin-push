@@ -13,7 +13,7 @@ import org.json.JSONException;
 import java.io.IOException;
 
 public class PushInstanceIDListenerService extends InstanceIDListenerService implements PushConstants {
-    public static final String LOG_TAG = "PushPlugin_PushInstanceIDListenerService";
+    public static final String LOG_TAG = "Push_InstanceIDListener";
 
     @Override
     public void onTokenRefresh() {
