@@ -68,7 +68,8 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     @Override
     public void onMessageReceived(RemoteMessage message){
 
-        Log.d(LOG_TAG, "onMessage - from: " + message.getFrom());
+        String from = message.getFrom();
+        Log.d(LOG_TAG, "onMessage - from: " + from);
 
         Bundle extras = new Bundle();
 

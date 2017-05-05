@@ -51,7 +51,23 @@ or
 cordova plugin add https://github.com/phonegap/phonegap-plugin-push
 ```
 
-As of version 2.0.0 the SENDER_ID parameter has been removed at install time. Instead you put your google-services.json (Android) and/or GoogleService-Info.pList in the root folder of your project and the plugin's hooks will copy the file to the correct place in the platforms directory for you.
+As of version 2.0.0 the SENDER_ID parameter has been removed at install time. Instead you put your google-services.json (Android) and/or GoogleService-Info.pList in the root folder of your project and then add the following lines into your plugin.xml.
+
+In the platform tag for Android add the resource-file tag:
+
+```
+<platform name="android">
+  <resource-file src="google-services.json" target="google-services.json" />
+</platform>
+```
+
+In the platform tag for iOS add the resource-file tag:
+
+```
+<platform name="ios">
+  <resource-file src="GoogleService-Info.plist" />
+</platform>
+```
 
 > Note: if you are using Ionic you may need to specify the SENDER_ID variable in your package.json.
 
