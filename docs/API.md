@@ -69,23 +69,22 @@ Attribute | Type | Default | Description
 `ios.clearBadge` | `boolean` | `false` | Optional. If `true` the badge will be cleared on app startup.
 `ios.categories` | `Object` | `{}` | Optional. The data required in order to enabled Action Buttons for iOS. See [Action Buttons on iOS](https://github.com/phonegap/phonegap-plugin-push/blob/master/docs/PAYLOAD.md#action-buttons-1) for more details.
 
-#### iOS GCM support
+#### iOS FCM support
 
-The following properties are used if you want use GCM on iOS.
+The following properties are used if you want use FCM on iOS.
 
 Attribute | Type | Default | Description
 --------- | ---- | ------- | -----------
-`ios.fcmSandbox` | `boolean` | `false` | Whether to use prod or sandbox GCM setting.  Defaults to false.
-options
+`ios.fcmSandbox` | `boolean` | `false` | Whether to use prod or sandbox FCM setting.  Defaults to false.
 `ios.topics` | `array` | `[]` | Optional. If the array contains one or more strings each string will be used to subscribe to a FcmPubSub topic.
 
-##### How GCM on iOS works.
+##### How FCM on iOS works.
 
-First it is kind of a misnomer as GCM does not send push messages directly to devices running iOS.
+First it is kind of a misnomer as FCM does not send push messages directly to devices running iOS.
 
-What happens is on the device side is that it registers with APNS, then that registration ID is sent to GCM which returns a different GCM specific ID. That is the ID you get from the push plugin `registration` event.
+What happens is on the device side is that it registers with APNS, then that registration ID is sent to FCM which returns a different FCM specific ID. That is the ID you get from the push plugin `registration` event.
 
-When you send a message to GCM using that ID, what it does is look up the APNS registration ID on it's side and forward the message you sent to GCM on to APSN to deliver to your iOS device.
+When you send a message to FCM using that ID, what it does is look up the APNS registration ID on it's side and forward the message you sent to FCM on to APSN to deliver to your iOS device.
 
 Make sure that the certificate you build with matches your `fcmSandbox` value.
 
@@ -94,7 +93,7 @@ Make sure that the certificate you build with matches your `fcmSandbox` value.
 - If you build your app as development and set `fcmSandbox: true` but haven't uploaded the development certs to Google it will fail.
 - If you build your app as production and set `fcmSandbox: false` but haven't uploaded the production certs to Google it will fail.
 
-> Note: The integration between GCM and APNS is a bit finicky. Personally, I feel it is much better to send pushes to Android using GCM and pushes to iOS using APNS which this plugin does support.
+> Note: The integration between FCM and APNS is a bit finicky. Personally, I feel it is much better to send pushes to Android using FCM and pushes to iOS using APNS which this plugin does support.
 
 ### Example
 
