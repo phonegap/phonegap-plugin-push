@@ -68,6 +68,27 @@ var PushNotification = function(options) {
 };
 
 /**
+ * Register push notifications
+ */
+
+PushNotification.prototype.register = function(successCallback, errorCallback, options) {
+    if (errorCallback == null) { errorCallback = function() {}}
+    if (options == null) { options = this.options }
+
+    if (typeof errorCallback != "function")  {
+        console.log("PushNotification.register failure: failure parameter not a function");
+        return
+    }
+
+    if (typeof successCallback != "function") {
+        console.log("PushNotification.register failure: success callback parameter must be a function");
+        return
+    }
+
+    exec(successCallback, errorCallback, "PushNotification", "init", [options]);
+};
+
+/**
  * Unregister from push notifications
  */
 
