@@ -234,7 +234,7 @@ var push = PushNotification.init({
 ```
 
 Where *icon* is the name of an `.png` image file in the Android `res/drawable` folder. For example: `platforms/android/res/drawable/phonegap.png`
-Writing a hook to describe how to copy an image to the Android `res/drawable` folder is out of scope for this README but there is an [excellent tutorial](http://devgirl.org/2013/11/12/three-hooks-your-cordovaphonegap-project-needs/) that you dcan copydd
+Writing a hook to describe how to copy an image to the Android `res/drawable` folder is out of scope for this README but there is an [excellent tutorial](http://devgirl.org/2013/11/12/three-hooks-your-cordovaphonegap-project-needs/) that you can copy.
 
 *iconColor* is one of the supported formats #RRGGBB or #AARRGGBB or one of the following names: 'red', 'blue', 'green', 'black', 'white', 'gray', 'cyan', 'magenta', 'yellow', 'lightgray', 'darkgray', 'grey', 'lightgrey', 'darkgrey', 'aqua', 'fuchsia', 'lime', 'maroon', 'navy', 'olive', 'purple', 'silver', 'teal'. *iconColor* is supported on Android 5.0 and greater.
 
