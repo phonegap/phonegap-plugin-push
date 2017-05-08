@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads" xmlns:rim="http://www.blackberry.com/ns/widgets" id="phonegap-plugin-push" version="2.0.0-rc2">
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads" xmlns:rim="http://www.blackberry.com/ns/widgets" id="phonegap-plugin-push" version="2.0.0-rc3">
   <name>PushPlugin</name>
   <description>
     This plugin allows your application to receive push notifications on Android, iOS and Windows devices.
@@ -86,7 +86,6 @@
     <header-file src="src/ios/PushPlugin.h"/>
     <framework src="FirebaseMessaging" type="podspec" spec="~> 1.2.1"/>
     <resource-file src="src/ios/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist"/>
-    <!-- hook src="scripts/copy_file.js" type="after_prepare"/ -->
   </platform>
   <platform name="windows">
     <js-module src="src/windows/PushPluginProxy.js" name="PushPlugin">
