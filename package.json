@@ -37,13 +37,15 @@
         "cordova-android": ">=4.0.0",
         "cordova-ios": ">=4.1.0"
       },
-      "1.9.0": {
+      "<2.0.0": {
         "cordova-ios": ">=4.3.0",
         "cordova-android": ">=6.0.0",
         "cordova": ">=6.4.0"
       },
       "2.0.0": {
-        "cordova": ">100"
+        "cordova-ios": ">=4.4.0",
+        "cordova-android": ">=6.2.1",
+        "cordova": ">=6.4.0"
       }
     }
   },
