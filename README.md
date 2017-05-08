@@ -4,9 +4,9 @@
 
 # What is this?
 
-This plugin offers support to receive and handle native push notifications with a **single unified API**. 
+This plugin offers support to receive and handle native push notifications with a **single unified API**.
 
-Starting with version `1.9.0`, this plugin will support `CocoaPods` installation of the `Google Cloud Messaging` library. More details are available in the [Installation](docs/INSTALLATION.md#cocoapods) documentation.
+Starting with version `2.0.0`, this plugin will support `CocoaPods` installation of the `Firebase Cloud Messaging` library. More details are available in the [Installation](docs/INSTALLATION.md#cocoapods) documentation.
 
 - [Reporting Issues](docs/ISSUES.md)
 - [Installation](docs/INSTALLATION.md)
