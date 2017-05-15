@@ -177,7 +177,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     private String normalizeKey(String key, String messageKey, String titleKey) {
         if (key.equals(BODY) || key.equals(ALERT) || key.equals(MP_MESSAGE) || key.equals(GCM_NOTIFICATION_BODY) || key.equals(TWILIO_BODY) || key.equals(messageKey)) {
             return MESSAGE;
-        } else if (key.equals(TWILIO_TITLE) || key.equals(titleKey)) {
+        } else if (key.equals(TWILIO_TITLE) || key.equals(SUBJECT) || key.equals(titleKey)) {
             return TITLE;
         }else if (key.equals(MSGCNT) || key.equals(BADGE)) {
             return COUNT;
@@ -314,15 +314,15 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
             createNotification(context, extras);
         }
 
-		if(!PushPlugin.isActive() && "1".equals(forceStart)){
+        if(!PushPlugin.isActive() && "1".equals(forceStart)){
             Log.d(LOG_TAG, "app is not running but we should start it and put in background");
-			Intent intent = new Intent(this, PushHandlerActivity.class);
+            Intent intent = new Intent(this, PushHandlerActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra(PUSH_BUNDLE, extras);
-			intent.putExtra(START_IN_BACKGROUND, true);
+            intent.putExtra(START_IN_BACKGROUND, true);
             intent.putExtra(FOREGROUND, false);
             startActivity(intent);
-		} else if ("1".equals(contentAvailable)) {
+        } else if ("1".equals(contentAvailable)) {
             Log.d(LOG_TAG, "app is not running and content available true");
             Log.d(LOG_TAG, "send notification event");
             PushPlugin.sendExtras(extras);
@@ -714,7 +714,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         if (bitmap == null) {
             return null;
         }
-        
+
         final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(output);
         final int color = Color.RED;
