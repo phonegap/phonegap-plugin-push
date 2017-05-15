@@ -253,11 +253,16 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                     newExtras.putString(newKey, valueData);
                 }
                 continue;
+            // In case we weren't working on the payload data node or the notification node,
+            // normalize the key.
+            // This allows to have "message" as the payload data key without colliding
+            // with the other "message" key (holding the body of the payload)
+            // See issue #1663
+            } else {
+                String newKey = normalizeKey(key, messageKey, titleKey);
+                Log.d(LOG_TAG, "replace key " + key + " with " + newKey);
+                replaceKey(context, key, newKey, extras, newExtras);
             }
-
-            String newKey = normalizeKey(key, messageKey, titleKey);
-            Log.d(LOG_TAG, "replace key " + key + " with " + newKey);
-            replaceKey(context, key, newKey, extras, newExtras);
 
         } // while
 
