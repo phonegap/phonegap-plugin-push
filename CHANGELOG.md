@@ -1,5 +1,18 @@
 # Change Log
 
+## [v1.10.4](https://github.com/phonegap/phonegap-plugin-push/tree/v1.10.4) (2017-05-17)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.10.3...v1.10.4)
+
+- 1.10.4 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/ec7c3ea1fafbf3fafe502d278af218715aebb909)
+- :bookmark: Bumping plugin version to 1.10.4 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/b1efe1fa069c034aaf465e040300fd2884d46075)
+- :penguin::bug: Issue #1710: Notification message key overwritten [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/911a1d4fe5d3a05e0012ee8121464cfb8974ce23)
+- :penguin::bug: Issue #1710: Notification message key overwritten [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/4eadccd93d6daa81a05396a93fdc2033a4c90b12)
+- :penguin: Fix issue #1663 by allowing message as the data payload key (#1666) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/f8ac07399905fb9c6b0ab48139fa76066c5e190f)
+- [typo] Small fix to payload doc [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/5a4a04b1be5a7dd30a9c577441b241767ec20500)
+- :memo: update readme [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/0cbb7a92946ac9febb5ac5960291928d539c0fe6)
+- :memo: Fix PAYLOAD.md regarding "drawable" directory name (#1711) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/a27a62d6e346b1e61ffe2ffaae482461cf970c03)
+- Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/cfad83fa420df5ba4ac12f2f3f7fa68fdb22cc03)
+
 ## [v1.10.3](https://github.com/phonegap/phonegap-plugin-push/tree/v1.10.3) (2017-20-04)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v1.10.2...v1.10.3)
 
