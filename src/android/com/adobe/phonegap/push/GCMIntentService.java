@@ -614,7 +614,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                 for (int i = messageList.size() - 1; i >= 0; i--) {
                     notificationInbox.addLine(fromHtml(messageList.get(i)));
                 }
-
+                mBuilder.setContentText(fromHtml(stacking));
                 mBuilder.setStyle(notificationInbox);
             } else {
                 NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
