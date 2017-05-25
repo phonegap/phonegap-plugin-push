@@ -39,7 +39,6 @@ All available option attributes are described bellow. Currently, there are no Wi
 
 Attribute | Type | Default | Description
 --------- | ---- | ------- | -----------
-`android.senderID` | `string` | | Maps to the project number in the Google Developer Console.
 `android.icon` | `string` | | Optional. The name of a drawable resource to use as the small-icon. The name should not include the extension.
 `android.iconColor` | `string` | | Optional. Sets the background color of the small icon on Android 5.0 and greater. [Supported Formats](http://developer.android.com/reference/android/graphics/Color.html#parseColor(java.lang.String))
 `android.sound` | `boolean` | `true` | Optional. If `true` it plays the sound specified in the push data or the default system sound.
@@ -47,7 +46,8 @@ Attribute | Type | Default | Description
 `android.clearBadge` | `boolean` | `false` | Optional. If `true` the icon badge will be cleared on init and before push messages are processed.
 `android.clearNotifications` | `boolean` | `true` | Optional. If `true` the app clears all pending notifications when it is closed.
 `android.forceShow` | `boolean` | `false` | Optional. Controls the behavior of the notification when app is in foreground. If `true` and app is in foreground, it will show a notification in the notification drawer, the same way as when the app is in background (and `on('notification')` callback will be called *only when the user clicks the notification*). When `false` and app is in foreground, the `on('notification')` callback will be called immediately.
-`android.topics` | `array` | `[]` | Optional. If the array contains one or more strings each string will be used to subscribe to a GcmPubSub topic. Note: you should omit the `/topics/` prefix from each element of the array as the plugin will handle that for you.
+`android.topics` | `array` | `[]` | Optional. If the array contains one or more strings each string will be used to subscribe to a FcmPubSub topic.
+`/topics/` prefix from each element of the array as the plugin will handle that for you.
 `android.messageKey` | `string` | `message` | Optional. The key to search for text of notification.
 `android.titleKey` | `string` | `'title'` | Optional. The key to search for title of notification.
 
@@ -76,9 +76,9 @@ The following properties are used if you want use GCM on iOS.
 
 Attribute | Type | Default | Description
 --------- | ---- | ------- | -----------
-`ios.senderID` | `string` | `undefined` (Native) | Maps to the project number in the Google Developer Console.  Setting this uses GCM for notifications instead of native
-`ios.gcmSandbox` | `boolean` | `false` | Whether to use prod or sandbox GCM setting.  Defaults to false.
-`ios.topics` | `array` | `[]` | Optional. If the array contains one or more strings each string will be used to subscribe to a GcmPubSub topic. Note: only usable in conjunction with `senderID`. Note: you should omit the `/topics/` prefix from each element of the array as the plugin will handle that for you.
+`ios.fcmSandbox` | `boolean` | `false` | Whether to use prod or sandbox GCM setting.  Defaults to false.
+options
+`ios.topics` | `array` | `[]` | Optional. If the array contains one or more strings each string will be used to subscribe to a FcmPubSub topic.
 
 ##### How GCM on iOS works.
 
@@ -88,12 +88,12 @@ What happens is on the device side is that it registers with APNS, then that reg
 
 When you send a message to GCM using that ID, what it does is look up the APNS registration ID on it's side and forward the message you sent to GCM on to APSN to deliver to your iOS device.
 
-Make sure that the certificate you build with matches your `gcmSandbox` value.
+Make sure that the certificate you build with matches your `fcmSandbox` value.
 
-- If you build your app as development and set `gcmSandbox: false` it will fail.
-- If you build your app as production and set `gcmSandbox: true` it will fail.
-- If you build your app as development and set `gcmSandbox: true` but haven't uploaded the development certs to Google it will fail.
-- If you build your app as production and set `gcmSandbox: false` but haven't uploaded the production certs to Google it will fail.
+- If you build your app as development and set `fcmSandbox: false` it will fail.
+- If you build your app as production and set `fcmSandbox: true` it will fail.
+- If you build your app as development and set `fcmSandbox: true` but haven't uploaded the development certs to Google it will fail.
+- If you build your app as production and set `fcmSandbox: false` but haven't uploaded the production certs to Google it will fail.
 
 > Note: The integration between GCM and APNS is a bit finicky. Personally, I feel it is much better to send pushes to Android using GCM and pushes to iOS using APNS which this plugin does support.
 
@@ -102,7 +102,6 @@ Make sure that the certificate you build with matches your `gcmSandbox` value.
 ```javascript
 var push = PushNotification.init({
 	android: {
-		senderID: "12345679"
 	},
     browser: {
         pushServiceURL: 'http://push.api.phonegap.com/v1/push'

@@ -19,7 +19,7 @@ public class BackgroundActionButtonHandler extends BroadcastReceiver implements 
         int notId = intent.getIntExtra(NOT_ID, 0);
         Log.d(LOG_TAG, "not id = " + notId);
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(GCMIntentService.getAppName(context), notId);
+        notificationManager.cancel(FCMService.getAppName(context), notId);
 
         if (extras != null)	{
             Bundle originalExtras = extras.getBundle(PUSH_BUNDLE);

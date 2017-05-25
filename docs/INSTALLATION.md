@@ -24,46 +24,56 @@
 
 Plugin version | Cordova CLI | Cordova Android | Cordova iOS | CocoaPods
 ---- | ---- | ---- | ---- | ----
+2.0.0 | 6.4.0 | 6.2.1 | 4.4.0 | 1.1.1
 1.9.0 | 6.4.0 | 6.0.0 | 4.3.0 | 1.1.1
 1.8.0 | 3.6.3 | 4.0.0 | 4.1.0 | N/A
 
 To install from the command line:
 
 ```
-phonegap plugin add phonegap-plugin-push --variable SENDER_ID="XXXXXXX"
+phonegap plugin add phonegap-plugin-push
 ```
 or
 
 ```
-cordova plugin add phonegap-plugin-push --variable SENDER_ID="XXXXXXX"
+cordova plugin add phonegap-plugin-push
 ```
 
 It is also possible to install via repo url directly ( unstable )
 
 ```
-phonegap plugin add https://github.com/phonegap/phonegap-plugin-push --variable SENDER_ID="XXXXXXX"
+phonegap plugin add https://github.com/phonegap/phonegap-plugin-push
 ```
 
 or
 
 ```
-cordova plugin add https://github.com/phonegap/phonegap-plugin-push --variable SENDER_ID="XXXXXXX"
+cordova plugin add https://github.com/phonegap/phonegap-plugin-push
 ```
 
-Where the `XXXXXXX` in `SENDER_ID="XXXXXXX"` maps to the project number in the [Google Developer Console](https://www.google.ca/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0ahUKEwikqt3nyPjMAhXJ5iYKHR0qDcsQFggbMAA&url=https%3A%2F%2Fconsole.developers.google.com%2F&usg=AFQjCNF0eH059mv86nMIlRmfsf42kde-wA&sig2=BQ2BJpchw1CpGt87sk5p6w&bvm=bv.122852650,d.eWE). To find the project number login to the Google Developer Console, select your project and click the menu item in the screen shot below to display your project number.
+As of version 2.0.0 the SENDER_ID parameter has been removed at install time. Instead you put your google-services.json (Android) and/or GoogleService-Info.pList in the root folder of your project and then add the following lines into your plugin.xml.
 
-![zzns8](https://cloud.githubusercontent.com/assets/353180/15588897/2fc14db2-235e-11e6-9326-f97fe0ec15ab.png)
+In the platform tag for Android add the resource-file tag:
 
-If you are not creating an Android application you can put in anything for this value.
+```
+<platform name="android">
+  <resource-file src="google-services.json" target="google-services.json" />
+</platform>
+```
+
+In the platform tag for iOS add the resource-file tag:
+
+```
+<platform name="ios">
+  <resource-file src="GoogleService-Info.plist" />
+</platform>
+```
 
 > Note: if you are using Ionic you may need to specify the SENDER_ID variable in your package.json.
 
 ```
   "cordovaPlugins": [
     {
-      "variables": {
-        "SENDER_ID": "XXXXXXX"
-      },
       "locator": "phonegap-plugin-push"
     }
   ]
@@ -72,23 +82,17 @@ If you are not creating an Android application you can put in anything for this 
 > Note: You need to specify the SENDER_ID variable in your config.xml if you plan on installing/restoring plugins using the prepare method.  The prepare method will skip installing the plugin otherwise.
 
 ```
-<plugin name="phonegap-plugin-push" spec="1.6.0">
-    <param name="SENDER_ID" value="XXXXXXX" />
-</plugin>
+<plugin name="phonegap-plugin-push" spec="2.0.0" />
 ```
 
 ## Android details
 
 ### Compilation
 
-As of version 1.3.0 the plugin has been switched to using Gradle/Maven for building.
+As of version 2.0.0 the plugin has been switched to using pinned version of Gradle libraries. You will need to ensure that you have installed the following items through the Android SDK Manager:
 
-You will need to ensure that you have installed the following items through the Android SDK Manager:
-
-- Android Support Library version 23 or greater
-- Local Maven repository for Support Libraries (formerly Android Support Repository) version 20 or greater
-- Google Play Services version 27 or greater
-- Google Repository version 22 or greater
+- Android Support Library version 25.1.0
+- FirebaseMessaging Library version 9.8.0
 
 ![android support library](https://cloud.githubusercontent.com/assets/353180/10230226/0627931e-684a-11e5-9a6b-72d72997f655.png)
 
