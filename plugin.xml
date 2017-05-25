@@ -30,7 +30,7 @@
       <uses-permission android:name="android.permission.VIBRATE"/>
     </config-file>
     <config-file target="AndroidManifest.xml" parent="/manifest/application">
-      <activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true"/>
+      <activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true" android:permission="${applicationId}.permission.PushHandlerActivity"/>
       <receiver android:name="com.adobe.phonegap.push.BackgroundActionButtonHandler"/>
       <service android:name="com.adobe.phonegap.push.FCMService">
         <intent-filter>
@@ -87,8 +87,9 @@
     <framework src="FirebaseMessaging" type="podspec" spec="~> 1.2.1"/>
   </platform>
   <platform name="windows">
+    <hook type="after_plugin_install" src="hooks/windows/setToastCapable.js"/>
     <js-module src="src/windows/PushPluginProxy.js" name="PushPlugin">
-      <merges target=""/>
+      <runs/>
     </js-module>
     <config-file target="config.xml" parent="/*">
       <preference name="WindowsToastCapable" value="true"/>

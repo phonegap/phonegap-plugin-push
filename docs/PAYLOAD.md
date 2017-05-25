@@ -805,8 +805,8 @@ var message = {
         title: 'AUX Scrum',
         message: 'Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.',
         actions: [
-            { "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests", "foreground": true},
-            { "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze", "foreground": false},
+            { icon: "emailGuests", title: "EMAIL GUESTS", callback: "app.emailGuests", foreground: true},
+            { icon: "snooze", title: "SNOOZE", callback: "app.snooze", foreground: false},
         ]
     }
 };
@@ -1137,12 +1137,12 @@ var deviceID = "my device id";
 var fcm = new FCM(apiKey);
 
 var message = {
-    to: deviceID,
-    data: {
-        title: 'Test Push',
-        message: 'Push number 1',
-        info: 'super secret info',
-        content-available: '1'
+    "to": deviceID,
+    "data": {
+        "title": 'Test Push',
+        "message": 'Push number 1',
+        "info": 'super secret info',
+        "content-available": '1'
     }
 };
 
@@ -1179,10 +1179,10 @@ var deviceID = "my device id";
 var fcm = new FCM(apiKey);
 
 var message = {
-    to: deviceID,
-    data: {
-        info: 'super secret info',
-        content-available: '1'
+    "to": deviceID,
+    "data": {
+        "info": 'super secret info',
+        "content-available": '1'
     }
 };
 
@@ -1293,10 +1293,10 @@ var fcm = new FCM(apiKey);
 
 var message = {
     to: deviceID,
-    data: {
-        title: 'Force Start',
-        message: 'This notification should restart the app',
-        force-start: '1'
+    "data": {
+        "title": 'Force Start',
+        "message": 'This notification should restart the app',
+        "force-start": '1'
     }
 };
 
