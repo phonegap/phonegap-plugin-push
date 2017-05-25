@@ -249,9 +249,19 @@ cordova platform update ios@4.0.0
 
 ### CocoaPods
 
-Required `cordova-cli` version: `6.4.0`
+Required `cordova-cli` minimum version: `6.4.0`
 
-Required `cordova-ios` version: `4.3.0`
+Required `cordova-ios` minimum version: `4.3.0`
+
+Required `CocoaPods` minimum version: `1.0.1` 
+
+
+To install CocoaPods, please follow the installation instructions [here](https://guides.cocoapods.org/using/getting-started). After installing CocoaPods, please run:
+
+    pod setup
+
+This will clone the required CocoaPods specs-repo into your home folder at `~/.cocoapods/repos`, so it might take a while. See the [CocoaPod Disk Space](#cocoapod-disk-space) section below for more information.
+
 
 Version `1.9.0` (and above) of this plugin supports [CocoaPods](https://cocoapods.org) installation of the [Google Cloud Messaging](https://cocoapods.org/pods/GoogleCloudMessaging) library.
 
@@ -281,7 +291,7 @@ Failed to install 'phonegap-plugin-push':Error: pod: Command failed with exit co
 Error: pod: Command failed with exit code 1
 ```
 
-Please run the command `pod repo update` and re-install the plugin.
+Please run the command `pod repo update` and re-install the plugin. You would only run `pod repo update` if you have the specs-repo already cloned on your machine through `pod setup`. 
 
 ##### CocoaPod Disk Space
 
