@@ -85,7 +85,6 @@
     <header-file src="src/ios/AppDelegate+notification.h"/>
     <header-file src="src/ios/PushPlugin.h"/>
     <framework src="FirebaseMessaging" type="podspec" spec="~> 1.2.1"/>
-    <framework src="GoogleToolboxForMac" type="podspec" spec="~> 2.1.1"/>
   </platform>
   <platform name="windows">
     <js-module src="src/windows/PushPluginProxy.js" name="PushPlugin">
