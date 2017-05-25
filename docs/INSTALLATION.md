@@ -267,7 +267,7 @@ To install CocoaPods, please follow the installation instructions [here](https:/
 This will clone the required CocoaPods specs-repo into your home folder at `~/.cocoapods/repos`, so it might take a while. See the [CocoaPod Disk Space](#cocoapod-disk-space) section below for more information.
 
 
-Version `1.9.0` (and above) of this plugin supports [CocoaPods](https://cocoapods.org) installation of the [Google Cloud Messaging](https://cocoapods.org/pods/GoogleCloudMessaging) library.
+Version `2.0.0` (and above) of this plugin supports [CocoaPods](https://cocoapods.org) installation of the [Firebase Cloud Messaging](https://cocoapods.org/pods/FirebaseMessaging) library.
 
 If you are installing this plugin using `npm`, and you are using version `6.1.0` or greater of the `cordova-cli`, it will automatically download the right version of this plugin for both your platform and cli.
 
