@@ -1,7 +1,7 @@
 # Typescript definition file
 
 For those of you who use typescript, we're glad to say that we have the complete definition file available at [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped).
-Search for `phonegap-plugin-push` there, or simply grab it directly [here](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/phonegap-plugin-push/phonegap-plugin-push.d.ts).
+Search for `phonegap-plugin-push` there, or simply grab it directly [here](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/phonegap-plugin-push/index.d.ts).
 
 ## Example usage
 
