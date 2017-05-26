@@ -73,7 +73,6 @@
   },
   "dependencies": {
     "babel-plugin-add-header-comment": "^1.0.3",
-    "install": "^0.8.2",
-    "npm": "^4.0.2"
+    "install": "^0.8.2"
   }
 }
