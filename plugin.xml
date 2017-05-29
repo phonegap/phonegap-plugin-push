@@ -80,6 +80,12 @@
     <config-file target="*-Release.plist" parent="aps-environment">
       <string>production</string>
     </config-file>
+    <config-file target="*-Debug.plist" parent="aps-environment">
+      <string>development</string>
+    </config-file>
+    <config-file target="*-Release.plist" parent="aps-environment">
+      <string>production</string>
+    </config-file>
     <source-file src="src/ios/AppDelegate+notification.m"/>
     <source-file src="src/ios/PushPlugin.m"/>
     <header-file src="src/ios/AppDelegate+notification.h"/>
