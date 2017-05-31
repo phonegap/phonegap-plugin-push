@@ -16,7 +16,7 @@
   - [Priority in Notifications](#priority-in-notifications)
   - [Picture Messages](#picture-messages)
   - [Background Notifications](#background-notifications)
-    - [Use of content-available: true](#use-of-content-available-true)
+    - [Use of content_available: true](#use-of-content-available-true)
   - [Caching](#caching)
   - [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
   - [Application force closed](#application-force-closed)
@@ -1198,9 +1198,9 @@ fcm.send(message, function(err, response){
 
 If do not want this type of behaviour just omit `"content-available": 1` from your push data and your `on('notification')` event handler will not be called.
 
-### Use of content-available: true
+### Use of content_available: true
 
-The GCM docs will tell you to send a data payload of:
+The [GCM docs](https://developers.google.com/cloud-messaging/http-server-ref#downstream-http-messages-json) will tell you to send a data payload of:
 
 ```javascript
 {
@@ -1214,9 +1214,9 @@ The GCM docs will tell you to send a data payload of:
 }
 ```
 
-Where the `content-available` property is part of the main payload object. Setting the property in this part of the payload will result in the PushPlugin not getting the data correctly. Setting `content-available: true` will cause the Android OS to handle the push payload for you and not pass the data to the PushPlugin.
+Where the `content_available` property is part of the main payload object. Setting the property in this part of the payload will result in the PushPlugin not getting the data correctly. Setting `content_available: true` will cause the Android OS to handle the push payload for you and not pass the data to the PushPlugin.
 
-Instead move `content-available: true` into the `data` object of the payload and set it to `1` as per the example below:
+Instead move `content_available: true` into the `data` object of the payload. The property name changes slightly to use a `-` instead of an `_`. So, `content_available`  becomes `content-available` and `true` becomes `1` as per the example below:
 
 ```javascript
 {
