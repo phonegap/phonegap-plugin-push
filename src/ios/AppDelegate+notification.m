@@ -9,6 +9,7 @@
 #import "AppDelegate+notification.h"
 #import "PushPlugin.h"
 #import <objc/runtime.h>
+#import "Localytics.h"
 
 static char launchNotificationKey;
 static char coldstartKey;
@@ -87,6 +88,8 @@ static char coldstartKey;
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    [Localytics setPushToken:deviceToken];
+    [Localytics upload];
     PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
     [pushHandler didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
@@ -106,6 +109,7 @@ static char coldstartKey;
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     NSLog(@"didReceiveNotification with fetchCompletionHandler");
+    [Localytics handlePushNotificationOpened:userInfo];
 
     // app is in the foreground so call notification callback
     if (application.applicationState == UIApplicationStateActive) {
