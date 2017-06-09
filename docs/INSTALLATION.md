@@ -51,7 +51,7 @@ or
 cordova plugin add https://github.com/phonegap/phonegap-plugin-push
 ```
 
-As of version 2.0.0 the SENDER_ID parameter has been removed at install time. Instead you put your google-services.json (Android) and/or GoogleService-Info.plist in the root folder of your project and then add the following lines into your plugin.xml.
+As of version 2.0.0 the SENDER_ID parameter has been removed at install time. Instead you put your google-services.json (Android) and/or GoogleService-Info.plist in the root folder of your project and then add the following lines into your config.xml.
 
 In the platform tag for Android add the resource-file tag:
 
@@ -257,7 +257,7 @@ Required `cordova-cli` minimum version: `6.4.0`
 
 Required `cordova-ios` minimum version: `4.3.0`
 
-Required `CocoaPods` minimum version: `1.0.1` 
+Required `CocoaPods` minimum version: `1.0.1`
 
 
 To install CocoaPods, please follow the installation instructions [here](https://guides.cocoapods.org/using/getting-started). After installing CocoaPods, please run:
@@ -295,7 +295,7 @@ Failed to install 'phonegap-plugin-push':Error: pod: Command failed with exit co
 Error: pod: Command failed with exit code 1
 ```
 
-Please run the command `pod repo update` and re-install the plugin. You would only run `pod repo update` if you have the specs-repo already cloned on your machine through `pod setup`. 
+Please run the command `pod repo update` and re-install the plugin. You would only run `pod repo update` if you have the specs-repo already cloned on your machine through `pod setup`.
 
 ##### CocoaPod Disk Space
 
