@@ -49,7 +49,7 @@
       }
     }
   },
-  "author": "Adobe PhoneGap Team",
+  "author": "Greg Swindle <greg@swindle.net>",
   "license": "MIT",
   "scripts": {
     "build": "babel src/js --out-dir www",
@@ -62,6 +62,7 @@
     "babel-core": "^6.10.4",
     "babel-eslint": "^7.2.3",
     "babel-preset-es2015": "^6.9.0",
+    "commitplease": "^2.7.10",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.1",
     "eslint-plugin-import": "^2.3.0",
@@ -74,5 +75,22 @@
   "dependencies": {
     "babel-plugin-add-header-comment": "^1.0.3",
     "install": "^0.10.1"
+  },
+  "commitplease": {
+    "style": "angular",
+    "types": [
+      "feat",
+      "fix",
+      "docs",
+      "style",
+      "refactor",
+      "perf",
+      "test",
+      "build",
+      "ci",
+      "chore",
+      "revert"
+    ],
+    "scope": "\\S+.*"
   }
 }
