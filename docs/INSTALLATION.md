@@ -42,13 +42,13 @@ cordova plugin add phonegap-plugin-push
 It is also possible to install via repo url directly ( unstable )
 
 ```
-phonegap plugin add https://github.com/phonegap/phonegap-plugin-push
+phonegap plugin add https://github.com/gregswindle/phonegap-plugin-push
 ```
 
 or
 
 ```
-cordova plugin add https://github.com/phonegap/phonegap-plugin-push
+cordova plugin add https://github.com/gregswindle/phonegap-plugin-push
 ```
 
 As of version 2.0.0 the SENDER_ID parameter has been removed at install time. Instead you put your google-services.json (Android) and/or GoogleService-Info.plist in the root folder of your project and then add the following lines into your config.xml.

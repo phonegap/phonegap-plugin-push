@@ -47,13 +47,13 @@
     <framework src="me.leolin:ShortcutBadger:1.1.14@aar"/>
     <framework src="com.google.firebase:firebase-messaging:9.8.0"/>
     <framework src="push.gradle" custom="true" type="gradleReference"/>
-    <source-file src="src/android/com/adobe/phonegap/push/FCMService.java" target-dir="src/com/adobe/phonegap/push/"/>
-    <source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/"/>
-    <source-file src="src/android/com/adobe/phonegap/push/PushHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/"/>
-    <source-file src="src/android/com/adobe/phonegap/push/PushInstanceIDListenerService.java" target-dir="src/com/adobe/phonegap/push/"/>
-    <source-file src="src/android/com/adobe/phonegap/push/PushPlugin.java" target-dir="src/com/adobe/phonegap/push/"/>
-    <source-file src="src/android/com/adobe/phonegap/push/PermissionUtils.java" target-dir="src/com/adobe/phonegap/push/"/>
-    <source-file src="src/android/com/adobe/phonegap/push/BackgroundActionButtonHandler.java" target-dir="src/com/adobe/phonegap/push/"/>
+    <source-file src="src/android/com/adobe/gregswindle/push/FCMService.java" target-dir="src/com/adobe/gregswindle/push/"/>
+    <source-file src="src/android/com/adobe/gregswindle/push/PushConstants.java" target-dir="src/com/adobe/gregswindle/push/"/>
+    <source-file src="src/android/com/adobe/gregswindle/push/PushHandlerActivity.java" target-dir="src/com/adobe/gregswindle/push/"/>
+    <source-file src="src/android/com/adobe/gregswindle/push/PushInstanceIDListenerService.java" target-dir="src/com/adobe/gregswindle/push/"/>
+    <source-file src="src/android/com/adobe/gregswindle/push/PushPlugin.java" target-dir="src/com/adobe/gregswindle/push/"/>
+    <source-file src="src/android/com/adobe/gregswindle/push/PermissionUtils.java" target-dir="src/com/adobe/gregswindle/push/"/>
+    <source-file src="src/android/com/adobe/gregswindle/push/BackgroundActionButtonHandler.java" target-dir="src/com/adobe/gregswindle/push/"/>
   </platform>
   <platform name="browser">
     <js-module src="www/browser/push.js" name="BrowserPush">

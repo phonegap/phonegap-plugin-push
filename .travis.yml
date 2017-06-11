@@ -1,11 +1,21 @@
 language: node_js
 node_js:
-- '4'
+  - '8'
+  - '7'
+  - '6'
+  - '4'
+cache:
+  directories:
+    - node_modules
+before_script:
+  - npm prune
+# script:
+#   - npm test
+#   - npm run coverage
+#   - npm run coverage:codacy
+#   - npm run coverage:coveralls
 branches:
-  only:
-  - master
+  except:
+    - /^v\d+\.\d+\.\d+$/
 notifications:
-  slack:
-    secure: QI+nroFHoaX5vBTtMiJwBt9pYBvFKC8TPwyREEY0yZNjp4+bF/rk7Sj7nNK136m4+nP+wPrAPSC+8jk7jdjRWP2j+CRbnGCSf/29xeDWgXpRUoOGTe8/XWhHlLKwwJ6zm+eB6kwNN3wqrQ+C/9L7gckbj6BCvpp9SwH1q02lpNU=
-  email:
-  - PhoneGapCI@adobe.com
+  email: false

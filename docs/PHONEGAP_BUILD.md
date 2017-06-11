@@ -56,7 +56,7 @@ c. iOS Distribution cert: create (if needed), download and install (if needed), 
 d. Make an AdHoc Provisioning Profile using your App ID from (1a) and your cert from (1c).  Make sure your test device is enabled.  Download and save with a name you will recognize. (you'll need to add this to your Intel XDK project later)
 e. make a push cert, download it, install it, export it to .p12, convert it to .pem (this is for the push server that will send the notification - you'll need this later to test your Intel XDK app)
 
-2. In Intel XDK, make a new Cordova CLI 5.4.1 project using the HTML5+Cordova Blank Template, then replace the contents of www with [the contents of www from the PhoneGap Push Template](https://github.com/phonegap/phonegap-template-push/tree/master/template_src/www).
+2. In Intel XDK, make a new Cordova CLI 5.4.1 project using the HTML5+Cordova Blank Template, then replace the contents of www with [the contents of www from the PhoneGap Push Template](https://github.com/gregswindle/phonegap-template-push/tree/master/template_src/www).
 
 3. Delete www/config.xml (optional? Intel XDK does not use config.xml)
 
@@ -83,7 +83,7 @@ d. once the build completes, download and install the app
 8. The angle brackets and everything between (from (5)) is the device token - copy it into a text file
 
 9. Add the device token to your server and send a push notification
-a. I used [phonegap-plugin-push/example/server/pushAPNS.rb](https://github.com/phonegap/phonegap-plugin-push/blob/master/example/server/pushAPNS.rb) for this
+a. I used [phonegap-plugin-push/example/server/pushAPNS.rb](https://github.com/gregswindle/phonegap-plugin-push/blob/master/example/server/pushAPNS.rb) for this
 b. APNS.host = 'gateway.push.apple.com'
 c. APNS.pem  = 'PGPush926Prod.pem' #path to your pem file from (1e)
 d. device_token = '\<XXXXXXXX 19b101a3 71590c03 9ea7f446 50eb8409 19ac24bb c1ec1320 XXXXXXXX\>' #the device token from (7)

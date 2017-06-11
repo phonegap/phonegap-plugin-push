@@ -11,11 +11,11 @@ The following tips are for users of this plugin who want to get help.
 
 ## Read the docs
 
-I'll be the first to admit that the docs are not perfect but start here at the [README](https://github.com/phonegap/phonegap-plugin-push/blob/master/README.md) to see if your problem is documented. If it isn't continue on but if you do get an answer then consider sending a documentation pull request.
+I'll be the first to admit that the docs are not perfect but start here at the [README](https://github.com/gregswindle/phonegap-plugin-push/blob/master/README.md) to see if your problem is documented. If it isn't continue on but if you do get an answer then consider sending a documentation pull request.
 
 ## Search the issues
 
-Your question may have already been answered. Make sure you search at least the repo's [issues](https://github.com/phonegap/phonegap-plugin-push/issues) before you create a new one.
+Your question may have already been answered. Make sure you search at least the repo's [issues](https://github.com/gregswindle/phonegap-plugin-push/issues) before you create a new one.
 
 ## Opening a new issue
 
@@ -73,7 +73,7 @@ I/chromium(11669): [INFO:CONSOLE(54)] "Uncaught ReferenceError: PushNotification
 
 This leads me to line [4](https://gist.github.com/macdonst/191f74ac75b6802c047d#file-app-js-L4) of your code where you are initializing push before you get the `deviceready` event. Like all Cordova API's you have to wait until you receive the `deviceready` event before you initialize Push.  
 
-Check out [https://github.com/phonegap/phonegap-plugin-push/blob/20f489a90cf519f962fd957700f92115f142594b/example/www/js/index.js](https://github.com/phonegap/phonegap-plugin-push/blob/20f489a90cf519f962fd957700f92115f142594b/example/www/js/index.js) for an example of how to wait for `deviceready`.
+Check out [https://github.com/gregswindle/phonegap-plugin-push/blob/20f489a90cf519f962fd957700f92115f142594b/example/www/js/index.js](https://github.com/gregswindle/phonegap-plugin-push/blob/20f489a90cf519f962fd957700f92115f142594b/example/www/js/index.js) for an example of how to wait for `deviceready`.
 
 ## Voting on an issue
 

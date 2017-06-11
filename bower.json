@@ -14,7 +14,7 @@
     "cordova-windows",
     "cordova-browser"
   ],
-  "homepage": "https://github.com/phonegap/phonegap-plugin-push",
+  "homepage": "https://github.com/gregswindle/phonegap-plugin-push",
   "moduleType": [],
   "ignore": [
     "**/.*",

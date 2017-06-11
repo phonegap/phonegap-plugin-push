@@ -13,7 +13,7 @@ Set up a branch for your feature or bugfix with a link to the original repo:
 ```
 git checkout -b my-awesome-new-feature
 git push --set-upstream origin my-awesome-new-feature
-git remote add upstream https://github.com/phonegap/phonegap-plugin-push.git
+git remote add upstream https://github.com/gregswindle/phonegap-plugin-push.git
 ```
 
 Set up the project:
