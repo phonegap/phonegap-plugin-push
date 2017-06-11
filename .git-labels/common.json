@@ -1,0 +1,134 @@
+[
+  {
+    "name":"CLA: Signed",
+    "color":"#009800"
+  },
+  {
+    "name":"CLA: Unsigned",
+    "color":"#e11d21"
+  },
+  {
+    "name":"Priority: Low",
+    "color":"#c2e0c6"
+  },
+  {
+    "name":"Priority: Medium",
+    "color":"#fbca04"
+  },
+  {
+    "name":"Priority: High",
+    "color":"#eb6420"
+  },
+  {
+    "name":"Priority: Critical",
+    "color":"#e11d21"
+  },
+  {
+    "name":"Status: Abandoned",
+    "color":"#000000"
+  },
+  {
+    "name":"Status: Accepted",
+    "color":"#009800"
+  },
+  {
+    "name":"Status: Available",
+    "color":"#bfe5bf"
+  },
+  {
+    "name":"Status: Blocked",
+    "color":"#e11d21"
+  },
+  {
+    "name":"Status: Completed",
+    "color":"#006b75"
+  },
+  {
+    "name":"Status: In Progress",
+    "color":"#0052cc"
+  },
+  {
+    "name":"Status: On Hold",
+    "color":"#e11d21"
+  },
+  {
+    "name":"Status: Pending",
+    "color":"#fef2c0"
+  },
+  {
+    "name":"Status: Rejected",
+    "color":"#000000"
+  },
+  {
+    "name":"Status: Review Needed",
+    "color":"#fbca04"
+  },
+  {
+    "name":"Status: Revision Needed",
+    "color":"#e11d21"
+  },
+  {
+    "name":"Type: Breaking Change",
+    "color":"#b60205"
+  },
+  {
+    "name":"Type: Build",
+    "color":"#bfd4f2"
+  },
+  {
+    "name":"Type: Chore",
+    "color":"#bfd4f2"
+  },
+  {
+    "name":"Type: CI",
+    "color":"#bfd4f2"
+  },
+  {
+    "name":"Type: Defect",
+    "color":"#e99695"
+  },
+  {
+    "name":"Type: Docs",
+    "color":"#bfd4f2"
+  },
+  {
+    "name":"Type: Feature",
+    "color":"#5319e7"
+  },
+  {
+    "name":"Type: Feedback",
+    "color":"#fbca04"
+  },
+  {
+    "name":"Type: Fix",
+    "color":"#5319e7"
+  },
+  {
+    "name":"Type: Performance",
+    "color":"#bfd4f2"
+  },
+  {
+    "name":"Type: Question",
+    "color":"#fbca04"
+  },
+  {
+    "name":"Type: Refactor",
+    "color":"#bfd4f2"
+  },
+  {
+    "name":"Type: Revert",
+    "color":"#5319e7"
+  },
+  {
+    "name":"Type: Spike",
+    "color":"#c5def5"
+  },
+  {
+    "name":"Type: Style",
+    "color":"#bfd4f2"
+  },
+  {
+    "name":"Type: Test",
+    "color":"#bfd4f2"
+  }
+]
