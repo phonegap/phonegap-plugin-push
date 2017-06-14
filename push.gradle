@@ -8,10 +8,6 @@ def doExtractStringFromManifest(name) {
     return matcher.group(1)
 }
 
-cdvPluginPostBuildExtras << {
-    apply plugin: 'com.google.gms.google-services'
-}
-
 android {
     sourceSets {
         main {
@@ -20,6 +16,24 @@ android {
     }
 
     defaultConfig {
+        multiDexEnabled true
         applicationId = doExtractStringFromManifest("package")
     }
+}
+
+buildscript {
+	repositories {
+      jcenter()
+			mavenLocal()
+  }
+  dependencies {
+      classpath 'com.android.tools.build:gradle:+'
+      classpath 'com.google.gms:google-services:3.0.0'
+  }
+}
+
+// apply plugin: 'com.google.gms.google-services'
+// class must be used instead of id(string) to be able to apply plugin from non-root gradle file
+ext.postBuildExtras = {
+    apply plugin: com.google.gms.googleservices.GoogleServicesPlugin
 }
