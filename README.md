@@ -2,6 +2,10 @@
 
 > Register and receive push notifications
 
+# Warning
+
+The links below take you to the version 2.x documentation which includes a number of breaking API changes from version 1.x, mostly the move from GCM to FCM. If you are using version 1.x please reference the docs in the [v1.x branch](https://github.com/phonegap/phonegap-plugin-push/tree/v1.x).
+
 # What is this?
 
 This plugin offers support to receive and handle native push notifications with a **single unified API**.
