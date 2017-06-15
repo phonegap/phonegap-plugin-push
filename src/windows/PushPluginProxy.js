@@ -88,6 +88,12 @@ module.exports = {
         } catch(ex) {
             onFail(ex);
         }
+    },
+    subscribe: function() {
+        console.log("Subscribe is unsupported");
+    },
+    unsubscribe: function() {
+        console.log("Subscribe is unsupported");
     }
 };
 require("cordova/exec/proxy").add("PushNotification", module.exports);
