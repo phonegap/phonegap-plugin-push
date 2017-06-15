@@ -18,6 +18,7 @@
   - [CocoaPods](#cocoapods)
     - [Common CocoaPod Installation issues](#common-cocoapod-installation-issues)
     - [CocoaPod Disk Space](#cocoapod-disk-space)
+    - [Library not found for -lPods-Appname](#library-not-found-for--lPods-Appname)
 - [Additional Resources](#additional-resources)
 
 ## Installation Requirements
@@ -305,6 +306,17 @@ Running `pod setup` can take over 1 GB of disk space and that can take quite som
 git clone --verbose --depth=1 https://github.com/CocoaPods/Specs.git ~/.cocoapods/repos/master
 pod setup --verbose
 ```
+
+##### Library not found for -lPods-Appname
+
+If you open the app in Xcode and you get an error like:
+
+```
+ld: library not found for -lPods-Appname
+clang: error: linker command failed with exit code 1
+```
+
+Then you are opening the .xcodeproj file when you should be opening the .xcworkspace file.
 
 ## Additional Resources
 
