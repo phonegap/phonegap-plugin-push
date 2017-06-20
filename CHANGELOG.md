@@ -1,5 +1,19 @@
 # Change Log
 
+## [v2.0.0-rc5](https://github.com/phonegap/phonegap-plugin-push/tree/v2.0.0-rc5) (2017-06-20)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v2.0.0-rc4...v2.0.0-rc5)
+
+- 2.0.0-rc5 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/a5dfcb4e364a1b31d98d4b9683d9e4fe2e0e5d2d)
+- :bookmark: Bumping plugin version to 2.0.0-rc5 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/4bb16bea611e9c472f34c3ede9a1a6d00a8e4c4d)
+- :arrow_up: Bump FCM to 11.0.1 [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/576135bf576be6e2cd183101d3d7219b4d297030)
+- :penguin: Issue #1796: Remove hook from 2.0.0 version [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/464636b9ae257afc712cfebcc1ed11425590c509)
+- :memo: Issue #1552: library not found for -lPods-Appname [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/95b23cdf5ae68faf714d63ac69cfe71ce7034dba)
+- :checkered_flag: Issue #1670: Subscribe and Unsubscribe for windows [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/228cdb4062f6019f878c456b89ef0685955ac7ed)
+- :memo: Issue #1760: fcmSandbox vs gcmSandbox [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/64562177a6d32f34b29f2a97fcc8846db9926a1c)
+- :bug: Issue #1785: plugin fails to install on windows using plugman [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/156adfc70e85a21cb9f3134de72781db405c5e07)
+- :memo: Issue #1767: Ionic 2 Android build fails with error (Can't find google-services.json file) [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/fa9625e7530f4c2280804fc0fcd52a7b7476e5eb)
+- Updating CHANGELOG [view commit](http://github.com/phonegap/phonegap-plugin-push/commit/6f98be137f997c2bbd32e5c192c1e928e4e1f2c9)
+
 ## [v2.0.0-rc4](https://github.com/phonegap/phonegap-plugin-push/tree/v2.0.0-rc4) (2017-06-01)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v2.0.0-rc3...v2.0.0-rc4)
 
