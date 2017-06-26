@@ -160,6 +160,9 @@ The event `registration` will be triggered on each successful registration with 
 Parameter | Type | Description
 --------- | ---- | -----------
 `data.registrationId` | `string` | The registration ID provided by the 3rd party remote push service.
+`data.apsEnvironment` | `string` | (iOS only): the `aps-environement` entitlement in the `embedded.mobileProvision` file included in the app's bundle. Values can be `development` (sandbox) or `production`. You can pass this to your back-end server together with the registrationID to identify the environment (certificate, key, host) to use.
+`data.apsIsProduction` | `boolean` | (iOS only): `true` if `data.apsEnvironment` is `production`.
+`data.apsIsDevelopment` | `boolean` | (iOS only): `true` if `data.apsEnvironment` is `development`.
 
 ### Example
 
