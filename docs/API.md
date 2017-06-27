@@ -160,12 +160,14 @@ The event `registration` will be triggered on each successful registration with 
 Parameter | Type | Description
 --------- | ---- | -----------
 `data.registrationId` | `string` | The registration ID provided by the 3rd party remote push service.
+`data.registrationType` | `string` | The registration type of the 3rd party remote push service. Either FCM or APNS.
 
 ### Example
 
 ```javascript
 push.on('registration', function(data) {
-	console.log(data.registrationId);
+  console.log(data.registrationId);
+  console.log(data.registrationType);
 });
 ```
 

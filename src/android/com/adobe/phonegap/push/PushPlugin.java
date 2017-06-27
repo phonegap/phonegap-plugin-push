@@ -80,6 +80,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                         if (!"".equals(token)) {
                             JSONObject json = new JSONObject().put(REGISTRATION_ID, token);
+                            json.put(REGISTRATION_TYPE, FCM);
 
                             Log.v(LOG_TAG, "onRegistered: " + json.toString());
 

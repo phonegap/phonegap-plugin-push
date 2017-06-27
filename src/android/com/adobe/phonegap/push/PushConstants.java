@@ -3,6 +3,7 @@ package com.adobe.phonegap.push;
 public interface PushConstants {
     public static final String COM_ADOBE_PHONEGAP_PUSH = "com.adobe.phonegap.push";
     public static final String REGISTRATION_ID = "registrationId";
+    public static final String REGISTRATION_TYPE = "registrationType";
     public static final String FOREGROUND = "foreground";
     public static final String TITLE = "title";
     public static final String NOT_ID = "notId";
