@@ -40,6 +40,7 @@
     <config-file target="AndroidManifest.xml" parent="/manifest/application">
       <activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true" android:permission="${applicationId}.permission.PushHandlerActivity"/>
       <receiver android:name="com.adobe.phonegap.push.BackgroundActionButtonHandler"/>
+      <receiver android:name="com.adobe.phonegap.push.PushDismissedHandler"/>
       <receiver android:name="com.google.android.gms.gcm.GcmReceiver" android:exported="true" android:permission="com.google.android.c2dm.permission.SEND">
         <intent-filter>
           <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
@@ -70,6 +71,7 @@
     <source-file src="src/android/com/adobe/phonegap/push/RegistrationIntentService.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PermissionUtils.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/BackgroundActionButtonHandler.java" target-dir="src/com/adobe/phonegap/push/"/>
+    <source-file src="src/android/com/adobe/phonegap/push/PushDismissedHandler.java" target-dir="src/com/adobe/phonegap/push/"/>
   </platform>
   <platform name="browser">
     <js-module src="www/browser/push.js" name="BrowserPush">
