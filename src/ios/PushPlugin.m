@@ -290,12 +290,13 @@
         // Load the file content and read the data into arrays
         NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:path];
         fcmSenderId = [dict objectForKey:@"GCM_SENDER_ID"];
+        BOOL isGcmEnabled = [[dict valueForKey:@"IS_GCM_ENABLED"] boolValue];
 
         NSLog(@"FCM Sender ID %@", fcmSenderId);
 
         //  GCM options
         [self setFcmSenderId: fcmSenderId];
-        if([[self fcmSenderId] length] > 0) {
+        if(isGcmEnabled && [[self fcmSenderId] length] > 0) {
             NSLog(@"Using FCM Notification");
             [self setUsesFCM: YES];
             dispatch_async(dispatch_get_main_queue(), ^{
