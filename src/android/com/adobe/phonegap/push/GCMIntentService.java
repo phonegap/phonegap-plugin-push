@@ -348,11 +348,14 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         int requestCode = new Random().nextInt();
         PendingIntent contentIntent = PendingIntent.getActivity(this, requestCode, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent dismissedNotificationIntent = new Intent(notificationIntent);
+        Intent dismissedNotificationIntent = new Intent(this, PushDismissedHandler.class);
+        dismissedNotificationIntent.putExtra(PUSH_BUNDLE, extras);
+        dismissedNotificationIntent.putExtra(NOT_ID, notId);
         dismissedNotificationIntent.putExtra(DISMISSED, true);
+        dismissedNotificationIntent.setAction(PUSH_DISMISSED);
 
         requestCode = new Random().nextInt();
-        PendingIntent deleteIntent = PendingIntent.getActivity(this, requestCode, dismissedNotificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent deleteIntent = PendingIntent.getBroadcast(this, requestCode, dismissedNotificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
@@ -360,7 +363,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                         .setContentTitle(fromHtml(extras.getString(TITLE)))
                         .setTicker(fromHtml(extras.getString(TITLE)))
                         .setContentIntent(contentIntent)
-                        //.setDeleteIntent(deleteIntent)
+                        .setDeleteIntent(deleteIntent)
                         .setAutoCancel(true);
 
         SharedPreferences prefs = context.getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
