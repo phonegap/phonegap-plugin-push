@@ -464,7 +464,12 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
          * Notification count
          */
         setVisibility(context, extras, mBuilder);
-
+      
+        /*
+         * Notification with big image
+         */
+        setNotificationBigImage(extras, mBuilder);
+      
         /*
          * Notification add actions
          */
@@ -799,7 +804,20 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
             }
         }
     }
+    
+    private void setNotificationBigImage(Bundle extras, NotificationCompat.Builder mBuilder) {
+        String bigImage = extras.getString(BIG_IMAGE); // from gcm
+        if (bigImage != null && !"".equals(bigImage)) {
+            if (bigImage.startsWith("http://") || bigImage.startsWith("https://")) {
+                Bitmap bitmap = getBitmapFromURL(bigImage);
 
+                mBuilder.setStyle(new NotificationCompat.BigPictureStyle()
+                    .bigPicture(bitmap));/*Notification with Image*/
+                Log.d(LOG_TAG, "using remote big-image from gcm");
+            }
+        }
+    }
+  
     private void setNotificationSmallIcon(Context context, Bundle extras, String packageName, Resources resources, NotificationCompat.Builder mBuilder, String localIcon) {
         int iconId = 0;
         String icon = extras.getString(ICON);
