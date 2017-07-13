@@ -61,9 +61,9 @@
         id topics = [self fcmTopics];
         if (topics != nil) {
             for (NSString *topic in topics) {
-                NSLog(@"subscribe from topic: %@", topic);
+                NSLog(@"subscribe to topic: %@", topic);
                 id pubSub = [FIRMessaging messaging];
-                [pubSub subscribeToTopic:[NSString stringWithFormat:@"/topics/%@", topic]];
+                [pubSub subscribeToTopic:topic];
             }
         }
 
@@ -131,7 +131,7 @@
     if (topic != nil) {
         NSLog(@"subscribe from topic: %@", topic);
         id pubSub = [FIRMessaging messaging];
-        [pubSub subscribeToTopic:[NSString stringWithFormat:@"/topics/%@", topic]];
+        [pubSub subscribeToTopic:topic];
         NSLog(@"Successfully subscribe to topic %@", topic);
         [self successWithMessage:command.callbackId withMsg:[NSString stringWithFormat:@"Successfully subscribe to topic %@", topic]];
     } else {
@@ -147,8 +147,8 @@
     if (topic != nil) {
         NSLog(@"unsubscribe from topic: %@", topic);
         id pubSub = [FIRMessaging messaging];
-        [pubSub unsubscribeFromTopic:[NSString stringWithFormat:@"/topics/%@", topic]];
-        NSLog(@"Successfully unsubscribe to topic %@", topic);
+        [pubSub unsubscribeFromTopic:topic];
+        NSLog(@"Successfully unsubscribe from topic %@", topic);
         [self successWithMessage:command.callbackId withMsg:[NSString stringWithFormat:@"Successfully unsubscribe from topic %@", topic]];
     } else {
         NSLog(@"There is no topic to unsubscribe");
