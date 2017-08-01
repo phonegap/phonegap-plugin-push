@@ -19,6 +19,7 @@
     - [Common CocoaPod Installation issues](#common-cocoapod-installation-issues)
     - [CocoaPod Disk Space](#cocoapod-disk-space)
     - [Library not found for -lPods-Appname](#library-not-found-for--lPods-Appname)
+    - [Library not found for -lGoogleToolboxForMac](#library-not-found-for--lPods-Appname)
 - [Additional Resources](#additional-resources)
 
 ## Installation Requirements
@@ -317,6 +318,16 @@ clang: error: linker command failed with exit code 1
 ```
 
 Then you are opening the .xcodeproj file when you should be opening the .xcworkspace file.
+
+##### Library not found for -lGoogleToolboxForMac
+
+Trying to build for iOS using the latest cocoapods (1.2.1) but failed with the following error (from terminal running cordova build ios):
+
+```
+ld: library not found for -lGoogleToolboxForMac
+```
+
+Workarounds are to add the platform first and install the plugins later, or to manually run pod install on projectName/platforms/ios.
 
 ## Additional Resources
 
