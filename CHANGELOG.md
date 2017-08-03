@@ -1,5 +1,45 @@
 # Change Log
 
+## [v2.0.0](https://github.com/* remote origin
+  Fetch URL: https://github.com//tree/v2.0.0) (2017-08-02)
+[Full Changelog](https://github.com/* remote origin
+  Fetch URL: https://github.com//compare/v2.0.0-rc5...v2.0.0)
+
+- 2.0.0 [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/d19db8cc6c845fc5504a618077d37c7ad44d3a9a)
+- :bookmark: Bumping plugin version to 2.0.0 [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/44280ee917ccbee22cf62156ce34fa69aec6f110)
+- :wrench: Add package-lock.json to git ignore [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/88e43f869a6469be3f1a2f50ad64fb3a4e22e1c9)
+- update ShortcutBadger to 1.1.17 (#1873) [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/02c43301a2c39b516f0281dd2a30e8e813649212)
+- :memo: Issue #1863: Linker error for iOS build [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/e509983a0124469765d0d693c92d8e023475b526)
+- :memo: Update minimum CLI version in docs [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/f13ac0404d402a4a59267d92ac8a2ca9ca444a45)
+- update engines to use cordova 7 (#1877) [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/983c9ad90934edf891ec54a7c3ca101b584710cc)
+- Fix topic registration (#1855) [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/781e6f551e8e1509dd6184c84347e36aa163e092)
+- Merge pull request #1827 from szh/master [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/2a8e3dff3698710b2e5fed8dea91deaa0705bbdc)
+- Add clearAllNotifications() to type definitions [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/8460ecf725ea6ca62b933a2f7c5a6c82628599eb)
+- Only use GCM if IS_GCM_ENABLED is true in the google plist (#1821) [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/04cb6af750271d421f5bab2e5b46f5c15faee20c)
+- :apple: Issue #1340: Drop support for iOS 8 [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/d724805bfa4088ebbd00fcb8cb3ccbc36defefdd)
+- V2.x Android: handle dismissed notifications (#1816) [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/118b1a454eebc9e5b053f40be3f1a3af253d783e)
+- :fire: Removing RegistrationIntentService class [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/3dcc7ff67295aee9a6a9b3554061284cb6db3332)
+- :sparkles::apple::penguin: Issue #1787: Pass token type during registration event [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/1ade39a5fc618173bcc12448a86f3fe9702319a3)
+- :memo: Issue #1811: [DOCS] Update additional-resources section of INSTALLATION.md [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/c350ce2c0cffb763eb2b1a84295cd701bf33693a)
+- Updating CHANGELOG [view commit](http://github.com/* remote origin
+  Fetch URL: https://github.com//commit/0264f2f5edf577053bcd436977a4f54ecd5e13b7)
+
 ## [v2.0.0-rc5](https://github.com/phonegap/phonegap-plugin-push/tree/v2.0.0-rc5) (2017-06-20)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/v2.0.0-rc4...v2.0.0-rc5)
 
