@@ -1,7 +1,7 @@
 # API
 
 - [.init()](#pushnotificationinitoptions)
-- [.hasPermission() - Android & iOS only](#pushnotificationhaspermissionsuccesshandler---android--ios-only)
+- [.hasPermission()](#pushnotificationhaspermissionsuccesshandler)
 - [push.on()](#pushonevent-callback)
   - [push.on('registration')](#pushonregistration-callback)
   - [push.on('notification')](#pushonnotification-callback)
@@ -114,7 +114,7 @@ var push = PushNotification.init({
 });
 ```
 
-## PushNotification.hasPermission(successHandler) - Android & iOS only
+## PushNotification.hasPermission(successHandler)
 
 Checks whether the push notification permission has been granted.
 
