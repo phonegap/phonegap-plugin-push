@@ -89,6 +89,11 @@ module.exports = {
             onFail(ex);
         }
     },
+    hasPermission: function (onSuccess) {
+        var notifier = Windows.UI.Notifications.ToastNotificationManager.createToastNotifier();
+
+        onSuccess({ isEnabled: !notifier.setting });
+    },
     subscribe: function() {
         console.log("Subscribe is unsupported");
     },
