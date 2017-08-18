@@ -18,8 +18,9 @@
   - [CocoaPods](#cocoapods)
     - [Common CocoaPod Installation issues](#common-cocoapod-installation-issues)
     - [CocoaPod Disk Space](#cocoapod-disk-space)
-    - [Library not found for -lPods-Appname](#library-not-found-for--lPods-Appname)
-    - [Library not found for -lGoogleToolboxForMac](#library-not-found-for--lPods-Appname)
+    - [Library not found for -lPods-Appname](#library-not-found-for--lpods-appname)
+    - [Library not found for -lGoogleToolboxForMac](#library-not-found-for--lgoogletoolboxformac)
+    - [Module FirebaseInstanceID not found](#module-firebaseinstanceid-not-found)
 - [Additional Resources](#additional-resources)
 
 ## Installation Requirements
@@ -328,6 +329,21 @@ ld: library not found for -lGoogleToolboxForMac
 ```
 
 Workarounds are to add the platform first and install the plugins later, or to manually run pod install on projectName/platforms/ios.
+
+##### Module FirebaseInstanceID not found
+
+If you run into an error like:
+
+```
+module FirebaseInstanceID not found
+```
+
+You may be running into a bug in cordova-ios. The current workaround is to run `pod install` manually.
+
+```
+cd platforms/ios
+pod install
+```
 
 ## Additional Resources
 
