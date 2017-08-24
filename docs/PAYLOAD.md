@@ -1473,7 +1473,7 @@ Then send the follow JSON from APNS:
 
 If you want the default sound to play upon receipt of push use this payload:
 
-```
+```javascript
 {
     "aps": {
         "alert": "Test sound",
@@ -1492,11 +1492,11 @@ For instance the following JSON:
 
 ```javascript
 {
-	"aps": {
-		"alert": "Test background push",
-		"content-available": 1
-	},
-  "notId": 1 // unique ID you generate
+    "aps": {
+        "alert": "Test background push",
+        "content-available": 1
+    },
+    "notId": 1 // unique ID you generate
 }
 ```
 
@@ -1508,12 +1508,12 @@ However if you want your `on('notification')` event handler called but no notifi
 
 ```javascript
 {
-	"aps": {
-		"data": "Test silent background push",
-		"moredata": "Do more stuff",
-		"content-available": 1
-	},
-  "notId": 2 // unique ID you generate
+    "aps": {
+        "data": "Test silent background push",
+        "moredata": "Do more stuff",
+        "content-available": 1
+    },
+    "notId": 2 // unique ID you generate
 }
 ```
 
@@ -1542,8 +1542,8 @@ push.on('notification', function(data) {
 	push.finish(function() {
 		console.log("processing of push data is finished");
 	}, function() {
-    console.log("something went wrong with push.finish for ID = " + data.additionalData.notId)
-  }, data.additionalData.notId);
+        console.log("something went wrong with push.finish for ID = " + data.additionalData.notId)
+    }, data.additionalData.notId);
 });
 ```
 
