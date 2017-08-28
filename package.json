@@ -54,6 +54,7 @@
   "scripts": {
     "build": "babel src/js --out-dir www",
     "build:watch": "nodemon -w ./src/js -e js -x npm run build",
+    "eslint": "node node_modules/.bin/eslint src/js",
     "jasmine": "jasmine-node --color spec",
     "test": "npm run build && npm run jasmine"
   },

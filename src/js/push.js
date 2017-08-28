@@ -32,18 +32,19 @@ class PushNotification {
     // triggered on registration and notification
     const success = (result) => {
       if (result && typeof result.registrationId !== 'undefined') {
-          this.emit('registration', result);
+        this.emit('registration', result);
       } else if (result && result.additionalData &&
         typeof result.additionalData.actionCallback !== 'undefined') {
         const executeFuctionOrEmitEventByName = (functionName, context, ...args) => {
           const namespaces = functionName.split('.');
           const func = namespaces.pop();
+          let innerContext = context;
           for (let i = 0; i < namespaces.length; i++) {
-            context = context[namespaces[i]];
+            innerContext = innerContext[namespaces[i]];
           }
 
-          if (typeof context[func] === 'function') {
-            context[func].call(context, args);
+          if (typeof innerContext[func] === 'function') {
+            innerContext[func].call(innerContext, args);
           } else {
             this.emit(functionName, args);
           }
@@ -297,9 +298,7 @@ module.exports = {
    * @return {PushNotification} instance
    */
 
-  init: (options) => {
-    return new PushNotification(options);
-  },
+  init: (options) => new PushNotification(options),
 
   hasPermission: (successCallback, errorCallback) => {
     exec(successCallback, errorCallback, 'PushNotification', 'hasPermission', []);
