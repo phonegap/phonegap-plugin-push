@@ -56,8 +56,10 @@
     "build:watch": "nodemon -w ./src/js -e js -x npm run build",
     "eslint": "node node_modules/.bin/eslint src/js",
     "jasmine": "jasmine-node --color spec",
+    "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
     "test": "npm run build && npm run jasmine"
   },
+  "pre-commit": [ "precommit-msg", "eslint", "test" ],
   "devDependencies": {
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
@@ -70,7 +72,8 @@
     "eslint-plugin-react": "^5.2.2",
     "jasmine-node": "1.14.5",
     "nodemon": "^1.9.2",
-    "pluginpub": "^0.0.8"
+    "pluginpub": "^0.0.8",
+    "pre-commit": "^1.2.2"
   },
   "dependencies": {
     "babel-plugin-add-header-comment": "^1.0.3",

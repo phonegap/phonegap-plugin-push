@@ -57,12 +57,13 @@ var PushNotification = function () {
 
           var namespaces = functionName.split('.');
           var func = namespaces.pop();
+          var innerContext = context;
           for (var i = 0; i < namespaces.length; i++) {
-            context = context[namespaces[i]];
+            innerContext = innerContext[namespaces[i]];
           }
 
-          if (typeof context[func] === 'function') {
-            context[func].call(context, args);
+          if (typeof innerContext[func] === 'function') {
+            innerContext[func].call(innerContext, args);
           } else {
             _this.emit(functionName, args);
           }
