@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -97,6 +98,10 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         callbackContext.error(e.getMessage());
                     } catch (IOException e) {
                         Log.e(LOG_TAG, "execute: Got IO Exception " + e.getMessage());
+                        callbackContext.error(e.getMessage());
+                    } catch (Resources.NotFoundException e) {
+
+                        Log.e(LOG_TAG, "execute: Got Resources NotFoundException " + e.getMessage());
                         callbackContext.error(e.getMessage());
                     }
 
