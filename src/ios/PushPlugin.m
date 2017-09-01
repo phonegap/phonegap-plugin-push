@@ -282,6 +282,19 @@
             UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UserNotificationTypes categories:categories];
             [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
             [[UIApplication sharedApplication] registerForRemoteNotifications];
+          
+            [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidBecomeActiveNotification
+                                                  object:nil
+                                                   queue:[NSOperationQueue mainQueue]
+                                              usingBlock:^(NSNotification * _Nonnull note) {
+                                                  if ([[UIApplication sharedApplication] isRegisteredForRemoteNotifications]) {
+                                                      //user tapped "Allow"
+                                                  }
+                                                  else {
+                                                      NSLog(@"User didn't alowed Notifications for the App");
+                                                      [self failWithMessage:self.callbackId withMsg:@"User didn't alowed Notifications for the App" withError:Nil];
+                                                  }
+                                              }];
         }
 
         // Read GoogleService-Info.plist
