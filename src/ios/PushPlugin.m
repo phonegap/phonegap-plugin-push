@@ -291,8 +291,8 @@
                                                       //user tapped "Allow"
                                                   }
                                                   else {
-                                                      NSLog(@"User didn't alowed Notifications for the App");
-                                                      [self failWithMessage:self.callbackId withMsg:@"User didn't alowed Notifications for the App" withError:Nil];
+                                                      NSLog(@"User didn't allowed Notifications for the App");
+                                                      [self failWithMessage:self.callbackId withMsg:@"User didn't allowed Notifications for the App" withError:Nil];
                                                   }
                                               }];
         }
