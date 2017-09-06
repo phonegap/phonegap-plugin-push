@@ -24,6 +24,7 @@
   - [Badges](#badges)
   - [Support for Twilio Notify](#support-for-twilio-notify)
   - [Notification ID](#notification-id)
+  - [Clicking Notification Does Not Bring App to Foreground](#clicking-notification-does-not-bring-app-to-foreground)
 - [iOS Behaviour](#ios-behaviour)
   - [Sound](#sound-1)
   - [Background Notifications](#background-notifications-1)
@@ -1453,6 +1454,10 @@ Note: "sound" and "soundname" are equivalent and are considered to be the same b
 When setting the notification ID or `notId` please make sure that you are not exceeding the [MAX_INT](https://developer.android.com/reference/java/lang/Integer.html#MAX_VALUE) value for Android. Using a value larger than MAX_INT will throw an exception which will be caught by the plugin and it will use a default value of `0`.
 
 This means you can't use the JavaScript's `Date.getMilliseconds()` or Java's `System.currentTimeMillis()` as they will give you a value greater than MAX_INT.
+
+## Clicking Notification Does Not Bring App to Foreground
+
+If you are running into a problem where you click on the notification but your app does not get brought to the foreground check the setting of `android:launchMode` in your AndroidManifest.xml. If something is setting it to be anything other than `singleTop` you should switch it back to `singleTop` which is required by Apache Cordova based apps.
 
 # iOS Behaviour
 
