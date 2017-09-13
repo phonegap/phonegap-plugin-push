@@ -20,6 +20,7 @@ import android.graphics.RectF;
 import android.graphics.Paint;
 import android.graphics.Canvas;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.WearableExtender;
@@ -371,14 +372,20 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
         requestCode = new Random().nextInt();
         PendingIntent deleteIntent = PendingIntent.getBroadcast(this, requestCode, dismissedNotificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
-                        .setWhen(System.currentTimeMillis())
-                        .setContentTitle(fromHtml(extras.getString(TITLE)))
-                        .setTicker(fromHtml(extras.getString(TITLE)))
-                        .setContentIntent(contentIntent)
-                        .setDeleteIntent(deleteIntent)
-                        .setAutoCancel(true);
+        NotificationCompat.Builder mBuilder = null;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID);
+        } else {
+            mBuilder = new NotificationCompat.Builder(context);
+        }
+
+        mBuilder.setWhen(System.currentTimeMillis())
+                .setContentTitle(fromHtml(extras.getString(TITLE)))
+                .setTicker(fromHtml(extras.getString(TITLE)))
+                .setContentIntent(contentIntent)
+                .setDeleteIntent(deleteIntent)
+                .setAutoCancel(true);
 
         SharedPreferences prefs = context.getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
         String localIcon = prefs.getString(ICON, null);

@@ -1,10 +1,13 @@
 package com.adobe.phonegap.push;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -29,6 +32,8 @@ import java.util.List;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 
+import static android.R.attr.id;
+
 public class PushPlugin extends CordovaPlugin implements PushConstants {
 
     public static final String LOG_TAG = "Push_Plugin";
@@ -46,6 +51,15 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
      */
     private Context getApplicationContext() {
         return this.cordova.getActivity().getApplicationContext();
+    }
+
+    @TargetApi(26)
+    private void createChannels() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            final NotificationManager notificationManager = (NotificationManager) cordova.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, "PhoneGap PushPlugin", NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(mChannel);
+        }
     }
 
     @Override
@@ -66,6 +80,9 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                     try {
                         jo = data.getJSONObject(0).getJSONObject(ANDROID);
+
+                        // NotificationChannels
+                        createChannels();
 
                         Log.v(LOG_TAG, "execute: jo=" + jo.toString());
 
