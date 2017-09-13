@@ -25,6 +25,7 @@
   - [Support for Twilio Notify](#support-for-twilio-notify)
   - [Notification ID](#notification-id)
   - [Clicking Notification Does Not Bring App to Foreground](#clicking-notification-does-not-bring-app-to-foreground)
+  - [Notification Channels](#notification-channels)
 - [iOS Behaviour](#ios-behaviour)
   - [Sound](#sound-1)
   - [Background Notifications](#background-notifications-1)
@@ -1458,6 +1459,66 @@ This means you can't use the JavaScript's `Date.getMilliseconds()` or Java's `Sy
 ## Clicking Notification Does Not Bring App to Foreground
 
 If you are running into a problem where you click on the notification but your app does not get brought to the foreground check the setting of `android:launchMode` in your AndroidManifest.xml. If something is setting it to be anything other than `singleTop` you should switch it back to `singleTop` which is required by Apache Cordova based apps.
+
+## Notification Channels
+
+Android O introduces a new wrinkle to push notifications in the form of NotificationChannels. If you app targets SDK Version 26 (Android O) if you have not setup a NotificationChannel you will no longer receive push notifications. This means any Cordova app using cordova-android 6.3.0 or higher will run into this problem. Fear not however as version 2.1.0 of this plugin has implemented NotificationChannels for you.
+
+For instance if you register for push notifications like normal:
+
+```
+var push = PushNotification.init({
+	"android": {
+	}
+});
+```
+
+The plugin will register a channel for you that will have the id of your Android PACKAGE_NAME + "PushPluginChannel". Any push notifications that arrive on your device that don't specify a channel ID or use "PushPluginChannel" as the channel will be delivered.
+
+However, if you want to take advantage of multiple channels in your app you can pass the channel array as part of `init` like so:
+
+```
+var push = PushNotification.init({
+	"android": {
+    "channels": [
+      {"id": "testchannel1", "description": "Test Channel 1", "importance": 1, "state": "create"},
+      {"id": "testchannel2", "description": "Test Channel 2", "importance": 3, "state": "create"},
+    ]
+	}
+});
+```
+
+The above will create two channels for your app. You'll need to provide the `id`, `description` and `importance` properties. If you omit `state` then it will assume you want to create/update the channel. The importance property goes from 1 = Lowest, 2 = Low, 3 = Normal, 4 = High and 5 = Highest.
+
+Now when you send a push payload to the device you'll need to specify a channel:
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Hello Bob!",
+    	"message": "Phonegap is awesome!",
+    	"android_channel_id": "testchannel2"
+    }
+}
+```
+
+Failure to specify a channel in this case will prevent the NotificationManager from being able to deliver your notification.
+
+So if you want to remove a channel you'll need to call init again:
+
+```
+var push = PushNotification.init({
+	"android": {
+    "channels": [
+      {"id": "testchannel1", "description": "Test Channel 1", "importance": 1, "state": "remove"},
+      {"id": "testchannel2", "description": "Test Channel 2", "importance": 3, "state": "create"},
+    ]
+	}
+});
+```
+
+The channel with ID = `testchannel1` will be removed and `testchannel2` will be your only messaging channel.
 
 # iOS Behaviour
 

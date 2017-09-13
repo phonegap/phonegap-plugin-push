@@ -49,6 +49,7 @@ Attribute | Type | Default | Description
 `android.topics` | `array` | `[]` | Optional. If the array contains one or more strings each string will be used to subscribe to a FcmPubSub topic.
 `android.messageKey` | `string` | `message` | Optional. The key to search for text of notification.
 `android.titleKey` | `string` | `'title'` | Optional. The key to search for title of notification.
+`android.channels` } `array` | [] | Option. Setup notification channels for Android O. See payload documentation for more details.
 
 #### Browser
 

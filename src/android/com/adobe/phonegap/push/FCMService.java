@@ -2,6 +2,7 @@ package com.adobe.phonegap.push;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
@@ -20,6 +21,7 @@ import android.graphics.RectF;
 import android.graphics.Paint;
 import android.graphics.Canvas;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.WearableExtender;
@@ -42,6 +44,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -371,14 +374,35 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
         requestCode = new Random().nextInt();
         PendingIntent deleteIntent = PendingIntent.getBroadcast(this, requestCode, dismissedNotificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
-                        .setWhen(System.currentTimeMillis())
-                        .setContentTitle(fromHtml(extras.getString(TITLE)))
-                        .setTicker(fromHtml(extras.getString(TITLE)))
-                        .setContentIntent(contentIntent)
-                        .setDeleteIntent(deleteIntent)
-                        .setAutoCancel(true);
+        NotificationCompat.Builder mBuilder = null;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelID = extras.getString(ANDROID_CHANNEL_ID);
+
+            // if the push payload specifies a channel use it
+            if (channelID != null) {
+                mBuilder = new NotificationCompat.Builder(context, packageName + channelID);
+            } else {
+                List<NotificationChannel> channels = mNotificationManager.getNotificationChannels();
+
+                if (channels.size() == 1) {
+                    channelID = channels.get(0).getId();
+                } else {
+                    channelID = packageName + extras.getString(ANDROID_CHANNEL_ID, DEFAULT_CHANNEL_ID);
+                }
+                mBuilder = new NotificationCompat.Builder(context, channelID);
+            }
+
+        } else {
+            mBuilder = new NotificationCompat.Builder(context);
+        }
+
+        mBuilder.setWhen(System.currentTimeMillis())
+                .setContentTitle(fromHtml(extras.getString(TITLE)))
+                .setTicker(fromHtml(extras.getString(TITLE)))
+                .setContentIntent(contentIntent)
+                .setDeleteIntent(deleteIntent)
+                .setAutoCancel(true);
 
         SharedPreferences prefs = context.getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
         String localIcon = prefs.getString(ICON, null);

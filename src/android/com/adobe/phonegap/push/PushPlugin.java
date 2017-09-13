@@ -1,11 +1,18 @@
 package com.adobe.phonegap.push;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.media.AudioAttributes;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -48,6 +55,97 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         return this.cordova.getActivity().getApplicationContext();
     }
 
+    @TargetApi(26)
+    private void updateChannels(JSONObject options) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            JSONArray channels = null;
+            try {
+                channels = options.getJSONArray(CHANNELS);
+            } catch (JSONException e) {
+                Log.d(LOG_TAG, "No channels specified. Using default: " + DEFAULT_CHANNEL_ID);
+                channels = new JSONArray();
+            }
+
+            final NotificationManager notificationManager = (NotificationManager) cordova.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+
+            Log.d(LOG_TAG, "channel length = " + channels.length());
+
+            if (channels.length() > 0) {
+                JSONArray create = new JSONArray();
+                JSONArray remove = new JSONArray();
+                for (int i = 0; i < channels.length(); i++) {
+                    try {
+                        JSONObject channel = channels.optJSONObject(i);
+
+
+                        if (channel != null) {
+                            Log.d(LOG_TAG, channel.optString(CHANNEL_STATE, CREATE_CHANNEL));
+                            if (!channel.optString(CHANNEL_STATE, CREATE_CHANNEL).equals(DELETE_CHANNEL)) {
+                                Log.d(LOG_TAG, "create channel: " + channel.optString(CHANNEL_ID));
+                                createChannel(notificationManager, channel);
+                            } else {
+                                Log.d(LOG_TAG, "delete channel: " + channel.optString(CHANNEL_ID));
+                                deleteChannel(notificationManager, channel);
+                            }
+                        }
+                    } catch (JSONException e) {
+                        Log.e(LOG_TAG, "Error getting channel");
+                    }
+                }
+            } else {
+                NotificationChannel mChannel =
+                        new NotificationChannel(getApplicationContext().getPackageName() + DEFAULT_CHANNEL_ID,
+                                "PhoneGap PushPlugin", NotificationManager.IMPORTANCE_DEFAULT);
+                mChannel.enableVibration(options.optBoolean(VIBRATE, true));
+                notificationManager.createNotificationChannel(mChannel);
+            }
+        }
+    }
+
+    @TargetApi(26)
+    private void deleteChannel(NotificationManager notificationManager, JSONObject channel) throws JSONException {
+        notificationManager.deleteNotificationChannel(getApplicationContext().getPackageName() + channel.getString(CHANNEL_ID));
+    }
+
+    @TargetApi(26)
+    private void createChannel(NotificationManager notificationManager, JSONObject channel) throws JSONException {
+        String packageName = getApplicationContext().getPackageName();
+        NotificationChannel mChannel = new NotificationChannel(packageName + channel.getString(CHANNEL_ID),
+                channel.optString(CHANNEL_DESCRIPTION, ""),
+                channel.optInt(CHANNEL_IMPORTANCE, NotificationManager.IMPORTANCE_DEFAULT));
+
+        int lightColor = channel.optInt(CHANNEL_LIGHT_COLOR, -1);
+        if (lightColor != -1) {
+            mChannel.setLightColor(lightColor);
+        }
+
+        int visibility = channel.optInt(CHANNEL_VISIBILITY, NotificationCompat.VISIBILITY_PUBLIC);
+        mChannel.setLockscreenVisibility(visibility);
+
+        boolean badge = channel.optBoolean(CHANNEL_BADGE, true);
+        mChannel.setShowBadge(badge);
+
+        String sound = channel.optString(CHANNEL_SOUND, "default");
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                .build();
+        if (SOUND_RINGTONE.equals(sound)) {
+            mChannel.setSound(android.provider.Settings.System.DEFAULT_RINGTONE_URI, audioAttributes);
+        } else if (sound != null && !sound.contentEquals(SOUND_DEFAULT)) {
+            Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
+                    + "://" + packageName + "/raw/" + sound);
+            mChannel.setSound(soundUri, audioAttributes);
+        } else {
+            mChannel.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI, audioAttributes);
+        }
+
+        //JSONArray pattern = channel.optJSONArray(CHANNEL_VIBRATION);
+        //mChannel.setVibrationPattern();
+
+        notificationManager.createNotificationChannel(mChannel);
+    }
+
     @Override
     public boolean execute(final String action, final JSONArray data, final CallbackContext callbackContext) {
         Log.v(LOG_TAG, "execute: action=" + action);
@@ -66,6 +164,9 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                     try {
                         jo = data.getJSONObject(0).getJSONObject(ANDROID);
+
+                        // NotificationChannels
+                        updateChannels(jo);
 
                         Log.v(LOG_TAG, "execute: jo=" + jo.toString());
 

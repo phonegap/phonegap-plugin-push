@@ -83,4 +83,19 @@ public interface PushConstants {
     public static final String GOOGLE_APP_ID = "google_app_id";
     public static final String GCM_DEFAULT_SENDER_ID = "gcm_defaultSenderId";
     public static final String PUSH_DISMISSED = "push_dismissed";
+    public static final String DEFAULT_CHANNEL_ID = "PushPluginChannel";
+    public static final String CHANNELS = "channels";
+    public static final String CHANNEL_ID = "id";
+    public static final String CHANNEL_DESCRIPTION = "description";
+    public static final String CHANNEL_IMPORTANCE = "importance";
+    public static final String CHANNEL_LIGHT_COLOR = "lightColor";
+    public static final String CHANNEL_VISIBILITY = "visibility";
+    public static final String CHANNEL_BADGE = "badge";
+    public static final String CHANNEL_SOUND = "sound";
+    public static final String CHANNEL_VIBRATION = "vibration";
+    public static final String ANDROID_CHANNEL_ID = "android_channel_id";
+    public static final String CHANNEL_STATE = "state";
+    public static final String CREATE_CHANNEL = "create";
+    public static final String DELETE_CHANNEL = "remove";
+    public static final String UPDATE_CHANNEL = "update";
 }
