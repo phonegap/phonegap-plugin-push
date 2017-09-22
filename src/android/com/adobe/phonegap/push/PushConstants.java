@@ -32,6 +32,7 @@ public interface PushConstants {
     public static final String MESSAGE = "message";
     public static final String BODY = "body";
     public static final String SOUNDNAME = "soundname";
+    public static final String COLOR = "color";
     public static final String LED_COLOR = "ledColor";
     public static final String PRIORITY = "priority";
     public static final String IMAGE = "image";
