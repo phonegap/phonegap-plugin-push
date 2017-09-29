@@ -562,7 +562,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
                     RemoteInput remoteInput = null;
                     if (inline) {
                         Log.d(LOG_TAG, "create remote input");
-                        String replyLabel = "Enter your reply here";
+                        String replyLabel = action.optString(INLINE_REPLY, "Enter your reply here");
                         remoteInput =
                                 new RemoteInput.Builder(INLINE_REPLY)
                                 .setLabel(replyLabel)
