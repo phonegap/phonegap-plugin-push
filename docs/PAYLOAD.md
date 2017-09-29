@@ -849,7 +849,7 @@ If your user clicks on the main body of the notification your app will be opened
 
 ### In Line Replies
 
-Android N introduces a new capability for push notifications, the in line reply text field. If you wish to get some text data from the user when the action button is called send the following type of payload:
+Android N introduces a new capability for push notifications, the in line reply text field. If you wish to get some text data from the user when the action button is called send the following type of payload.
 
 Your notification can include action buttons. If you wish to include an icon along with the button name they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from GCM:
 
@@ -860,7 +860,7 @@ Your notification can include action buttons. If you wish to include an icon alo
     	"title": "AUX Scrum",
     	"message": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
         "actions": [
-    		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "emailGuests", "foreground": false, "inline": true },
+    		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "emailGuests", "foreground": false, "inline": true, "replyLabel": "Enter your reply here" },
     		{ "icon": "snooze", "title": "SNOOZE", "callback": "snooze", "foreground": false}
     	]
     }
@@ -882,7 +882,7 @@ var message = {
         title: 'AUX Scrum',
         message: 'Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.',
         actions: [
-            { "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "emailGuests", "foreground": false, "inline": true},
+            { "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "emailGuests", "foreground": false, "inline": true, "replyLabel": "Enter your reply here" },
             { "icon": "snooze", "title": "SNOOZE", "callback": "snooze", "foreground": false},
         ]
     }
@@ -945,6 +945,7 @@ Attribute | Type | Default | Description
 `callback` | `string` | | Required. The event to be emitted when the action button is pressed.
 `foreground` | `boolean` | `true` | Optional. Whether or not to bring the app to the foreground when the action button is pressed.
 `inline` | `boolean` | `false` | Optional. Whether or not to provide a quick reply text field to the user when the button is clicked.
+`replyLabel` | `string` | `Enter your reply here` | Optional. If you don't include a `replyLabel` in your action the default will be used.
 
 ## Led in Notifications
 
