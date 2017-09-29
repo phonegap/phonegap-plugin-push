@@ -66,7 +66,7 @@ module.exports = {
                     onSuccess(result, { keepCallback: true });
 
                     var context = cordova.require('cordova/platform').activationContext;
-                    var launchArgs = context ? context.args : null;
+                    var launchArgs = context ? (context.argument || context.args) : null;
                     if (launchArgs) {         //If present, app launched through push notification
                         var result = { message: '' };       //Added to identify callback as notification type in the API
                         result.launchArgs = launchArgs;
