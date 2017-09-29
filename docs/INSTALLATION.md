@@ -64,7 +64,7 @@ In the platform tag for Android add the resource-file tag:
 </platform>
 ```
 
-In the platform tag for iOS add the resource-file tag:
+By default, on iOS, the plugin will register with APNS. If you want to use FCM on iOS, in the platform tag for iOS add the resource-file tag:
 
 ```
 <platform name="ios">
