@@ -776,7 +776,25 @@ If you use `%n%` in the `summaryText` of the JSON coming down from GCM it will b
 
 ## Action Buttons
 
-Your notification can include a maximum of three action buttons. If you wish to include an icon along with the button name they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from GCM:
+Your notification can include a maximum of three action buttons. You register event listeners with the name of your actions. Then when a user clicks on one of the action buttons that event is fired and the listener you have registered is invoked. For instance here is a setup with two actions `emailGuests` and `snooze`.
+
+```javascript
+var push = PushNotification.init({
+	"android": {
+	}
+});
+
+// data contains the push payload just like a notification event
+push.on('emailGuests', function(data) {
+  console.log('I should email my guests');
+});
+
+push.on('snooze', function(data) {
+  console.log('Remind me later');
+});
+```
+
+If you wish to include an icon along with the button name they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from GCM:
 
 ```javascript
 {
@@ -785,8 +803,8 @@ Your notification can include a maximum of three action buttons. If you wish to 
     	"title": "AUX Scrum",
     	"message": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
         "actions": [
-    		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests", "foreground": true},
-    		{ "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze", "foreground": false}
+    		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "emailGuests", "foreground": true},
+    		{ "icon": "snooze", "title": "SNOOZE", "callback": "snooze", "foreground": false}
     	]
     }
 }
@@ -807,8 +825,8 @@ var message = {
         title: 'AUX Scrum',
         message: 'Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.',
         actions: [
-            { icon: "emailGuests", title: "EMAIL GUESTS", callback: "app.emailGuests", foreground: true},
-            { icon: "snooze", title: "SNOOZE", callback: "app.snooze", foreground: false},
+            { icon: "emailGuests", title: "EMAIL GUESTS", callback: "emailGuests", foreground: true},
+            { icon: "snooze", title: "SNOOZE", callback: "snooze", foreground: false},
         ]
     }
 };
@@ -827,7 +845,7 @@ This will produce the following notification in your tray:
 
 ![action_combo](https://cloud.githubusercontent.com/assets/353180/9313435/02554d2a-44f1-11e5-8cd9-0aadd1e02b18.png)
 
-If your user clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed if there is a function defined, and if there isn't an event will be emitted with the callback name. In this case it is `app.emailGuests` and `app.snooze` respectively. If you set the `foreground` property to `true` the app will be brought to the front, if `foreground` is `false` then the callback is run without the app being brought to the foreground.
+If your user clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified event will be emitted with the callback name. In this case it is `emailGuests` and `snooze` respectively. If you set the `foreground` property to `true` the app will be brought to the front, if `foreground` is `false` then the callback is run without the app being brought to the foreground.
 
 ### In Line Replies
 
@@ -842,8 +860,8 @@ Your notification can include action buttons. If you wish to include an icon alo
     	"title": "AUX Scrum",
     	"message": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
         "actions": [
-    		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests", "foreground": false, "inline": true },
-    		{ "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze", "foreground": false}
+    		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "emailGuests", "foreground": false, "inline": true },
+    		{ "icon": "snooze", "title": "SNOOZE", "callback": "snooze", "foreground": false}
     	]
     }
 }
@@ -864,8 +882,8 @@ var message = {
         title: 'AUX Scrum',
         message: 'Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.',
         actions: [
-            { "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests", "foreground": false, "inline": true},
-            { "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze", "foreground": false},
+            { "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "emailGuests", "foreground": false, "inline": true},
+            { "icon": "snooze", "title": "SNOOZE", "callback": "snooze", "foreground": false},
         ]
     }
 };
@@ -895,18 +913,18 @@ Then your app's `on('notification')` event handler will be called without the ap
     "actions": [
       {
         "inline": true,
-        "callback": "app.accept",
+        "callback": "accept",
         "foreground": false,
         "title": "Accept"
       },
       {
         "icon": "snooze",
-        "callback": "app.reject",
+        "callback": "reject",
         "foreground": false,
         "title": "Reject"
       }
     ],
-    "actionCallback": "app.accept",
+    "actionCallback": "accept",
     "coldstart": false,
     "collapse_key": "do_not_collapse",
     "foreground": false
@@ -924,7 +942,7 @@ Attribute | Type | Default | Description
 --------- | ---- | ------- | -----------
 `icon` | `string` | | Optional. The name of a drawable resource to use as the small-icon. The name should not include the extension.
 `title` | `string` | | Required. The label to display for the action button.
-`callback` | `string` | | Required. The function to be executed or the event to be emitted when the action button is pressed. The function must be accessible from the global namespace. If you provide `myCallback` then it amounts to calling `window.myCallback`. If you provide `app.myCallback` then there needs to be an object call `app`, with a function called `myCallback` accessible from the global namespace, i.e. `window.app.myCallback`. If there isn't a function with the specified name an event will be emitted with the callback name.
+`callback` | `string` | | Required. The event to be emitted when the action button is pressed.
 `foreground` | `boolean` | `true` | Optional. Whether or not to bring the app to the foreground when the action button is pressed.
 `inline` | `boolean` | `false` | Optional. Whether or not to provide a quick reply text field to the user when the button is clicked.
 
@@ -1466,7 +1484,7 @@ Android O introduces a new wrinkle to push notifications in the form of Notifica
 
 For instance if you register for push notifications like normal:
 
-```
+```javascript
 var push = PushNotification.init({
 	"android": {
 	}
