@@ -1550,6 +1550,10 @@ If you want the default sound to play upon receipt of push use this payload:
 
 ## Background Notifications
 
+**NOTE:** There is a bug in iOS 11 that does not process background notifications as well as it did in iOS 10. They have already announced a fix in iOS 11.1 and hopefully there will be a point release to fix this in iOS 11 as well. From the release notes for iOS 11.1 beta:
+
+> Notifications Resolved Issues • Silent push notifications are processed more frequently. (33278611)
+
 On iOS if you want your `on('notification')` event handler to be called when your app is in the background you will need to do a few things.
 
 First the JSON you send from APNS will need to include `"content-available": 1` to the `aps` object. The `"content-available": 1` property in your push message is a signal to iOS to wake up your app and give it up to 30 seconds of background processing. If do not want this type of behaviour just omit `"content-available": 1` from your push data. As well you *should* set a `notId` property in the root of payload object. This is the parameter you pass to the `finish` method in order to tell the operating system that the processing of the push event is done.
