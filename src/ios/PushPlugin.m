@@ -284,17 +284,26 @@
             [[UIApplication sharedApplication] registerForRemoteNotifications];
           
             [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidBecomeActiveNotification
-                                                  object:nil
-                                                   queue:[NSOperationQueue mainQueue]
-                                              usingBlock:^(NSNotification * _Nonnull note) {
-                                                  if ([[UIApplication sharedApplication] isRegisteredForRemoteNotifications]) {
-                                                      //user tapped "Allow"
-                                                  }
-                                                  else {
-                                                      NSLog(@"User didn't allowed Notifications for the App");
-                                                      [self failWithMessage:self.callbackId withMsg:@"User didn't allowed Notifications for the App" withError:Nil];
-                                                  }
-                                              }];
+                                                                                                   object:nil
+                                                                                                    queue:[NSOperationQueue mainQueue]
+                                                                                               usingBlock:^(NSNotification * _Nonnull note) {
+               [NSThread sleepForTimeInterval:0.1f];
+               BOOL enabled = NO;
+               id<UIApplicationDelegate> appDelegate = [UIApplication sharedApplication].delegate;
+               if ([appDelegate respondsToSelector:@selector(userHasRemoteNotificationsEnabled)]) {
+                   enabled = [appDelegate performSelector:@selector(userHasRemoteNotificationsEnabled)];
+               }
+               if (enabled) {
+                   NSLog(@"User allowed Notifications for the App");
+                   CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"allowed"];
+                   [pluginResult setKeepCallbackAsBool:YES];
+                   [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
+               }
+               else {
+                   NSLog(@"User disallowed Notifications for the App");
+                   [self failWithMessage:self.callbackId withMsg:@"disallowed" withError:Nil];
+               }
+            }];
         }
 
         // Read GoogleService-Info.plist
