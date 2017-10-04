@@ -100,4 +100,5 @@ public interface PushConstants {
   public static final String CREATE_CHANNEL = "create";
   public static final String DELETE_CHANNEL = "remove";
   public static final String UPDATE_CHANNEL = "update";
+  public static final String ONGOING = "ongoing";
 }

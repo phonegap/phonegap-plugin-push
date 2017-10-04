@@ -486,6 +486,11 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     setNotificationCount(context, extras, mBuilder);
 
     /*
+     *  Notification ongoing
+     */
+    setNotificationOngoing(extras, mBuilder);
+
+    /*
      * Notification count
      */
     setVisibility(context, extras, mBuilder);
@@ -629,6 +634,18 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     } else {
       if (vibrateOption) {
         mBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
+      }
+    }
+  }
+
+  private void setNotificationOngoing(Bundle extras, NotificationCompat.Builder mBuilder) {
+    String ongoingString = extras.getString(ONGOING);
+    if (ongoingString != null) {
+      try {
+        Boolean ongoing = Boolean.valueOf(ongoingString);
+        mBuilder.setOngoing(ongoing);
+      } catch (RuntimeException e) {
+        e.printStackTrace();
       }
     }
   }
