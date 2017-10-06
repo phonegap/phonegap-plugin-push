@@ -639,15 +639,8 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
   }
 
   private void setNotificationOngoing(Bundle extras, NotificationCompat.Builder mBuilder) {
-    String ongoingString = extras.getString(ONGOING);
-    if (ongoingString != null) {
-      try {
-        Boolean ongoing = Boolean.valueOf(ongoingString);
-        mBuilder.setOngoing(ongoing);
-      } catch (RuntimeException e) {
-        e.printStackTrace();
-      }
-    }
+    boolean ongoing = extras.optBoolean(ONGOING, false);
+    mBuilder.setOngoing(ongoing);
   }
 
   private void setNotificationMessage(int notId, Bundle extras, NotificationCompat.Builder mBuilder) {
