@@ -100,7 +100,7 @@ Make sure that the certificate you build with matches your `fcmSandbox` value.
 ### Example
 
 ```javascript
-var push = PushNotification.init({
+const push = PushNotification.init({
 	android: {
 	},
     browser: {
@@ -136,7 +136,7 @@ Parameter | Type | Description
 ### Example
 
 ```javascript
-PushNotification.hasPermission(function(data) {
+PushNotification.hasPermission((data) => {
     if (data.isEnabled) {
         console.log('isEnabled');
     }
@@ -166,7 +166,7 @@ Parameter | Type | Description
 ### Example
 
 ```javascript
-push.on('registration', function(data) {
+push.on('registration', (data) => {
   console.log(data.registrationId);
   console.log(data.registrationType);
 });
@@ -212,7 +212,7 @@ Parameter | Type | Description
 ### Example
 
 ```javascript
-push.on('notification', function(data) {
+push.on('notification', (data) => {
 	console.log(data.message);
 	console.log(data.title);
 	console.log(data.count);
@@ -235,7 +235,7 @@ Parameter | Type | Description
 ### Example
 
 ```javascript
-push.on('error', function(e) {
+push.on('error', (e) => {
 	console.log(e.message);
 });
 ```
@@ -253,7 +253,7 @@ Parameter | Type | Default | Description
 
 ### Example
 ```javascript
-var callback = function(data){ /*...*/};
+const callback = (data) => { /*...*/};
 
 //Adding handler for notification event
 push.on('notification', callback);
@@ -281,9 +281,9 @@ Parameter | Type | Default | Description
 ### Example
 
 ```javascript
-push.unregister(function() {
+push.unregister(() => {
 	console.log('success');
-}, function() {
+}, () => {
 	console.log('error');
 });
 ```
@@ -303,11 +303,10 @@ Parameter | Type | Default | Description
 ### Example
 
 ```javascript
-push.subscribe('my-topic', function() {
+push.subscribe('my-topic', () => {
 	console.log('success');
-}, function(e) {
-	console.log('error:');
-	console.log(e);
+}, (e) => {
+	console.log('error:', e);
 });
 ```
 ## push.unsubscribe(topic, successHandler, errorHandler)
@@ -325,11 +324,10 @@ Parameter | Type | Default | Description
 ### Example
 
 ```javascript
-push.unsubscribe('my-topic', function() {
+push.unsubscribe('my-topic', () => {
 	console.log('success');
-}, function(e) {
-	console.log('error:');
-	console.log(e);
+}, (e) => {
+	console.log('error:', e);
 });
 ```
 
@@ -350,9 +348,9 @@ Parameter | Type | Default | Description
 ### Example
 
 ```javascript
-push.setApplicationIconBadgeNumber(function() {
+push.setApplicationIconBadgeNumber(() => {
 	console.log('success');
-}, function() {
+}, () => {
 	console.log('error');
 }, 2);
 ```
@@ -379,9 +377,9 @@ Parameter | Type | Description
 ### Example
 
 ```javascript
-push.getApplicationIconBadgeNumber(function(n) {
+push.getApplicationIconBadgeNumber((n) => {
 	console.log('success', n);
-}, function() {
+}, () => {
 	console.log('error');
 });
 ```
@@ -401,9 +399,9 @@ Parameter | Type | Default | Description
 ### Example
 
 ```javascript
-push.finish(function() {
+push.finish(() => {
 	console.log('success');
-}, function() {
+}, () => {
 	console.log('error');
 }, 'push-1');
 ```
@@ -422,9 +420,9 @@ Parameter | Type | Default | Description
 ### Example
 
 ```javascript
-push.clearAllNotifications(function() {
+push.clearAllNotifications(() => {
 	console.log('success');
-}, function() {
+}, () => {
 	console.log('error');
 });
 ```
