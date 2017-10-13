@@ -9,7 +9,7 @@ All objects will be understood as having a defined type, including init options 
 All available attributes and properties will have autocomplete support and type checkings.
 
 ```typescript
-let push = PushNotification.init({
+const push = PushNotification.init({
 	android: {
 	},
 	ios: {
