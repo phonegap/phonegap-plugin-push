@@ -34,7 +34,9 @@ var PushNotification = function () {
     this.handlers = {
       registration: [],
       notification: [],
-      error: []
+      error: [],
+      allowed: [],
+      disallowed: []
     };
 
     // require options parameter
@@ -47,7 +49,9 @@ var PushNotification = function () {
 
     // triggered on registration and notification
     var success = function success(result) {
-      if (result && typeof result.registrationId !== 'undefined') {
+      if (result === 'allowed') {
+        _this.emit('allowed');
+      } else (result && typeof result.registrationId !== 'undefined') {
         _this.emit('registration', result);
       } else if (result && result.additionalData && typeof result.additionalData.actionCallback !== 'undefined') {
         _this.emit(result.additionalData.actionCallback, result);
@@ -58,6 +62,9 @@ var PushNotification = function () {
 
     // triggered on error
     var fail = function fail(msg) {
+      if (msg === 'disallowed') {
+        return _this.emit('disallowed');
+      }
       var e = typeof msg === 'string' ? new Error(msg) : msg;
       _this.emit('error', e);
     };
@@ -258,7 +265,10 @@ var PushNotification = function () {
     value: function off(eventName, handle) {
       if (this.handlers.hasOwnProperty(eventName)) {
         var handleIndex = this.handlers[eventName].indexOf(handle);
-        if (handleIndex >= 0) {
+        if (handle === undefined) {
+          this._handlers[eventName] = [];
+        }
+        else if (handleIndex >= 0) {
           this.handlers[eventName].splice(handleIndex, 1);
         }
       }
