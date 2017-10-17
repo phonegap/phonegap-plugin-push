@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads" xmlns:rim="http://www.blackberry.com/ns/widgets" id="phonegap-plugin-push" version="2.0.0">
+<plugin
+  xmlns="http://www.phonegap.com/ns/plugins/1.0"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads"
+  xmlns:rim="http://www.blackberry.com/ns/widgets" id="phonegap-plugin-push" version="2.0.0">
   <name>PushPlugin</name>
-  <description>
-    This plugin allows your application to receive push notifications on Android, iOS and Windows devices.
-    Android uses Firebase Cloud Messaging.
-    iOS uses Apple APNS Notifications.
-    Windows uses Microsoft WNS Notifications.
-  </description>
+  <description>    This plugin allows your application to receive push notifications on Android, iOS and Windows devices.    Android uses Firebase Cloud Messaging.    iOS uses Apple APNS Notifications.    Windows uses Microsoft WNS Notifications.  </description>
   <license>MIT</license>
   <js-module src="www/push.js" name="PushNotification">
     <clobbers target="PushNotification"/>
   </js-module>
   <engines>
-    <engine name="cordova" version=">=7.0.0"/>
-    <engine name="cordova-android" version=">=6.2.1"/>
+    <engine name="cordova" version=">=7.1.0"/>
+    <engine name="cordova-android" version=">=6.3.0"/>
     <engine name="cordova-ios" version=">=4.4.0"/>
   </engines>
   <platform name="android">
@@ -45,7 +44,8 @@
     </config-file>
     <framework src="com.android.support:support-v13:26.0.2"/>
     <framework src="me.leolin:ShortcutBadger:1.1.17@aar"/>
-    <framework src="com.google.firebase:firebase-messaging:11.0.1"/>
+    <preference name="FCM_VERSION" default="11.0.1" />
+    <framework src="com.google.firebase:firebase-messaging:$FCM_VERSION"/>
     <framework src="push.gradle" custom="true" type="gradleReference"/>
     <source-file src="src/android/com/adobe/phonegap/push/FCMService.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/"/>

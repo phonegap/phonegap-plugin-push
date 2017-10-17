@@ -13,12 +13,7 @@
   },
   "cordova": {
     "id": "phonegap-plugin-push",
-    "platforms": [
-      "ios",
-      "android",
-      "windows",
-      "browser"
-    ]
+    "platforms": ["ios", "android", "windows", "browser"]
   },
   "keywords": [
     "ecosystem:cordova",
@@ -46,6 +41,11 @@
         "cordova-ios": ">=4.4.0",
         "cordova-android": ">=6.2.1",
         "cordova": ">=7.0.0"
+      },
+      "2.1.0": {
+        "cordova-ios": ">=4.4.0",
+        "cordova-android": ">=6.3.0",
+        "cordova": ">=7.1.0"
       }
     }
   },
@@ -59,7 +59,7 @@
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
     "test": "npm run build && npm run jasmine"
   },
-  "pre-commit": [ "precommit-msg", "eslint", "test" ],
+  "pre-commit": ["precommit-msg", "eslint", "test"],
   "devDependencies": {
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
