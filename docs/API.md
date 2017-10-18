@@ -4,6 +4,7 @@
 - [.hasPermission()](#pushnotificationhaspermissionsuccesshandler)
 - [.createChannel() - Android only](#pushnotificationcreatechannel)
 - [.deleteChannel() - Android only](#pushnotificationdeletechannel)
+- [.listChannels() - Android only](#pushnotificationlistchannels)
 - [push.on()](#pushonevent-callback)
   - [push.on('registration')](#pushonregistration-callback)
   - [push.on('notification')](#pushonnotification-callback)
@@ -191,6 +192,34 @@ PushNotification.deleteChannel(() => {
   console.log('success');
 }, () => {
   console.log('error');
+});
+```
+
+## PushNotification.listChannels(successHandler)
+
+Returns a list of currently configured channels.
+
+### Parameters
+
+Parameter | Type | Default | Description
+--------- | ---- | ------- | -----------
+`successHandler` | `Function` | | Is called when the api successfully retrieves the list of channels.
+
+### Callback parameters
+
+#### `successHandler`
+
+Parameter | Type | Description
+--------- | ---- | -----------
+`channels` | `JSONArrary` | List of channel objects.
+
+### Example
+
+```javascript
+PushNotification.listChannels((channels) => {
+    for(let channel of channels) {
+      console.log(`ID: ${channel.id} Description: ${channel.description}`);
+    }
 });
 ```
 

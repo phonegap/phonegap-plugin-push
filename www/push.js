@@ -354,6 +354,10 @@ module.exports = {
     exec(successCallback, errorCallback, 'PushNotification', 'deleteChannel', [channelId]);
   },
 
+  listChannels: function listChannels(successCallback, errorCallback) {
+    exec(successCallback, errorCallback, 'PushNotification', 'listChannels', []);
+  },
+
   /**
    * PushNotification Object.
    *

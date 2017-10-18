@@ -47,6 +47,11 @@ describe('phonegap-plugin-push', function () {
       expect(typeof PushNotification.deleteChannel === 'function').toBe(true);
     });
 
+    it('should contain a listChannels function', function () {
+      expect(PushNotification.listChannels).toBeDefined();
+      expect(typeof PushNotification.listChannels === 'function').toBe(true);
+    });
+
     it('should contain a unregister function', function () {
       var push = PushNotification.init({});
       expect(push.unregister).toBeDefined();

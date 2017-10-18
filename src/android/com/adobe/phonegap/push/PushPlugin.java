@@ -57,6 +57,24 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
   }
 
   @TargetApi(26)
+  private JSONArray listChannels() throws JSONException {
+    JSONArray channels = new JSONArray();
+    // only call on Android O and above
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
+          .getSystemService(Context.NOTIFICATION_SERVICE);
+      List<NotificationChannel> notificationChannels = notificationManager.getNotificationChannels();
+      for (NotificationChannel notificationChannel : notificationChannels) {
+        JSONObject channel = new JSONObject();
+        channel.put(CHANNEL_ID, notificationChannel.getId());
+        channel.put(CHANNEL_DESCRIPTION, notificationChannel.getDescription());
+        channels.put(channel);
+      }
+    }
+    return channels;
+  }
+
+  @TargetApi(26)
   private void deleteChannel(String channelId) {
     // only call on Android O and above
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -353,6 +371,17 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
             String channelId = data.getString(0);
             deleteChannel(channelId);
             callbackContext.success();
+          } catch (JSONException e) {
+            callbackContext.error(e.getMessage());
+          }
+        }
+      });
+    } else if (LIST_CHANNELS.equals(action)) {
+      // un-subscribing for a topic
+      cordova.getThreadPool().execute(new Runnable() {
+        public void run() {
+          try {
+            callbackContext.success(listChannels());
           } catch (JSONException e) {
             callbackContext.error(e.getMessage());
           }
