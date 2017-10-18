@@ -21,6 +21,7 @@
   - [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
   - [Application force closed](#application-force-closed)
   - [Visibility](#visibility-of-notifications)
+  - [Ongoing Notifications](#ongoing-notifications)
   - [Badges](#badges)
   - [Support for Twilio Notify](#support-for-twilio-notify)
   - [Notification ID](#notification-id)
@@ -1381,6 +1382,49 @@ const message = {
 };
 
 fcm.send(message, (err, response) => {
+  if (err) {
+    console.log(err);
+    console.log("Something has gone wrong!");
+  } else {
+    console.log("Successfully sent with response: ", response);
+  }
+});
+```
+
+## Ongoing Notifications
+
+Set whether this is an "ongoing" notification. Ongoing notifications cannot be dismissed by the user, so your application or service must take care of canceling them. They are typically used to indicate a background task that the user is actively engaged with (e.g., playing music) or is pending in some way and therefore occupying the device (e.g., a file download, sync operation, active network connection).
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+      "title": "This is an ongoing Notification",
+      "message": "Some people also call me a sticky notification",
+      "ongoing": true
+    }
+}
+```
+
+Here is an example using fcm-node that sends the above JSON:
+
+```javascript
+var FCM = require('fcm-node');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var fcm = new FCM(apiKey);
+
+var message = {
+    to: deviceID,
+    data: {
+        title: 'This is an ongoing Notification',
+        message: 'Some people also call me a sticky notification',
+        ongoing: true
+    }
+};
+
+fcm.send(message, function(err, response){
   if (err) {
     console.log(err);
     console.log("Something has gone wrong!");
