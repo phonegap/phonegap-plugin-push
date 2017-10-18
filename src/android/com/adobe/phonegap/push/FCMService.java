@@ -564,8 +564,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
           }
 
           NotificationCompat.Action.Builder actionBuilder = new NotificationCompat.Action.Builder(
-              resources.getIdentifier(action.optString(ICON, ""), DRAWABLE, packageName), action.getString(TITLE),
-              pIntent);
+              getImageId(resources, action.optString(ICON, ""), packageName), action.getString(TITLE), pIntent);
 
           RemoteInput remoteInput = null;
           if (inline) {
@@ -581,8 +580,8 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
           if (inline) {
             mBuilder.addAction(wAction);
           } else {
-            mBuilder.addAction(resources.getIdentifier(action.optString(ICON, ""), DRAWABLE, packageName),
-                action.getString(TITLE), pIntent);
+            mBuilder.addAction(getImageId(resources, action.optString(ICON, ""), packageName), action.getString(TITLE),
+                pIntent);
           }
           wAction = null;
           pIntent = null;
@@ -824,7 +823,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
           Log.d(LOG_TAG, "using assets large-icon from gcm");
         } catch (IOException e) {
           int largeIconId = 0;
-          largeIconId = resources.getIdentifier(gcmLargeIcon, DRAWABLE, packageName);
+          largeIconId = getImageId(resources, gcmLargeIcon, packageName);
           if (largeIconId != 0) {
             Bitmap largeIconBitmap = BitmapFactory.decodeResource(resources, largeIconId);
             mBuilder.setLargeIcon(largeIconBitmap);
@@ -837,15 +836,23 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     }
   }
 
+  private int getImageId(Resources resources, String icon, String packageName) {
+    int iconId = resources.getIdentifier(icon, DRAWABLE, packageName);
+    if (iconId == 0) {
+      iconId = resources.getIdentifier(icon, "mipmap", packageName);
+    }
+    return iconId;
+  }
+
   private void setNotificationSmallIcon(Context context, Bundle extras, String packageName, Resources resources,
       NotificationCompat.Builder mBuilder, String localIcon) {
     int iconId = 0;
     String icon = extras.getString(ICON);
     if (icon != null && !"".equals(icon)) {
-      iconId = resources.getIdentifier(icon, DRAWABLE, packageName);
+      iconId = getImageId(resources, icon, packageName);
       Log.d(LOG_TAG, "using icon from plugin options");
     } else if (localIcon != null && !"".equals(localIcon)) {
-      iconId = resources.getIdentifier(localIcon, DRAWABLE, packageName);
+      iconId = getImageId(resources, localIcon, packageName);
       Log.d(LOG_TAG, "using icon from plugin options");
     }
     if (iconId == 0) {
