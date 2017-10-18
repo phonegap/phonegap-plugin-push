@@ -58,63 +58,71 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
   @TargetApi(26)
   private void deleteChannel(String channelId) {
-    final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
-        .getSystemService(Context.NOTIFICATION_SERVICE);
-    notificationManager.deleteNotificationChannel(channelId);
+    // only call on Android O and above
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
+          .getSystemService(Context.NOTIFICATION_SERVICE);
+      notificationManager.deleteNotificationChannel(channelId);
+    }
   }
 
   @TargetApi(26)
   private void createChannel(JSONObject channel) throws JSONException {
-    final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
-        .getSystemService(Context.NOTIFICATION_SERVICE);
+    // only call on Android O and above
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
+          .getSystemService(Context.NOTIFICATION_SERVICE);
 
-    String packageName = getApplicationContext().getPackageName();
-    NotificationChannel mChannel = new NotificationChannel(channel.getString(CHANNEL_ID),
-        channel.optString(CHANNEL_DESCRIPTION, ""),
-        channel.optInt(CHANNEL_IMPORTANCE, NotificationManager.IMPORTANCE_DEFAULT));
+      String packageName = getApplicationContext().getPackageName();
+      NotificationChannel mChannel = new NotificationChannel(channel.getString(CHANNEL_ID),
+          channel.optString(CHANNEL_DESCRIPTION, ""),
+          channel.optInt(CHANNEL_IMPORTANCE, NotificationManager.IMPORTANCE_DEFAULT));
 
-    int lightColor = channel.optInt(CHANNEL_LIGHT_COLOR, -1);
-    if (lightColor != -1) {
-      mChannel.setLightColor(lightColor);
+      int lightColor = channel.optInt(CHANNEL_LIGHT_COLOR, -1);
+      if (lightColor != -1) {
+        mChannel.setLightColor(lightColor);
+      }
+
+      int visibility = channel.optInt(VISIBILITY, NotificationCompat.VISIBILITY_PUBLIC);
+      mChannel.setLockscreenVisibility(visibility);
+
+      boolean badge = channel.optBoolean(BADGE, true);
+      mChannel.setShowBadge(badge);
+
+      String sound = channel.optString(SOUND, "default");
+      AudioAttributes audioAttributes = new AudioAttributes.Builder()
+          .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+          .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build();
+      if (SOUND_RINGTONE.equals(sound)) {
+        mChannel.setSound(android.provider.Settings.System.DEFAULT_RINGTONE_URI, audioAttributes);
+      } else if (sound != null && !sound.contentEquals(SOUND_DEFAULT)) {
+        Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + packageName + "/raw/" + sound);
+        mChannel.setSound(soundUri, audioAttributes);
+      } else {
+        mChannel.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI, audioAttributes);
+      }
+
+      //JSONArray pattern = channel.optJSONArray(CHANNEL_VIBRATION);
+      //mChannel.setVibrationPattern();
+
+      notificationManager.createNotificationChannel(mChannel);
     }
-
-    int visibility = channel.optInt(VISIBILITY, NotificationCompat.VISIBILITY_PUBLIC);
-    mChannel.setLockscreenVisibility(visibility);
-
-    boolean badge = channel.optBoolean(BADGE, true);
-    mChannel.setShowBadge(badge);
-
-    String sound = channel.optString(SOUND, "default");
-    AudioAttributes audioAttributes = new AudioAttributes.Builder()
-        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-        .build();
-    if (SOUND_RINGTONE.equals(sound)) {
-      mChannel.setSound(android.provider.Settings.System.DEFAULT_RINGTONE_URI, audioAttributes);
-    } else if (sound != null && !sound.contentEquals(SOUND_DEFAULT)) {
-      Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + packageName + "/raw/" + sound);
-      mChannel.setSound(soundUri, audioAttributes);
-    } else {
-      mChannel.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI, audioAttributes);
-    }
-
-    //JSONArray pattern = channel.optJSONArray(CHANNEL_VIBRATION);
-    //mChannel.setVibrationPattern();
-
-    notificationManager.createNotificationChannel(mChannel);
   }
 
   @TargetApi(26)
   private void notificationChannelExists(JSONObject options) {
-    final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
-        .getSystemService(Context.NOTIFICATION_SERVICE);
-    List<NotificationChannel> channels = notificationManager.getNotificationChannels();
-    if (channels.size() == 0) {
-      NotificationChannel mChannel = new NotificationChannel(DEFAULT_CHANNEL_ID, "PhoneGap PushPlugin",
-          NotificationManager.IMPORTANCE_DEFAULT);
-      mChannel.enableVibration(options.optBoolean(VIBRATE, true));
-      notificationManager.createNotificationChannel(mChannel);
+    // only call on Android O and above
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
+          .getSystemService(Context.NOTIFICATION_SERVICE);
+      List<NotificationChannel> channels = notificationManager.getNotificationChannels();
+      if (channels.size() == 0) {
+        NotificationChannel mChannel = new NotificationChannel(DEFAULT_CHANNEL_ID, "PhoneGap PushPlugin",
+            NotificationManager.IMPORTANCE_DEFAULT);
+        mChannel.enableVibration(options.optBoolean(VIBRATE, true));
+        notificationManager.createNotificationChannel(mChannel);
+      }
     }
-
   }
 
   @Override
