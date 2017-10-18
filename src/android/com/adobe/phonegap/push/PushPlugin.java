@@ -128,7 +128,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
   }
 
   @TargetApi(26)
-  private void notificationChannelExists(JSONObject options) {
+  private void createDefaultNotificationChannelIfNeeded(JSONObject options) {
     // only call on Android O and above
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
@@ -164,7 +164,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
             jo = data.getJSONObject(0).getJSONObject(ANDROID);
 
             // If no NotificationChannels exist create the default one
-            notificationChannelExists(jo);
+            createDefaultNotificationChannelIfNeeded(jo);
 
             Log.v(LOG_TAG, "execute: jo=" + jo.toString());
 
