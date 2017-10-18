@@ -1536,22 +1536,9 @@ const push = PushNotification.init({
 });
 ```
 
-The plugin will register a channel for you that will have the id of your Android PACKAGE_NAME + "PushPluginChannel". Any push notifications that arrive on your device that don't specify a channel ID or use "PushPluginChannel" as the channel will be delivered.
+The plugin will register a channel for you that will have the id of "PushPluginChannel". Any push notifications that arrive on your device that don't specify a channel ID or use "PushPluginChannel" as the channel will be delivered.
 
-However, if you want to take advantage of multiple channels in your app you can pass the channel array as part of `init` like so:
-
-```
-const push = PushNotification.init({
-	"android": {
-    "channels": [
-      {"id": "testchannel1", "description": "Test Channel 1", "importance": 1, "state": "create"},
-      {"id": "testchannel2", "description": "Test Channel 2", "importance": 3, "state": "create"},
-    ]
-	}
-});
-```
-
-The above will create two channels for your app. You'll need to provide the `id`, `description` and `importance` properties. If you omit `state` then it will assume you want to create/update the channel. The importance property goes from 1 = Lowest, 2 = Low, 3 = Normal, 4 = High and 5 = Highest.
+However, if you want to take advantage of multiple channels in your app you can use the `createChannel` and `deleteChannel` methods to modify your apps channels.
 
 Now when you send a push payload to the device you'll need to specify a channel:
 
@@ -1567,21 +1554,6 @@ Now when you send a push payload to the device you'll need to specify a channel:
 ```
 
 Failure to specify a channel in this case will prevent the NotificationManager from being able to deliver your notification.
-
-So if you want to remove a channel you'll need to call init again:
-
-```
-const push = PushNotification.init({
-	"android": {
-    "channels": [
-      {"id": "testchannel1", "description": "Test Channel 1", "importance": 1, "state": "remove"},
-      {"id": "testchannel2", "description": "Test Channel 2", "importance": 3, "state": "create"},
-    ]
-	}
-});
-```
-
-The channel with ID = `testchannel1` will be removed and `testchannel2` will be your only messaging channel.
 
 # iOS Behaviour
 

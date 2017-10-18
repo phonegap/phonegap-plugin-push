@@ -346,6 +346,14 @@ module.exports = {
     exec(successCallback, errorCallback, 'PushNotification', 'hasPermission', []);
   },
 
+  createChannel: function createChannel(successCallback, errorCallback, channel) {
+    exec(successCallback, errorCallback, 'PushNotification', 'createChannel', [channel]);
+  },
+
+  deleteChannel: function deleteChannel(successCallback, errorCallback, channelId) {
+    exec(successCallback, errorCallback, 'PushNotification', 'deleteChannel', [channelId]);
+  },
+
   /**
    * PushNotification Object.
    *

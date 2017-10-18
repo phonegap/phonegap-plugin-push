@@ -91,14 +91,10 @@ public interface PushConstants {
   public static final String CHANNEL_DESCRIPTION = "description";
   public static final String CHANNEL_IMPORTANCE = "importance";
   public static final String CHANNEL_LIGHT_COLOR = "lightColor";
-  public static final String CHANNEL_VISIBILITY = "visibility";
-  public static final String CHANNEL_BADGE = "badge";
-  public static final String CHANNEL_SOUND = "sound";
   public static final String CHANNEL_VIBRATION = "vibration";
   public static final String ANDROID_CHANNEL_ID = "android_channel_id";
   public static final String CHANNEL_STATE = "state";
-  public static final String CREATE_CHANNEL = "create";
-  public static final String DELETE_CHANNEL = "remove";
-  public static final String UPDATE_CHANNEL = "update";
+  public static final String CREATE_CHANNEL = "createChannel";
+  public static final String DELETE_CHANNEL = "deleteChannel";
   public static final String ONGOING = "ongoing";
 }

@@ -57,62 +57,19 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
   }
 
   @TargetApi(26)
-  private void updateChannels(JSONObject options) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      JSONArray channels = null;
-      try {
-        channels = options.getJSONArray(CHANNELS);
-      } catch (JSONException e) {
-        Log.d(LOG_TAG, "No channels specified. Using default: " + DEFAULT_CHANNEL_ID);
-        channels = new JSONArray();
-      }
-
-      final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
-          .getSystemService(Context.NOTIFICATION_SERVICE);
-
-      Log.d(LOG_TAG, "channel length = " + channels.length());
-
-      if (channels.length() > 0) {
-        JSONArray create = new JSONArray();
-        JSONArray remove = new JSONArray();
-        for (int i = 0; i < channels.length(); i++) {
-          try {
-            JSONObject channel = channels.optJSONObject(i);
-
-            if (channel != null) {
-              Log.d(LOG_TAG, channel.optString(CHANNEL_STATE, CREATE_CHANNEL));
-              if (!channel.optString(CHANNEL_STATE, CREATE_CHANNEL).equals(DELETE_CHANNEL)) {
-                Log.d(LOG_TAG, "create channel: " + channel.optString(CHANNEL_ID));
-                createChannel(notificationManager, channel);
-              } else {
-                Log.d(LOG_TAG, "delete channel: " + channel.optString(CHANNEL_ID));
-                deleteChannel(notificationManager, channel);
-              }
-            }
-          } catch (JSONException e) {
-            Log.e(LOG_TAG, "Error getting channel");
-          }
-        }
-      } else {
-        NotificationChannel mChannel = new NotificationChannel(
-            getApplicationContext().getPackageName() + DEFAULT_CHANNEL_ID, "PhoneGap PushPlugin",
-            NotificationManager.IMPORTANCE_DEFAULT);
-        mChannel.enableVibration(options.optBoolean(VIBRATE, true));
-        notificationManager.createNotificationChannel(mChannel);
-      }
-    }
+  private void deleteChannel(String channelId) {
+    final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
+        .getSystemService(Context.NOTIFICATION_SERVICE);
+    notificationManager.deleteNotificationChannel(channelId);
   }
 
   @TargetApi(26)
-  private void deleteChannel(NotificationManager notificationManager, JSONObject channel) throws JSONException {
-    notificationManager
-        .deleteNotificationChannel(getApplicationContext().getPackageName() + channel.getString(CHANNEL_ID));
-  }
+  private void createChannel(JSONObject channel) throws JSONException {
+    final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
+        .getSystemService(Context.NOTIFICATION_SERVICE);
 
-  @TargetApi(26)
-  private void createChannel(NotificationManager notificationManager, JSONObject channel) throws JSONException {
     String packageName = getApplicationContext().getPackageName();
-    NotificationChannel mChannel = new NotificationChannel(packageName + channel.getString(CHANNEL_ID),
+    NotificationChannel mChannel = new NotificationChannel(channel.getString(CHANNEL_ID),
         channel.optString(CHANNEL_DESCRIPTION, ""),
         channel.optInt(CHANNEL_IMPORTANCE, NotificationManager.IMPORTANCE_DEFAULT));
 
@@ -121,13 +78,13 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
       mChannel.setLightColor(lightColor);
     }
 
-    int visibility = channel.optInt(CHANNEL_VISIBILITY, NotificationCompat.VISIBILITY_PUBLIC);
+    int visibility = channel.optInt(VISIBILITY, NotificationCompat.VISIBILITY_PUBLIC);
     mChannel.setLockscreenVisibility(visibility);
 
-    boolean badge = channel.optBoolean(CHANNEL_BADGE, true);
+    boolean badge = channel.optBoolean(BADGE, true);
     mChannel.setShowBadge(badge);
 
-    String sound = channel.optString(CHANNEL_SOUND, "default");
+    String sound = channel.optString(SOUND, "default");
     AudioAttributes audioAttributes = new AudioAttributes.Builder()
         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
         .build();
@@ -144,6 +101,20 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     //mChannel.setVibrationPattern();
 
     notificationManager.createNotificationChannel(mChannel);
+  }
+
+  @TargetApi(26)
+  private void notificationChannelExists(JSONObject options) {
+    final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
+        .getSystemService(Context.NOTIFICATION_SERVICE);
+    List<NotificationChannel> channels = notificationManager.getNotificationChannels();
+    if (channels.size() == 0) {
+      NotificationChannel mChannel = new NotificationChannel(DEFAULT_CHANNEL_ID, "PhoneGap PushPlugin",
+          NotificationManager.IMPORTANCE_DEFAULT);
+      mChannel.enableVibration(options.optBoolean(VIBRATE, true));
+      notificationManager.createNotificationChannel(mChannel);
+    }
+
   }
 
   @Override
@@ -166,8 +137,8 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
           try {
             jo = data.getJSONObject(0).getJSONObject(ANDROID);
 
-            // NotificationChannels
-            updateChannels(jo);
+            // If no NotificationChannels exist create the default one
+            notificationChannelExists(jo);
 
             Log.v(LOG_TAG, "execute: jo=" + jo.toString());
 
@@ -347,6 +318,32 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
           try {
             String topic = data.getString(0);
             unsubscribeFromTopic(topic, registration_id);
+            callbackContext.success();
+          } catch (JSONException e) {
+            callbackContext.error(e.getMessage());
+          }
+        }
+      });
+    } else if (CREATE_CHANNEL.equals(action)) {
+      // un-subscribing for a topic
+      cordova.getThreadPool().execute(new Runnable() {
+        public void run() {
+          try {
+            // call create channel
+            createChannel(data.getJSONObject(0));
+            callbackContext.success();
+          } catch (JSONException e) {
+            callbackContext.error(e.getMessage());
+          }
+        }
+      });
+    } else if (DELETE_CHANNEL.equals(action)) {
+      // un-subscribing for a topic
+      cordova.getThreadPool().execute(new Runnable() {
+        public void run() {
+          try {
+            String channelId = data.getString(0);
+            deleteChannel(channelId);
             callbackContext.success();
           } catch (JSONException e) {
             callbackContext.error(e.getMessage());

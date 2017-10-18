@@ -2,6 +2,8 @@
 
 - [.init()](#pushnotificationinitoptions)
 - [.hasPermission()](#pushnotificationhaspermissionsuccesshandler)
+- [.createChannel() - Android only](#pushnotificationcreatechannel)
+- [.deleteChannel() - Android only](#pushnotificationdeletechannel)
 - [push.on()](#pushonevent-callback)
   - [push.on('registration')](#pushonregistration-callback)
   - [push.on('notification')](#pushonnotification-callback)
@@ -49,7 +51,6 @@ Attribute | Type | Default | Description
 `android.topics` | `array` | `[]` | Optional. If the array contains one or more strings each string will be used to subscribe to a FcmPubSub topic.
 `android.messageKey` | `string` | `message` | Optional. The key to search for text of notification.
 `android.titleKey` | `string` | `'title'` | Optional. The key to search for title of notification.
-`android.channels` } `array` | [] | Option. Setup notification channels for Android O. See payload documentation for more details.
 
 #### Browser
 
@@ -140,6 +141,56 @@ PushNotification.hasPermission((data) => {
     if (data.isEnabled) {
         console.log('isEnabled');
     }
+});
+```
+
+## PushNotification.createChannel(successHandler, failureHandler, channel)
+
+Create a new notification channel for Android O and above.
+
+### Parameters
+
+Parameter | Type | Default | Description
+--------- | ---- | ------- | -----------
+`successHandler` | `Function` | | Is called when the api successfully creates a channel.
+`failureHandler` | `Function` | | Is called when the api fails to create a channel.
+`channel` | `Object` | | The options for the channel.
+
+### Example
+
+```javascript
+PushNotification.createChannel(() => {
+  console.log('success');
+}, () => {
+  console.log('error');
+}, {
+  id: "testchannel1",
+  description: "My first test channel",
+  importance: 3
+});
+```
+
+The above will create a channel for your app. You'll need to provide the `id`, `description` and `importance` properties. The importance property goes from 1 = Lowest, 2 = Low, 3 = Normal, 4 = High and 5 = Highest.
+
+## PushNotification.deleteChannel(successHandler, failureHandler, channelId)
+
+Delete a notification channel for Android O and above.
+
+### Parameters
+
+Parameter | Type | Default | Description
+--------- | ---- | ------- | -----------
+`successHandler` | `Function` | | Is called when the api successfully creates a channel.
+`failureHandler` | `Function` | | Is called when the api fails to create a channel.
+`channelId` | `String` | | The ID of the channel.
+
+### Example
+
+```javascript
+PushNotification.deleteChannel(() => {
+  console.log('success');
+}, () => {
+  console.log('error');
 });
 ```
 
