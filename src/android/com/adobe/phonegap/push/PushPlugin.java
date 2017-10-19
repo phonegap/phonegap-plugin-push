@@ -138,6 +138,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         NotificationChannel mChannel = new NotificationChannel(DEFAULT_CHANNEL_ID, "PhoneGap PushPlugin",
             NotificationManager.IMPORTANCE_DEFAULT);
         mChannel.enableVibration(options.optBoolean(VIBRATE, true));
+        mChannel.setShowBadge(true);
         notificationManager.createNotificationChannel(mChannel);
       }
     }
