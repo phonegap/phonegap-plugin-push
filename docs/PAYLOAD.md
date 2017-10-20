@@ -1667,21 +1667,21 @@ const push = PushNotification.init({
 		"categories": {
 			"invite": {
 				"yes": {
-					"callback": "app.accept", "title": "Accept", "foreground": true, "destructive": false
+					"callback": "accept", "title": "Accept", "foreground": true, "destructive": false
 				},
 				"no": {
-					"callback": "app.reject", "title": "Reject", "foreground": true, "destructive": false
+					"callback": "reject", "title": "Reject", "foreground": true, "destructive": false
 				},
 				"maybe": {
-					"callback": "app.maybe", "title": "Maybe", "foreground": true, "destructive": false
+					"callback": "maybe", "title": "Maybe", "foreground": true, "destructive": false
 				}
 			},
 			"delete": {
 				"yes": {
-					"callback": "app.doDelete", "title": "Delete", "foreground": true, "destructive": true
+					"callback": "doDelete", "title": "Delete", "foreground": true, "destructive": true
 				},
 				"no": {
-					"callback": "app.cancel", "title": "Cancel", "foreground": true, "destructive": false
+					"callback": "cancel", "title": "Cancel", "foreground": true, "destructive": false
 				}
 			}
 		}
@@ -1689,12 +1689,32 @@ const push = PushNotification.init({
 });
 ```
 
-You’ll notice that we’ve added a new parameter to the iOS object of our init code called categories. Each category is a named object, invite and delete in this case. These names will need to match the one you send via your payload to APNS if you want the action buttons to be displayed. Each category can have up to three buttons which must be labeled `yes`, `no` and `maybe`. In turn each of these buttons has four properties, `callback` the javascript function you want to call, `title` the label for the button, `foreground` whether or not to bring your app to the foreground and `destructive` which doesn’t actually do anything destructive it just colors the button red as a warning to the user that the action may be destructive.
+You’ll notice that we’ve added a new parameter to the iOS object of our init code called categories. Each category is a named object, invite and delete in this case. These names will need to match the one you send via your payload to APNS if you want the action buttons to be displayed. Each category can have up to three buttons which must be labeled `yes`, `no` and `maybe`. In turn each of these buttons has four properties, `callback` the javascript event you want to fired, `title` the label for the button, `foreground` whether or not to bring your app to the foreground and `destructive` which doesn’t actually do anything destructive it just colors the button red as a warning to the user that the action may be destructive.
 
-Just like with background notifications it is absolutely critical that you call `push.finish()` when you have successfully processed the button callback. For instance:
+Just like with background notifications it is absolutely critical that you call `push.finish()` when you have successfully processed the button callback. For instance you could setup three event listeners for the `invite` categories yes, no and maybe buttons:
 
 ```javascript
-app.accept = (data) => {
+push.on('accept', (data) => {
+    // do something with the notification data
+
+    push.finish(() => {
+        console.log('accept callback finished');
+    }, () => {
+        console.log('accept callback failed');
+    }, data.additionalData.notId);
+};
+
+push.on('reject', (data) => {
+    // do something with the notification data
+
+    push.finish(() => {
+        console.log('accept callback finished');
+    }, () => {
+        console.log('accept callback failed');
+    }, data.additionalData.notId);
+};
+
+push.on('maybe', (data) => {
     // do something with the notification data
 
     push.finish(() => {
