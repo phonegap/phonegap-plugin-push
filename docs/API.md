@@ -192,7 +192,7 @@ PushNotification.deleteChannel(() => {
   console.log('success');
 }, () => {
   console.log('error');
-});
+}, 'testchannel1');
 ```
 
 ## PushNotification.listChannels(successHandler)
