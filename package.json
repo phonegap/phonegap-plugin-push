@@ -72,7 +72,7 @@
     "eslint-plugin-react": "^5.2.2",
     "jasmine-node": "1.14.5",
     "nodemon": "^1.9.2",
-    "pluginpub": "^0.0.8",
+    "pluginpub": "^0.0.9",
     "pre-commit": "^1.2.2"
   },
   "dependencies": {
