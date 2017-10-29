@@ -48,15 +48,15 @@ The following flowchart attempts to give you a picture of what happens when a pu
 
 ## Push message arrives with app in foreground
 
-- The push plugin receives the data from the remote push service and calls all of your `notification`  event handlers.
-- The message is *not* displayed in the devices notification center as that is not normal behaviour for Android or iOS.
+- The push plugin receives the data from the remote push service and calls all of your `on('notification')`  event handlers.
+- The message is *not* displayed in the devices' notification center, as that is not normal behaviour for Android or iOS.
 
 ## Push message arrives with app in background
 
-- The push plugin receives the data from the remote push service and checks to see if there is a title or message in the data received. If there is then the message will be displayed in the devices notification center.
-- Then the push plugin checks to see if the app is running. If the user has killed the application then no further processing of the push data will occur.
+- The push plugin receives the data from the remote push service and checks to see if there is a title or message in the received data object. If there is, then the message will be displayed in the devices notification center.
+- Then the push plugin checks to see if the app is running. If the user has killed the application, then no further processing of the push data will occur.
 - If the app is running in the background the push plugin then checks to see if `content-available` exists in the push data.
-- If `content-available` is set to `1` then the plugin calls all of your `notification` event handlers.
+- If `content-available` is set to `1`, then the plugin calls all of your `notification` event handlers.
 
 ## User clicks on notification in notification center
 
@@ -68,7 +68,7 @@ The following flowchart attempts to give you a picture of what happens when a pu
 Some ways to handle this *double* event are:
 
 - don't include title/message in the push so it doesn't show up in the shader.
-- send two pushes, one to be processed in the background the other to show up in the shade.
+- send two pushes, one to be processed in the background, and the other to show up in the shade.
 - include a unique ID in your push so you can check to see if you've already processed this event.
 
 # Android Behaviour
@@ -89,7 +89,7 @@ For instance if you send the following payload:
 }
 ```
 
-When your app is in the foreground any `on('notification')` handlers you have registered will be called. However if your app is in the background the notification will show up in the system tray. Clicking on the notification in the system tray will start the app but your `on('notification')` handler will not be called as messages with only `notification` payloads will not cause the plugins `onMessageReceived` method to be called.
+When your app is in the foreground, any `on('notification')` handlers you have registered will be called. However, if your app is in the background, the notification will show up in the system tray. Clicking on the notification in the system tray will start the app but your `on('notification')` handler will not be called as messages that have `notification` payloads will not cause the plugins `onMessageReceived` method to be called.
 
 If you send a payload with a mix of `notification` & `data` objects like this:
 
@@ -106,7 +106,7 @@ If you send a payload with a mix of `notification` & `data` objects like this:
 }
 ```
 
-When your app is in the foreground any `on('notification')` handlers you have registered will be called. If your app is in the background the notification will show up in the system tray. Clicking on the notification in the system tray will start the app and your `on('notification')` handler will not be called as messages with only `notification` payloads will not cause the plugins `onMessageReceived` method to be called.
+When your app is in the foreground any `on('notification')` handlers you have registered will be called. If your app is in the background, the notification will show up in the system tray. Clicking on the notification in the system tray will start the app and your `on('notification')` handler will not be called as messages that have `notification` payloads will not cause the plugins `onMessageReceived` method to be called.
 
 My recommended format for your push payload when using this plugin (while it differs from Google's docs) works 100% of the time:
 
@@ -121,7 +121,7 @@ My recommended format for your push payload when using this plugin (while it dif
 }
 ```
 
-When your app is in the foreground any `on('notification')` handlers you have registered will be called. If your app is in the background the notification will show up in the system tray. Clicking on the notification in the system tray will start the app and your `on('notification')` handler will be called and the event received by your `on('notification')` handler will get the following data:
+When your app is in the foreground any `on('notification')` handlers you have registered will be called. If your app is in the background, then the notification will show up in the system tray. Clicking on the notification in the system tray will start the app, and your `on('notification')` handler will be called with the following data:
 
 ```
 {
@@ -224,7 +224,7 @@ The result will look much like this:
 
 This is because Android now uses Material design and the default icon for push will be completely white.
 
-In order to get a better user experience you can specify an alternate icon and background color to be shown when receiving a push notification. The code would look like this:
+In order to get a better user experience, you can specify an alternate icon and background color to be shown when receiving a push notification. The code would look like this:
 
 ```javascript
 const push = PushNotification.init({
@@ -247,15 +247,15 @@ const push = PushNotification.init({
 Where *icon* is the name of an `.png` image file in the Android `res/drawable` folder. For example: `platforms/android/res/drawable/phonegap.png`
 Writing a hook to describe how to copy an image to the Android `res/drawable` folder is out of scope for this README but there is an [excellent tutorial](http://devgirl.org/2013/11/12/three-hooks-your-cordovaphonegap-project-needs/) that you can copy.
 
-*iconColor* is one of the supported formats #RRGGBB or #AARRGGBB or one of the following names: 'red', 'blue', 'green', 'black', 'white', 'gray', 'cyan', 'magenta', 'yellow', 'lightgray', 'darkgray', 'grey', 'lightgrey', 'darkgrey', 'aqua', 'fuchsia', 'lime', 'maroon', 'navy', 'olive', 'purple', 'silver', 'teal'. *iconColor* is supported on Android 5.0 and greater.
+`iconColor` is one of the supported formats #RRGGBB or #AARRGGBB or one of the following names: 'red', 'blue', 'green', 'black', 'white', 'gray', 'cyan', 'magenta', 'yellow', 'lightgray', 'darkgray', 'grey', 'lightgrey', 'darkgrey', 'aqua', 'fuchsia', 'lime', 'maroon', 'navy', 'olive', 'purple', 'silver', 'teal'. `iconColor` is supported on Android 5.0 and greater.
 
 Please follow the [Android icon design guidelines](https://www.google.com/design/spec/style/icons.html#) when creating your icon.
 
 ![2015-07-24 02 46 58](https://cloud.githubusercontent.com/assets/353180/8866902/2df3276e-3190-11e5-842a-c8cd95615ab0.png)
 
-Additionally, each push can include a large icon which is used to personalize each push. The location of the image may one of three types.
+Additionally, each push can include a large icon which is used to personalize each push. The location of the image may be one of three types.
 
-The first is the `res/drawable` folder in your app. This JSON sent from GCM:
+The first is the `res/drawable` folder in your app. This JSON is sent from GCM:
 
 ```javascript
 {
@@ -391,7 +391,7 @@ Produces the following notification.
 
 ![2015-07-24 02 17 55](https://cloud.githubusercontent.com/assets/353180/8866900/2df0ab06-3190-11e5-9a81-fdb85bb0f5a4.png)
 
-Finally the Material UI guidelines recommend using a circular icon for the large icon if the subject of the image is a person. This JSON sent from GCM:
+Finally, the Material UI guidelines recommend using a circular icon for the large icon if the subject of the image is a person. This JSON sent from GCM:
 
 ```javascript
 {
@@ -777,7 +777,7 @@ If you use `%n%` in the `summaryText` of the JSON coming down from GCM it will b
 
 ## Action Buttons
 
-Your notification can include a maximum of three action buttons. You register event listeners with the name of your actions. Then when a user clicks on one of the action buttons that event is fired and the listener you have registered is invoked. For instance here is a setup with two actions `emailGuests` and `snooze`.
+Your notification can include a maximum of three action buttons. You register the event callback name for each of your actions, then when a user clicks on one of notification's buttons, the event corresponding to that button is fired and the listener you have registered is invoked. For instance, here is a setup with two actions `emailGuests` and `snooze`.
 
 ```javascript
 const push = PushNotification.init({
@@ -795,7 +795,7 @@ push.on('snooze', (data) => {
 });
 ```
 
-If you wish to include an icon along with the button name they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from GCM:
+If you wish to include an icon along with the button name, they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from GCM:
 
 ```javascript
 {
@@ -846,7 +846,7 @@ This will produce the following notification in your tray:
 
 ![action_combo](https://cloud.githubusercontent.com/assets/353180/9313435/02554d2a-44f1-11e5-8cd9-0aadd1e02b18.png)
 
-If your user clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified event will be emitted with the callback name. In this case it is `emailGuests` and `snooze` respectively. If you set the `foreground` property to `true` the app will be brought to the front, if `foreground` is `false` then the callback is run without the app being brought to the foreground.
+If your user clicks on the main body of the notification, then your app will be opened. However, if they click on either of the action buttons the app will open (or start) and the specified event will be triggered with the callback name. In this case it is `emailGuests` and `snooze`, respectively. If you set the `foreground` property to `true`, the app will be brought to the front, if `foreground` is `false` then the callback is run without the app being brought to the foreground.
 
 ### In Line Replies
 
@@ -899,7 +899,7 @@ fcm.send(message, (err, response) => {
 });
 ```
 
-On Android N and greater when the user clicks on the Email Guests button they will see the following:
+when the user clicks on the Email Guests button whilst using Android N and greater, they will see the following:
 
 ![inline_reply](https://cloud.githubusercontent.com/assets/353180/17107608/f35c208e-525d-11e6-94de-a3590c6f500d.png)
 
@@ -1129,7 +1129,7 @@ This will produce the following notification in your tray:
 
 ![2015-08-25 16 08 00](https://cloud.githubusercontent.com/assets/353180/9472260/3655fa7a-4b22-11e5-8d87-20528112de16.png)
 
-> Note: When the notification arrives you will see the title and message like normally. You will only see the picture when the notification is expanded. Once expanded not only will you see the picture but the message portion will disappear and you'll see the summary text portion.
+> Note: When the notification arrives you will see the title and message like normally. You will only see the picture when the notification is expanded. Once expanded, not only will you see the picture, but the message portion will disappear and you'll see the summary text portion.
 
 ## Background Notifications
 
@@ -1178,7 +1178,7 @@ fcm.send(message, (err, response) => {
 });
 ```
 
-or if you want the payload to be delivered directly to your app without anything showing up in the notification center omit the tite/message from the payload like so:
+or if you want the payload to be delivered directly to your app without anything showing up in the notification center, just omit the tite/message from the payload like so:
 
 
 ```javascript
@@ -1218,7 +1218,7 @@ fcm.send(message, (err, response) => {
 });
 ```
 
-If do not want this type of behaviour just omit `"content-available": 1` from your push data and your `on('notification')` event handler will not be called.
+If you do not want this type of behaviour, just omit `"content-available": 1` from your push data and your `on('notification')` event handler will not be called.
 
 ### Use of content_available: true
 
@@ -1262,7 +1262,7 @@ These phones have a particular quirk that when the app is force closed that you 
 
 ### Application force closed
 
-In order to take advantage of this feature you will need to be using cordova-android 6.0.0 or higher. In order to check if the change has been properly applied look at `platforms/android/**/MainActivity.java`. You should see an `onCreate` method that looks like this:
+In order to take advantage of this feature, you will need to be using cordova-android 6.0.0 or higher. In order to check if the change has been properly applied look at `platforms/android/**/MainActivity.java`. You should see an `onCreate` method that looks like this:
 
 ```java
 @Override
@@ -1438,7 +1438,7 @@ fcm.send(message, function(err, response){
 
 On Android not all launchers support badges. In order for us to set badges we use [ShortcutBadger](https://github.com/leolin310148/ShortcutBadger) in order to set the badge. Check out their website to see which launchers are supported.
 
-In order to set the badge number you will need to include the `badge` property in your push payload as below:
+In order to set the badge number, you will need to include the `badge` property in your push payload as below:
 
 ```javascript
 {
@@ -1515,7 +1515,7 @@ Note: "sound" and "soundname" are equivalent and are considered to be the same b
 
 ## Notification ID
 
-When setting the notification ID or `notId` please make sure that you are not exceeding the [MAX_INT](https://developer.android.com/reference/java/lang/Integer.html#MAX_VALUE) value for Android. Using a value larger than MAX_INT will throw an exception which will be caught by the plugin and it will use a default value of `0`.
+When setting the notification ID, or `notId`, please make sure that you are not exceeding the [MAX_INT](https://developer.android.com/reference/java/lang/Integer.html#MAX_VALUE) value for Android. Using a value larger than MAX_INT will throw an exception which will be caught by the plugin and it will use a default value of `0`.
 
 This means you can't use the JavaScript's `Date.getMilliseconds()` or Java's `System.currentTimeMillis()` as they will give you a value greater than MAX_INT.
 
@@ -1525,7 +1525,7 @@ If you are running into a problem where you click on the notification but your a
 
 ## Notification Channels
 
-Android O introduces a new wrinkle to push notifications in the form of NotificationChannels. If you app targets SDK Version 26 (Android O) if you have not setup a NotificationChannel you will no longer receive push notifications. This means any Cordova app using cordova-android 6.3.0 or higher will run into this problem. Fear not however as version 2.1.0 of this plugin has implemented NotificationChannels for you.
+Android O introduces a new wrinkle to push notifications in the form of NotificationChannels. If your app targets SDK Version 26 (Android O) if you have not setup a NotificationChannel, you will no longer receive push notifications. This means any Cordova app using cordova-android 6.3.0 or higher will run into this problem. Fear not however as version 2.1.0 of this plugin has implemented NotificationChannels for you.
 
 For instance if you register for push notifications like normal:
 
@@ -1538,7 +1538,7 @@ const push = PushNotification.init({
 
 The plugin will register a channel for you that will have the id of "PushPluginChannel". Any push notifications that arrive on your device that don't specify a channel ID or use "PushPluginChannel" as the channel will be delivered.
 
-However, if you want to take advantage of multiple channels in your app you can use the `createChannel` and `deleteChannel` methods to modify your apps channels.
+However, if you want to take advantage of multiple channels in your app, you can use the `createChannel` and `deleteChannel` methods to modify your apps channels.
 
 Now when you send a push payload to the device you'll need to specify a channel:
 
@@ -1559,7 +1559,7 @@ Failure to specify a channel in this case will prevent the NotificationManager f
 
 ## Sound
 
-In order for your notification to play a custom sound you will need to add the files to root of your iOS project. The files must be in the proper format. See the [Local and Remote Notification Programming Guide](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/SupportingNotificationsinYourApp.html#//apple_ref/doc/uid/TP40008194-CH4-SW10) for more info on proper file formats and how to convert existing sound files.
+In order for your notification to play a custom sound, you will need to add the files to root of your iOS project. The files must be in the proper format. See the [Local and Remote Notification Programming Guide](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/SupportingNotificationsinYourApp.html#//apple_ref/doc/uid/TP40008194-CH4-SW10) for more info on proper file formats and how to convert existing sound files.
 
 Then send the follow JSON from APNS:
 
@@ -1572,7 +1572,7 @@ Then send the follow JSON from APNS:
 }
 ```
 
-If you want the default sound to play upon receipt of push use this payload:
+If you want the default sound to play upon receipt of push, use this payload:
 
 ```javascript
 {
@@ -1743,7 +1743,7 @@ This will produce the following notification in your tray:
 
 ![push6-ios](https://cloud.githubusercontent.com/assets/353180/12754125/12d13020-c998-11e5-98b4-b245fda30490.png)
 
-If your users clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed.
+If your users clicks on the main body of the notification your app will be opened. However, if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed.
 
 ### Action Buttons using GCM on iOS
 
@@ -1863,4 +1863,4 @@ Here is an example of a sample toast notification payload containing the launch 
 </toast>
 ```
 
-This launch attribute string is passed on to the app as data.launchArgs through the on('notification') handler. It's important to note that due to the Windows platform design, the other visual payload is not available to the handler on cold start. So notification attributes like message, title etc. which are available through the on('notification') handler when the app is running, won't be available for background notifications.
+This launch attribute string is passed on to the app as data.launchArgs through the on('notification') handler. It's important to note that due to the Windows platform design, the other visual payload is not available to the handler on cold start. Notification attributes like message, title, etc., are available through the on('notification') handler when the app is running, and won't be available for background notifications.
