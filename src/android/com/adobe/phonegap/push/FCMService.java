@@ -253,6 +253,11 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
                 newExtras.putString(jsonKey, value);
               }
             }
+            else if (data.has(LOC_KEY) || data.has(LOC_DATA)) {
+              String newKey = normalizeKey(key, messageKey, titleKey);
+              Log.d(LOG_TAG, "replace key " + key + " with " + newKey);
+              replaceKey(context, key, newKey, extras, newExtras);
+            }
           } catch (JSONException e) {
             Log.e(LOG_TAG, "normalizeExtras: JSON exception");
           }
