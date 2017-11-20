@@ -92,12 +92,11 @@ By default, on iOS, the plugin will register with APNS. If you want to use FCM o
 
 ### Compilation
 
-As of version 2.0.0 the plugin has been switched to using pinned version of Gradle libraries. You will need to ensure that you have installed the following items through the Android SDK Manager:
+As of version 2.1.0 the plugin has been switched to using pinned version of Gradle libraries. You will need to ensure that you have installed the following items through the Android SDK Manager:
 
-- Android Support Library version 25.1.0
-- FirebaseMessaging Library version 9.8.0
+- Android Support Repository version 47+
 
-![android support library](https://cloud.githubusercontent.com/assets/353180/10230226/0627931e-684a-11e5-9a6b-72d72997f655.png)
+![android support library](https://user-images.githubusercontent.com/353180/33042340-7ea60aaa-ce0f-11e7-99f7-4631e4c3d7be.png)
 
 For more detailed instructions on how to install the Android Support Library visit [Google's documentation](https://developer.android.com/tools/support-library/setup.html).
 
