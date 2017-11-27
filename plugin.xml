@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads" xmlns:rim="http://www.blackberry.com/ns/widgets" id="phonegap-plugin-push" version="2.1.1">
+<plugin
+  xmlns="http://www.phonegap.com/ns/plugins/1.0"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads"
+  xmlns:rim="http://www.blackberry.com/ns/widgets" id="phonegap-plugin-push" version="2.1.1">
   <name>PushPlugin</name>
   <description>    This plugin allows your application to receive push notifications on Android, iOS and Windows devices.    Android uses Firebase Cloud Messaging.    iOS uses Apple APNS Notifications.    Windows uses Microsoft WNS Notifications.  </description>
   <license>MIT</license>
@@ -9,7 +13,7 @@
   <engines>
     <engine name="cordova" version=">=7.1.0"/>
     <engine name="cordova-android" version=">=6.3.0"/>
-    <engine name="cordova-ios" version=">=4.4.0"/>
+    <engine name="cordova-ios" version=">=4.5.0"/>
   </engines>
   <platform name="android">
     <config-file target="res/xml/config.xml" parent="/*">
