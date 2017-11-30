@@ -1,7 +1,10 @@
 import java.util.regex.Pattern
 
 def doExtractStringFromManifest(name) {
-    def manifestFile = file(android.sourceSets.main.manifest.srcFile)
+    def manifestFile = file("AndroidManifest.xml")
+    if (!manifestFile.exists()) {
+      manifestFile = file("src/main/AndroidManifest.xml")
+    }
     def pattern = Pattern.compile(name + "=\"(.*?)\"")
     def matcher = pattern.matcher(manifestFile.getText())
     matcher.find()
@@ -9,12 +12,6 @@ def doExtractStringFromManifest(name) {
 }
 
 android {
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-        }
-    }
-
     defaultConfig {
         multiDexEnabled true
         applicationId = doExtractStringFromManifest("package")
