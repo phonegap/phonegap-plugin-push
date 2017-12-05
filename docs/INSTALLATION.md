@@ -56,11 +56,19 @@ cordova plugin add https://github.com/phonegap/phonegap-plugin-push
 
 As of version 2.0.0 the SENDER_ID parameter has been removed at install time. Instead you put your google-services.json (Android) and/or GoogleService-Info.plist in the root folder of your project and then add the following lines into your config.xml.
 
-In the platform tag for Android add the resource-file tag:
+In the platform tag for Android add the following resource-file tag if you are using cordova-android 7.0 or greater:
 
 ```
 <platform name="android">
   <resource-file src="google-services.json" target="app/google-services.json" />
+</platform>
+```
+
+If you are using cordova-android 6.x or earlier, add the following resource-file tag:
+
+```
+<platform name="android">
+  <resource-file src="google-services.json" target="google-services.json" />
 </platform>
 ```
 
