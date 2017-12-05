@@ -60,7 +60,7 @@ In the platform tag for Android add the resource-file tag:
 
 ```
 <platform name="android">
-  <resource-file src="google-services.json" target="google-services.json" />
+  <resource-file src="google-services.json" target="app/google-services.json" />
 </platform>
 ```
 
