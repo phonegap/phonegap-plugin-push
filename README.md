@@ -25,6 +25,10 @@ why that is the case read
 For iOS follow the regular
 [FCM documentation](https://firebase.google.com/docs/cloud-messaging/http-server-ref).
 
+This plugin does not provide a way to determine which platform you are running
+on. The best way to do that is use the `device.platform` property provided by
+[cordova-plugin-device](https://github.com/apache/cordova-plugin-device).
+
 Starting with version `2.0.0`, this plugin will support `CocoaPods` installation
 of the `Firebase Cloud Messaging` library. More details are available in the
 [Installation](docs/INSTALLATION.md#cocoapods) documentation.
