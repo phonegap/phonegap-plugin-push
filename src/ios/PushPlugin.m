@@ -119,8 +119,9 @@
             [pubSub unsubscribeFromTopic:topic];
         }
     } else {
-        [[UIApplication sharedApplication] unregisterForRemoteNotifications];
-        [self successWithMessage:command.callbackId withMsg:@"unregistered"];
+        [[FIRInstanceID instanceID] deleteIDWithHandler:^void(NSError *_Nullable error){
+            [self successWithMessage:command.callbackId withMsg:@"unregistered"];
+        }];
     }
 }
 
