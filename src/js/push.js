@@ -18,7 +18,7 @@ class PushNotification {
     this.handlers = {
       registration: [],
       notification: [],
-      error: [],
+      error: []
     };
 
     // require options parameter

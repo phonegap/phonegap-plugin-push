@@ -203,14 +203,15 @@ PushNotification.createChannel(
   },
   {
     id: 'testchannel1',
-    description: 'My first test channel',
+    name: 'First channel',
+    description: 'This is my very first notification channel',
     importance: 3,
     vibration: true
   }
 );
 ```
 
-The above will create a channel for your app. You'll need to provide the `id`, `description` and `importance` properties. 
+The above will create a channel for your app. You'll need to provide the `id`, `name` and `importance` properties, `description` is optional. The importance property goes from 1 = Lowest, 2 = Low, 3 = Normal, 4 = High and 5 = Highest. 
 
 A default channel with the id "PushPluginChannel" is created automatically. To make changes to the default channel's settings, create a channel with the id "PushPluginChannel" before calling the PushNotification.init function.
 
@@ -219,7 +220,8 @@ A default channel with the id "PushPluginChannel" is created automatically. To m
 | Property                         | Type      | Description                                                                                                                                                                                                                         |
 | -------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`                             | `String`  | The id of the channel. Must be unique per package. The value may be truncated if it is too long.                                                                                                                                    |
-| `description`                    | `String`  | The user visible name of the channel. The recommended maximum length is 40 characters; the value may be truncated if it is too long.                                                                                                |
+| `name`                           | `String`  | The user visible name of the channel. The recommended maximum length is 40 characters; the value may be truncated if it is too long.                                                                                                |
+| `description`                    | `String`  | The user visible description of the channel. The recommended maximum length is 300 characters; the value may be truncated if it is too long.                                                                                        |
 | `importance`                     | `Int`     | The importance of the channel. This controls how interruptive notifications posted to this channel are. The importance property goes from 1 = Lowest, 2 = Low, 3 = Normal, 4 = High and 5 = Highest.                                |            
 | `sound`                          | `String`  | The name of the sound file to be played upon receipt of the notification in this channel. Cannot be changed after channel is created.                                                                                               |
 | `vibration`                      | `Boolean` or `Array` | Boolean sets whether notification posted to this channel should vibrate. Array sets custom vibration pattern. Example - vibration: `[2000, 1000, 500, 500]`. Cannot be changed after channel is created.                 |
