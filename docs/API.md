@@ -346,7 +346,7 @@ push.off('notification', callback);
 
 ## push.unregister(successHandler, errorHandler, topics)
 
-The unregister method is used when the application no longer wants to receive push notifications. Beware that this cleans up all event handlers previously registered, so you will need to re-register them if you want them to function again without an application reload.
+The unregister method is used when the application no longer wants to receive push notifications. Beware that this cleans up all event handlers previously registered, so you will need to reinitialize the plugin's API (through `.init()`) if you want them to function again without an application reload.
 
 If you provide a list of topics as an optional parameter then the application will unsubscribe from these topics but continue to receive other push messages.
 
