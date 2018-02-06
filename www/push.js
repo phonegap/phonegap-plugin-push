@@ -236,8 +236,8 @@ var PushNotification = function () {
       var successCallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
       var errorCallback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function () {};
 
-      if (id && !isNaN(parseInt(id))) {
-        exec(successCallback, errorCallback, 'PushNotification', 'clearNotification', [parseInt(id)]);
+      if (id && !isNaN(parseInt(id, 10))) {
+        exec(successCallback, errorCallback, 'PushNotification', 'clearNotification', [parseInt(id, 10)]);
       }
     }
 

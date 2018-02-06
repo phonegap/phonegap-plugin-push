@@ -203,17 +203,18 @@ class PushNotification {
 
     exec(successCallback, errorCallback, 'PushNotification', 'clearAllNotifications', []);
   }
-  
+
   /**
    * Clears notifications that have the ID specified.
    * @param  {[type]} id    ID of the notification to be removed.
    */
   clearNotification(id, successCallback = () => {}, errorCallback = () => {}) {
-      if (id && !isNaN(parseInt(id))) {
-          exec(successCallback, errorCallback, 'PushNotification', 'clearNotification', [parseInt(id)]);
-      }
+    if (id && !isNaN(parseInt(id, 10))) {
+      exec(successCallback, errorCallback, 'PushNotification', 'clearNotification',
+        [parseInt(id, 10)]);
+    }
   }
-  
+
   /**
    * Listen for an event.
    *

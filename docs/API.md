@@ -17,6 +17,7 @@
 - [push.getApplicationIconBadgeNumber() - iOS & Android only](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios--android-only)
 - [push.finish() - iOS only](#pushfinishsuccesshandler-errorhandler-id---ios-only)
 - [push.clearAllNotifications() - iOS & Android only](#pushclearallnotificationssuccesshandler-errorhandler---ios--android-only)
+- [push.clearNotification() - Android only](#pushclearnotificationid-successhandler-errorhandler---android-only)
 
 ## PushNotification.init(options)
 
@@ -501,6 +502,28 @@ Parameter | Type | Default | Description
 
 ```javascript
 push.clearAllNotifications(() => {
+	console.log('success');
+}, () => {
+	console.log('error');
+});
+```
+
+## push.clearNotification(id, successHandler, errorHandler) - Android only
+
+Tells the OS to clear the notification that corresponds to the id argument, from the Notification Center
+
+### Parameters
+
+Parameter | Type | Default | Description
+--------- | ---- | ------- | -----------
+`id` | `number` | | The ID of the notification that will be cleared. |
+`successHandler` | `Function` | | Is called when the api successfully clears the notifications.
+`errorHandler` | `Function` | | Is called when the api encounters an error when attempting to clears the notifications.
+
+### Example
+
+```javascript
+push.clearNotification(145, () => {
 	console.log('success');
 }, () => {
 	console.log('error');
