@@ -224,6 +224,23 @@ var PushNotification = function () {
 
       exec(successCallback, errorCallback, 'PushNotification', 'clearAllNotifications', []);
     }
+
+    /**
+     * Clears notifications that have the ID specified.
+     * @param  {[type]} id    ID of the notification to be removed.
+     */
+
+  }, {
+    key: 'clearNotification',
+    value: function clearNotification(id) {
+      var successCallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
+      var errorCallback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function () {};
+
+      if (id && !isNaN(parseInt(id))) {
+        exec(successCallback, errorCallback, 'PushNotification', 'clearNotification', [parseInt(id)]);
+      }
+    }
+
     /**
      * Listen for an event.
      *
