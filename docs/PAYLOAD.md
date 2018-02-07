@@ -1663,7 +1663,7 @@ In order to maintain the plugin data transfer standard, the payload sent to aps 
 
 The `on('notification')` event handler will always be called excepting if Background App Refresh is disabled on the user's iOS device. (Settings > General > Background App Refresh).
 
-In order to set up your application with this type of notifications, refer to the [API guide](API.md#ios).
+In order to set up your application with this type of notifications, refer to the [API guide](API.md#ios-voip-notifications).
 
 ## Action Buttons
 
