@@ -1654,6 +1654,14 @@ push.on('notification', (data) => {
 
 It is absolutely critical that you call `push.finish()` when you have successfully processed your background push data.
 
+## VoIP Notifications
+
+VoIP Notifications are a type of iOS notifications that are always received and handled also when the app is closed or in background and consist only of payload data, so the developer is the responsible of handling the event and do whatever the aplication should do when receiving one of them. The cordova-plugin-local-notifications is a good complement for the VoIP feature.
+
+In order to maintain the plugin data transfer standard, the payload sent to aps maintains the same structure as the one of common notifications with the consideration that the notification will be always be silent independently of the params that you pass to it.
+
+The `on('notification')` event handler will always be called excepting if Background App Refresh is disabled on the user's iOS device. (Settings > General > Background App Refresh).
+
 ## Action Buttons
 
 Your notification can include action buttons. For iOS 8+ you must setup the possible actions when you initialize the plugin:
