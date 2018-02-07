@@ -52,7 +52,11 @@ class PushNotification {
 
     // wait at least one process tick to allow event subscriptions
     setTimeout(() => {
-      exec(success, fail, 'PushNotification', 'init', [options]);
+      if (options && options.ios && options.ios.voip === true) {
+        exec(success, fail, 'VoIPPushNotification', 'init', [options]);
+      } else {
+        exec(success, fail, 'PushNotification', 'init', [options]);
+      }
     }, 10);
   }
 
