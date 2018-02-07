@@ -64,11 +64,7 @@ var PushNotification = function () {
 
     // wait at least one process tick to allow event subscriptions
     setTimeout(function () {
-      if (options && options.ios && options.ios.voip === true) {
-        exec(success, fail, 'VoIPPushNotification', 'init', [options]);
-      } else {
-        exec(success, fail, 'PushNotification', 'init', [options]);
-      }
+      exec(success, fail, 'PushNotification', 'init', [options]);
     }, 10);
   }
 

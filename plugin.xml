@@ -64,9 +64,6 @@
       <feature name="PushNotification">
         <param name="ios-package" value="PushPlugin"/>
       </feature>
-      <feature name="VoIPPushNotification">
-        <param name="ios-voip-package" value="VoIPPushPlugin"/>
-      </feature>
     </config-file>
     <config-file target="*-Info.plist" parent="UIBackgroundModes">
       <array>
