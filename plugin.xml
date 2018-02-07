@@ -64,10 +64,14 @@
       <feature name="PushNotification">
         <param name="ios-package" value="PushPlugin"/>
       </feature>
+      <feature name="VoIPPushNotification">
+        <param name="ios-voip-package" value="VoIPPushPlugin"/>
+      </feature>
     </config-file>
     <config-file target="*-Info.plist" parent="UIBackgroundModes">
       <array>
         <string>remote-notification</string>
+        <string>voip</string>
       </array>
     </config-file>
     <config-file target="*-Debug.plist" parent="aps-environment">
@@ -78,9 +82,12 @@
     </config-file>
     <source-file src="src/ios/AppDelegate+notification.m"/>
     <source-file src="src/ios/PushPlugin.m"/>
+    <source-file src="src/ios/VoIPPushPlugin.m" />
     <header-file src="src/ios/AppDelegate+notification.h"/>
     <header-file src="src/ios/PushPlugin.h"/>
+    <header-file src="src/ios/VoIPPushPlugin.h" />
     <framework src="FirebaseMessaging" type="podspec" spec="~> 2.0.0"/>
+    <framework src="PushKit" />
   </platform>
   <platform name="windows">
     <hook type="after_plugin_install" src="hooks/windows/setToastCapable.js"/>
