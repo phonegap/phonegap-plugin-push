@@ -496,7 +496,7 @@ Tells the OS to clear all notifications from the Notification Center
 Parameter | Type | Default | Description
 --------- | ---- | ------- | -----------
 `successHandler` | `Function` | | Is called when the api successfully clears the notifications.
-`errorHandler` | `Function` | | Is called when the api encounters an error when attempting to clears the notifications.
+`errorHandler` | `Function` | | Is called when the api encounters an error when attempting to clear the notifications.
 
 ### Example
 
@@ -516,16 +516,16 @@ Tells the OS to clear the notification that corresponds to the id argument, from
 
 Parameter | Type | Default | Description
 --------- | ---- | ------- | -----------
+`successHandler` | `Function` | | Is called when the api successfully clears the notification.
+`errorHandler` | `Function` | | Is called when the api encounters an error when attempting to clear the notification.
 `id` | `number` | | The ID of the notification that will be cleared. |
-`successHandler` | `Function` | | Is called when the api successfully clears the notifications.
-`errorHandler` | `Function` | | Is called when the api encounters an error when attempting to clears the notifications.
 
 ### Example
 
 ```javascript
-push.clearNotification(145, () => {
+push.clearNotification(() => {
 	console.log('success');
 }, () => {
 	console.log('error');
-});
+}, 145);
 ```

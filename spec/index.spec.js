@@ -434,7 +434,7 @@ describe('phonegap-plugin-push', function () {
       describe('cordova.exec', function () {
         it('should call cordova.exec on next process tick using number argument', function (done) {
           var push = PushNotification.init(options);
-          push.clearNotification(145, function () {}, function () {});
+          push.clearNotification(function () {}, function () {}, 145);
           setTimeout(function () {
             expect(execSpy).toHaveBeenCalledWith(
               jasmine.any(Function),
@@ -449,7 +449,7 @@ describe('phonegap-plugin-push', function () {
 
         it('should call cordova.exec on next process tick using string argument', function (done) {
           var push = PushNotification.init(options);
-          push.clearNotification("145", function () {}, function () {});
+          push.clearNotification(function () {}, function () {}, "145");
           setTimeout(function () {
             expect(execSpy).toHaveBeenCalledWith(
               jasmine.any(Function),
