@@ -33,7 +33,7 @@
     NSLog(@"VoIPPush Plugin device token %@", sToken);
     NSMutableDictionary* results = [NSMutableDictionary dictionaryWithCapacity:2];
     [results setObject:sToken forKey:@"registrationId"];
-    [message setObject:@"APNS" forKey:@"registrationType"];
+    [results setObject:@"APNS" forKey:@"registrationType"];
 
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:results];
     [pluginResult setKeepCallback:[NSNumber numberWithBool:YES]]; //[pluginResult setKeepCallbackAsBool:YES];
@@ -43,7 +43,7 @@
 - (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type
 {
     NSLog(@"Notification received");
-
+    NSDictionary* notificationMessage = payload.dictionaryPayload;
     if (notificationMessage && self.callbackId != nil)
     {
         NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:4];
