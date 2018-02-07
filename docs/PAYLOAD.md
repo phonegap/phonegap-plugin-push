@@ -30,6 +30,7 @@
 - [iOS Behaviour](#ios-behaviour)
   - [Sound](#sound-1)
   - [Background Notifications](#background-notifications-1)
+  - [VoIP Notifications](#voip-notifications)
   - [Action Buttons](#action-buttons-1)
     - [Action Buttons using GCM on iOS](#action-buttons-using-gcm-on-ios)
   - [GCM and Additional Data](#gcm-and-additional-data)
@@ -1661,6 +1662,8 @@ VoIP Notifications are a type of iOS notifications that are always received and 
 In order to maintain the plugin data transfer standard, the payload sent to aps maintains the same structure as the one of common notifications with the consideration that the notification will be always be silent independently of the params that you pass to it.
 
 The `on('notification')` event handler will always be called excepting if Background App Refresh is disabled on the user's iOS device. (Settings > General > Background App Refresh).
+
+In order to set up your application with this type of notifications, refer to the [API guide](docs/API.md#ios).
 
 ## Action Buttons
 
