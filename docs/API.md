@@ -106,7 +106,7 @@ It is possible to receive VoIP Notifications in iOS that can execute the "notifi
 
 This type of notifications consist only of payload data, so the developer is the responsible of handling the event and do whatever the aplication should do when receiving one of them. The cordova-plugin-local-notifications is a good complement for the VoIP feature.
 
-In order to use the VoIP Notifications, you have to create a VoIP Services Certificate. There are a lot of tutorials in the web to achive this. Once created, you must use this certificate in order to communicate with the APN Service.
+In order to use the VoIP Notifications, you have to create a VoIP Services Certificate. There are a lot of tutorials on the web to achieve this. Once created, you must use this certificate in order to communicate with the APN Service.
 
 To set up the VoIP Notification in ios do:
 ```javascript
@@ -118,7 +118,7 @@ const push = PushNotification.init({
 ```
 Once set up the voip parameter to true, the rest of the options will be ignored.
 
-The "hasPermission" success callback will return data.isEnabled to false since there is no need of approvement to use this type of notifications.
+The "hasPermission" success callback will return data.isEnabled to false since there is no need to approve to use this type of notifications.
 
 The "finish" method has not use too when the VoIP notifications are enabled.
 
