@@ -635,10 +635,6 @@
                         ntohl(tokenBytes[3]), ntohl(tokenBytes[4]), ntohl(tokenBytes[5]),
                         ntohl(tokenBytes[6]), ntohl(tokenBytes[7])];
 
-    NSLog(@"VoIPPush Plugin device token %@", sToken);
-    NSMutableDictionary* results = [NSMutableDictionary dictionaryWithCapacity:2];
-    [results setObject:sToken forKey:@"registrationId"];
-    [results setObject:@"APNS" forKey:@"registrationType"];
     [self registerWithToken:sToken];
 }
 
