@@ -33,6 +33,8 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import io.intercom.android.sdk.push.IntercomPushClient;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +56,8 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
   private static final String LOG_TAG = "Push_FCMService";
   private static HashMap<Integer, ArrayList<String>> messageMap = new HashMap<Integer, ArrayList<String>>();
 
+  private final IntercomPushClient intercomPushClient = new IntercomPushClient();
+
   public void setNotification(int notId, String message) {
     ArrayList<String> messageList = messageMap.get(notId);
     if (messageList == null) {
@@ -70,6 +74,11 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
 
   @Override
   public void onMessageReceived(RemoteMessage message) {
+
+    if (intercomPushClient.isIntercomPush(message.getData())) {
+        intercomPushClient.handlePush(getApplication(), message.getData());
+        return;
+    }
 
     String from = message.getFrom();
     Log.d(LOG_TAG, "onMessage - from: " + from);
