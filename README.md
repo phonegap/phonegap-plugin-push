@@ -1,3 +1,7 @@
+# Intercom Fork
+
+This plugin is a forked version of [phonegap/phonegap-plugin-push](https://github.com/phonegap/phonegap-plugin-push) which allows compatibility with the Intercom SDK.
+
 # phonegap-plugin-push [![Build Status](https://travis-ci.org/phonegap/phonegap-plugin-push.svg)](https://travis-ci.org/phonegap/phonegap-plugin-push)
 
 > Register and receive push notifications
