@@ -26,6 +26,7 @@
 #import <Foundation/Foundation.h>
 #import <Cordova/CDV.h>
 #import <Cordova/CDVPlugin.h>
+#import <PushKit/PushKit.h>
 
 @protocol GGLInstanceIDDelegate;
 @protocol GCMReceiverDelegate;
@@ -67,6 +68,10 @@
 - (void)willSendDataMessageWithID:(NSString *)messageID error:(NSError *)error;
 - (void)didSendDataMessageWithID:(NSString *)messageID;
 - (void)didDeleteMessagesOnServer;
+
+// VoIP Features
+- (void)pushRegistry:(PKPushRegistry *)registry didUpdatePushCredentials:(PKPushCredentials *)credentials forType:(NSString *)type;
+- (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type;
 
 // FCM Features
 @property(nonatomic, assign) BOOL usesFCM;

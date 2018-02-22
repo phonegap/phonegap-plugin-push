@@ -68,6 +68,7 @@
     <config-file target="*-Info.plist" parent="UIBackgroundModes">
       <array>
         <string>remote-notification</string>
+        <string>voip</string>
       </array>
     </config-file>
     <config-file target="*-Debug.plist" parent="aps-environment">
@@ -81,6 +82,7 @@
     <header-file src="src/ios/AppDelegate+notification.h"/>
     <header-file src="src/ios/PushPlugin.h"/>
     <framework src="FirebaseMessaging" type="podspec" spec="~> 2.0.0"/>
+    <framework src="PushKit.framework" />
   </platform>
   <platform name="windows">
     <hook type="after_plugin_install" src="hooks/windows/setToastCapable.js"/>

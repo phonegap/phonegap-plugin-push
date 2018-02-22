@@ -66,6 +66,7 @@ All iOS boolean options can also be specified as `string`
 
 Attribute | Type | Default | Description
 --------- | ---- | ------- | -----------
+`ios.voip` | `boolean` | `false` | Optional. If `true` the device will be set up to receive VoIP Push notifications and the other options will be ignored since VoIP notifications are silent notifications that should be handled in the "notification" event.
 `ios.alert` | `boolean` | `false` | Optional. If `true` the device shows an alert on receipt of notification. **Note:** the value you set this option to the first time you call the init method will be how the application always acts. Once this is set programmatically in the init method it can only be changed manually by the user in Settings>Notifications>`App Name`. This is normal iOS behaviour.
 `ios.badge` | `boolean` | `false` | Optional. If `true` the device sets the badge number on receipt of notification. **Note:** the value you set this option to the first time you call the init method will be how the application always acts. Once this is set programmatically in the init method it can only be changed manually by the user in Settings>Notifications>`App Name`. This is normal iOS behaviour.
 `ios.sound` | `boolean` | `false` | Optional. If `true` the device plays a sound on receipt of notification. **Note:** the value you set this option to the first time you call the init method will be how the application always acts. Once this is set programmatically in the init method it can only be changed manually by the user in Settings>Notifications>`App Name`. This is normal iOS behaviour.
@@ -98,6 +99,28 @@ Make sure that the certificate you build with matches your `fcmSandbox` value.
 - If you build your app as production and set `fcmSandbox: false` but haven't uploaded the production certs to Google it will fail.
 
 > Note: The integration between GCM and APNS is a bit finicky. Personally, I feel it is much better to send pushes to Android using GCM and pushes to iOS using APNS which this plugin does support.
+
+#### iOS VoIP Notifications
+
+It is possible to receive VoIP Notifications in iOS that can execute the "notification" event also when the application is in background or closed.
+
+This type of notifications consist only of payload data, so the developer is the responsible of handling the event and do whatever the aplication should do when receiving one of them. The cordova-plugin-local-notifications is a good complement for the VoIP feature.
+
+In order to use the VoIP Notifications, you have to create a VoIP Services Certificate. There are a lot of tutorials on the web to achieve this. Once created, you must use this certificate in order to communicate with the APN Service.
+
+To set up the VoIP Notification in ios do:
+```javascript
+const push = PushNotification.init({
+  ios: {
+		voip: true
+	}
+});
+```
+Once set up the voip parameter to true, the rest of the options will be ignored.
+
+The "hasPermission" success callback will return data.isEnabled to false since there is no need to approve to use this type of notifications.
+
+The "finish" method has not use too when the VoIP notifications are enabled.
 
 ### Example
 

@@ -158,176 +158,189 @@
 
 - (void)init:(CDVInvokedUrlCommand*)command;
 {
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self selector:@selector(onTokenRefresh)
-     name:kFIRInstanceIDTokenRefreshNotification object:nil];
+    NSMutableDictionary* options = [command.arguments objectAtIndex:0];
+    NSMutableDictionary* iosOptions = [options objectForKey:@"ios"];
+    id voipArg = [iosOptions objectForKey:@"voip"];
+    if (([voipArg isKindOfClass:[NSString class]] && [voipArg isEqualToString:@"true"]) || [voipArg boolValue]) {
+        [self.commandDelegate runInBackground:^ {
+            NSLog(@"Push Plugin VoIP set to true");
 
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self selector:@selector(sendDataMessageFailure:)
-     name:FIRMessagingSendErrorNotification object:nil];
+            self.callbackId = command.callbackId;
 
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self selector:@selector(sendDataMessageSuccess:)
-     name:FIRMessagingSendSuccessNotification object:nil];
+            PKPushRegistry *pushRegistry = [[PKPushRegistry alloc] initWithQueue:dispatch_get_main_queue()];
+            pushRegistry.delegate = self;
+            pushRegistry.desiredPushTypes = [NSSet setWithObject:PKPushTypeVoIP];
+        }];
+    } else {
+        NSLog(@"Push Plugin VoIP missing or false");
+        [[NSNotificationCenter defaultCenter]
+         addObserver:self selector:@selector(onTokenRefresh)
+         name:kFIRInstanceIDTokenRefreshNotification object:nil];
 
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self selector:@selector(didDeleteMessagesOnServer)
-     name:FIRMessagingMessagesDeletedNotification object:nil];
+        [[NSNotificationCenter defaultCenter]
+         addObserver:self selector:@selector(sendDataMessageFailure:)
+         name:FIRMessagingSendErrorNotification object:nil];
 
-    [self.commandDelegate runInBackground:^ {
+        [[NSNotificationCenter defaultCenter]
+         addObserver:self selector:@selector(sendDataMessageSuccess:)
+         name:FIRMessagingSendSuccessNotification object:nil];
 
-        NSLog(@"Push Plugin register called");
-        self.callbackId = command.callbackId;
+        [[NSNotificationCenter defaultCenter]
+         addObserver:self selector:@selector(didDeleteMessagesOnServer)
+         name:FIRMessagingMessagesDeletedNotification object:nil];
 
-        NSMutableDictionary* options = [command.arguments objectAtIndex:0];
-        NSMutableDictionary* iosOptions = [options objectForKey:@"ios"];
+        [self.commandDelegate runInBackground:^ {
+            NSLog(@"Push Plugin register called");
+            self.callbackId = command.callbackId;
 
-        NSArray* topics = [iosOptions objectForKey:@"topics"];
-        [self setFcmTopics:topics];
+            NSArray* topics = [iosOptions objectForKey:@"topics"];
+            [self setFcmTopics:topics];
 
-        UIUserNotificationType UserNotificationTypes = UIUserNotificationTypeNone;
+            UIUserNotificationType UserNotificationTypes = UIUserNotificationTypeNone;
 
-        id badgeArg = [iosOptions objectForKey:@"badge"];
-        id soundArg = [iosOptions objectForKey:@"sound"];
-        id alertArg = [iosOptions objectForKey:@"alert"];
-        id clearBadgeArg = [iosOptions objectForKey:@"clearBadge"];
+            id badgeArg = [iosOptions objectForKey:@"badge"];
+            id soundArg = [iosOptions objectForKey:@"sound"];
+            id alertArg = [iosOptions objectForKey:@"alert"];
+            id clearBadgeArg = [iosOptions objectForKey:@"clearBadge"];
 
-        if (([badgeArg isKindOfClass:[NSString class]] && [badgeArg isEqualToString:@"true"]) || [badgeArg boolValue])
-        {
-            UserNotificationTypes |= UIUserNotificationTypeBadge;
-        }
-
-        if (([soundArg isKindOfClass:[NSString class]] && [soundArg isEqualToString:@"true"]) || [soundArg boolValue])
-        {
-            UserNotificationTypes |= UIUserNotificationTypeSound;
-        }
-
-        if (([alertArg isKindOfClass:[NSString class]] && [alertArg isEqualToString:@"true"]) || [alertArg boolValue])
-        {
-            UserNotificationTypes |= UIUserNotificationTypeAlert;
-        }
-
-        UserNotificationTypes |= UIUserNotificationActivationModeBackground;
-
-        if (clearBadgeArg == nil || ([clearBadgeArg isKindOfClass:[NSString class]] && [clearBadgeArg isEqualToString:@"false"]) || ![clearBadgeArg boolValue]) {
-            NSLog(@"PushPlugin.register: setting badge to false");
-            clearBadge = NO;
-        } else {
-            NSLog(@"PushPlugin.register: setting badge to true");
-            clearBadge = YES;
-            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-        }
-        NSLog(@"PushPlugin.register: clear badge is set to %d", clearBadge);
-
-        isInline = NO;
-
-        NSLog(@"PushPlugin.register: better button setup");
-        // setup action buttons
-        NSMutableSet *categories = [[NSMutableSet alloc] init];
-        id categoryOptions = [iosOptions objectForKey:@"categories"];
-        if (categoryOptions != nil && [categoryOptions isKindOfClass:[NSDictionary class]]) {
-            for (id key in categoryOptions) {
-                NSLog(@"categories: key %@", key);
-                id category = [categoryOptions objectForKey:key];
-
-                id yesButton = [category objectForKey:@"yes"];
-                UIMutableUserNotificationAction *yesAction;
-                if (yesButton != nil && [yesButton  isKindOfClass:[NSDictionary class]]) {
-                    yesAction = [self createAction: yesButton];
-                }
-                id noButton = [category objectForKey:@"no"];
-                UIMutableUserNotificationAction *noAction;
-                if (noButton != nil && [noButton  isKindOfClass:[NSDictionary class]]) {
-                    noAction = [self createAction: noButton];
-                }
-                id maybeButton = [category objectForKey:@"maybe"];
-                UIMutableUserNotificationAction *maybeAction;
-                if (maybeButton != nil && [maybeButton  isKindOfClass:[NSDictionary class]]) {
-                    maybeAction = [self createAction: maybeButton];
-                }
-
-                // First create the category
-                UIMutableUserNotificationCategory *notificationCategory = [[UIMutableUserNotificationCategory alloc] init];
-
-                // Identifier to include in your push payload and local notification
-                notificationCategory.identifier = key;
-
-                NSMutableArray *categoryArray = [[NSMutableArray alloc] init];
-                NSMutableArray *minimalCategoryArray = [[NSMutableArray alloc] init];
-                if (yesButton != nil) {
-                    [categoryArray addObject:yesAction];
-                    [minimalCategoryArray addObject:yesAction];
-                }
-                if (noButton != nil) {
-                    [categoryArray addObject:noAction];
-                    [minimalCategoryArray addObject:noAction];
-                }
-                if (maybeButton != nil) {
-                    [categoryArray addObject:maybeAction];
-                }
-
-                // Add the actions to the category and set the action context
-                [notificationCategory setActions:categoryArray forContext:UIUserNotificationActionContextDefault];
-
-                // Set the actions to present in a minimal context
-                [notificationCategory setActions:minimalCategoryArray forContext:UIUserNotificationActionContextMinimal];
-
-                NSLog(@"Adding category %@", key);
-                [categories addObject:notificationCategory];
+            if (([badgeArg isKindOfClass:[NSString class]] && [badgeArg isEqualToString:@"true"]) || [badgeArg boolValue])
+            {
+                UserNotificationTypes |= UIUserNotificationTypeBadge;
             }
 
-        }
+            if (([soundArg isKindOfClass:[NSString class]] && [soundArg isEqualToString:@"true"]) || [soundArg boolValue])
+            {
+                UserNotificationTypes |= UIUserNotificationTypeSound;
+            }
 
-        if ([[UIApplication sharedApplication]respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-            UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UserNotificationTypes categories:categories];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-                [[UIApplication sharedApplication] registerForRemoteNotifications];
-            });
-        }
+            if (([alertArg isKindOfClass:[NSString class]] && [alertArg isEqualToString:@"true"]) || [alertArg boolValue])
+            {
+                UserNotificationTypes |= UIUserNotificationTypeAlert;
+            }
 
-        // Read GoogleService-Info.plist
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info" ofType:@"plist"];
+            UserNotificationTypes |= UIUserNotificationActivationModeBackground;
 
-        // Load the file content and read the data into arrays
-        NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:path];
-        fcmSenderId = [dict objectForKey:@"GCM_SENDER_ID"];
-        BOOL isGcmEnabled = [[dict valueForKey:@"IS_GCM_ENABLED"] boolValue];
+            if (clearBadgeArg == nil || ([clearBadgeArg isKindOfClass:[NSString class]] && [clearBadgeArg isEqualToString:@"false"]) || ![clearBadgeArg boolValue]) {
+                NSLog(@"PushPlugin.register: setting badge to false");
+                clearBadge = NO;
+            } else {
+                NSLog(@"PushPlugin.register: setting badge to true");
+                clearBadge = YES;
+                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+            }
+            NSLog(@"PushPlugin.register: clear badge is set to %d", clearBadge);
 
-        NSLog(@"FCM Sender ID %@", fcmSenderId);
+            isInline = NO;
 
-        //  GCM options
-        [self setFcmSenderId: fcmSenderId];
-        if(isGcmEnabled && [[self fcmSenderId] length] > 0) {
-            NSLog(@"Using FCM Notification");
-            [self setUsesFCM: YES];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if([FIRApp defaultApp] == nil)
-                    [FIRApp configure];
-                [self initRegistration];
-            });
-        } else {
-            NSLog(@"Using APNS Notification");
-            [self setUsesFCM:NO];
-        }
-        id fcmSandboxArg = [iosOptions objectForKey:@"fcmSandbox"];
+            NSLog(@"PushPlugin.register: better button setup");
+            // setup action buttons
+            NSMutableSet *categories = [[NSMutableSet alloc] init];
+            id categoryOptions = [iosOptions objectForKey:@"categories"];
+            if (categoryOptions != nil && [categoryOptions isKindOfClass:[NSDictionary class]]) {
+                for (id key in categoryOptions) {
+                    NSLog(@"categories: key %@", key);
+                    id category = [categoryOptions objectForKey:key];
 
-        [self setFcmSandbox:@NO];
-        if ([self usesFCM] &&
-            (([fcmSandboxArg isKindOfClass:[NSString class]] && [fcmSandboxArg isEqualToString:@"true"]) ||
-             [fcmSandboxArg boolValue]))
-        {
-            NSLog(@"Using FCM Sandbox");
-            [self setFcmSandbox:@YES];
-        }
+                    id yesButton = [category objectForKey:@"yes"];
+                    UIMutableUserNotificationAction *yesAction;
+                    if (yesButton != nil && [yesButton  isKindOfClass:[NSDictionary class]]) {
+                        yesAction = [self createAction: yesButton];
+                    }
+                    id noButton = [category objectForKey:@"no"];
+                    UIMutableUserNotificationAction *noAction;
+                    if (noButton != nil && [noButton  isKindOfClass:[NSDictionary class]]) {
+                        noAction = [self createAction: noButton];
+                    }
+                    id maybeButton = [category objectForKey:@"maybe"];
+                    UIMutableUserNotificationAction *maybeAction;
+                    if (maybeButton != nil && [maybeButton  isKindOfClass:[NSDictionary class]]) {
+                        maybeAction = [self createAction: maybeButton];
+                    }
 
-        if (notificationMessage) {			// if there is a pending startup notification
-            dispatch_async(dispatch_get_main_queue(), ^{
-                // delay to allow JS event handlers to be setup
-                [self performSelector:@selector(notificationReceived) withObject:nil afterDelay: 0.5];
-            });
-        }
-    }];
+                    // First create the category
+                    UIMutableUserNotificationCategory *notificationCategory = [[UIMutableUserNotificationCategory alloc] init];
+
+                    // Identifier to include in your push payload and local notification
+                    notificationCategory.identifier = key;
+
+                    NSMutableArray *categoryArray = [[NSMutableArray alloc] init];
+                    NSMutableArray *minimalCategoryArray = [[NSMutableArray alloc] init];
+                    if (yesButton != nil) {
+                        [categoryArray addObject:yesAction];
+                        [minimalCategoryArray addObject:yesAction];
+                    }
+                    if (noButton != nil) {
+                        [categoryArray addObject:noAction];
+                        [minimalCategoryArray addObject:noAction];
+                    }
+                    if (maybeButton != nil) {
+                        [categoryArray addObject:maybeAction];
+                    }
+
+                    // Add the actions to the category and set the action context
+                    [notificationCategory setActions:categoryArray forContext:UIUserNotificationActionContextDefault];
+
+                    // Set the actions to present in a minimal context
+                    [notificationCategory setActions:minimalCategoryArray forContext:UIUserNotificationActionContextMinimal];
+
+                    NSLog(@"Adding category %@", key);
+                    [categories addObject:notificationCategory];
+                }
+
+            }
+
+            if ([[UIApplication sharedApplication]respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+                UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UserNotificationTypes categories:categories];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+                    [[UIApplication sharedApplication] registerForRemoteNotifications];
+                });
+            }
+
+            // Read GoogleService-Info.plist
+            NSString *path = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info" ofType:@"plist"];
+
+            // Load the file content and read the data into arrays
+            NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:path];
+            fcmSenderId = [dict objectForKey:@"GCM_SENDER_ID"];
+            BOOL isGcmEnabled = [[dict valueForKey:@"IS_GCM_ENABLED"] boolValue];
+
+            NSLog(@"FCM Sender ID %@", fcmSenderId);
+
+            //  GCM options
+            [self setFcmSenderId: fcmSenderId];
+            if(isGcmEnabled && [[self fcmSenderId] length] > 0) {
+                NSLog(@"Using FCM Notification");
+                [self setUsesFCM: YES];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if([FIRApp defaultApp] == nil)
+                        [FIRApp configure];
+                    [self initRegistration];
+                });
+            } else {
+                NSLog(@"Using APNS Notification");
+                [self setUsesFCM:NO];
+            }
+            id fcmSandboxArg = [iosOptions objectForKey:@"fcmSandbox"];
+
+            [self setFcmSandbox:@NO];
+            if ([self usesFCM] &&
+                (([fcmSandboxArg isKindOfClass:[NSString class]] && [fcmSandboxArg isEqualToString:@"true"]) ||
+                 [fcmSandboxArg boolValue]))
+            {
+                NSLog(@"Using FCM Sandbox");
+                [self setFcmSandbox:@YES];
+            }
+
+            if (notificationMessage) {            // if there is a pending startup notification
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    // delay to allow JS event handlers to be setup
+                    [self performSelector:@selector(notificationReceived) withObject:nil afterDelay: 0.5];
+                });
+            }
+
+        }];
+    }
 }
 
 - (UIMutableUserNotificationAction *)createAction:(NSDictionary *)dictionary {
@@ -605,6 +618,31 @@
             completionHandler = nil;
         }
     }
+}
+
+
+- (void)pushRegistry:(PKPushRegistry *)registry didUpdatePushCredentials:(PKPushCredentials *)credentials forType:(NSString *)type
+{
+    if([credentials.token length] == 0) {
+        NSLog(@"VoIPPush Plugin register error - No device token:");
+        return;
+    }
+
+    NSLog(@"VoIPPush Plugin register success");
+    const unsigned *tokenBytes = [credentials.token bytes];
+    NSString *sToken = [NSString stringWithFormat:@"%08x%08x%08x%08x%08x%08x%08x%08x",
+                        ntohl(tokenBytes[0]), ntohl(tokenBytes[1]), ntohl(tokenBytes[2]),
+                        ntohl(tokenBytes[3]), ntohl(tokenBytes[4]), ntohl(tokenBytes[5]),
+                        ntohl(tokenBytes[6]), ntohl(tokenBytes[7])];
+
+    [self registerWithToken:sToken];
+}
+
+- (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type
+{
+    NSLog(@"VoIP Notification received");
+    self.notificationMessage = payload.dictionaryPayload;
+    [self notificationReceived];
 }
 
 @end
