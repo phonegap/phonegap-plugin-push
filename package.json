@@ -13,12 +13,7 @@
   },
   "cordova": {
     "id": "phonegap-plugin-push",
-    "platforms": [
-      "ios",
-      "android",
-      "windows",
-      "browser"
-    ]
+    "platforms": ["ios", "android", "windows", "browser"]
   },
   "keywords": [
     "ecosystem:cordova",
@@ -52,9 +47,14 @@
         "cordova-android": ">=6.3.0",
         "cordova": ">=7.1.0"
       },
-      "2.1.2": {
+      "<2.2.0": {
         "cordova-ios": ">=4.5.0",
         "cordova-android": ">=6.3.0",
+        "cordova": ">=7.1.0"
+      },
+      "2.2.0": {
+        "cordova-ios": ">=4.5.0",
+        "cordova-android": ">=7.1.0",
         "cordova": ">=7.1.0"
       }
     }
