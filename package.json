@@ -60,7 +60,6 @@
       "2.2.0": {
         "cordova-ios": ">=4.5.0",
         "cordova-android": ">=7.1.0",
-        "cordova-browser": ">=5.0.3",
         "cordova": ">=7.1.0"
       }
     }
