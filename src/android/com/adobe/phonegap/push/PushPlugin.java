@@ -129,18 +129,24 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
   @TargetApi(26)
   private void createDefaultNotificationChannelIfNeeded(JSONObject options) {
+    String id;
     // only call on Android O and above
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
           .getSystemService(Context.NOTIFICATION_SERVICE);
       List<NotificationChannel> channels = notificationManager.getNotificationChannels();
-      if (channels.size() == 0) {
-        NotificationChannel mChannel = new NotificationChannel(DEFAULT_CHANNEL_ID, "PhoneGap PushPlugin",
-            NotificationManager.IMPORTANCE_DEFAULT);
-        mChannel.enableVibration(options.optBoolean(VIBRATE, true));
-        mChannel.setShowBadge(true);
-        notificationManager.createNotificationChannel(mChannel);
+      
+      for (int i=0; i<channels.size(); i++ ) {
+        id = channels.get(i).getId();
+        if (id.equals(DEFAULT_CHANNEL_ID)) {
+          return;
+        }
       }
+      NotificationChannel mChannel = new NotificationChannel(DEFAULT_CHANNEL_ID, "PhoneGap PushPlugin",
+          NotificationManager.IMPORTANCE_DEFAULT);
+      mChannel.enableVibration(options.optBoolean(VIBRATE, true));
+      mChannel.setShowBadge(true);
+      notificationManager.createNotificationChannel(mChannel);
     }
   }
 
