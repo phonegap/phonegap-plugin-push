@@ -103,6 +103,11 @@
     <config-file target="*-Release.plist" parent="aps-environment">
       <string>production</string>
     </config-file>
+    
+    <!-- XCode 9 requires the files to be added to the project to pick up the notifications -->  
+    <source-file src="Entitlements-Debug.plist"/>
+    <source-file src="Entitlements-Release.plist"/>  
+    
     <source-file src="src/ios/AppDelegate+notification.m"/>
     <source-file src="src/ios/PushPlugin.m"/>
     <header-file src="src/ios/AppDelegate+notification.h"/>
