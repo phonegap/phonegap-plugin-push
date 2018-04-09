@@ -44,6 +44,7 @@
     <framework src="me.leolin:ShortcutBadger:1.1.17@aar"/>
     <framework src="com.google.firebase:firebase-messaging:$FCM_VERSION"/>
     <framework src="push.gradle" custom="true" type="gradleReference"/>
+    <dependency id="cordova-support-google-services" version="~1.1.0"/>
     <source-file src="src/android/com/adobe/phonegap/push/FCMService.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/"/>
