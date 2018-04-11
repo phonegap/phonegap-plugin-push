@@ -1,41 +1,40 @@
-- [Overview](#overview)
-   - [Foreground Events](#push-message-arrives-with-app-in-foreground)
-   - [Background Events](#push-message-arrives-with-app-in-background)
-   - [Tap Events](#user-clicks-on-notification-in-notification-center)
-- [Android Behaviour](#android-behaviour)
-  - [Notification vs Data Payloads](#notification-vs-data-payloads)
-  - [Localization](#localization)
-  - [Images](#images)
-  - [Sound](#sound)
-  - [Stacking](#stacking)
-  - [Inbox Stacking](#inbox-stacking)
-  - [Action Buttons](#action-buttons)
-    - [In Line Replies](#in-line-replies)
-  - [Led in Notifications](#led-in-notifications)
-  - [Vibration Pattern in Notifications](#vibration-pattern-in-notifications)
-  - [Priority in Notifications](#priority-in-notifications)
-  - [Picture Messages](#picture-messages)
-  - [Background Notifications](#background-notifications)
-    - [Use of content-available: true](#use-of-content-available-true)
-  - [Caching](#caching)
-  - [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
-  - [Application force closed](#application-force-closed)
-  - [Visibility](#visibility-of-notifications)
-  - [Badges](#badges)
-  - [Support for Twilio Notify](#support-for-twilio-notify)
-  - [Notification ID](#notification-id)
-- [iOS Behaviour](#ios-behaviour)
-  - [Sound](#sound-1)
-  - [Background Notifications](#background-notifications-1)
-  - [Action Buttons](#action-buttons-1)
-    - [Action Buttons using GCM on iOS](#action-buttons-using-gcm-on-ios)
-  - [GCM and Additional Data](#gcm-and-additional-data)
-- [Windows Behaviour](#windows-behaviour)
-  - [Notifications](#notifications)
-  - [Setting Toast Capable Option for Windows](#setting-toast-capable-option-for-windows)
-  - [Disabling the default processing of notifications by Windows](#disabling-the-default-processing-of-notifications-by-windows)
-  - [Background Notifications](#background-notifications-2)
-
+*   [Overview](#overview)
+    *   [Foreground Events](#push-message-arrives-with-app-in-foreground)
+    *   [Background Events](#push-message-arrives-with-app-in-background)
+    *   [Tap Events](#user-clicks-on-notification-in-notification-center)
+*   [Android Behaviour](#android-behaviour)
+    *   [Notification vs Data Payloads](#notification-vs-data-payloads)
+    *   [Localization](#localization)
+    *   [Images](#images)
+    *   [Sound](#sound)
+    *   [Stacking](#stacking)
+    *   [Inbox Stacking](#inbox-stacking)
+    *   [Action Buttons](#action-buttons)
+        *   [In Line Replies](#in-line-replies)
+    *   [Led in Notifications](#led-in-notifications)
+    *   [Vibration Pattern in Notifications](#vibration-pattern-in-notifications)
+    *   [Priority in Notifications](#priority-in-notifications)
+    *   [Picture Messages](#picture-messages)
+    *   [Background Notifications](#background-notifications)
+        *   [Use of content-available: true](#use-of-content-available-true)
+    *   [Caching](#caching)
+    *   [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
+    *   [Application force closed](#application-force-closed)
+    *   [Visibility](#visibility-of-notifications)
+    *   [Badges](#badges)
+    *   [Support for Twilio Notify](#support-for-twilio-notify)
+    *   [Notification ID](#notification-id)
+*   [iOS Behaviour](#ios-behaviour)
+    *   [Sound](#sound-1)
+    *   [Background Notifications](#background-notifications-1)
+    *   [Action Buttons](#action-buttons-1)
+        *   [Action Buttons using GCM on iOS](#action-buttons-using-gcm-on-ios)
+    *   [GCM and Additional Data](#gcm-and-additional-data)
+*   [Windows Behaviour](#windows-behaviour)
+    *   [Notifications](#notifications)
+    *   [Setting Toast Capable Option for Windows](#setting-toast-capable-option-for-windows)
+    *   [Disabling the default processing of notifications by Windows](#disabling-the-default-processing-of-notifications-by-windows)
+    *   [Background Notifications](#background-notifications-2)
 
 # Overview
 
@@ -45,28 +44,28 @@ The following flowchart attempts to give you a picture of what happens when a pu
 
 ## Push message arrives with app in foreground
 
-- The push plugin receives the data from the remote push service and calls all of your `notification`  event handlers.
-- The message is *not* displayed in the devices notification center as that is not normal behaviour for Android or iOS.
+*   The push plugin receives the data from the remote push service and calls all of your `notification` event handlers.
+*   The message is _not_ displayed in the devices notification center as that is not normal behaviour for Android or iOS.
 
 ## Push message arrives with app in background
 
-- The push plugin receives the data from the remote push service and checks to see if there is a title or message in the data received. If there is then the message will be displayed in the devices notification center.
-- Then the push plugin checks to see if the app is running. If the user has killed the application then no further processing of the push data will occur.
-- If the app is running in the background the push plugin then checks to see if `content-available` exists in the push data.
-- If `content-available` is set to `1` then the plugin calls all of your `notification` event handlers.
+*   The push plugin receives the data from the remote push service and checks to see if there is a title or message in the data received. If there is then the message will be displayed in the devices notification center.
+*   Then the push plugin checks to see if the app is running. If the user has killed the application then no further processing of the push data will occur.
+*   If the app is running in the background the push plugin then checks to see if `content-available` exists in the push data.
+*   If `content-available` is set to `1` then the plugin calls all of your `notification` event handlers.
 
 ## User clicks on notification in notification center
 
-- The app starts.
-- Then the plugin calls all of your `notification` event handlers.
+*   The app starts.
+*   Then the plugin calls all of your `notification` event handlers.
 
 > Note: if the push payload contained `content-available: 1` then your `notification` event handler has already been called. It is up to you to handle the double event.
 
-Some ways to handle this *double* event are:
+Some ways to handle this _double_ event are:
 
-- don't include title/message in the push so it doesn't show up in the shader.
-- send two pushes, one to be processed in the background the other to show up in the shade.
-- include a unique ID in your push so you can check to see if you've already processed this event.
+*   don't include title/message in the push so it doesn't show up in the shader.
+*   send two pushes, one to be processed in the background the other to show up in the shade.
+*   include a unique ID in your push so you can check to see if you've already processed this event.
 
 # Android Behaviour
 
@@ -163,17 +162,20 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
-message.addData('title', {"locKey": "push_app_title"});
+message.addData('title', { locKey: 'push_app_title' });
 message.addData('message', 'Simple non-localizable text for message!');
 // Constant with formatted params
 // message.addData('message', {"locKey": "push_message_fox", "locData": ["fox", "dog"]});
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-    if(err) console.error(err);
-    else    console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -191,18 +193,18 @@ By default the icon displayed in your push notification will be your apps icon. 
 
 ```javascript
 var push = PushNotification.init({
-	"android": {
-		"senderID": "12345679"
-	},
+    android: {
+        senderID: '12345679'
+    },
     browser: {
         pushServiceURL: 'http://push.api.phonegap.com/v1/push'
     },
-	"ios": {
-		"alert": "true",
-		"badge": "true",
-		"sound": "true"
-	},
-	"windows": {}
+    ios: {
+        alert: 'true',
+        badge: 'true',
+        sound: 'true'
+    },
+    windows: {}
 });
 ```
 
@@ -216,27 +218,27 @@ In order to get a better user experience you can specify an alternate icon and b
 
 ```javascript
 var push = PushNotification.init({
-	"android": {
-		"senderID": "123456789",
-		"icon": "phonegap",
-		"iconColor": "blue"
-	},
+    android: {
+        senderID: '123456789',
+        icon: 'phonegap',
+        iconColor: 'blue'
+    },
     browser: {
         pushServiceURL: 'http://push.api.phonegap.com/v1/push'
     },
-    "ios": {
-		"alert": "true",
-		"badge": "true",
-		"sound": "true"
-	},
-	"windows": {}
+    ios: {
+        alert: 'true',
+        badge: 'true',
+        sound: 'true'
+    },
+    windows: {}
 });
 ```
 
-Where *icon* is the name of an `.png` image file in the Android `res/drawable` folder. For example: `platforms/android/res/drawable/phonegap.png`
+Where _icon_ is the name of an `.png` image file in the Android `res/drawable` folder. For example: `platforms/android/res/drawable/phonegap.png`
 Writing a hook to describe how to copy an image to the Android `res/drawable` folder is out of scope for this README but there is an [excellent tutorial](http://devgirl.org/2013/11/12/three-hooks-your-cordovaphonegap-project-needs/) that you can copy.
 
-*iconColor* is one of the supported formats #RRGGBB or #AARRGGBB or one of the following names: 'red', 'blue', 'green', 'black', 'white', 'gray', 'cyan', 'magenta', 'yellow', 'lightgray', 'darkgray', 'grey', 'lightgrey', 'darkgrey', 'aqua', 'fuchsia', 'lime', 'maroon', 'navy', 'olive', 'purple', 'silver', 'teal'. *iconColor* is supported on Android 5.0 and greater.
+_iconColor_ is one of the supported formats #RRGGBB or #AARRGGBB or one of the following names: 'red', 'blue', 'green', 'black', 'white', 'gray', 'cyan', 'magenta', 'yellow', 'lightgray', 'darkgray', 'grey', 'lightgrey', 'darkgrey', 'aqua', 'fuchsia', 'lime', 'maroon', 'navy', 'olive', 'purple', 'silver', 'teal'. _iconColor_ is supported on Android 5.0 and greater.
 
 Please follow the [Android icon design guidelines](https://www.google.com/design/spec/style/icons.html#) when creating your icon.
 
@@ -262,24 +264,27 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'Large Icon');
 message.addData('message', 'Loaded from drawable folder.');
 message.addData('image', 'twitter');
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
-Would look for the *twitter* image in the `res/drawable` folder and produce the following notification.
+Would look for the _twitter_ image in the `res/drawable` folder and produce the following notification.
 
 ![2015-07-24 02 34 41](https://cloud.githubusercontent.com/assets/353180/8866903/2df48028-3190-11e5-8176-fe8b3f7c5aab.png)
 
-The second is the *assets* folder in your app. This JSON sent from GCM:
+The second is the _assets_ folder in your app. This JSON sent from GCM:
 
 ```javascript
 {
@@ -297,25 +302,27 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'Large Icon');
 message.addData('message', 'Loaded from assets folder.');
 message.addData('image', 'www/image/logo.png');
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
-Would look for the *logo.png* file in the assets/www/img folder. Since your apps www folder gets copied into the Android assets folder it is an excellent spot to store the images without needing to write a hook to copy them to the `res/drawable` folder. It produces the following notification.
+Would look for the _logo.png_ file in the assets/www/img folder. Since your apps www folder gets copied into the Android assets folder it is an excellent spot to store the images without needing to write a hook to copy them to the `res/drawable` folder. It produces the following notification.
 
 ![2015-07-24 02 20 02](https://cloud.githubusercontent.com/assets/353180/8866901/2df19052-3190-11e5-8c16-a355c59209f3.png)
 
-
-The third is the remote *URL*. This JSON sent from GCM:
+The third is the remote _URL_. This JSON sent from GCM:
 
 ```javascript
 {
@@ -333,16 +340,22 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'Large Icon');
 message.addData('message', 'Loaded from URL');
-message.addData('image', 'https://dl.dropboxusercontent.com/u/887989/antshot.png');
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+message.addData(
+    'image',
+    'https://dl.dropboxusercontent.com/u/887989/antshot.png'
+);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -369,17 +382,23 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'Large Circular Icon');
 message.addData('message', 'Loaded from URL');
-message.addData('image', 'https://pbs.twimg.com/profile_images/837060031895896065/VHIQ4oUf_400x400.jpg');
+message.addData(
+    'image',
+    'https://pbs.twimg.com/profile_images/837060031895896065/VHIQ4oUf_400x400.jpg'
+);
 message.addData('image-type', 'circular');
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -414,6 +433,7 @@ Then second is `ringtone` which will play the phones default ringtone sound.
     }
 }
 ```
+
 The third is the empty string which will cause for the playing of sound to be skipped.
 
 ```javascript
@@ -445,20 +465,23 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'Sound Test');
 message.addData('message', 'Loaded res/raw');
 message.addData('soundname', 'test');
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
-*Note:* when you specify the custom sound file name omit the file's extension.
+_Note:_ when you specify the custom sound file name omit the file's extension.
 
 ## Stacking
 
@@ -481,15 +504,18 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'Test Push');
 message.addData('message', 'Push number 1');
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -510,15 +536,18 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'Test Push');
 message.addData('message', 'Push number 2');
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -540,16 +569,19 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'Test Push');
 message.addData('message', 'Push number 1');
 message.addData('notId', 1);
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -571,16 +603,19 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'Test Push');
 message.addData('message', 'Push number 2');
 message.addData('notId', 2);
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -607,17 +642,20 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'My Title');
 message.addData('message', 'My first message');
 message.addData('style', 'inbox');
 message.addData('summaryText', 'There are %n% notifications');
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -644,17 +682,20 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'My Title');
 message.addData('message', 'My second message');
 message.addData('style', 'inbox');
 message.addData('summaryText', 'There are %n% notifications');
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -666,7 +707,24 @@ If you use `%n%` in the `summaryText` of the JSON coming down from GCM it will b
 
 ## Action Buttons
 
-Your notification can include a maximum of three action buttons. If you wish to include an icon along with the button name they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from GCM:
+Your notification can include a maximum of three action buttons. You register event listeners with the name of your actions. Then when a user clicks on one of the action buttons that event is fired and the listener you have registered is invoked. For instance here is a setup with two actions `emailGuests` and `snooze`.
+
+```javascript
+var push = PushNotification.init({
+    android: {}
+});
+
+// data contains the push payload just like a notification event
+push.on('emailGuests', function(data) {
+    console.log('I should email my guests');
+});
+
+push.on('snooze', function(data) {
+    console.log('Remind me later');
+});
+```
+
+If you wish to include an icon along with the button name they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from GCM:
 
 ```javascript
 {
@@ -675,8 +733,8 @@ Your notification can include a maximum of three action buttons. If you wish to 
     	"title": "AUX Scrum",
     	"message": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
         "actions": [
-    		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests", "foreground": true},
-    		{ "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze", "foreground": false}
+    		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "emailGuests", "foreground": true},
+    		{ "icon": "snooze", "title": "SNOOZE", "callback": "snooze", "foreground": false}
     	]
     }
 }
@@ -687,19 +745,30 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'AUX Scrum');
-message.addData('message', 'Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.');
+message.addData(
+    'message',
+    'Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.'
+);
 message.addData('actions', [
-    { "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests", "foreground": true},
-    { "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze", "foreground": false},
+    {
+        icon: 'emailGuests',
+        title: 'EMAIL GUESTS',
+        callback: 'emailGuests',
+        foreground: true
+    },
+    { icon: 'snooze', title: 'SNOOZE', callback: 'snooze', foreground: false }
 ]);
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -707,7 +776,7 @@ This will produce the following notification in your tray:
 
 ![action_combo](https://cloud.githubusercontent.com/assets/353180/9313435/02554d2a-44f1-11e5-8cd9-0aadd1e02b18.png)
 
-If your user clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed if there is a function defined, and if there isn't an event will be emitted with the callback name. In this case it is `app.emailGuests` and `app.snooze` respectively. If you set the `foreground` property to `true` the app will be brought to the front, if `foreground` is `false` then the callback is run without the app being brought to the foreground.
+If your user clicks on the main body of the notification your app will be opened. However if they click on either of the action buttons the app will open (or start) and the specified event will be emitted with the callback name. In this case it is `emailGuests` and `snooze` respectively. If you set the `foreground` property to `true` the app will be brought to the front, if `foreground` is `false` then the callback is run without the app being brought to the foreground.
 
 ### In Line Replies
 
@@ -722,8 +791,8 @@ Your notification can include action buttons. If you wish to include an icon alo
     	"title": "AUX Scrum",
     	"message": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
         "actions": [
-    		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests", "foreground": false, "inline": true },
-    		{ "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze", "foreground": false}
+    		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "emailGuests", "foreground": false, "inline": true },
+    		{ "icon": "snooze", "title": "SNOOZE", "callback": "snooze", "foreground": false}
     	]
     }
 }
@@ -734,19 +803,36 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'AUX Scrum');
-message.addData('message', 'Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.');
+message.addData(
+    'message',
+    'Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.'
+);
 message.addData('actions', [
-    { "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "app.emailGuests", "foreground": false, "inline": true},
-    { "icon": "snooze", "title": "SNOOZE", "callback": "app.snooze", "foreground": false},
+    {
+        icon: 'emailGuests',
+        title: 'EMAIL GUESTS',
+        callback: 'emailGuests',
+        foreground: false,
+        inline: true
+    },
+    {
+        icon: 'snooze',
+        title: 'SNOOZE',
+        callback: 'snooze',
+        foreground: false
+    }
 ]);
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -765,18 +851,18 @@ Then your app's `on('notification')` event handler will be called without the ap
     "actions": [
       {
         "inline": true,
-        "callback": "app.accept",
+        "callback": "accept",
         "foreground": false,
         "title": "Accept"
       },
       {
         "icon": "snooze",
-        "callback": "app.reject",
+        "callback": "reject",
         "foreground": false,
         "title": "Reject"
       }
     ],
-    "actionCallback": "app.accept",
+    "actionCallback": "accept",
     "coldstart": false,
     "collapse_key": "do_not_collapse",
     "foreground": false
@@ -790,13 +876,13 @@ and the text data that the user typed would be located in `data.additionalData.i
 
 #### Attributes
 
-Attribute | Type | Default | Description
---------- | ---- | ------- | -----------
-`icon` | `string` | | Optional. The name of a drawable resource to use as the small-icon. The name should not include the extension.
-`title` | `string` | | Required. The label to display for the action button.
-`callback` | `string` | | Required. The function to be executed or the event to be emitted when the action button is pressed. The function must be accessible from the global namespace. If you provide `myCallback` then it amounts to calling `window.myCallback`. If you provide `app.myCallback` then there needs to be an object call `app`, with a function called `myCallback` accessible from the global namespace, i.e. `window.app.myCallback`. If there isn't a function with the specified name an event will be emitted with the callback name.
-`foreground` | `boolean` | `true` | Optional. Whether or not to bring the app to the foreground when the action button is pressed.
-`inline` | `boolean` | `false` | Optional. Whether or not to provide a quick reply text field to the user when the button is clicked.
+| Attribute    | Type      | Default | Description                                                                                                    |
+| ------------ | --------- | ------- | -------------------------------------------------------------------------------------------------------------- |
+| `icon`       | `string`  |         | Optional. The name of a drawable resource to use as the small-icon. The name should not include the extension. |
+| `title`      | `string`  |         | Required. The label to display for the action button.                                                          |
+| `callback`   | `string`  |         | Required. The event to be emitted when the action button is pressed.                                           |
+| `foreground` | `boolean` | `true`  | Optional. Whether or not to bring the app to the foreground when the action button is pressed.                 |
+| `inline`     | `boolean` | `false` | Optional. Whether or not to provide a quick reply text field to the user when the button is clicked.           |
 
 ## Led in Notifications
 
@@ -818,16 +904,19 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'Green LED');
 message.addData('message', 'This is my message with a Green LED');
 message.addData('ledColor', [0, 0, 255, 0]);
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -851,16 +940,22 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'Vibration Pattern');
-message.addData('message', 'Device should wait for 2 seconds, vibrate for 1 second then be silent for 500 ms then vibrate for 500 ms');
+message.addData(
+    'message',
+    'Device should wait for 2 seconds, vibrate for 1 second then be silent for 500 ms then vibrate for 500 ms'
+);
 message.addData('vibrationPattern', [2000, 1000, 500, 500]);
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -884,16 +979,22 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'This is a maximum priority Notification');
-message.addData('message', 'This notification should appear in front of all others');
+message.addData(
+    'message',
+    'This notification should appear in front of all others'
+);
 message.addData('priority', 2);
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -921,18 +1022,24 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'Big Picture');
 message.addData('message', 'This is my big picture message');
 message.addData('style', 'picture');
-message.addData('picture', 'http://36.media.tumblr.com/c066cc2238103856c9ac506faa6f3bc2/tumblr_nmstmqtuo81tssmyno1_1280.jpg');
+message.addData(
+    'picture',
+    'http://36.media.tumblr.com/c066cc2238103856c9ac506faa6f3bc2/tumblr_nmstmqtuo81tssmyno1_1280.jpg'
+);
 message.addData('summaryText', 'The internet is built on cat pictures');
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -965,22 +1072,24 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'Test Push');
 message.addData('message', 'Push number 1');
 message.addData('info', 'super secret info');
 message.addData('content-available', '1');
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
 or if you want the payload to be delivered directly to your app without anything showing up in the notification center omit the tite/message from the payload like so:
-
 
 ```javascript
 {
@@ -997,15 +1106,18 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('info', 'super secret info');
 message.addData('content-available', '1');
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -1047,9 +1159,9 @@ Instead move `content-available: true` into the `data` object of the payload and
 
 These phones have a particular quirk that when the app is force closed that you will no longer be able to receive notifications until the app is restarted. In order for you to receive background notifications:
 
-- On your Huawei device go to Settings > Protected apps > check "My App" where.
-- On your Xiaomi make sure your phone has the "Auto-start" property enabled for your app.
-- On your Asus make sure your phone has the "Auto-start" property enabled for your app.
+*   On your Huawei device go to Settings > Protected apps > check "My App" where.
+*   On your Xiaomi make sure your phone has the "Auto-start" property enabled for your app.
+*   On your Asus make sure your phone has the "Auto-start" property enabled for your app.
 
 ### Application force closed
 
@@ -1100,16 +1212,19 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'Force Start');
 message.addData('message', 'This notification should restart the app');
 message.addData('force-start', 1);
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -1149,16 +1264,22 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'This is a public Notification');
-message.addData('message', 'You should be able to read this notification on your lock screen');
+message.addData(
+    'message',
+    'You should be able to read this notification on your lock screen'
+);
 message.addData('visibility', 1);
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -1184,16 +1305,19 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 var gcm = require('node-gcm');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var service = new gcm.Sender(apiKey);
 var message = new gcm.Message();
 message.addData('title', 'Badge Test');
-message.addData('message', 'Badges, we don\'t need no stinking badges');
+message.addData('message', "Badges, we don't need no stinking badges");
 message.addData('badge', 7);
-service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, function(
+    err,
+    response
+) {
+    if (err) console.error(err);
+    else console.log(response);
 });
 ```
 
@@ -1201,9 +1325,9 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 
 This plugin seamlessly supports payloads generated by Twilio Notify on Android. Specifically the parameters passed in to the Twilio REST API are available in the message payload passed to your app as follows:
 
-- `Title` --> `data.title`
-- `Body` --> `data.message`
-- `Sound` --> `data.sound`
+*   `Title` --> `data.title`
+*   `Body` --> `data.message`
+*   `Sound` --> `data.sound`
 
 Here is an example request to Twilio REST API and the corresponding JSON received by your app.
 
@@ -1269,7 +1393,7 @@ If you want the default sound to play upon receipt of push use this payload:
 
 On iOS if you want your `on('notification')` event handler to be called when your app is in the background you will need to do a few things.
 
-First the JSON you send from APNS will need to include `"content-available": 1` to the `aps` object. The `"content-available": 1` property in your push message is a signal to iOS to wake up your app and give it up to 30 seconds of background processing. If do not want this type of behaviour just omit `"content-available": 1` from your push data. As well you *should* set a `notId` property in the root of payload object. This is the parameter you pass to the `finish` method in order to tell the operating system that the processing of the push event is done.
+First the JSON you send from APNS will need to include `"content-available": 1` to the `aps` object. The `"content-available": 1` property in your push message is a signal to iOS to wake up your app and give it up to 30 seconds of background processing. If do not want this type of behaviour just omit `"content-available": 1` from your push data. As well you _should_ set a `notId` property in the root of payload object. This is the parameter you pass to the `finish` method in order to tell the operating system that the processing of the push event is done.
 
 For instance the following JSON:
 
@@ -1306,27 +1430,33 @@ For example:
 
 ```javascript
 var push = PushNotification.init({
-	"ios": {
-		"sound": "true",
-		"alert": "true",
-		"badge": "true",
-		"clearBadge": "true"
-	}
+    ios: {
+        sound: 'true',
+        alert: 'true',
+        badge: 'true',
+        clearBadge: 'true'
+    }
 });
 
 push.on('registration', function(data) {
-	// send data.registrationId to push service
+    // send data.registrationId to push service
 });
 
-
 push.on('notification', function(data) {
-	// do something with the push data
-	// then call finish to let the OS know we are done
-	push.finish(function() {
-		console.log("processing of push data is finished");
-	}, function() {
-    console.log("something went wrong with push.finish for ID = " + data.additionalData.notId)
-  }, data.additionalData.notId);
+    // do something with the push data
+    // then call finish to let the OS know we are done
+    push.finish(
+        function() {
+            console.log('processing of push data is finished');
+        },
+        function() {
+            console.log(
+                'something went wrong with push.finish for ID = ' +
+                    data.additionalData.notId
+            );
+        },
+        data.additionalData.notId
+    );
 });
 ```
 
@@ -1338,54 +1468,110 @@ Your notification can include action buttons. For iOS 8+ you must setup the poss
 
 ```javascript
 var push = PushNotification.init({
-	"ios": {
-		"sound": true,
-		"alert": true,
-		"badge": true,
-		"categories": {
-			"invite": {
-				"yes": {
-					"callback": "app.accept", "title": "Accept", "foreground": true, "destructive": false
-				},
-				"no": {
-					"callback": "app.reject", "title": "Reject", "foreground": true, "destructive": false
-				},
-				"maybe": {
-					"callback": "app.maybe", "title": "Maybe", "foreground": true, "destructive": false
-				}
-			},
-			"delete": {
-				"yes": {
-					"callback": "app.doDelete", "title": "Delete", "foreground": true, "destructive": true
-				},
-				"no": {
-					"callback": "app.cancel", "title": "Cancel", "foreground": true, "destructive": false
-				}
-			}
-		}
-	}
+    ios: {
+        sound: true,
+        alert: true,
+        badge: true,
+        categories: {
+            invite: {
+                yes: {
+                    callback: 'accept',
+                    title: 'Accept',
+                    foreground: true,
+                    destructive: false
+                },
+                no: {
+                    callback: 'reject',
+                    title: 'Reject',
+                    foreground: true,
+                    destructive: false
+                },
+                maybe: {
+                    callback: 'maybe',
+                    title: 'Maybe',
+                    foreground: true,
+                    destructive: false
+                }
+            },
+            delete: {
+                yes: {
+                    callback: 'doDelete',
+                    title: 'Delete',
+                    foreground: true,
+                    destructive: true
+                },
+                no: {
+                    callback: 'cancel',
+                    title: 'Cancel',
+                    foreground: true,
+                    destructive: false
+                }
+            }
+        }
+    }
 });
 ```
 
-You’ll notice that we’ve added a new parameter to the iOS object of our init code called categories. Each category is a named object, invite and delete in this case. These names will need to match the one you send via your payload to APNS if you want the action buttons to be displayed. Each category can have up to three buttons which must be labeled `yes`, `no` and `maybe`. In turn each of these buttons has four properties, `callback` the javascript function you want to call, `title` the label for the button, `foreground` whether or not to bring your app to the foreground and `destructive` which doesn’t actually do anything destructive it just colors the button red as a warning to the user that the action may be destructive.
+You’ll notice that we’ve added a new parameter to the iOS object of our init code called categories. Each category is a named object, invite and delete in this case. These names will need to match the one you send via your payload to APNS if you want the action buttons to be displayed. Each category can have up to three buttons which must be labeled `yes`, `no` and `maybe`. In turn each of these buttons has four properties, `callback` the javascript event you want to fired, `title` the label for the button, `foreground` whether or not to bring your app to the foreground and `destructive` which doesn’t actually do anything destructive it just colors the button red as a warning to the user that the action may be destructive.
 
-Just like with background notifications it is absolutely critical that you call `push.finish()` when you have successfully processed the button callback. For instance:
+Just like with background notifications it is absolutely critical that you call `push.finish()` when you have successfully processed the button callback. For instance you could setup three event listeners for the `invite` categories yes, no and maybe buttons:
 
 ```javascript
-app.accept = function(data) {
-    // do something with the notification data
+push.on('accept', function(data) {
+    // do something with the push data
+    // then call finish to let the OS know we are done
+    push.finish(
+        function() {
+            console.log('processing of push data is finished');
+        },
+        function() {
+            console.log(
+                'something went wrong with push.finish for ID = ' +
+                    data.additionalData.notId
+            );
+        },
+        data.additionalData.notId
+    );
+});
 
-    push.finish(function() {
-        console.log('accept callback finished');
-    }, function() {
-        console.log('accept callback failed');
-    }, data.additionalData.notId);
-};
+push.on('reject', function(data) {
+    // do something with the push data
+    // then call finish to let the OS know we are done
+    push.finish(
+        function() {
+            console.log('processing of push data is finished');
+        },
+        function() {
+            console.log(
+                'something went wrong with push.finish for ID = ' +
+                    data.additionalData.notId
+            );
+        },
+        data.additionalData.notId
+    );
+});
+
+push.on('maybe', function(data) {
+    // do something with the push data
+    // then call finish to let the OS know we are done
+    push.finish(
+        function() {
+            console.log('processing of push data is finished');
+        },
+        function() {
+            console.log(
+                'something went wrong with push.finish for ID = ' +
+                    data.additionalData.notId
+            );
+        },
+        data.additionalData.notId
+    );
+});
 ```
 
 You may notice that the `finish` method now takes `success`, `failure` and `id` parameters. The `id` parameter let's the operating system know which background process to stop. You'll set it in the next step.
 
-Then you will need to set the `category` value in your `aps` payload to match one of the objects in the `categories` object. As well you *should* set a `notId` property in the root of payload object. This is the parameter you pass to the `finish` method in order to tell the operating system that the processing of the push event is done.
+Then you will need to set the `category` value in your `aps` payload to match one of the objects in the `categories` object. As well you _should_ set a `notId` property in the root of payload object. This is the parameter you pass to the `finish` method in order to tell the operating system that the processing of the push event is done.
 
 ```javascript
 {
@@ -1499,7 +1685,7 @@ This plugin automatically sets the toast capable flag to be true for Cordova 5.1
 The default handling can be disabled by setting the 'cancel' property in the notification object.
 
 ```javascript
-data.additionalData.pushNotificationReceivedEventArgs.cancel = true
+data.additionalData.pushNotificationReceivedEventArgs.cancel = true;
 ```
 
 ## Background Notifications
