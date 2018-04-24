@@ -2,6 +2,7 @@
    - [Foreground Events](#push-message-arrives-with-app-in-foreground)
    - [Background Events](#push-message-arrives-with-app-in-background)
    - [Tap Events](#user-clicks-on-notification-in-notification-center)
+- [Push Notification Message Format Overview](#push-notification-message-format-overview)
 - [Android Behaviour](#android-behaviour)
   - [Notification vs Data Payloads](#notification-vs-data-payloads)
   - [Localization](#localization)
@@ -72,7 +73,7 @@ Some ways to handle this *double* event are:
 - send two pushes, one to be processed in the background, and the other to show up in the shade.
 - include a unique ID in your push so you can check to see if you've already processed this event.
 
-# Message Format Overview
+# Push Notification Message Format Overview
 
 ## Android Message Format
 
@@ -81,20 +82,21 @@ The JSON push message can contain the following fields, see https://developers.g
 ```javascript
 var content = {
   "priority": "normal", // Valid values are "normal" and "high."
-  "content_available": "0", // see "Background Notifications" below
   "data": {
     "title": "A short string describing the purpose of the notification",
     "message": "The text of the alert message", // "body" can be used as alias, is converted to "message"
-    // localozation of message is possible
+    // localization of message is possible
     "count": 5, // set the badge notification count at app icon
     "sound": "default", // play default sound ... or "soundname", see [Android Sound](#sound) section
     "notId": 1, // unique ID for the message, used for grouping, see below
+    "content-available": "0", // configure background updates, see below
     "custom_key1": "value1",
     "custom_key2": "value2"
-  },
-  // "notification": { ... } // can be used instead of data for title and message, see ....
+  }
 }
 ```
+
+### Using AWS-SNS with GCM
 
 This is the JSON-encoded format you can e.g. send via AWS-SNS's web UI.
 Note, that the core message is json-encoded twice, so if we take the `content` from above you convert it this way
@@ -108,11 +110,14 @@ Note, that the core message is json-encoded twice, so if we take the `content` f
 
 ```json
 {"GCM":
-  "{\"priority\":\"normal\",\"content_available\":\"0\",\"data\":{\"title\":\"A short string describing the purpose of the notification\",\"message\":\"The text of the alert message\",\"count\":5,\"sound\": \"default\",\"notId\":1,\"custom_key1\":\"value1\",\"custom_key2\":\"value2\"}}"
+  "{\"priority\":\"normal\",\"data\":{\"title\":\"A short string describing the purpose of the notification\",\"message\":\"The text of the alert message\",\"count\":5,\"sound\": \"default\",\"notId\":1,\"content-available\":\"0\",\"custom_key1\":\"value1\",\"custom_key2\":\"value2\"}}",
+  "default": "plain text message again"
 }
 ```
 
-This message is received in the "notification" handler as follows.
+### Message Received in JavaScript
+
+This message is received in the `push.on("notification")` handler as follows.
 Note that the properties are "normalized" across platforms, so this is passed to the app on android:
 
 ```json
@@ -125,6 +130,7 @@ Note that the properties are "normalized" across platforms, so this is passed to
     "custom_key1": "value1",
     "custom_key2": "value2",
     "notId": "1",
+    "content_available": "0",
     "dismissed": false,
     "google.message_id": "...",
     "coldstart": false,
@@ -143,11 +149,11 @@ The JSON message can contain the following fields, see [Apple developer docs](ht
     "alert": { // alternatively just a string: "Your Message",
       "title": "A short string describing the purpose of the notification",
       "body": "The text of the alert message",
-      // localozation of message is possible
+      // localization of message is possible
       "launch-image": "The filename of an image file in the app bundle, with or without the filename extension. The image is used as the launch image when users tap the action button or move the action slider"
     },
     "badge": 5, // Number to show at App icon
-    "content-available": 0, // configure background updates, see below
+    "content-available": "0", // configure background updates, see below
     "category": "identifier", // Provide this key with a string value that represents the notification’s type
     "thread-id": "id", // Provide this key with a string value that represents the app-specific identifier for grouping notifications
     "sound": "default"  // play default sound, or custom sound, see [iOS Sound](#sound-1) section
@@ -157,15 +163,29 @@ The JSON message can contain the following fields, see [Apple developer docs](ht
 }
 ```
 
-This is the JSON-encoded format you can send via AWS-SNS's web UI (use "APNS" or "APNS_SANDBOX" depending on which version you use to publish):
+### Using AWS-SNS with APNS
+
+This is the JSON-encoded format you can send via AWS-SNS's web UI:
 
 ```json
 {"APNS_SANDBOX":
-  "{\"aps\":{\"alert\":{\"title\":\"A short string describing the purpose of the notification\",\"body\":\"The text of the alert message\",\"launch-image\":\"The filename of an image file in the app bundle, with or without the filename extension. The image is used as the launch image when users tap the action button or move the action slider\"},\"badge\":5,\"content-available\":0,\"category\":\"identifier\",\"thread-id\":\"id\",\"sound\":\"default\"},\"custom_key1\":\"value1\",\"custom_key2\":\"value2\"}"
+  "{\"aps\":{\"alert\":{\"title\":\"A short string describing the purpose of the notification\",\"body\":\"The text of the alert message\",\"launch-image\":\"The filename of an image file in the app bundle, with or without the filename extension. The image is used as the launch image when users tap the action button or move the action slider\"},\"badge\":5,\"content-available\":\"0\",\"category\":\"identifier\",\"thread-id\":\"id\",\"sound\":\"default\"},\"custom_key1\":\"value1\",\"custom_key2\":\"value2\"}"
 }
 ```
 
-This message is received in the "notification" handler as follows.
+Note: use "APNS" to send to an app signed and released to production or "APNS_SANDBOX" or to send to an app signed and released for development. You can include both keys (APNS and APNS_SANDBOX) in the message if you want to send both to apps signed for production and apps signed for development.
+
+```json
+{
+  "APNS": "{\"aps\":...}",
+  "APNS_SANDBOX": "{\"aps\":...}",
+  "default": "plain text message again"
+}
+```
+
+### Message Received in JavaScript
+
+This message is received in the `push.on("notification")` handler as follows.
 Note that the properties are "normalized" accross platforms, so this is passed to the app on iOS:
 
 ```json
@@ -178,7 +198,7 @@ Note that the properties are "normalized" accross platforms, so this is passed t
     "category": "identifier",
     "coldstart": false,
     "foreground": false,
-    "content-available": 0,
+    "content-available": "0",
     "custom_key1": "value1",
     "custom_key2": "value2",
     "launch-image": "The filename of an image file in the app bundle, with or without the filename extension. The image is used as the launch image when users tap the action button or move the action slider",
@@ -1253,7 +1273,7 @@ On Android if you want your `on('notification')` event handler to be called when
 
 First the JSON you send from GCM will need to include `"content-available": "1"`. This will tell the push plugin to call your `on('notification')` event handler no matter what other data is in the push notification.
 
-```javascript
+```json
 {
     "registration_ids": ["my device id"],
     "data": {
@@ -1297,7 +1317,7 @@ fcm.send(message, (err, response) => {
 or if you want the payload to be delivered directly to your app without anything showing up in the notification center, just omit the tite/message from the payload like so:
 
 
-```javascript
+```json
 {
     "registration_ids": ["my device id"],
     "data": {
