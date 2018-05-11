@@ -368,7 +368,7 @@ You should design one with these guidelines in mind:
 * Transparent background
 * White foreground
 
-**Note:** ny color foreground will work - any non-transparent pixels are just rendered white.
+**Note:** any color foreground will work - any non-transparent pixels are just rendered white.
 
 To specify an alternate icon and background color to be shown when receiving a push notification, use the following:
 
