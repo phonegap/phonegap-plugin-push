@@ -358,9 +358,19 @@ The result will look much like this:
 
 ![2015-07-24 02 52 00](https://cloud.githubusercontent.com/assets/353180/8866899/2df00c3c-3190-11e5-8552-96201fb4424b.png)
 
-This is because Android now uses Material design and the default icon for push will be completely white.
+Note the application icon has gone from being the default, rich, multicolored cordova icon muti-colored, to plain white white.  What going on here?
 
-In order to get a better user experience, you can specify an alternate icon and background color to be shown when receiving a push notification. The code would look like this:
+With Android now using Material design, push notifications are forced to be single-color only - this can be difficult to diagnose, as a lot of icons just show as a white square.
+
+You should design one with these guidelines in mind:
+
+* 96x96 pixels
+* Transparent background
+* White foreground
+
+**Note:** ny color foreground will work - any non-transparent pixels are just rendered white.
+
+To specify an alternate icon and background color to be shown when receiving a push notification, use the following:
 
 ```javascript
 const push = PushNotification.init({
