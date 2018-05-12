@@ -358,15 +358,19 @@ The result will look much like this:
 
 ![2015-07-24 02 52 00](https://cloud.githubusercontent.com/assets/353180/8866899/2df00c3c-3190-11e5-8552-96201fb4424b.png)
 
-Note the application icon has gone from being the default, rich, multicolored cordova icon muti-colored, to plain white white.  What going on here?
+Note that the notification icon has gone from the default, rich, multicolored cordova icon, to a white-on-gray one.  What's going on here?
 
-With Android now using Material design, push notifications are forced to be single-color only - this can be difficult to diagnose, as a lot of icons just show as a white square.
+With Android now greatly using Material design since 5.0 (Lollipop), push notification icons are forced to be monochromatic - this can be difficult to diagnose, as a lot of icons just show as a white square if not properly designed.
 
 You should design one with these guidelines in mind:
 
 * 96x96 pixels
 * Transparent background
 * White foreground
+
+For more details, please read:
+- https://material.io/tools/icons
+- https://material.io/design/iconography/
 
 **Note:** any color foreground will work - any non-transparent pixels are just rendered white.
 
