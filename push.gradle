@@ -1,19 +1,5 @@
-import java.util.regex.Pattern
-
-def doExtractStringFromManifest(name) {
-    def manifestFile = file("AndroidManifest.xml")
-    if (!manifestFile.exists()) {
-      manifestFile = file("src/main/AndroidManifest.xml")
-    }
-    def pattern = Pattern.compile(name + "=\"(.*?)\"")
-    def matcher = pattern.matcher(manifestFile.getText())
-    matcher.find()
-    return matcher.group(1)
-}
-
 android {
     defaultConfig {
         multiDexEnabled true
-        applicationId = doExtractStringFromManifest("package")
     }
 }
