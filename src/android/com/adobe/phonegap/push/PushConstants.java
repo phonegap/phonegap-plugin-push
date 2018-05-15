@@ -98,5 +98,5 @@ public interface PushConstants {
   public static final String DELETE_CHANNEL = "deleteChannel";
   public static final String ONGOING = "ongoing";
   public static final String LIST_CHANNELS = "listChannels";
-  public statis final String MESSAGE_ID = "google.message_id"y
+  public statis final String MESSAGE_ID = "google.message_id";
 }
