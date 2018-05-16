@@ -258,7 +258,7 @@ My recommended format for your push payload when using this plugin (while it dif
 }
 ```
 
-However, if you want to use the mixed payload, you can make it so the values in your `data` payload is passed to the app when tapping the notification by adding `click_action: com.adobe.phonegap.push.background.MESSAGING_EVENT` to your `notification` payload.
+However, if you want to use the mixed payload, you can make it so the values in your `data` payload is passed to the app when tapping the notification by adding `"click_action": "com.adobe.phonegap.push.background.MESSAGING_EVENT"` to your `notification` payload.
 Your payload would end up looking something like this:
 
 ```json
