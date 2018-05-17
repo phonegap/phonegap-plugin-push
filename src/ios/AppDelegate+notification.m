@@ -107,6 +107,15 @@ static char coldstartKey;
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     NSLog(@"didReceiveNotification with fetchCompletionHandler");
 
+    id clearAllNotifications = [userInfo objectForKey:@"clearAllNotifications"];
+    if ([clearAllNotifications isKindOfClass:[NSString class]] && [clearAllNotifications isEqualToString:@"true"]) {
+        NSLog(@"PushPlugin clearing notifications");
+
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:1];
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+        [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    }
+
     // app is in the foreground so call notification callback
     if (application.applicationState == UIApplicationStateActive) {
         NSLog(@"app active");
