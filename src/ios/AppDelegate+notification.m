@@ -108,7 +108,7 @@ static char coldstartKey;
     NSLog(@"didReceiveNotification with fetchCompletionHandler");
 
     id clearAllNotifications = [userInfo objectForKey:@"clearAllNotifications"];
-    if ([clearAllNotifications isKindOfClass:[NSString class]] && [clearAllNotifications isEqualToString:@"true"]) {
+    if (([clearAllNotifications isKindOfClass:[NSString class]] && [clearAllNotifications isEqualToString:@"true"]) || [clearAllNotifications boolValue]) {
         NSLog(@"PushPlugin clearing notifications");
 
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber:1];
