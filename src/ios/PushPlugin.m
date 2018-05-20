@@ -282,15 +282,15 @@
             }
             
             UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-            __weak UNUserNotificationCenter *weakCenter = center;
-            [center requestAuthorizationWithOptions:authorizationOptions completionHandler:^(BOOL granted, NSError * _Nullable error) {
-                if (granted) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[UIApplication sharedApplication] registerForRemoteNotifications];
-                        [weakCenter setNotificationCategories:categories];
-                    });
-                }
-            }];
+            [center setNotificationCategories:categories];
+            [self handleNotificationSettingsWithAuthorizationOptions:[NSNumber numberWithInteger:authorizationOptions]];
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(handleNotificationSettings:)
+                                                         name:pushPluginApplicationDidBecomeActiveNotification
+                                                       object:nil];
+            
+            
             
             // Read GoogleService-Info.plist
             NSString *path = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info" ofType:@"plist"];
@@ -637,4 +637,51 @@
     [self notificationReceived];
 }
 
+- (void)handleNotificationSettings:(NSNotification *)notification
+{
+    [self handleNotificationSettingsWithAuthorizationOptions:nil];
+}
+
+- (void)handleNotificationSettingsWithAuthorizationOptions:(NSNumber *)authorizationOptionsObject
+{
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    UNAuthorizationOptions authorizationOptions = [authorizationOptionsObject unsignedIntegerValue];
+    
+    __weak UNUserNotificationCenter *weakCenter = center;
+    [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+        
+        switch (settings.authorizationStatus) {
+            case UNAuthorizationStatusNotDetermined:
+            {
+                [weakCenter requestAuthorizationWithOptions:authorizationOptions completionHandler:^(BOOL granted, NSError * _Nullable error) {
+                    if (granted) {
+                        [self performSelectorOnMainThread:@selector(registerForRemoteNotifications)
+                                               withObject:nil
+                                            waitUntilDone:NO];
+                    }
+                }];
+                break;
+            }
+            case UNAuthorizationStatusAuthorized:
+            {
+                [self performSelectorOnMainThread:@selector(registerForRemoteNotifications)
+                                       withObject:nil
+                                    waitUntilDone:NO];
+                break;
+            }
+            case UNAuthorizationStatusDenied:
+            default:
+                break;
+        }
+    }];
+}
+
+- (void)registerForRemoteNotifications
+{
+    if (![[UIApplication sharedApplication] isRegisteredForRemoteNotifications]) {
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+    }
+}
+
 @end
+

@@ -9,6 +9,8 @@
 #import "AppDelegate.h"
 @import UserNotifications;
 
+extern NSString *const pushPluginApplicationDidBecomeActiveNotification;
+
 @interface AppDelegate (notification) <UNUserNotificationCenterDelegate>
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken;
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
