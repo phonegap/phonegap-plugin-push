@@ -19,7 +19,7 @@
   * [Background Notifications](#background-notifications)
     * [Use of content_available: true](#use-of-content_available-true)
   * [Caching](#caching)
-  * [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
+  * [Chinese Android Phones](#chinese-android-phones)
   * [Application force closed](#application-force-closed)
   * [Visibility](#visibility-of-notifications)
   * [Ongoing Notifications](#ongoing-notifications)
@@ -358,7 +358,7 @@ The result will look much like this:
 
 ![2015-07-24 02 52 00](https://cloud.githubusercontent.com/assets/353180/8866899/2df00c3c-3190-11e5-8552-96201fb4424b.png)
 
-Note that the notification icon has gone from the default, rich, multicolored cordova icon, to a white-on-gray one.  What's going on here?
+Note that the notification icon has gone from the default, rich, multicolored cordova icon, to a white-on-gray one. What's going on here?
 
 With Android now greatly using Material design since 5.0 (Lollipop), push notification icons are forced to be monochromatic - this can be difficult to diagnose, as a lot of icons just show as a white square if not properly designed.
 
@@ -369,8 +369,9 @@ You should design one with these guidelines in mind:
 * White foreground
 
 For more details, please read:
-- https://material.io/tools/icons
-- https://material.io/design/iconography/
+
+* https://material.io/tools/icons
+* https://material.io/design/iconography/
 
 **Note:** any color foreground will work - any non-transparent pixels are just rendered white.
 
@@ -1419,13 +1420,17 @@ Instead move `content_available: true` into the `data` object of the payload. Th
 }
 ```
 
-### Huawei and Xiaomi Phones
+### Chinese Android Phones
+
+> Huawei, Oppo and Xiaomi
 
 These phones have a particular quirk that when the app is force closed that you will no longer be able to receive notifications until the app is restarted. In order for you to receive background notifications:
 
 * On your Huawei device go to Settings > Protected apps > check "My App" where.
 * On your Xiaomi make sure your phone has the "Auto-start" property enabled for your app.
 * On your Asus make sure your phone has the "Auto-start" property enabled for your app.
+
+More explicit instructions can be read on [Forbes website](https://www.forbes.com/sites/bensin/2017/07/28/how-to-fix-push-notifications-on-oppo-phones/#72a523371735).
 
 ### Application force closed
 
