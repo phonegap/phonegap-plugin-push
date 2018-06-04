@@ -195,7 +195,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
    */
   private String normalizeKey(String key, String messageKey, String titleKey) {
     if (key.equals(BODY) || key.equals(ALERT) || key.equals(MP_MESSAGE) || key.equals(GCM_NOTIFICATION_BODY)
-        || key.equals(TWILIO_BODY) || key.equals(messageKey)) {
+        || key.equals(TWILIO_BODY) || key.equals(messageKey) || key.equals(AWS_PINPOINT_BODY)) {
       return MESSAGE;
     } else if (key.equals(TWILIO_TITLE) || key.equals(SUBJECT) || key.equals(titleKey)) {
       return TITLE;
@@ -210,6 +210,8 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     } else if (key.startsWith(UA_PREFIX)) {
       key = key.substring(UA_PREFIX.length() + 1, key.length());
       return key.toLowerCase();
+    } else if (key.startsWith(AWS_PINPOINT_PREFIX)) {
+      return key.substring(AWS_PINPOINT_PREFIX.length() + 1, key.length());
     } else {
       return key;
     }
