@@ -1246,6 +1246,28 @@ fcm.send(message, (err, response) => {
 
 Do not confuse this with the GCM option of setting the [delivery priority of the message](https://developers.google.com/cloud-messaging/concept-options#setting-the-priority-of-a-message). Which is used by GCM to tell the device whether or not it should wake up to deal with the message.
 
+## Time sensitive notifications
+
+If you are sending notifications which are only valid for a short period of time, it is possible to clear them remotely with another notification.
+Sending a notification which contains `"clearAllNotifications": "true"` in the `data` payload, will clear all previous notifications.
+
+The notification can be a stealth notification (with no `title` or `body`), or it can be a normal notification with full functionality.
+
+For the first case, no visible effects will be created, the notifications will simply disappear.
+For the second case, the existing notifications will disappear, and a new one will be created.
+
+Example:
+```javascript
+{
+    "priority" : "high",
+    "content_available" : true,
+    "data" : {
+      "clearAllNotifications" : "true"
+    },
+    "to" : "id"
+}
+```
+
 ## Picture Messages
 
 Perhaps you want to include a large picture in the notification that you are sending to your users. Luckily you can do that too by sending the following JSON from GCM.
@@ -2003,6 +2025,34 @@ but in order for the same `notification` event you would need to send your push 
 ```
 
 The `title` and `body` need to be in the `notification` part of the payload in order for the OS to pick them up correctly. Everything else should be in the `data` part of the payload.
+
+## Time sensitive notifications
+
+If you are sending notifications which are only valid for a short period of time, it is possible to clear them remotely with another notification.
+Sending a notification which contains `"clearAllNotifications": "true"` in the `data` payload, will clear all previous notifications.
+
+The notification can be a stealth notification (with no `title` or `body` or even 'notification' payload), or it can be a normal notification with full functionality.
+
+For the first case, no visible effects will be created, the notifications will simply disappear.
+For the second case, the existing notifications will disappear, and a new one will be created.
+
+Example:
+```javascript
+{
+    "priority" : "high",
+    "content_available" : true,
+    "notification": {
+         "title": "some title or another",
+         "body": "some body or another",
+    },
+    "data" : {
+         "clearAllNotifications" : "true"
+    },
+    "to" : "id"
+}
+```
+
+**Important** On iOS, this functionality will not work if the app is force-closed.
 
 ## GCM Messages Not Arriving
 
