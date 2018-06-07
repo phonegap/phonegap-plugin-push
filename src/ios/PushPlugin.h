@@ -23,7 +23,8 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+@import UserNotifications;
 #import <Cordova/CDV.h>
 #import <Cordova/CDVPlugin.h>
 #import <PushKit/PushKit.h>
