@@ -355,6 +355,8 @@ push.on('notification', data => {
 });
 ```
 
+Android quirk: Please note that some payloads may cause this event not to be always fired: [data vs notification payloads](https://github.com/phonegap/phonegap-plugin-push/blob/master/docs/PAYLOAD.md#notification-vs-data-payloads)
+
 ## push.on('error', callback)
 
 The event `error` will trigger when an internal error occurs and the cache is aborted.
