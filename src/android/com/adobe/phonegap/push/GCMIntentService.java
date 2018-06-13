@@ -2,6 +2,7 @@ package com.adobe.phonegap.push;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
@@ -340,6 +341,16 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         Resources resources = context.getResources();
 
         int notId = parseInt(NOT_ID, extras);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            CharSequence name = appName;
+            String Description = "Push notification channel";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            Log.d(LOG_TAG, "creating channel=" + appName);
+
+            NotificationChannel mChannel = new NotificationChannel(appName, name, importance);
+            mChannel.setDescription(Description);
+            mNotificationManager.createNotificationChannel(mChannel);
+        }
         Intent notificationIntent = new Intent(this, PushHandlerActivity.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         notificationIntent.putExtra(PUSH_BUNDLE, extras);
@@ -358,7 +369,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         PendingIntent deleteIntent = PendingIntent.getBroadcast(this, requestCode, dismissedNotificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
+                new NotificationCompat.Builder(context, appName)
                         .setWhen(System.currentTimeMillis())
                         .setContentTitle(fromHtml(extras.getString(TITLE)))
                         .setTicker(fromHtml(extras.getString(TITLE)))
