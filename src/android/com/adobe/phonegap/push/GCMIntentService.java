@@ -349,11 +349,6 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
 
             NotificationChannel mChannel = new NotificationChannel(appName, name, importance);
             mChannel.setDescription(Description);
-            mChannel.enableLights(true);
-            mChannel.setLightColor(Color.RED);
-            mChannel.enableVibration(true);
-            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-            mChannel.setShowBadge(false);
             mNotificationManager.createNotificationChannel(mChannel);
         }
         Intent notificationIntent = new Intent(this, PushHandlerActivity.class);
