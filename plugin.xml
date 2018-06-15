@@ -39,11 +39,11 @@
       </service>
     </config-file>
     <preference name="ANDROID_SUPPORT_V13_VERSION" default="27.+"/>
-    <preference name="FCM_VERSION" default="11.6.2"/>
+    <preference name="FCM_VERSION" default="17.0.+"/>
     <framework src="com.android.support:support-v13:$ANDROID_SUPPORT_V13_VERSION"/>
     <framework src="me.leolin:ShortcutBadger:1.1.17@aar"/>
     <framework src="com.google.firebase:firebase-messaging:$FCM_VERSION"/>
-    <dependency id="cordova-support-google-services" version="~1.1.0"/>
+    <dependency id="cordova-support-google-services" version="~1.2.0"/>
     <dependency id="phonegap-plugin-multidex" version="~1.0.0"/>
     <source-file src="src/android/com/adobe/phonegap/push/FCMService.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/"/>
