@@ -678,9 +678,7 @@
 
 - (void)registerForRemoteNotifications
 {
-    if (![[UIApplication sharedApplication] isRegisteredForRemoteNotifications]) {
-        [[UIApplication sharedApplication] registerForRemoteNotifications];
-    }
+    [[UIApplication sharedApplication] registerForRemoteNotifications];
 }
 
 @end
