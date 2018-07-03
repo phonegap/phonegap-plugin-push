@@ -2029,7 +2029,7 @@ For some users of the plugin they are unable to get messages sent via GCM to sho
 
 Here's a sample JSON payload to send a push notification to an Android or iOS device using the FCM app server protocol:
 
-```json
+```php
 {
 	"to" : "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1...",
 	/* To send a silent push, omit the entire notification section and send only data */
