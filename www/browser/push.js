@@ -367,7 +367,10 @@ module.exports = {
     },
 
     hasPermission: function(successCallback, errorCallback) {
-        successCallback(true);
+        const granted = Notification && Notification.permission === 'granted';
+        successCallback({
+            isEnabled: granted
+        });
     },
 
     unregister: function(successCallback, errorCallback, options) {

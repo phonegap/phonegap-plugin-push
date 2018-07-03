@@ -1,44 +1,45 @@
-- [Overview](#overview)
-   - [Foreground Events](#push-message-arrives-with-app-in-foreground)
-   - [Background Events](#push-message-arrives-with-app-in-background)
-   - [Tap Events](#user-clicks-on-notification-in-notification-center)
-- [Android Behaviour](#android-behaviour)
-  - [Notification vs Data Payloads](#notification-vs-data-payloads)
-  - [Localization](#localization)
-  - [Images](#images)
-  - [Sound](#sound)
-  - [Stacking](#stacking)
-  - [Inbox Stacking](#inbox-stacking)
-  - [Action Buttons](#action-buttons)
-    - [In Line Replies](#in-line-replies)
-  - [Led in Notifications](#led-in-notifications)
-  - [Vibration Pattern in Notifications](#vibration-pattern-in-notifications)
-  - [Priority in Notifications](#priority-in-notifications)
-  - [Picture Messages](#picture-messages)
-  - [Background Notifications](#background-notifications)
-    - [Use of content_available: true](#use-of-content-available-true)
-  - [Caching](#caching)
-  - [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
-  - [Application force closed](#application-force-closed)
-  - [Visibility](#visibility-of-notifications)
-  - [Ongoing Notifications](#ongoing-notifications)
-  - [Badges](#badges)
-  - [Support for Twilio Notify](#support-for-twilio-notify)
-  - [Notification ID](#notification-id)
-  - [Clicking Notification Does Not Bring App to Foreground](#clicking-notification-does-not-bring-app-to-foreground)
-  - [Notification Channels](#notification-channels)
-- [iOS Behaviour](#ios-behaviour)
-  - [Sound](#sound-1)
-  - [Background Notifications](#background-notifications-1)
-  - [Action Buttons](#action-buttons-1)
-    - [Action Buttons using GCM on iOS](#action-buttons-using-gcm-on-ios)
-  - [GCM and Additional Data](#gcm-and-additional-data)
-- [Windows Behaviour](#windows-behaviour)
-  - [Notifications](#notifications)
-  - [Setting Toast Capable Option for Windows](#setting-toast-capable-option-for-windows)
-  - [Disabling the default processing of notifications by Windows](#disabling-the-default-processing-of-notifications-by-windows)
-  - [Background Notifications](#background-notifications-2)
-
+* [Overview](#overview)
+  * [Foreground Events](#push-message-arrives-with-app-in-foreground)
+  * [Background Events](#push-message-arrives-with-app-in-background)
+  * [Tap Events](#user-clicks-on-notification-in-notification-center)
+* [Push Notification Message Format Overview](#push-notification-message-format-overview)
+* [Android Behaviour](#android-behaviour)
+  * [Notification vs Data Payloads](#notification-vs-data-payloads)
+  * [Localization](#localization)
+  * [Images](#images)
+  * [Sound](#sound)
+  * [Stacking](#stacking)
+  * [Inbox Stacking](#inbox-stacking)
+  * [Action Buttons](#action-buttons)
+    * [In Line Replies](#in-line-replies)
+  * [Led in Notifications](#led-in-notifications)
+  * [Vibration Pattern in Notifications](#vibration-pattern-in-notifications)
+  * [Priority in Notifications](#priority-in-notifications)
+  * [Picture Messages](#picture-messages)
+  * [Background Notifications](#background-notifications)
+    * [Use of content_available: true](#use-of-content_available-true)
+  * [Caching](#caching)
+  * [Chinese Android Phones](#chinese-android-phones)
+  * [Application force closed](#application-force-closed)
+  * [Visibility](#visibility-of-notifications)
+  * [Ongoing Notifications](#ongoing-notifications)
+  * [Badges](#badges)
+  * [Support for Twilio Notify](#support-for-twilio-notify)
+  * [Notification ID](#notification-id)
+  * [Clicking Notification Does Not Bring App to Foreground](#clicking-notification-does-not-bring-app-to-foreground)
+  * [Notification Channels](#notification-channels)
+* [iOS Behaviour](#ios-behaviour)
+  * [Sound](#sound-1)
+  * [Background Notifications](#background-notifications-1)
+  * [VoIP Notifications](#voip-notifications)
+  * [Action Buttons](#action-buttons-1)
+    * [Action Buttons using GCM on iOS](#action-buttons-using-gcm-on-ios)
+  * [GCM and Additional Data](#gcm-and-additional-data)
+* [Windows Behaviour](#windows-behaviour)
+  * [Notifications](#notifications)
+  * [Setting Toast Capable Option for Windows](#setting-toast-capable-option-for-windows)
+  * [Disabling the default processing of notifications by Windows](#disabling-the-default-processing-of-notifications-by-windows)
+  * [Background Notifications](#background-notifications-2)
 
 # Overview
 
@@ -48,28 +49,164 @@ The following flowchart attempts to give you a picture of what happens when a pu
 
 ## Push message arrives with app in foreground
 
-- The push plugin receives the data from the remote push service and calls all of your `on('notification')`  event handlers.
-- The message is *not* displayed in the devices' notification center, as that is not normal behaviour for Android or iOS.
+* The push plugin receives the data from the remote push service and calls all of your `on('notification')` event handlers.
+* The message is _not_ displayed in the devices' notification center, as that is not normal behaviour for Android or iOS.
 
 ## Push message arrives with app in background
 
-- The push plugin receives the data from the remote push service and checks to see if there is a title or message in the received data object. If there is, then the message will be displayed in the devices notification center.
-- Then the push plugin checks to see if the app is running. If the user has killed the application, then no further processing of the push data will occur.
-- If the app is running in the background the push plugin then checks to see if `content-available` exists in the push data.
-- If `content-available` is set to `1`, then the plugin calls all of your `notification` event handlers.
+* The push plugin receives the data from the remote push service and checks to see if there is a title or message in the received data object. If there is, then the message will be displayed in the devices notification center.
+* Then the push plugin checks to see if the app is running. If the user has killed the application, then no further processing of the push data will occur.
+* If the app is running in the background the push plugin then checks to see if `content-available` exists in the push data.
+* If `content-available` is set to `1`, then the plugin calls all of your `notification` event handlers.
 
 ## User clicks on notification in notification center
 
-- The app starts.
-- Then the plugin calls all of your `notification` event handlers.
+* The app starts.
+* Then the plugin calls all of your `notification` event handlers.
 
 > Note: if the push payload contained `content-available: 1` then your `notification` event handler has already been called. It is up to you to handle the double event.
 
-Some ways to handle this *double* event are:
+Some ways to handle this _double_ event are:
 
-- don't include title/message in the push so it doesn't show up in the shader.
-- send two pushes, one to be processed in the background, and the other to show up in the shade.
-- include a unique ID in your push so you can check to see if you've already processed this event.
+* don't include title/message in the push so it doesn't show up in the shader.
+* send two pushes, one to be processed in the background, and the other to show up in the shade.
+* include a unique ID in your push so you can check to see if you've already processed this event.
+
+# Push Notification Message Format Overview
+
+## Android Message Format
+
+The JSON push message can contain the following fields, see https://developers.google.com/cloud-messaging/http-server-ref for a complete list.
+
+```javascript
+var content = {
+  priority: 'normal', // Valid values are "normal" and "high."
+  data: {
+    title: 'A short string describing the purpose of the notification',
+    message: 'The text of the alert message', // "body" can be used as alias, is converted to "message"
+    // localization of message is possible
+    count: 5, // set the badge notification count at app icon
+    sound: 'default', // play default sound ... or "soundname", see [Android Sound](#sound) section
+    notId: 1, // unique ID for the message, used for grouping, see below
+    'content-available': '0', // configure background updates, see below
+    custom_key1: 'value1',
+    custom_key2: 'value2'
+  }
+};
+```
+
+### Using AWS-SNS with GCM
+
+This is the JSON-encoded format you can e.g. send via AWS-SNS's web UI.
+Note, that the core message is json-encoded twice, so if we take the `content` from above you convert it this way
+
+```javascript
+var gcm_message = JSON.stringify({
+  GCM: JSON.stringify(content),
+  default: 'plain text message again'
+});
+```
+
+```json
+{
+  "GCM":
+    "{\"priority\":\"normal\",\"data\":{\"title\":\"A short string describing the purpose of the notification\",\"message\":\"The text of the alert message\",\"count\":5,\"sound\": \"default\",\"notId\":1,\"content-available\":\"0\",\"custom_key1\":\"value1\",\"custom_key2\":\"value2\"}}",
+  "default": "plain text message again"
+}
+```
+
+### Message Received in JavaScript
+
+This message is received in the `push.on("notification")` handler as follows.
+Note that the properties are "normalized" across platforms, so this is passed to the app on android:
+
+```json
+{
+  "count": "5",
+  "message": "The text of the alert message",
+  "sound": "default",
+  "title": "A short string describing the purpose of the notification",
+  "additionalData": {
+    "custom_key1": "value1",
+    "custom_key2": "value2",
+    "notId": "1",
+    "content_available": "0",
+    "dismissed": false,
+    "google.message_id": "...",
+    "coldstart": false,
+    "foreground": false
+  }
+}
+```
+
+## iOS Message Format
+
+The JSON message can contain the following fields, see [Apple developer docs](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/PayloadKeyReference.html#//apple_ref/doc/uid/TP40008194-CH17-SW5) for a complete list
+
+```javascript
+{
+  "aps": {
+    "alert": { // alternatively just a string: "Your Message",
+      "title": "A short string describing the purpose of the notification",
+      "body": "The text of the alert message",
+      // localization of message is possible
+      "launch-image": "The filename of an image file in the app bundle, with or without the filename extension. The image is used as the launch image when users tap the action button or move the action slider"
+    },
+    "badge": 5, // Number to show at App icon
+    "content-available": "0", // configure background updates, see below
+    "category": "identifier", // Provide this key with a string value that represents the notification’s type
+    "thread-id": "id", // Provide this key with a string value that represents the app-specific identifier for grouping notifications
+    "sound": "default"  // play default sound, or custom sound, see [iOS Sound](#sound-1) section
+  },
+  "custom_key1": "value1",
+  "custom_key2": "value2"
+}
+```
+
+### Using AWS-SNS with APNS
+
+This is the JSON-encoded format you can send via AWS-SNS's web UI:
+
+```json
+{
+  "APNS_SANDBOX":
+    "{\"aps\":{\"alert\":{\"title\":\"A short string describing the purpose of the notification\",\"body\":\"The text of the alert message\",\"launch-image\":\"The filename of an image file in the app bundle, with or without the filename extension. The image is used as the launch image when users tap the action button or move the action slider\"},\"badge\":5,\"content-available\":\"0\",\"category\":\"identifier\",\"thread-id\":\"id\",\"sound\":\"default\"},\"custom_key1\":\"value1\",\"custom_key2\":\"value2\"}"
+}
+```
+
+Note: use "APNS" to send to an app signed and released to production or "APNS_SANDBOX" or to send to an app signed and released for development. You can include both keys (APNS and APNS_SANDBOX) in the message if you want to send both to apps signed for production and apps signed for development.
+
+```json
+{
+  "APNS": "{\"aps\":...}",
+  "APNS_SANDBOX": "{\"aps\":...}",
+  "default": "plain text message again"
+}
+```
+
+### Message Received in JavaScript
+
+This message is received in the `push.on("notification")` handler as follows.
+Note that the properties are "normalized" accross platforms, so this is passed to the app on iOS:
+
+```javascript
+{
+  "count": 5, // "badge" is converted to "count"
+  "message": "The text of the alert message",
+  "sound": "default",
+  "title": "A short string describing the purpose of the notification",
+  "additionalData": {
+    "category": "identifier",
+    "coldstart": false,
+    "foreground": false,
+    "content-available": "0",
+    "custom_key1": "value1",
+    "custom_key2": "value2",
+    "launch-image": "The filename of an image file in the app bundle, with or without the filename extension. The image is used as the launch image when users tap the action button or move the action slider",
+    "thread-id": "id"
+  }
+}
+```
 
 # Android Behaviour
 
@@ -79,13 +216,13 @@ Notifications behave differently depending on the foreground/background state of
 
 For instance if you send the following payload:
 
-```
+```json
 {
-    "notification": {
-        "title": "Test Notification",
-        "body": "This offer expires at 11:30 or whatever",
-        "notId": 10
-    }
+  "notification": {
+    "title": "Test Notification",
+    "body": "This offer expires at 11:30 or whatever",
+    "notId": 10
+  }
 }
 ```
 
@@ -93,16 +230,16 @@ When your app is in the foreground, any `on('notification')` handlers you have r
 
 If you send a payload with a mix of `notification` & `data` objects like this:
 
-```
+```json
 {
-    "notification": {
-        "title": "Test Notification",
-        "body": "This offer expires at 11:30 or whatever",
-        "notId": 10
-    },
-    "data" : {
-        "surveyID": "ewtawgreg-gragrag-rgarhthgbad"
-    }
+  "notification": {
+    "title": "Test Notification",
+    "body": "This offer expires at 11:30 or whatever",
+    "notId": 10
+  },
+  "data": {
+    "surveyID": "ewtawgreg-gragrag-rgarhthgbad"
+  }
 }
 ```
 
@@ -110,26 +247,26 @@ When your app is in the foreground any `on('notification')` handlers you have re
 
 My recommended format for your push payload when using this plugin (while it differs from Google's docs) works 100% of the time:
 
-```
+```json
 {
-    "data" : {
-        "title": "Test Notification",
-        "body": "This offer expires at 11:30 or whatever",
-        "notId": 10,
-        "surveyID": "ewtawgreg-gragrag-rgarhthgbad"
-    }
+  "data": {
+    "title": "Test Notification",
+    "body": "This offer expires at 11:30 or whatever",
+    "notId": 10,
+    "surveyID": "ewtawgreg-gragrag-rgarhthgbad"
+  }
 }
 ```
 
 When your app is in the foreground any `on('notification')` handlers you have registered will be called. If your app is in the background, then the notification will show up in the system tray. Clicking on the notification in the system tray will start the app, and your `on('notification')` handler will be called with the following data:
 
-```
+```json
 {
-    "message": "This offer expires at 11:30 or whatever",
-    "title": "Test Notification",
-    "additionalData": {
-        "surveyID": "ewtawgreg-gragrag-rgarhthgbad"
-    }
+  "message": "This offer expires at 11:30 or whatever",
+  "title": "Test Notification",
+  "additionalData": {
+    "surveyID": "ewtawgreg-gragrag-rgarhthgbad"
+  }
 }
 ```
 
@@ -166,26 +303,26 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: {"locKey": "push_app_title"},
-        message: 'Simple non-localizable text for message!'
-        // Constant with formatted params
-        // message: {"locKey": "push_message_fox", "locData": ["fox", "dog"]});
-    }
+  to: deviceID,
+  data: {
+    title: { locKey: 'push_app_title' },
+    message: 'Simple non-localizable text for message!'
+    // Constant with formatted params
+    // message: {"locKey": "push_message_fox", "locData": ["fox", "dog"]});
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -204,17 +341,16 @@ By default the icon displayed in your push notification will be your apps icon. 
 
 ```javascript
 const push = PushNotification.init({
-	"android": {
-	},
-    "browser": {
-        pushServiceURL: 'http://push.api.phonegap.com/v1/push'
-    },
-	"ios": {
-		"alert": "true",
-		"badge": "true",
-		"sound": "true"
-	},
-	"windows": {}
+  android: {},
+  browser: {
+    pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+  },
+  ios: {
+    alert: 'true',
+    badge: 'true',
+    sound: 'true'
+  },
+  windows: {}
 });
 ```
 
@@ -222,29 +358,44 @@ The result will look much like this:
 
 ![2015-07-24 02 52 00](https://cloud.githubusercontent.com/assets/353180/8866899/2df00c3c-3190-11e5-8552-96201fb4424b.png)
 
-This is because Android now uses Material design and the default icon for push will be completely white.
+Note that the notification icon has gone from the default, rich, multicolored cordova icon, to a white-on-gray one. What's going on here?
 
-In order to get a better user experience, you can specify an alternate icon and background color to be shown when receiving a push notification. The code would look like this:
+With Android now greatly using Material design since 5.0 (Lollipop), push notification icons are forced to be monochromatic - this can be difficult to diagnose, as a lot of icons just show as a white square if not properly designed.
+
+You should design one with these guidelines in mind:
+
+* 96x96 pixels
+* Transparent background
+* White foreground
+
+For more details, please read:
+
+* https://material.io/tools/icons
+* https://material.io/design/iconography/
+
+**Note:** any color foreground will work - any non-transparent pixels are just rendered white.
+
+To specify an alternate icon and background color to be shown when receiving a push notification, use the following:
 
 ```javascript
 const push = PushNotification.init({
-	"android": {
-		"icon": "phonegap",
-		"iconColor": "blue"
-	},
-    "browser": {
-        pushServiceURL: 'http://push.api.phonegap.com/v1/push'
-    },
-    "ios": {
-		"alert": "true",
-		"badge": "true",
-		"sound": "true"
-	},
-	"windows": {}
+  android: {
+    icon: 'phonegap',
+    iconColor: 'blue'
+  },
+  browser: {
+    pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+  },
+  ios: {
+    alert: 'true',
+    badge: 'true',
+    sound: 'true'
+  },
+  windows: {}
 });
 ```
 
-Where *icon* is the name of an `.png` image file in the Android `res/drawable` folder. For example: `platforms/android/res/drawable/phonegap.png`
+Where _icon_ is the name of an `.png` image file in the Android `res/drawable` folder. For example: `platforms/android/res/drawable/phonegap.png`
 Writing a hook to describe how to copy an image to the Android `res/drawable` folder is out of scope for this README but there is an [excellent tutorial](http://devgirl.org/2013/11/12/three-hooks-your-cordovaphonegap-project-needs/) that you can copy.
 
 `iconColor` is one of the supported formats #RRGGBB or #AARRGGBB or one of the following names: 'red', 'blue', 'green', 'black', 'white', 'gray', 'cyan', 'magenta', 'yellow', 'lightgray', 'darkgray', 'grey', 'lightgrey', 'darkgrey', 'aqua', 'fuchsia', 'lime', 'maroon', 'navy', 'olive', 'purple', 'silver', 'teal'. `iconColor` is supported on Android 5.0 and greater.
@@ -273,34 +424,34 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'Large Icon',
-        message: 'Loaded from drawables folder.',
-        image: 'twitter'
-    }
+  to: deviceID,
+  data: {
+    title: 'Large Icon',
+    message: 'Loaded from drawables folder.',
+    image: 'twitter'
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
 
-Would look for the *twitter* image in the `res/drawable` folder and produce the following notification.
+Would look for the _twitter_ image in the `res/drawable` folder and produce the following notification.
 
 ![2015-07-24 02 34 41](https://cloud.githubusercontent.com/assets/353180/8866903/2df48028-3190-11e5-8176-fe8b3f7c5aab.png)
 
-The second is the *assets* folder in your app. This JSON sent from GCM:
+The second is the _assets_ folder in your app. This JSON sent from GCM:
 
 ```javascript
 {
@@ -318,35 +469,34 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'Large Icon',
-        message: 'Loaded from assets folder.',
-        image: 'www/image/logo.png'
-    }
+  to: deviceID,
+  data: {
+    title: 'Large Icon',
+    message: 'Loaded from assets folder.',
+    image: 'www/image/logo.png'
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
 
-Would look for the *logo.png* file in the assets/www/img folder. Since your apps www folder gets copied into the Android assets folder it is an excellent spot to store the images without needing to write a hook to copy them to the `res/drawable` folder. It produces the following notification.
+Would look for the _logo.png_ file in the assets/www/img folder. Since your apps www folder gets copied into the Android assets folder it is an excellent spot to store the images without needing to write a hook to copy them to the `res/drawable` folder. It produces the following notification.
 
 ![2015-07-24 02 20 02](https://cloud.githubusercontent.com/assets/353180/8866901/2df19052-3190-11e5-8c16-a355c59209f3.png)
 
-
-The third is the remote *URL*. This JSON sent from GCM:
+The third is the remote _URL_. This JSON sent from GCM:
 
 ```javascript
 {
@@ -364,25 +514,25 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'Large Icon',
-        message: 'Loaded from URL',
-        image: 'https://dl.dropboxusercontent.com/u/887989/antshot.png'
-    }
+  to: deviceID,
+  data: {
+    title: 'Large Icon',
+    message: 'Loaded from URL',
+    image: 'https://dl.dropboxusercontent.com/u/887989/antshot.png'
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -410,17 +560,20 @@ Here is an example using node-gcm that sends the above JSON:
 ```javascript
 const gcm = require('node-gcm');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const service = new gcm.Sender(apiKey);
 const message = new gcm.Message();
 message.addData('title', 'Large Circular Icon');
 message.addData('message', 'Loaded from URL');
-message.addData('image', 'https://pbs.twimg.com/profile_images/837060031895896065/VHIQ4oUf_400x400.jpg');
+message.addData(
+  'image',
+  'https://pbs.twimg.com/profile_images/837060031895896065/VHIQ4oUf_400x400.jpg'
+);
 message.addData('image-type', 'circular');
-service.send(message, { registrationTokens: [ deviceID ] }, (err, response) => {
-	if(err) console.error(err);
-	else 	console.log(response);
+service.send(message, { registrationTokens: [deviceID] }, (err, response) => {
+  if (err) console.error(err);
+  else console.log(response);
 });
 ```
 
@@ -455,6 +608,7 @@ Then second is `ringtone` which will play the phones default ringtone sound.
     }
 }
 ```
+
 The third is the empty string which will cause for the playing of sound to be skipped.
 
 ```javascript
@@ -486,30 +640,30 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'Sound Test',
-        message: 'Loaded res/raw',
-        soundname: 'test'
-    }
+  to: deviceID,
+  data: {
+    title: 'Sound Test',
+    message: 'Loaded res/raw',
+    soundname: 'test'
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
 
-*Note:* when you specify the custom sound file name omit the file's extension.
+_Note:_ when you specify the custom sound file name omit the file's extension.
 
 ## Stacking
 
@@ -532,24 +686,24 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'Test Push',
-        message: 'Push number 1'
-    }
+  to: deviceID,
+  data: {
+    title: 'Test Push',
+    message: 'Push number 1'
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -571,24 +725,24 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'Test Push',
-        message: 'Push number 2'
-    }
+  to: deviceID,
+  data: {
+    title: 'Test Push',
+    message: 'Push number 2'
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -611,25 +765,25 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'Test Push',
-        message: 'Push number 1',
-        notId: 1
-    }
+  to: deviceID,
+  data: {
+    title: 'Test Push',
+    message: 'Push number 1',
+    notId: 1
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -652,25 +806,25 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'Test Push',
-        message: 'Push number 2',
-        notId: 2
-    }
+  to: deviceID,
+  data: {
+    title: 'Test Push',
+    message: 'Push number 2',
+    notId: 2
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -698,26 +852,26 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'My Title',
-        message: 'My first message',
-        style: 'inbox',
-        summaryText: 'There are %n% notifications'
-    }
+  to: deviceID,
+  data: {
+    title: 'My Title',
+    message: 'My first message',
+    style: 'inbox',
+    summaryText: 'There are %n% notifications'
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -745,26 +899,26 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'My Title',
-        message: 'My second message',
-        style: 'inbox',
-        summaryText: 'There are %n% notifications'
-    }
+  to: deviceID,
+  data: {
+    title: 'My Title',
+    message: 'My second message',
+    style: 'inbox',
+    summaryText: 'There are %n% notifications'
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -781,16 +935,15 @@ Your notification can include a maximum of three action buttons. You register th
 
 ```javascript
 const push = PushNotification.init({
-	"android": {
-	}
+  android: {}
 });
 
 // data contains the push payload just like a notification event
-push.on('emailGuests', (data) => {
+push.on('emailGuests', data => {
   console.log('I should email my guests');
 });
 
-push.on('snooze', (data) => {
+push.on('snooze', data => {
   console.log('Remind me later');
 });
 ```
@@ -816,28 +969,34 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'AUX Scrum',
-        message: 'Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.',
-        actions: [
-            { icon: "emailGuests", title: "EMAIL GUESTS", callback: "emailGuests", foreground: true},
-            { icon: "snooze", title: "SNOOZE", callback: "snooze", foreground: false},
-        ]
-    }
+  to: deviceID,
+  data: {
+    title: 'AUX Scrum',
+    message:
+      'Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.',
+    actions: [
+      {
+        icon: 'emailGuests',
+        title: 'EMAIL GUESTS',
+        callback: 'emailGuests',
+        foreground: true
+      },
+      { icon: 'snooze', title: 'SNOOZE', callback: 'snooze', foreground: false }
+    ]
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -873,28 +1032,36 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'AUX Scrum',
-        message: 'Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.',
-        actions: [
-            { "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "emailGuests", "foreground": false, "inline": true, "replyLabel": "Enter your reply here" },
-            { "icon": "snooze", "title": "SNOOZE", "callback": "snooze", "foreground": false},
-        ]
-    }
+  to: deviceID,
+  data: {
+    title: 'AUX Scrum',
+    message:
+      'Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.',
+    actions: [
+      {
+        icon: 'emailGuests',
+        title: 'EMAIL GUESTS',
+        callback: 'emailGuests',
+        foreground: false,
+        inline: true,
+        replyLabel: 'Enter your reply here'
+      },
+      { icon: 'snooze', title: 'SNOOZE', callback: 'snooze', foreground: false }
+    ]
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -939,14 +1106,14 @@ and the text data that the user typed would be located in `data.additionalData.i
 
 #### Attributes
 
-Attribute | Type | Default | Description
---------- | ---- | ------- | -----------
-`icon` | `string` | | Optional. The name of a drawable resource to use as the small-icon. The name should not include the extension.
-`title` | `string` | | Required. The label to display for the action button.
-`callback` | `string` | | Required. The event to be emitted when the action button is pressed.
-`foreground` | `boolean` | `true` | Optional. Whether or not to bring the app to the foreground when the action button is pressed.
-`inline` | `boolean` | `false` | Optional. Whether or not to provide a quick reply text field to the user when the button is clicked.
-`replyLabel` | `string` | `Enter your reply here` | Optional. If you don't include a `replyLabel` in your action the default will be used.
+| Attribute    | Type      | Default                 | Description                                                                                                    |
+| ------------ | --------- | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `icon`       | `string`  |                         | Optional. The name of a drawable resource to use as the small-icon. The name should not include the extension. |
+| `title`      | `string`  |                         | Required. The label to display for the action button.                                                          |
+| `callback`   | `string`  |                         | Required. The event to be emitted when the action button is pressed.                                           |
+| `foreground` | `boolean` | `true`                  | Optional. Whether or not to bring the app to the foreground when the action button is pressed.                 |
+| `inline`     | `boolean` | `false`                 | Optional. Whether or not to provide a quick reply text field to the user when the button is clicked.           |
+| `replyLabel` | `string`  | `Enter your reply here` | Optional. If you don't include a `replyLabel` in your action the default will be used.                         |
 
 ## Led in Notifications
 
@@ -968,25 +1135,25 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'Green LED',
-        message: 'This is my message with a Green LED',
-        ledColor: [0, 0, 255, 0]
-    }
+  to: deviceID,
+  data: {
+    title: 'Green LED',
+    message: 'This is my message with a Green LED',
+    ledColor: [0, 0, 255, 0]
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -1011,25 +1178,26 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'Vibration Pattern',
-        message: 'Device should wait for 2 seconds, vibrate for 1 second then be silent for 500 ms then vibrate for 500 ms',
-        vibrationPattern: [2000, 1000, 500, 500]
-    }
+  to: deviceID,
+  data: {
+    title: 'Vibration Pattern',
+    message:
+      'Device should wait for 2 seconds, vibrate for 1 second then be silent for 500 ms then vibrate for 500 ms',
+    vibrationPattern: [2000, 1000, 500, 500]
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -1054,25 +1222,25 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'This is a maximum priority Notification',
-        message: 'This notification should appear in front of all others',
-        priority: 2
-    }
+  to: deviceID,
+  data: {
+    title: 'This is a maximum priority Notification',
+    message: 'This notification should appear in front of all others',
+    priority: 2
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -1101,26 +1269,27 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'Big Picture',
-        message: 'This is my big picture message',
-        picture: 'http://36.media.tumblr.com/c066cc2238103856c9ac506faa6f3bc2/tumblr_nmstmqtuo81tssmyno1_1280.jpg',
-        summaryText: 'The internet is built on cat pictures'
-    }
+  to: deviceID,
+  data: {
+    title: 'Big Picture',
+    message: 'This is my big picture message',
+    picture:
+      'http://36.media.tumblr.com/c066cc2238103856c9ac506faa6f3bc2/tumblr_nmstmqtuo81tssmyno1_1280.jpg',
+    summaryText: 'The internet is built on cat pictures'
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -1137,15 +1306,15 @@ On Android if you want your `on('notification')` event handler to be called when
 
 First the JSON you send from GCM will need to include `"content-available": "1"`. This will tell the push plugin to call your `on('notification')` event handler no matter what other data is in the push notification.
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Test Push",
-    	"message": "Push number 1",
-    	"info": "super secret info",
-    	"content-available": "1"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Test Push",
+    "message": "Push number 1",
+    "info": "super secret info",
+    "content-available": "1"
+  }
 }
 ```
 
@@ -1154,40 +1323,39 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    "to": deviceID,
-    "data": {
-        "title": 'Test Push',
-        "message": 'Push number 1',
-        "info": 'super secret info',
-        "content-available": '1'
-    }
+  to: deviceID,
+  data: {
+    title: 'Test Push',
+    message: 'Push number 1',
+    info: 'super secret info',
+    'content-available': '1'
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
 
 or if you want the payload to be delivered directly to your app without anything showing up in the notification center, just omit the tite/message from the payload like so:
 
-
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"info": "super secret info",
-    	"content-available": "1"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "info": "super secret info",
+    "content-available": "1"
+  }
 }
 ```
 
@@ -1196,24 +1364,24 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    "to": deviceID,
-    "data": {
-        "info": 'super secret info',
-        "content-available": '1'
-    }
+  to: deviceID,
+  data: {
+    info: 'super secret info',
+    'content-available': '1'
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -1238,7 +1406,7 @@ The [GCM docs](https://developers.google.com/cloud-messaging/http-server-ref#dow
 
 Where the `content_available` property is part of the main payload object. Setting the property in this part of the payload will result in the PushPlugin not getting the data correctly. Setting `content_available: true` will cause the Android OS to handle the push payload for you and not pass the data to the PushPlugin.
 
-Instead move `content_available: true` into the `data` object of the payload. The property name changes slightly to use a `-` instead of an `_`. So, `content_available`  becomes `content-available` and `true` becomes `1` as per the example below:
+Instead move `content_available: true` into the `data` object of the payload. The property name changes slightly to use a `-` instead of an `_`. So, `content_available` becomes `content-available` and `true` becomes `1` as per the example below:
 
 ```javascript
 {
@@ -1252,13 +1420,17 @@ Instead move `content_available: true` into the `data` object of the payload. Th
 }
 ```
 
-### Huawei and Xiaomi Phones
+### Chinese Android Phones
+
+> Huawei, Oppo and Xiaomi
 
 These phones have a particular quirk that when the app is force closed that you will no longer be able to receive notifications until the app is restarted. In order for you to receive background notifications:
 
-- On your Huawei device go to Settings > Protected apps > check "My App" where.
-- On your Xiaomi make sure your phone has the "Auto-start" property enabled for your app.
-- On your Asus make sure your phone has the "Auto-start" property enabled for your app.
+* On your Huawei device go to Settings > Protected apps > check "My App" where.
+* On your Xiaomi make sure your phone has the "Auto-start" property enabled for your app.
+* On your Asus make sure your phone has the "Auto-start" property enabled for your app.
+
+More explicit instructions can be read on [Forbes website](https://www.forbes.com/sites/bensin/2017/07/28/how-to-fix-push-notifications-on-oppo-phones/#72a523371735).
 
 ### Application force closed
 
@@ -1309,25 +1481,25 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    "data": {
-        "title": 'Force Start',
-        "message": 'This notification should restart the app',
-        "force-start": '1'
-    }
+  to: deviceID,
+  data: {
+    title: 'Force Start',
+    message: 'This notification should restart the app',
+    'force-start': '1'
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -1368,25 +1540,25 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'This is a public Notification',
-        message: 'You should be able to read this notification on your lock screen',
-        visibility: 1
-    }
+  to: deviceID,
+  data: {
+    title: 'This is a public Notification',
+    message: 'You should be able to read this notification on your lock screen',
+    visibility: 1
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -1411,25 +1583,25 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 var FCM = require('fcm-node');
 // Replace these with your own values.
-var apiKey = "replace with API key";
-var deviceID = "my device id";
+var apiKey = 'replace with API key';
+var deviceID = 'my device id';
 var fcm = new FCM(apiKey);
 
 var message = {
-    to: deviceID,
-    data: {
-        title: 'This is an ongoing Notification',
-        message: 'Some people also call me a sticky notification',
-        ongoing: true
-    }
+  to: deviceID,
+  data: {
+    title: 'This is an ongoing Notification',
+    message: 'Some people also call me a sticky notification',
+    ongoing: true
+  }
 };
 
-fcm.send(message, function(err, response){
+fcm.send(message, function(err, response) {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -1456,25 +1628,25 @@ Here is an example using fcm-node that sends the above JSON:
 ```javascript
 const FCM = require('fcm-node');
 // Replace these with your own values.
-const apiKey = "replace with API key";
-const deviceID = "my device id";
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
 const fcm = new FCM(apiKey);
 
 const message = {
-    to: deviceID,
-    data: {
-        title: 'Badge Test',
-        message: 'Badges, we don\'t need no stinking badges',
-        badge: 7
-    }
+  to: deviceID,
+  data: {
+    title: 'Badge Test',
+    message: "Badges, we don't need no stinking badges",
+    badge: 7
+  }
 };
 
 fcm.send(message, (err, response) => {
   if (err) {
     console.log(err);
-    console.log("Something has gone wrong!");
+    console.log('Something has gone wrong!');
   } else {
-    console.log("Successfully sent with response: ", response);
+    console.log('Successfully sent with response: ', response);
   }
 });
 ```
@@ -1483,9 +1655,9 @@ fcm.send(message, (err, response) => {
 
 This plugin seamlessly supports payloads generated by Twilio Notify on Android. Specifically the parameters passed in to the Twilio REST API are available in the message payload passed to your app as follows:
 
-- `Title` --> `data.title`
-- `Body` --> `data.message`
-- `Sound` --> `data.sound`
+* `Title` --> `data.title`
+* `Body` --> `data.message`
+* `Sound` --> `data.sound`
 
 Here is an example request to Twilio REST API and the corresponding JSON received by your app.
 
@@ -1531,8 +1703,7 @@ For instance if you register for push notifications like normal:
 
 ```javascript
 const push = PushNotification.init({
-	"android": {
-	}
+  android: {}
 });
 ```
 
@@ -1591,7 +1762,7 @@ If you want the default sound to play upon receipt of push, use this payload:
 
 On iOS if you want your `on('notification')` event handler to be called when your app is in the background you will need to do a few things.
 
-First the JSON you send from APNS will need to include `"content-available": 1` to the `aps` object. The `"content-available": 1` property in your push message is a signal to iOS to wake up your app and give it up to 30 seconds of background processing. If do not want this type of behaviour just omit `"content-available": 1` from your push data. As well you *should* set a `notId` property in the root of payload object. This is the parameter you pass to the `finish` method in order to tell the operating system that the processing of the push event is done.
+First the JSON you send from APNS will need to include `"content-available": 1` to the `aps` object. The `"content-available": 1` property in your push message is a signal to iOS to wake up your app and give it up to 30 seconds of background processing. If do not want this type of behaviour just omit `"content-available": 1` from your push data. As well you _should_ set a `notId` property in the root of payload object. This is the parameter you pass to the `finish` method in order to tell the operating system that the processing of the push event is done.
 
 For instance the following JSON:
 
@@ -1628,31 +1799,47 @@ For example:
 
 ```javascript
 const push = PushNotification.init({
-	"ios": {
-		"sound": "true",
-		"alert": "true",
-		"badge": "true",
-		"clearBadge": "true"
-	}
+  ios: {
+    sound: 'true',
+    alert: 'true',
+    badge: 'true',
+    clearBadge: 'true'
+  }
 });
 
-push.on('registration', (data) => {
-	// send data.registrationId to push service
+push.on('registration', data => {
+  // send data.registrationId to push service
 });
 
-
-push.on('notification', (data) => {
-	// do something with the push data
-	// then call finish to let the OS know we are done
-	push.finish(() => {
-		console.log("processing of push data is finished");
-	}, () => {
-        console.log("something went wrong with push.finish for ID =", data.additionalData.notId)
-    }, data.additionalData.notId);
+push.on('notification', data => {
+  // do something with the push data
+  // then call finish to let the OS know we are done
+  push.finish(
+    () => {
+      console.log('processing of push data is finished');
+    },
+    () => {
+      console.log(
+        'something went wrong with push.finish for ID =',
+        data.additionalData.notId
+      );
+    },
+    data.additionalData.notId
+  );
 });
 ```
 
 It is absolutely critical that you call `push.finish()` when you have successfully processed your background push data.
+
+## VoIP Notifications
+
+VoIP Notifications are a type of iOS notifications that are always received and handled also when the app is closed or in background and consist only of payload data, so the developer is the responsible of handling the event and do whatever the aplication should do when receiving one of them. The cordova-plugin-local-notifications is a good complement for the VoIP feature.
+
+In order to maintain the plugin data transfer standard, the payload sent to aps maintains the same structure as the one of common notifications with the consideration that the notification will be always be silent independently of the params that you pass to it.
+
+The `on('notification')` event handler will always be called excepting if Background App Refresh is disabled on the user's iOS device. (Settings > General > Background App Refresh).
+
+In order to set up your application with this type of notifications, refer to the [API guide](API.md#ios-voip-notifications).
 
 ## Action Buttons
 
@@ -1660,32 +1847,47 @@ Your notification can include action buttons. For iOS 8+ you must setup the poss
 
 ```javascript
 const push = PushNotification.init({
-	"ios": {
-		"sound": true,
-		"alert": true,
-		"badge": true,
-		"categories": {
-			"invite": {
-				"yes": {
-					"callback": "accept", "title": "Accept", "foreground": true, "destructive": false
-				},
-				"no": {
-					"callback": "reject", "title": "Reject", "foreground": true, "destructive": false
-				},
-				"maybe": {
-					"callback": "maybe", "title": "Maybe", "foreground": true, "destructive": false
-				}
-			},
-			"delete": {
-				"yes": {
-					"callback": "doDelete", "title": "Delete", "foreground": true, "destructive": true
-				},
-				"no": {
-					"callback": "cancel", "title": "Cancel", "foreground": true, "destructive": false
-				}
-			}
-		}
-	}
+  ios: {
+    sound: true,
+    alert: true,
+    badge: true,
+    categories: {
+      invite: {
+        yes: {
+          callback: 'accept',
+          title: 'Accept',
+          foreground: true,
+          destructive: false
+        },
+        no: {
+          callback: 'reject',
+          title: 'Reject',
+          foreground: true,
+          destructive: false
+        },
+        maybe: {
+          callback: 'maybe',
+          title: 'Maybe',
+          foreground: true,
+          destructive: false
+        }
+      },
+      delete: {
+        yes: {
+          callback: 'doDelete',
+          title: 'Delete',
+          foreground: true,
+          destructive: true
+        },
+        no: {
+          callback: 'cancel',
+          title: 'Cancel',
+          foreground: true,
+          destructive: false
+        }
+      }
+    }
+  }
 });
 ```
 
@@ -1727,7 +1929,7 @@ push.on('maybe', (data) => {
 
 You may notice that the `finish` method now takes `success`, `failure` and `id` parameters. The `id` parameter let's the operating system know which background process to stop. You'll set it in the next step.
 
-Then you will need to set the `category` value in your `aps` payload to match one of the objects in the `categories` object. As well you *should* set a `notId` property in the root of payload object. This is the parameter you pass to the `finish` method in order to tell the operating system that the processing of the push event is done.
+Then you will need to set the `category` value in your `aps` payload to match one of the objects in the `categories` object. As well you _should_ set a `notId` property in the root of payload object. This is the parameter you pass to the `finish` method in order to tell the operating system that the processing of the push event is done.
 
 ```javascript
 {
@@ -1841,7 +2043,7 @@ This plugin automatically sets the toast capable flag to be true for Cordova 5.1
 The default handling can be disabled by setting the 'cancel' property in the notification object.
 
 ```javascript
-data.additionalData.pushNotificationReceivedEventArgs.cancel = true
+data.additionalData.pushNotificationReceivedEventArgs.cancel = true;
 ```
 
 ## Background Notifications
