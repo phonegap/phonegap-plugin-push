@@ -35,6 +35,7 @@
   * [Action Buttons](#action-buttons-1)
     * [Action Buttons using GCM on iOS](#action-buttons-using-gcm-on-ios)
   * [GCM and Additional Data](#gcm-and-additional-data)
+* [FCM Payload Details](#fcm-payload-details)
 * [Windows Behaviour](#windows-behaviour)
   * [Notifications](#notifications)
   * [Setting Toast Capable Option for Windows](#setting-toast-capable-option-for-windows)
@@ -2023,6 +2024,35 @@ For some users of the plugin they are unable to get messages sent via GCM to sho
     "priority": "high"
 }
 ```
+
+# FCM Payload Details
+
+Here's a sample JSON payload to send a push notification to an Android or iOS device using the FCM app server protocol:
+
+```php
+{
+	"to" : "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1...",
+	/* To send a silent push, omit the entire notification section and send only data */
+	"notification": {
+		"title": "Test title", /* The notification's title */
+		"body": "Test body.", /* The notification's body text */
+		"subtitle": "Test subtitle", /* iOS: The notification's subtitle */
+		"sound": "default", /* The sound to play when the device receives the notification */
+		"tag": "1", /* Android: Group notifications with the same tag */
+		"icon": "push_icon", /* Android: PNG icon from the res/drawable folder */
+		"color": "#AABBCC" /* Android: Icon's background color in #RRGGBB format */
+	},
+	/* Optional payload that will be available from data.additionalData */
+	"data": { 
+		"custom_var_1": "custom value here", /* Retrieved on app as data.additionalData.custom_var_1 */
+		"custom_var_2:" "custom value here" /* Retrieved on app as data.additionalData.custom_var_2 */
+	}
+}
+```
+
+More information on how to send push notifications using the FCM HTTP protocol and payload details can be found here:
+- [Send messages using the legacy app server protocols](https://firebase.google.com/docs/cloud-messaging/send-message#send_messages_using_the_legacy_app_server_protocols "Send messages using the legacy app server protocols")
+- [Firebase Cloud Messaging HTTP Protocol](https://firebase.google.com/docs/cloud-messaging/http-server-ref "Firebase Cloud Messaging HTTP Protocol")
 
 # Windows Behaviour
 
