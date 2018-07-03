@@ -407,6 +407,20 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
           }
         }
       });
+    } else if (CLEAR_NOTIFICATION.equals(action)) {
+      // clearing a single notification
+      cordova.getThreadPool().execute(new Runnable() {
+        public void run() {
+          try {
+            Log.v(LOG_TAG, "clearNotification");
+            int id = data.getInt(0);
+            clearNotification(id);
+            callbackContext.success();
+          } catch (JSONException e) {
+            callbackContext.error(e.getMessage());
+          }
+        }
+      });
     } else {
       Log.e(LOG_TAG, "Invalid action : " + action);
       callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
@@ -506,6 +520,13 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
         .getSystemService(Context.NOTIFICATION_SERVICE);
     notificationManager.cancelAll();
+  }
+
+  private void clearNotification(int id) {
+    final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
+        .getSystemService(Context.NOTIFICATION_SERVICE);
+    String appName = (String) this.cordova.getActivity().getPackageManager().getApplicationLabel(this.cordova.getActivity().getApplicationInfo());
+    notificationManager.cancel(appName, id);
   }
 
   private void subscribeToTopics(JSONArray topics, String registrationToken) {

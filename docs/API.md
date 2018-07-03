@@ -1,22 +1,23 @@
 # API
 
-* [.init()](#pushnotificationinitoptions)
-* [.hasPermission()](#pushnotificationhaspermissionsuccesshandler)
-* [.createChannel() - Android only](#pushnotificationcreatechannelsuccesshandler-failurehandler-channel)
-* [.deleteChannel() - Android only](#pushnotificationdeletechannelsuccesshandler-failurehandler-channelid)
-* [.listChannels() - Android only](#pushnotificationlistchannelssuccesshandler)
-* [push.on()](#pushonevent-callback)
-  * [push.on('registration')](#pushonregistration-callback)
-  * [push.on('notification')](#pushonnotification-callback)
-  * [push.on('error')](#pushonerror-callback)
-* [push.off()](#pushoffevent-callback)
-* [push.unregister()](#pushunregistersuccesshandler-errorhandler-topics)
-* [push.subscribe()](#pushsubscribetopic-successhandler-errorhandler)
-* [push.unsubscribe()](#pushunsubscribetopic-successhandler-errorhandler)
-* [push.setApplicationIconBadgeNumber() - iOS & Android only](#pushsetapplicationiconbadgenumbersuccesshandler-errorhandler-count---ios--android-only)
-* [push.getApplicationIconBadgeNumber() - iOS & Android only](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios--android-only)
-* [push.finish() - iOS only](#pushfinishsuccesshandler-errorhandler-id---ios-only)
-* [push.clearAllNotifications() - iOS & Android only](#pushclearallnotificationssuccesshandler-errorhandler---ios--android-only)
+- [.init()](#pushnotificationinitoptions)
+- [.hasPermission()](#pushnotificationhaspermissionsuccesshandler)
+- [.createChannel() - Android only](#pushnotificationcreatechannel)
+- [.deleteChannel() - Android only](#pushnotificationdeletechannel)
+- [.listChannels() - Android only](#pushnotificationlistchannels)
+- [push.on()](#pushonevent-callback)
+  - [push.on('registration')](#pushonregistration-callback)
+  - [push.on('notification')](#pushonnotification-callback)
+  - [push.on('error')](#pushonerror-callback)
+- [push.off()](#pushoffevent-callback)
+- [push.unregister()](#pushunregistersuccesshandler-errorhandler-topics)
+- [push.subscribe()](#pushsubscribetopic-successhandler-errorhandler)
+- [push.unsubscribe()](#pushunsubscribetopic-successhandler-errorhandler)
+- [push.setApplicationIconBadgeNumber() - iOS & Android only](#pushsetapplicationiconbadgenumbersuccesshandler-errorhandler-count---ios--android-only)
+- [push.getApplicationIconBadgeNumber() - iOS & Android only](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios--android-only)
+- [push.finish() - iOS only](#pushfinishsuccesshandler-errorhandler-id---ios-only)
+- [push.clearAllNotifications() - iOS & Android only](#pushclearallnotificationssuccesshandler-errorhandler---ios--android-only)
+- [push.clearNotification() - Android only](#pushclearnotificationid-successhandler-errorhandler---android-only)
 
 ## PushNotification.init(options)
 
@@ -573,10 +574,10 @@ Tells the OS to clear all notifications from the Notification Center
 
 ### Parameters
 
-| Parameter        | Type       | Default | Description                                                                             |
-| ---------------- | ---------- | ------- | --------------------------------------------------------------------------------------- |
-| `successHandler` | `Function` |         | Is called when the api successfully clears the notifications.                           |
-| `errorHandler`   | `Function` |         | Is called when the api encounters an error when attempting to clears the notifications. |
+Parameter | Type | Default | Description
+--------- | ---- | ------- | -----------
+`successHandler` | `Function` | | Is called when the api successfully clears the notifications.
+`errorHandler` | `Function` | | Is called when the api encounters an error when attempting to clear the notifications.
 
 ### Example
 
@@ -589,4 +590,26 @@ push.clearAllNotifications(
     console.log('error');
   }
 );
+```
+
+## push.clearNotification(id, successHandler, errorHandler) - Android only
+
+Tells the OS to clear the notification that corresponds to the id argument, from the Notification Center
+
+### Parameters
+
+Parameter | Type | Default | Description
+--------- | ---- | ------- | -----------
+`successHandler` | `Function` | | Is called when the api successfully clears the notification.
+`errorHandler` | `Function` | | Is called when the api encounters an error when attempting to clear the notification.
+`id` | `number` | | The ID of the notification that will be cleared. |
+
+### Example
+
+```javascript
+push.clearNotification(() => {
+	console.log('success');
+}, () => {
+	console.log('error');
+}, 145);
 ```
