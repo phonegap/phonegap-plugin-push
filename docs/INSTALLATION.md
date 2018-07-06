@@ -332,6 +332,8 @@ ld: library not found for -lGoogleToolboxForMac
 
 Workarounds are to add the platform first and install the plugins later, or to manually run pod install on projectName/platforms/ios.
 
+Another workaround is to go to build phases in your project at Link Binary Libraries and add `libPods-PROJECTNAME.a` and `libGoogleToolboxForMac.a`
+
 ##### Module FirebaseInstanceID not found
 
 If you run into an error like:
