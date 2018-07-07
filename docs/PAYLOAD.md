@@ -159,6 +159,7 @@ The JSON message can contain the following fields, see [Apple developer docs](ht
     "thread-id": "id", // Provide this key with a string value that represents the app-specific identifier for grouping notifications
     "sound": "default"  // play default sound, or custom sound, see [iOS Sound](#sound-1) section
   },
+  "notId": 1,
   "custom_key1": "value1",
   "custom_key2": "value2"
 }
@@ -171,7 +172,7 @@ This is the JSON-encoded format you can send via AWS-SNS's web UI:
 ```json
 {
   "APNS_SANDBOX":
-    "{\"aps\":{\"alert\":{\"title\":\"A short string describing the purpose of the notification\",\"body\":\"The text of the alert message\",\"launch-image\":\"The filename of an image file in the app bundle, with or without the filename extension. The image is used as the launch image when users tap the action button or move the action slider\"},\"badge\":5,\"content-available\":\"0\",\"category\":\"identifier\",\"thread-id\":\"id\",\"sound\":\"default\"},\"custom_key1\":\"value1\",\"custom_key2\":\"value2\"}"
+    "{\"aps\":{\"alert\":{\"title\":\"A short string describing the purpose of the notification\",\"body\":\"The text of the alert message\",\"launch-image\":\"The filename of an image file in the app bundle, with or without the filename extension. The image is used as the launch image when users tap the action button or move the action slider\"},\"badge\":5,\"content-available\":\"0\",\"category\":\"identifier\",\"thread-id\":\"id\",\"sound\":\"default\"},\"notId\":1,\"custom_key1\":\"value1\",\"custom_key2\":\"value2\"}"
 }
 ```
 
@@ -201,6 +202,7 @@ Note that the properties are "normalized" accross platforms, so this is passed t
     "coldstart": false,
     "foreground": false,
     "content-available": "0",
+    "notId": 1,
     "custom_key1": "value1",
     "custom_key2": "value2",
     "launch-image": "The filename of an image file in the app bundle, with or without the filename extension. The image is used as the launch image when users tap the action button or move the action slider",
