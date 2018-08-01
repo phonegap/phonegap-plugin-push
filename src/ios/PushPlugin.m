@@ -119,10 +119,20 @@
             NSLog(@"unsubscribe from topic: %@", topic);
             [pubSub unsubscribeFromTopic:topic];
         }
+    } else if ([self usesFCM]) {
+        [[FIRInstanceID instanceID] deleteIDWithHandler:^void(NSError *_Nullable error){
+            if (error) {
+                // failed to delete the identity for the app
+                [self failWithMessage:command.callbackId withMsg:@"" withError:error];
+            } else {
+                // deleted the identity for the app successfully
+                [self successWithMessage:command.callbackId withMsg:@"unregistered"];
+            }
+        }];
     } else {
         [[UIApplication sharedApplication] unregisterForRemoteNotifications];
         [self successWithMessage:command.callbackId withMsg:@"unregistered"];
-    }
+    }  
 }
 
 - (void)subscribe:(CDVInvokedUrlCommand*)command;
