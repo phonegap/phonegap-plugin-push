@@ -124,6 +124,7 @@
             if (error) {
                 [self failWithMessage:command.callbackId withMsg:@"" withError:error];
             } else {
+                [[UIApplication sharedApplication] unregisterForRemoteNotifications];
                 [self successWithMessage:command.callbackId withMsg:@"unregistered"];
             }
         }];
