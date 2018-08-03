@@ -128,8 +128,7 @@
                 [self successWithMessage:command.callbackId withMsg:@"unregistered"];
             }
         }];
-    }
-    else {
+    } else {
         [[UIApplication sharedApplication] unregisterForRemoteNotifications];
         [self successWithMessage:command.callbackId withMsg:@"unregistered"];
     }
