@@ -60,6 +60,8 @@ The following flowchart attempts to give you a picture of what happens when a pu
 - If the app is running in the background the push plugin then checks to see if `content-available` exists in the push data.
 - If `content-available` is set to `1`, then the plugin calls all of your `notification` event handlers.
 
+> Note: if `count` is given as `0` then all notifications are first cleared: always on Android, and if the `count` has gone down on iOS
+
 ## User clicks on notification in notification center
 
 - The app starts.
