@@ -466,6 +466,28 @@
     }
 }
 
+- (void)clearNotification:(CDVInvokedUrlCommand *)command
+{
+    NSNumber *notId = [command.arguments objectAtIndex:0];
+    [[UNUserNotificationCenter currentNotificationCenter] getDeliveredNotificationsWithCompletionHandler:^(NSArray<UNNotification *> * _Nonnull notifications) {
+        /*
+         * If the server generates a unique "notId" for every push notification, there should only be one match in these arrays, but if not, it will delete
+         * all notifications with the same value for "notId"
+         */
+        NSPredicate *matchingNotificationPredicate = [NSPredicate predicateWithFormat:@"request.content.userInfo.notId == %@", notId];
+        NSArray<UNNotification *> *matchingNotifications = [notifications filteredArrayUsingPredicate:matchingNotificationPredicate];
+        NSMutableArray<NSString *> *matchingNotificationIdentifiers = [NSMutableArray array];
+        for (UNNotification *notification in matchingNotifications) {
+            [matchingNotificationIdentifiers addObject:notification.request.identifier];
+        }
+        [[UNUserNotificationCenter currentNotificationCenter] removeDeliveredNotificationsWithIdentifiers:matchingNotificationIdentifiers];
+        
+        NSString *message = [NSString stringWithFormat:@"Cleared notification with ID: %@", notId];
+        CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message];
+        [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
+    }];
+}
+
 - (void)setApplicationIconBadgeNumber:(CDVInvokedUrlCommand *)command
 {
     NSMutableDictionary* options = [command.arguments objectAtIndex:0];

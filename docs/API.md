@@ -17,7 +17,7 @@
 - [push.getApplicationIconBadgeNumber() - iOS & Android only](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios--android-only)
 - [push.finish() - iOS only](#pushfinishsuccesshandler-errorhandler-id---ios-only)
 - [push.clearAllNotifications() - iOS & Android only](#pushclearallnotificationssuccesshandler-errorhandler---ios--android-only)
-- [push.clearNotification() - Android only](#pushclearnotificationid-successhandler-errorhandler---android-only)
+- [push.clearNotification() - iOS & Android only](#pushclearnotificationid-successhandler-errorhandler---ios--android-only)
 
 ## PushNotification.init(options)
 
@@ -592,7 +592,7 @@ push.clearAllNotifications(
 );
 ```
 
-## push.clearNotification(id, successHandler, errorHandler) - Android only
+## push.clearNotification(id, successHandler, errorHandler) - iOS & Android only
 
 Tells the OS to clear the notification that corresponds to the id argument, from the Notification Center
 
