@@ -634,7 +634,13 @@ The third is the empty string which will cause for the playing of sound to be sk
 }
 ```
 
-In order for your your notification to play a custom sound you will need to add the files to your Android project's `res/raw` directory. Then send the follow JSON from FCM:
+In order for your your notification to play a custom sound you will need to add the files to your Android project's `res/raw` directory. The best way to do this is by using a `resource-file` tag in your `config.xml`.
+
+```xml
+<resource-file src="assets/sound/test.mp3" target="app/src/main/res/raw/test.mp3" />
+```
+
+Then send the follow JSON from FCM:
 
 ```json
 {
