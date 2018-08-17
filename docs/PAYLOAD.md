@@ -400,7 +400,16 @@ const push = PushNotification.init({
 ```
 
 Where _icon_ is the name of an `.png` image file in the Android `res/drawable` folder. For example: `platforms/android/res/drawable/phonegap.png`
-Writing a hook to describe how to copy an image to the Android `res/drawable` folder is out of scope for this README but there is an [excellent tutorial](http://devgirl.org/2013/11/12/three-hooks-your-cordovaphonegap-project-needs/) that you can copy.
+
+You can use a `resource-file` tag to copy the image to the `res/drawable` folder like this:
+
+```xml
+  <resource-file src="res/icon/android/push/drawable-mdpi/icon.png" target="app/src/main/res/drawable-mdpi/icon.png" />
+  <resource-file src="res/icon/android/push/drawable-hdpi/icon.png" target="app/src/main/res/drawable-hdpi/icon.png" />
+  <resource-file src="res/icon/android/push/drawable-xhdpi/icon.png" target="app/src/main/res/drawable-xhdpi/icon.png" />
+  <resource-file src="res/icon/android/push/drawable-xxhdpi/icon.png" target="app/src/main/res/drawable-xxhdpi/icon.png" />
+  <resource-file src="res/icon/android/push/drawable-xxxhdpi/icon.png" target="app/src/main/res/drawable-xxxhdpi/icon.png" />
+```
 
 `iconColor` is one of the supported formats #RRGGBB or #AARRGGBB or one of the following names: 'red', 'blue', 'green', 'black', 'white', 'gray', 'cyan', 'magenta', 'yellow', 'lightgray', 'darkgray', 'grey', 'lightgrey', 'darkgrey', 'aqua', 'fuchsia', 'lime', 'maroon', 'navy', 'olive', 'purple', 'silver', 'teal'. `iconColor` is supported on Android 5.0 and greater.
 
@@ -454,6 +463,16 @@ fcm.send(message, (err, response) => {
 Would look for the _twitter_ image in the `res/drawable` folder and produce the following notification.
 
 ![2015-07-24 02 34 41](https://cloud.githubusercontent.com/assets/353180/8866903/2df48028-3190-11e5-8176-fe8b3f7c5aab.png)
+
+Again you can use a `resource-file` tag to copy the image to the `res/drawable` folder like this:
+
+```xml
+  <resource-file src="res/icon/android/push/drawable-mdpi/twitter.png" target="app/src/main/res/drawable-mdpi/twitter.png" />
+  <resource-file src="res/icon/android/push/drawable-hdpi/twitter.png" target="app/src/main/res/drawable-hdpi/twitter.png" />
+  <resource-file src="res/icon/android/push/drawable-xhdpi/twitter.png" target="app/src/main/res/drawable-xhdpi/twitter.png" />
+  <resource-file src="res/icon/android/push/drawable-xxhdpi/twitter.png" target="app/src/main/res/drawable-xxhdpi/twitter.png" />
+  <resource-file src="res/icon/android/push/drawable-xxxhdpi/twitter.png" target="app/src/main/res/drawable-xxxhdpi/twitter.png" />
+```
 
 The second is the _assets_ folder in your app. This JSON sent from FCM:
 
