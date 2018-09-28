@@ -24,13 +24,11 @@ buildscript {
 			mavenLocal()
   }
   dependencies {
-      classpath 'com.android.tools.build:gradle:+'
-      classpath 'com.google.gms:google-services:3.0.0'
+      classpath 'com.android.tools.build:gradle:2.2.3'
   }
 }
 
 // apply plugin: 'com.google.gms.google-services'
 // class must be used instead of id(string) to be able to apply plugin from non-root gradle file
 ext.postBuildExtras = {
-    apply plugin: com.google.gms.googleservices.GoogleServicesPlugin
 }
