@@ -34,25 +34,25 @@
 
 To install from the command line:
 
-```
+```bash
 phonegap plugin add phonegap-plugin-push
 ```
 
 or
 
-```
+```bash
 cordova plugin add phonegap-plugin-push
 ```
 
 It is also possible to install via repo url directly ( unstable )
 
-```
+```bash
 phonegap plugin add https://github.com/phonegap/phonegap-plugin-push
 ```
 
 or
 
-```
+```bash
 cordova plugin add https://github.com/phonegap/phonegap-plugin-push
 ```
 
@@ -60,7 +60,7 @@ As of version 2.0.0 the SENDER_ID parameter has been removed at install time. In
 
 In the platform tag for Android add the following resource-file tag if you are using cordova-android 7.0 or greater:
 
-```
+```xml
 <platform name="android">
   <resource-file src="google-services.json" target="app/google-services.json" />
 </platform>
@@ -68,7 +68,7 @@ In the platform tag for Android add the following resource-file tag if you are u
 
 If you are using cordova-android 6.x or earlier, add the following resource-file tag:
 
-```
+```xml
 <platform name="android">
   <resource-file src="google-services.json" target="google-services.json" />
 </platform>
@@ -76,7 +76,7 @@ If you are using cordova-android 6.x or earlier, add the following resource-file
 
 By default, on iOS, the plugin will register with APNS. If you want to use FCM on iOS, in the platform tag for iOS add the resource-file tag:
 
-```
+```xml
 <platform name="ios">
   <resource-file src="GoogleService-Info.plist" />
 </platform>
@@ -84,7 +84,7 @@ By default, on iOS, the plugin will register with APNS. If you want to use FCM o
 
 > Note: if you are using Ionic you may need to specify the SENDER_ID variable in your package.json.
 
-```
+```json
   "cordovaPlugins": [
     {
       "locator": "phonegap-plugin-push"
@@ -94,7 +94,7 @@ By default, on iOS, the plugin will register with APNS. If you want to use FCM o
 
 > Note: You need to specify the SENDER_ID variable in your config.xml if you plan on installing/restoring plugins using the prepare method. The prepare method will skip installing the plugin otherwise.
 
-```
+```xml
 <plugin name="phonegap-plugin-push" spec="2.0.0" />
 ```
 
@@ -112,7 +112,7 @@ For more detailed instructions on how to install the Android Support Library vis
 
 _Note:_ if you are using an IDE to like Eclipse, Xamarin, etc. then the Android SDK installed by those tools may not be the same version as the one used by the Cordova/PhoneGap CLI while building. Please make sure your command line tooling is up to date with the software versions above. An easy way to make sure you up to date is to run the following command:
 
-```
+```bash
 android update sdk --no-ui --filter "extra"
 ```
 
@@ -122,13 +122,13 @@ There are a number of Cordova Facebook Plugins available but the one that we rec
 
 To add to your app:
 
-```
+```bash
 phonegap plugin add --save cordova-plugin-facebook4 --variable APP_ID="App ID" --variable APP_NAME="App Name"
 ```
 
 or
 
-```
+```bash
 cordova plugin add --save cordova-plugin-facebook4 --variable APP_ID="App ID" --variable APP_NAME="App Name"
 ```
 
@@ -279,7 +279,7 @@ If you are on a `cordova-cli` version less than `6.1.0`, you will either have to
 
 i.e.
 
-```
+```bash
 cordova plugin add phonegap-plugin-push@1.8.1
 ```
 
@@ -306,7 +306,7 @@ Please run the command `pod repo update` and re-install the plugin. You would on
 
 Running `pod setup` can take over 1 GB of disk space and that can take quite some time to download over a slow internet connection. If you are having issues with disk space/network try this neat hack from @VinceOPS.
 
-```
+```bash
 git clone --verbose --depth=1 https://github.com/CocoaPods/Specs.git ~/.cocoapods/repos/master
 pod setup --verbose
 ```
@@ -344,7 +344,7 @@ module FirebaseInstanceID not found
 
 You may be running into a bug in cordova-ios. The current workaround is to run `pod install` manually.
 
-```
+```bash
 cd platforms/ios
 pod install
 ```
@@ -355,7 +355,7 @@ The push plugin enables you to play sounds and display different icons during pu
 
 You can now use the `resource-file` tag to deliver the image and sound files to your application. For example if you wanted to include an extra image file for only your Android build you would add the `resource-file` tag to your android `platform` tag:
 
-```
+```xml
 <platform name="android">
   <resource-file src="myImage.png" target="res/drawable/myImage.png" />
 </platform>
@@ -363,7 +363,7 @@ You can now use the `resource-file` tag to deliver the image and sound files to 
 
 or if you wanted to include a sound file for iOS:
 
-```
+```xml
 <platform name="ios">
   <resource-file src="mySound.caf" />
 </platform>

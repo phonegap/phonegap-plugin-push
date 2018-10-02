@@ -97,7 +97,7 @@ Users have reported issues with Ionic Cloud Build. Apparently there are some dif
 
 1.  Remove the inclusion of `phonegap-plugin-push` from config.xml. That is delete lines that look like this:
 
-```
+```xml
 <plugin name="phonegap-plugin-push" spec="~1.9.1">
   <variable name="SENDER_ID" value="xxx"/>
 </plugin>
@@ -105,7 +105,7 @@ Users have reported issues with Ionic Cloud Build. Apparently there are some dif
 
 2.  Add the following lines into `package.json` in the `cordovaPlugins` array.
 
-```
+```json
 {
   "variables": {
     "SENDER_ID": "xxx"
