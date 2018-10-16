@@ -95,7 +95,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
       String packageName = getApplicationContext().getPackageName();
       NotificationChannel mChannel = new NotificationChannel(channel.getString(CHANNEL_ID),
           channel.optString(CHANNEL_DESCRIPTION, ""),
-          channel.optInt(CHANNEL_IMPORTANCE, NotificationManager.IMPORTANCE_DEFAULT));
+          channel.optInt(CHANNEL_IMPORTANCE, NotificationManager.IMPORTANCE_HIGH));
 
       int lightColor = channel.optInt(CHANNEL_LIGHT_COLOR, -1);
       if (lightColor != -1) {
