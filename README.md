@@ -47,7 +47,6 @@ of the `Firebase Cloud Messaging` library. More details are available in the
 # Do you like tutorial? You get tutorial!
 
 * [PhoneGap Day US Push Workshop 2016 (using node-gcm)](http://macdonst.github.io/push-workshop/)
-* [PhoneGap Day EU Push Workshop 2016 (using PhoneGap Push)](http://macdonst.github.io/push-workshop-eu/)
 
 # Thanks to all our contributors
 

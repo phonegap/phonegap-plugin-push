@@ -75,6 +75,12 @@ describe('phonegap-plugin-push', function () {
       expect(push.clearAllNotifications).toBeDefined();
       expect(typeof push.clearAllNotifications === 'function').toBe(true);
     });
+    
+    it('should contain a clearNotification function', function () {
+      var push = PushNotification.init({});
+      expect(push.clearNotification).toBeDefined();
+      expect(typeof push.clearNotification === 'function').toBe(true);
+    });
 
     it('should contain a subscribe function', function () {
       var push = PushNotification.init({});
@@ -417,6 +423,40 @@ describe('phonegap-plugin-push', function () {
               'PushNotification',
               'unsubscribe',
               jasmine.any(Object)
+            );
+            done();
+          }, 100);
+        });
+      });
+    });
+    
+    describe('clear notification method', function () {
+      describe('cordova.exec', function () {
+        it('should call cordova.exec on next process tick using number argument', function (done) {
+          var push = PushNotification.init(options);
+          push.clearNotification(function () {}, function () {}, 145);
+          setTimeout(function () {
+            expect(execSpy).toHaveBeenCalledWith(
+              jasmine.any(Function),
+              jasmine.any(Function),
+              'PushNotification',
+              'clearNotification',
+              [145]
+            );
+            done();
+          }, 100);
+        });
+
+        it('should call cordova.exec on next process tick using string argument', function (done) {
+          var push = PushNotification.init(options);
+          push.clearNotification(function () {}, function () {}, "145");
+          setTimeout(function () {
+            expect(execSpy).toHaveBeenCalledWith(
+              jasmine.any(Function),
+              jasmine.any(Function),
+              'PushNotification',
+              'clearNotification',
+              [145]
             );
             done();
           }, 100);
