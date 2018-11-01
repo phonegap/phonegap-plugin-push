@@ -337,6 +337,18 @@ module.exports = {
   listChannels: (successCallback, errorCallback) => {
     exec(successCallback, errorCallback, 'PushNotification', 'listChannels', []);
   },
+  createChannelGroup: (successCallback, errorCallback, channelGroup) {
+    exec(successCallback, errorCallback, 'PushNotification', 'createChannelGroup', [channelGroup]);
+  },
+
+  deleteChannelGroup: (successCallback, errorCallback, channelGroupId) {
+    exec(successCallback, errorCallback, 'PushNotification', 'deleteChannelGroup', [channelGroupId]);
+  },
+    
+  listChannelGroups: (successCallback, errorCallback) {
+    exec(successCallback, errorCallback, 'PushNotification', 'listChannelGroups', []);
+  },
+
 
   /**
    * PushNotification Object.
