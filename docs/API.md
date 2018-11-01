@@ -283,7 +283,7 @@ PushNotification.listChannels(channels => {
 });
 ```
 
-## PushNotification.createChannelGroup(successHandler, failureHandler, channel)
+## PushNotification.createChannelGroup(successHandler, failureHandler, channelGroup)
 
 Create a new notification channel group for Android O and above.
 
