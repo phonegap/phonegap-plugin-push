@@ -103,8 +103,13 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
         PushPlugin.setApplicationIconBadgeNumber(getApplicationContext(), 0);
       }
 
+      int clearNotificationId = getClearNotificationId(extras);
+
+      // if the notification has a `clearNotification`, then clear it.
+      if(clearNotificationId != -1) {
+        PushPlugin.clearNotification(getApplicationContext(), clearNotificationId);
       // if we are in the foreground and forceShow is `false` only send data
-      if (!forceShow && PushPlugin.isInForeground()) {
+      } else if (!forceShow && PushPlugin.isInForeground()) {
         Log.d(LOG_TAG, "foreground");
         extras.putBoolean(FOREGROUND, true);
         extras.putBoolean(COLDSTART, false);
@@ -300,6 +305,20 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     } // while
 
     return newExtras;
+  }
+
+  private int getClearNotificationId(Bundle extras) {
+    int clearNotificationId = -1;
+    String msgcnid = extras.getString(CLEAR_NOTIFICATION);
+
+    try {
+      if (msgcnid != null) {
+        clearNotificationId = Integer.parseInt(msgcnid);
+      }
+    } catch (NumberFormatException e) {
+      Log.e(LOG_TAG, e.getLocalizedMessage(), e);
+    }
+    return clearNotificationId;
   }
 
   private int extractBadgeCount(Bundle extras) {
