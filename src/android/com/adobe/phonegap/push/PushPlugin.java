@@ -69,6 +69,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         JSONObject channel = new JSONObject();
         channel.put(CHANNEL_ID, notificationChannel.getId());
         channel.put(CHANNEL_DESCRIPTION, notificationChannel.getDescription());
+        channel.put(CHANNEL_GROUP_ID, notificationChannel.getGroup());
         channels.put(channel);
       }
     }
@@ -96,7 +97,12 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
       NotificationChannel mChannel = new NotificationChannel(channel.getString(CHANNEL_ID),
           channel.optString(CHANNEL_DESCRIPTION, ""),
           channel.optInt(CHANNEL_IMPORTANCE, NotificationManager.IMPORTANCE_DEFAULT));
-
+      
+      String groupId=channel.optString(CHANNEL_GROUP_ID, "");
+            if(groupId != null && !groupId.isEmpty() ) {
+                mChannel.setGroup(groupId);
+      }
+      
       int lightColor = channel.optInt(CHANNEL_LIGHT_COLOR, -1);
       if (lightColor != -1) {
         mChannel.setLightColor(lightColor);
