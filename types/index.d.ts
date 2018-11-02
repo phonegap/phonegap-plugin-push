@@ -292,7 +292,7 @@ declare namespace PhonegapPluginPush {
   /**
    * Set Channel Variable,once created cannot be changed programmtically for importance and vibration
    */
-  interface channel{
+  interface Channel {
     /**
      * channel ID
      */
