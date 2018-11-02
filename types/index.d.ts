@@ -329,7 +329,7 @@ declare namespace PhonegapPluginPush {
   
    interface ChannelGroup {
     /**
-     * Set Channel Group ID
+     * The id of the channel group.
      */
     id?: string
    /**
