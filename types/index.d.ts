@@ -318,7 +318,7 @@ declare namespace PhonegapPluginPush {
      */
     visibility?: number
     /**
-     * Set Channel Group
+     * Sets channel group id. Assign it to a Channel Group Created. Cannot be changed once set.
      */
     groupId:string
   }
