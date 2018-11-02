@@ -267,6 +267,49 @@ declare namespace PhonegapPluginPush {
 	}
 
 	/**
+	 * Android only
+	 * Notification channel
+	 */
+	interface Channel {
+		/**
+		 * The id of the channel. Must be unique per package.
+		 * The value may be truncated if it is too long.
+		 */
+		id: string;
+		/**
+		 * The user visible name of the channel.
+		 * The recommended maximum length is 40 characters; the value may be truncated if it is too long.
+		 */
+		name: string;
+		/**
+		 * The user visible description of the channel.
+		 * The recommended maximum length is 300 characters; the value may be truncated if it is too long.
+		 */
+		description?: string;
+		/**
+		 * The importance of the channel. This controls how interruptive notifications posted to this channel are.
+		 * The importance property goes from 1 = Lowest, 2 = Low, 3 = Normal, 4 = High and 5 = Highest.
+		 */
+		importance: number;
+		/**
+		 * The name of the sound file to be played upon receipt of the notification in this channel.
+		 * Cannot be changed after channel is created.
+		 */
+		sound?: string;
+		/**
+		 * Boolean sets whether notification posted to this channel should vibrate.
+		 * Array sets custom vibration pattern. Example - vibration: [2000, 1000, 500, 500].
+		 * Cannot be changed after channel is created.
+		 */
+		vibration?: boolean | number[];
+		/**
+		 * Sets whether notifications posted to this channel appear on the lockscreen or not, and if so, whether they appear in a redacted form.
+		 * 0 = Private, 1 = Public, -1 = Secret.
+		 */
+		visibility?: number;
+	}
+
+	/**
 	 * TODO: document all possible properties (I only got the android ones)
 	 *
 	 * Loosened up with a dictionary notation, but all non-defined properties need to use (map['prop']) notation
@@ -293,6 +336,31 @@ declare namespace PhonegapPluginPush {
 	interface PushNotificationStatic {
 		init(options: InitOptions): PushNotification
 		new (options: InitOptions): PushNotification
+
+		/**
+		 * Android only
+		 * Create a new notification channel for Android O and above.
+		 * @param successHandler Is called when the api successfully creates a channel.
+		 * @param errorHandler Is called when the api fails to create a channel.
+		 * @param channel The options for the channel.
+		 */
+		createChannel(successHandler: () => any, errorHandler: () => any, channel: Channel): void
+
+		/**
+		 * Android only
+		 * Delete a notification channel for Android O and above.
+		 * @param successHandler Is called when the api successfully delete a channel.
+		 * @param errorHandler Is called when the api fails to delete a channel.
+		 * @param channelId The ID of the channel.
+		 */
+		deleteChannel(successHandler: () => any, errorHandler: () => any, channelId: string): void
+
+		/**
+		 * Android only
+		 * Returns a list of currently configured channels.
+		 * @param successHandler Is called when the api successfully retrieves the list of channels.
+		 */
+		listChannels(successHandler: (channels: Channel[]) => any): void
 	}
 }
 
