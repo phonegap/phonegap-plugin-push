@@ -292,6 +292,7 @@ declare namespace PhonegapPluginPush {
 
   interface channel{
     id: string
+    name : string //camillebeaumont name and description fix
     description:string
     importance: integer
     vibration: boolean
