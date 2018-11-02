@@ -310,6 +310,10 @@ declare namespace PhonegapPluginPush {
      */
     importance?: number
     /**
+     * The name of the sound file to be played upon receipt of the notification in this channel. Cannot be changed after channel is created.
+     */
+    sound: string
+    /**
      * Boolean sets whether notification posted to this channel should vibrate. Array sets custom vibration pattern. Example - vibration: [2000, 1000, 500, 500]. Cannot be changed after channel is created.
      */
     vibration?: boolean
