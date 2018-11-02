@@ -345,7 +345,7 @@ declare namespace PhonegapPluginPush {
     createChannel(successHandler: () => any, errorHandler: () => any,channel): void
     listChannels(successHandler: () => any): void
     deleteChannel(successHandler: () => any, errorHandler: () => any, channelId: string ): void
-    createChannelGroup(successHandler: () => any, errorHandler: () => any,channelGroup): void
+    createChannelGroup(successHandler: () => any, errorHandler: () => any, channelGroup: ChannelGroup): void
     listChannelGroups(successHandler: () => any): void
     deleteChannelGroup(successHandler: () => any, errorHandler: () => any, channelGroupId: string ): void
 	}
