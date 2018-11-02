@@ -302,7 +302,7 @@ declare namespace PhonegapPluginPush {
      */
     name: string 
     /**
-     * camillebeaumont name and description fix,channel description
+     * The user visible name of the channel. The recommended maximum length is 40 characters; the value may be truncated if it is too long.
      */
     description: string
     /**
