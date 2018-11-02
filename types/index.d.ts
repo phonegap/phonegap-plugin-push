@@ -323,7 +323,7 @@ declare namespace PhonegapPluginPush {
     groupId:string
   }
   
-   interface channelGroup{
+   interface ChannelGroup {
     /**
      * Set Channel Group ID
      */
