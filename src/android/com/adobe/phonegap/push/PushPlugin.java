@@ -69,6 +69,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         JSONObject channel = new JSONObject();
         channel.put(CHANNEL_ID, notificationChannel.getId());
         channel.put(CHANNEL_DESCRIPTION, notificationChannel.getDescription());
+        channel.put(CHANNEL_GROUP_ID, notificationChannel.getGroup());
         channels.put(channel);
       }
     }
@@ -96,7 +97,12 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
       NotificationChannel mChannel = new NotificationChannel(channel.getString(CHANNEL_ID),
           channel.optString(CHANNEL_DESCRIPTION, ""),
           channel.optInt(CHANNEL_IMPORTANCE, NotificationManager.IMPORTANCE_DEFAULT));
-
+      
+      String groupId=channel.optString(CHANNEL_GROUP_ID, "");
+            if(groupId != null && !groupId.isEmpty() ) {
+                mChannel.setGroup(groupId);
+      }
+      
       int lightColor = channel.optInt(CHANNEL_LIGHT_COLOR, -1);
       if (lightColor != -1) {
         mChannel.setLightColor(lightColor);
@@ -164,6 +170,45 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
       }
     }
   }
+  
+  @TargetApi(26)
+  private void createChannelGroup(JSONObject group) throws JSONException {
+        // only call on Android O and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
+            .getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannelGroup mGroup = new NotificationChannelGroup(group.optString(GROUP_ID, ""), group.optString(GROUP_NAME, ""));
+            notificationManager.createNotificationChannelGroup(mGroup);
+        }
+    }
+    
+    @TargetApi(26)
+    private JSONArray listChannelGroups() throws JSONException {
+        JSONArray channelGroups = new JSONArray();
+        // only call on Android O and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
+            .getSystemService(Context.NOTIFICATION_SERVICE);
+            List<NotificationChannelGroup> notificationChannelGroups = notificationManager.getNotificationChannelGroups();
+            for (NotificationChannelGroup notificationChannelGroup : notificationChannelGroups) {
+                JSONObject channelGroup = new JSONObject();
+                channelGroup.put(GROUP_ID, notificationChannelGroup.getId());
+                channelGroup.put(GROUP_NAME, notificationChannelGroup.getName());
+                channelGroups.put(channelGroup);
+            }
+        }
+    return channelGroups;
+    }
+    
+    @TargetApi(26)
+    private void deleteChannelGroup(String channelGroupId) {
+        // only call on Android O and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
+            .getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.deleteNotificationChannelGroup(channelGroupId);
+        }
+    }
 
   @Override
   public boolean execute(final String action, final JSONArray data, final CallbackContext callbackContext) {
@@ -431,7 +476,45 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
           }
         }
       });
-    } else {
+    } else if (CREATE_CHANNEL_GROUP.equals(action)) {
+             // un-subscribing for a topic
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                  try {
+                    // call create channel
+                    createChannelGroup(data.getJSONObject(0));
+                    callbackContext.success();
+                  } catch (JSONException e) {
+                    callbackContext.error(e.getMessage());
+                  }
+                }
+              });
+        } else if (LIST_CHANNEL_GROUPS.equals(action)) {
+             // un-subscribing for a topic
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                  try {
+                    callbackContext.success(listChannelGroups());
+                  } catch (JSONException e) {
+                    callbackContext.error(e.getMessage());
+                  }
+                }
+              });
+        } else if (DELETE_CHANNEL_GROUP.equals(action)) {
+              // un-subscribing for a topic
+              cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                  try {
+                    String channelGroupId = data.getString(0);
+                    deleteChannelGroup(channelGroupId);
+                    callbackContext.success();
+                  } catch (JSONException e) {
+                    callbackContext.error(e.getMessage());
+                  }
+                }
+              });
+        } 
+    else {
       Log.e(LOG_TAG, "Invalid action : " + action);
       callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
       return false;

@@ -289,10 +289,65 @@ declare namespace PhonegapPluginPush {
 		from?: string
 		notId?: string
 	}
-
+  /**
+   * Set Channel Variable,once created cannot be changed programmtically for importance and vibration
+   */
+  interface Channel {
+    /**
+     * The id of the channel. Must be unique per package. The value may be truncated if it is too long.
+     */
+    id?: string
+    /**
+     * camillebeaumont name and description fix
+     */
+    name?: string 
+    /**
+     * The user visible name of the channel. The recommended maximum length is 40 characters; the value may be truncated if it is too long.
+     */
+    description: string
+    /**
+     * The importance of the channel. This controls how interruptive notifications posted to this channel are. The importance property goes from 1 = Lowest, 2 = Low, 3 = Normal, 4 = High and 5 = Highest.
+     */
+    importance?: number
+    /**
+     * The name of the sound file to be played upon receipt of the notification in this channel. Cannot be changed after channel is created.
+     */
+    sound: string
+    /**
+     * Boolean sets whether notification posted to this channel should vibrate. Array sets custom vibration pattern. Example - vibration: [2000, 1000, 500, 500]. Cannot be changed after channel is created.
+     */
+    vibration?: boolean
+    /**
+     * Sets whether notifications posted to this channel appear on the lockscreen or not, and if so, whether they appear in a redacted form. 0 = Private, 1 = Public, -1 = Secret.
+     */
+    visibility?: number
+    /**
+     * Sets channel group id. Assign it to a Channel Group Created. Cannot be changed once set.
+     */
+    groupId:string
+  }
+  
+   interface ChannelGroup {
+    /**
+     * The id of the channel group.
+     */
+    id?: string
+   /**
+     * The user visible name of the channel group.
+     */
+    name?: string
+  }
+  
 	interface PushNotificationStatic {
 		init(options: InitOptions): PushNotification
 		new (options: InitOptions): PushNotification
+    hasPermission(successHandler: () => any): void 
+    createChannel(successHandler: () => any, errorHandler: () => any,channel): void
+    listChannels(successHandler: () => any): void
+    deleteChannel(successHandler: () => any, errorHandler: () => any, channelId: string ): void
+    createChannelGroup(successHandler: () => any, errorHandler: () => any, channelGroup: ChannelGroup): void
+    listChannelGroups(successHandler: () => any): void
+    deleteChannelGroup(successHandler: () => any, errorHandler: () => any, channelGroupId: string ): void
 	}
 }
 

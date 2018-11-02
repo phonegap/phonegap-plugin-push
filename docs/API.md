@@ -5,6 +5,9 @@
 - [.createChannel() - Android only](#pushnotificationcreatechannel)
 - [.deleteChannel() - Android only](#pushnotificationdeletechannel)
 - [.listChannels() - Android only](#pushnotificationlistchannels)
+- [.createChannelGroup() - Android only](#pushnotificationcreatechannelgroup)
+- [.deleteChannelGroup() - Android only](#pushnotificationdeletechannelgroup)
+- [.listChannelGroups() - Android only](#pushnotificationlistchannelgroups)
 - [push.on()](#pushonevent-callback)
   - [push.on('registration')](#pushonregistration-callback)
   - [push.on('notification')](#pushonnotification-callback)
@@ -224,6 +227,7 @@ A default channel with the id "PushPluginChannel" is created automatically. To m
 | `sound`                          | `String`  | The name of the sound file to be played upon receipt of the notification in this channel. Cannot be changed after channel is created.                                                                                               |
 | `vibration`                      | `Boolean` or `Array` | Boolean sets whether notification posted to this channel should vibrate. Array sets custom vibration pattern. Example - vibration: `[2000, 1000, 500, 500]`. Cannot be changed after channel is created.                 |
 | `visibility`                     | `Int`     | Sets whether notifications posted to this channel appear on the lockscreen or not, and if so, whether they appear in a redacted form. 0 = Private, 1 = Public, -1 = Secret.                                                         |
+| `group_id`                     | `String`     | Sets channel group id. Assign it to a Channel Group Created. Cannot be changed once set.                                                         |
 
 ## PushNotification.deleteChannel(successHandler, failureHandler, channelId)
 
@@ -274,10 +278,110 @@ Returns a list of currently configured channels.
 ```javascript
 PushNotification.listChannels(channels => {
   for (let channel of channels) {
-    console.log(`ID: ${channel.id} Description: ${channel.description}`);
+    console.log(`ID: ${channel.id} Description: ${channel.description} GroupID: ${channel.group_id}`);
   }
 });
 ```
+
+## PushNotification.createChannelGroup(successHandler, failureHandler, channelGroup)
+
+Create a new notification channel group for Android O and above.
+
+### Parameters
+
+| Parameter        | Type       | Default | Description                                            |
+| ---------------- | ---------- | ------- | ------------------------------------------------------ |
+| `successHandler` | `Function` |         | Is called when the api successfully creates a channel. |
+| `failureHandler` | `Function` |         | Is called when the api fails to create a channel.      |
+| `channelGroup`   | `Object`   |         | The options for the channel group.                           |
+
+### Example
+
+```javascript
+PushNotification.createChannelGroup(
+  () => {
+    console.log('success');
+  },
+  () => {
+    console.log('error');
+  },
+  {
+    id: 'testchannelgroup',
+    name: 'My first test channel group'
+  }
+);
+```
+
+The above will create a channel group for your app. You'll need to provide the `id` and `name` properties. 
+
+
+
+### Channel Group properties
+
+| Property                         | Type      | Description                                                                                                                                                                                                                         |
+| -------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                             | `String`  | The id of the channel group.                                                         |
+| `name`                           | `String`  | The user visible name of the channel group.                                          |
+
+## PushNotification.deleteChannelGroup(successHandler, failureHandler, channelGroupId)
+
+Delete a notification channel for Android O and above.
+
+### Parameters
+
+| Parameter        | Type       | Default | Description                                                  |
+| ---------------- | ---------- | ------- | ------------------------------------------------------------ |
+| `successHandler` | `Function` |         | Is called when the api successfully creates a channel group. |
+| `failureHandler` | `Function` |         | Is called when the api fails to create a channel group.      |
+| `channelGroupId` | `String`   |         | The ID of the channel group.                                 |
+
+### Example
+
+```javascript
+PushNotification.deleteChannelGroup(
+  () => {
+    console.log('success');
+  },
+  () => {
+    console.log('error');
+  },
+  'testchannelgroup'
+);
+```
+
+## PushNotification.listChannelGroups(successHandler)
+
+Returns a list of currently configured channel groups.
+
+### Parameters
+
+| Parameter        | Type       | Default | Description                                                         |
+| ---------------- | ---------- | ------- | ------------------------------------------------------------------- |
+| `successHandler` | `Function` |         | Is called when the api successfully retrieves the list of channels. |
+
+### Callback parameters
+
+#### `successHandler`
+
+| Parameter       | Type         | Description                    |
+| ----------      | ------------ | ------------------------------ |
+| `channelGroups` | `JSONArrary` | List of channel group objects. |
+
+### Example
+
+```javascript
+PushNotification.listChannelGroups(channelGroups => {
+  for (let channelGroup of channelGroups) {
+    console.log(`ID: ${channelGroup.id} Description: ${channelGroup.name}`);
+  }
+});
+```
+
+
+
+
+
+       
 
 ## push.on(event, callback)
 

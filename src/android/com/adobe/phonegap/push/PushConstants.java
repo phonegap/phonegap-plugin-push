@@ -102,4 +102,10 @@ public interface PushConstants {
   public static final String ONGOING = "ongoing";
   public static final String LIST_CHANNELS = "listChannels";
   public static final String CLEAR_NOTIFICATION = "clearNotification";
+  public static final String CREATE_CHANNEL_GROUP = "createChannelGroup";
+  public static final String LIST_CHANNEL_GROUPS = "listChannelGroups";
+  public static final String DELETE_CHANNEL_GROUP = "deleteChannelGroup";
+  public static final String GROUP_ID = "id";
+  public static final String GROUP_NAME= "name";
+  public static final String CHANNEL_GROUP_ID = "group_id";
 }

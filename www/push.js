@@ -381,6 +381,19 @@ module.exports = {
   listChannels: function listChannels(successCallback, errorCallback) {
     exec(successCallback, errorCallback, 'PushNotification', 'listChannels', []);
   },
+  
+  createChannelGroup: function createChannel(successCallback, errorCallback, channelGroup) {
+    exec(successCallback, errorCallback, 'PushNotification', 'createChannelGroup', [channelGroup]);
+  },
+
+  deleteChannelGroup: function deleteChannel(successCallback, errorCallback, channelGroupId) {
+    exec(successCallback, errorCallback, 'PushNotification', 'deleteChannelGroup', [channelGroupId]);
+  },
+
+  listChannelGroups: function listChannels(successCallback, errorCallback) {
+    exec(successCallback, errorCallback, 'PushNotification', 'listChannelGroups', []);
+  },
+
 
   /**
    * PushNotification Object.
