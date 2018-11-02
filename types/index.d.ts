@@ -290,9 +290,27 @@ declare namespace PhonegapPluginPush {
 		notId?: string
 	}
 
+  interface channel{
+    id: string
+    description:string
+    importance: integer
+    vibration: boolean
+  }
+  
+   interface channelGroup{
+    id: string
+    name:string
+  }
+  
 	interface PushNotificationStatic {
 		init(options: InitOptions): PushNotification
 		new (options: InitOptions): PushNotification
+    createChannel(successHandler: () => any, errorHandler: () => any,channel):void
+    listChannels(successHandler: () => any):void
+    deleteChannel(successHandler: () => any, errorHandler: () => any, channelId:string ):void
+    createChannelGroup(successHandler: () => any, errorHandler: () => any,channelGroup):void
+    listChannelGroups(successHandler: () => any):void
+    deleteChannelGroup(successHandler: () => any, errorHandler: () => any, channelGroupId:string ):void
 	}
 }
 
