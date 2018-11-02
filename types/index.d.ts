@@ -294,7 +294,7 @@ declare namespace PhonegapPluginPush {
    */
   interface Channel {
     /**
-     * channel ID
+     * The id of the channel. Must be unique per package. The value may be truncated if it is too long.
      */
     id?: string
     /**
