@@ -314,7 +314,7 @@ declare namespace PhonegapPluginPush {
      */
     vibration?: boolean
     /**
-     * Set notitfication visibility 
+     * Sets whether notifications posted to this channel appear on the lockscreen or not, and if so, whether they appear in a redacted form. 0 = Private, 1 = Public, -1 = Secret.
      */
     visibility?: number
     /**
