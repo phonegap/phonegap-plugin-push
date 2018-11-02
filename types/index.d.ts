@@ -296,11 +296,11 @@ declare namespace PhonegapPluginPush {
     /**
      * channel ID
      */
-    id: string
+    id?: string
     /**
      * camillebeaumont name and description fix
      */
-    name: string 
+    name?: string 
     /**
      * The user visible name of the channel. The recommended maximum length is 40 characters; the value may be truncated if it is too long.
      */
@@ -308,15 +308,15 @@ declare namespace PhonegapPluginPush {
     /**
      * The importance of the channel. This controls how interruptive notifications posted to this channel are. The importance property goes from 1 = Lowest, 2 = Low, 3 = Normal, 4 = High and 5 = Highest.
      */
-    importance: number
+    importance?: number
     /**
      * enable vibration for the notification
      */
-    vibration: boolean
+    vibration?: boolean
     /**
      * Set notitfication visibility 
      */
-    visibility: integer
+    visibility?: number
     /**
      * Set Channel Group
      */
@@ -327,11 +327,11 @@ declare namespace PhonegapPluginPush {
     /**
      * Set Channel Group ID
      */
-    id: string
+    id?: string
    /**
      * Set Channel Group Name
      */
-    name: string
+    name?: string
   }
   
 	interface PushNotificationStatic {
