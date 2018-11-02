@@ -306,7 +306,7 @@ declare namespace PhonegapPluginPush {
      */
     description: string
     /**
-     * channel importance level
+     * The importance of the channel. This controls how interruptive notifications posted to this channel are. The importance property goes from 1 = Lowest, 2 = Low, 3 = Normal, 4 = High and 5 = Highest.
      */
     importance: integer
     /**
