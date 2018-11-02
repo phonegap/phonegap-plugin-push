@@ -310,7 +310,7 @@ declare namespace PhonegapPluginPush {
      */
     importance?: number
     /**
-     * enable vibration for the notification
+     * Boolean sets whether notification posted to this channel should vibrate. Array sets custom vibration pattern. Example - vibration: [2000, 1000, 500, 500]. Cannot be changed after channel is created.
      */
     vibration?: boolean
     /**
