@@ -333,7 +333,7 @@ declare namespace PhonegapPluginPush {
      */
     id?: string
    /**
-     * Set Channel Group Name
+     * The user visible name of the channel group.
      */
     name?: string
   }
