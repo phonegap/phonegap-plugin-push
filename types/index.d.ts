@@ -289,29 +289,61 @@ declare namespace PhonegapPluginPush {
 		from?: string
 		notId?: string
 	}
-
+  /**
+   * Set Channel Variable,once created cannot be changed programmtically for importance and vibration
+   */
   interface channel{
+    /**
+     * channel ID
+     */
     id: string
-    name : string //camillebeaumont name and description fix
-    description:string
+    /**
+     * camillebeaumont name and description fix
+     */
+    name: string 
+    /**
+     * camillebeaumont name and description fix,channel description
+     */
+    description: string
+    /**
+     * channel importance level
+     */
     importance: integer
+    /**
+     * enable vibration for the notification
+     */
     vibration: boolean
+    /**
+     * Set notitfication visibility 
+     */
+    visibility: integer
+    /**
+     * Set Channel Group
+     */
+    groupId:string
   }
   
    interface channelGroup{
+    /**
+     * Set Channel Group ID
+     */
     id: string
-    name:string
+   /**
+     * Set Channel Group Name
+     */
+    name: string
   }
   
 	interface PushNotificationStatic {
 		init(options: InitOptions): PushNotification
 		new (options: InitOptions): PushNotification
-    createChannel(successHandler: () => any, errorHandler: () => any,channel):void
-    listChannels(successHandler: () => any):void
-    deleteChannel(successHandler: () => any, errorHandler: () => any, channelId:string ):void
-    createChannelGroup(successHandler: () => any, errorHandler: () => any,channelGroup):void
-    listChannelGroups(successHandler: () => any):void
-    deleteChannelGroup(successHandler: () => any, errorHandler: () => any, channelGroupId:string ):void
+    hasPermission(successHandler: () => any): void 
+    createChannel(successHandler: () => any, errorHandler: () => any,channel): void
+    listChannels(successHandler: () => any): void
+    deleteChannel(successHandler: () => any, errorHandler: () => any, channelId: string ): void
+    createChannelGroup(successHandler: () => any, errorHandler: () => any,channelGroup): void
+    listChannelGroups(successHandler: () => any): void
+    deleteChannelGroup(successHandler: () => any, errorHandler: () => any, channelGroupId: string ): void
 	}
 }
 
