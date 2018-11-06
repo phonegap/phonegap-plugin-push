@@ -2,9 +2,9 @@
 
 - [.init()](#pushnotificationinitoptions)
 - [.hasPermission()](#pushnotificationhaspermissionsuccesshandler)
-- [.createChannel() - Android only](#pushnotificationcreatechannel)
-- [.deleteChannel() - Android only](#pushnotificationdeletechannel)
-- [.listChannels() - Android only](#pushnotificationlistchannels)
+- [.createChannel() - Android only](#pushnotificationcreatechannelsuccesshandler-failurehandler-channel)
+- [.deleteChannel() - Android only](#pushnotificationdeletechannelsuccesshandler-failurehandler-channelid)
+- [.listChannels() - Android only](#pushnotificationlistchannelssuccesshandler)
 - [push.on()](#pushonevent-callback)
   - [push.on('registration')](#pushonregistration-callback)
   - [push.on('notification')](#pushonnotification-callback)
