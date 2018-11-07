@@ -442,11 +442,6 @@
             }
         }
 
-        if([additionalData objectForKey:@"clearNotification") {
-            NSNumber *clearNotificationId = @([[additionalData objectForKey:@"clearNotification"] integerValue]);
-            [clearRealNotification: clearNotificationId];
-        }
-
         if (isInline) {
             [additionalData setObject:[NSNumber numberWithBool:YES] forKey:@"foreground"];
         } else {
@@ -485,17 +480,17 @@
             [matchingNotificationIdentifiers addObject:notification.request.identifier];
         }
         [[UNUserNotificationCenter currentNotificationCenter] removeDeliveredNotificationsWithIdentifiers:matchingNotificationIdentifiers];
-
-        NSString *message = [NSString stringWithFormat:@"Cleared notification with ID: %@", notId];
-        CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message];
-        [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
     }];
 }
 
 - (void)clearNotification:(CDVInvokedUrlCommand *)command
 {
     NSNumber *notId = [command.arguments objectAtIndex:0];
-    [clearRealNotification: notId];
+    [self clearRealNotification: notId];
+
+    NSString *message = [NSString stringWithFormat:@"Cleared notification with ID: %@", notId];
+    CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message];
+    [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
 }
 
 - (void)setApplicationIconBadgeNumber:(CDVInvokedUrlCommand *)command
