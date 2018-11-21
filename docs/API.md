@@ -1,22 +1,23 @@
 # API
 
-* [.init()](#pushnotificationinitoptions)
-* [.hasPermission()](#pushnotificationhaspermissionsuccesshandler)
-* [.createChannel() - Android only](#pushnotificationcreatechannelsuccesshandler-failurehandler-channel)
-* [.deleteChannel() - Android only](#pushnotificationdeletechannelsuccesshandler-failurehandler-channelid)
-* [.listChannels() - Android only](#pushnotificationlistchannelssuccesshandler)
-* [push.on()](#pushonevent-callback)
-  * [push.on('registration')](#pushonregistration-callback)
-  * [push.on('notification')](#pushonnotification-callback)
-  * [push.on('error')](#pushonerror-callback)
-* [push.off()](#pushoffevent-callback)
-* [push.unregister()](#pushunregistersuccesshandler-errorhandler-topics)
-* [push.subscribe()](#pushsubscribetopic-successhandler-errorhandler)
-* [push.unsubscribe()](#pushunsubscribetopic-successhandler-errorhandler)
-* [push.setApplicationIconBadgeNumber() - iOS & Android only](#pushsetapplicationiconbadgenumbersuccesshandler-errorhandler-count---ios--android-only)
-* [push.getApplicationIconBadgeNumber() - iOS & Android only](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios--android-only)
-* [push.finish() - iOS only](#pushfinishsuccesshandler-errorhandler-id---ios-only)
-* [push.clearAllNotifications() - iOS & Android only](#pushclearallnotificationssuccesshandler-errorhandler---ios--android-only)
+- [.init()](#pushnotificationinitoptions)
+- [.hasPermission()](#pushnotificationhaspermissionsuccesshandler)
+- [.createChannel() - Android only](#pushnotificationcreatechannelsuccesshandler-failurehandler-channel)
+- [.deleteChannel() - Android only](#pushnotificationdeletechannelsuccesshandler-failurehandler-channelid)
+- [.listChannels() - Android only](#pushnotificationlistchannelssuccesshandler)
+- [push.on()](#pushonevent-callback)
+  - [push.on('registration')](#pushonregistration-callback)
+  - [push.on('notification')](#pushonnotification-callback)
+  - [push.on('error')](#pushonerror-callback)
+- [push.off()](#pushoffevent-callback)
+- [push.unregister()](#pushunregistersuccesshandler-errorhandler-topics)
+- [push.subscribe()](#pushsubscribetopic-successhandler-errorhandler)
+- [push.unsubscribe()](#pushunsubscribetopic-successhandler-errorhandler)
+- [push.setApplicationIconBadgeNumber() - iOS & Android only](#pushsetapplicationiconbadgenumbersuccesshandler-errorhandler-count---ios--android-only)
+- [push.getApplicationIconBadgeNumber() - iOS & Android only](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios--android-only)
+- [push.finish() - iOS only](#pushfinishsuccesshandler-errorhandler-id---ios-only)
+- [push.clearAllNotifications() - iOS & Android only](#pushclearallnotificationssuccesshandler-errorhandler---ios--android-only)
+- [push.clearNotification() - iOS & Android only](#pushclearnotificationid-successhandler-errorhandler---ios--android-only)
 
 ## PushNotification.init(options)
 
@@ -121,7 +122,7 @@ Once set up the voip parameter to true, the rest of the options will be ignored.
 
 You will also need to setup your app to receive `voip` messages in the apps pList. In your apps config.xml add the following in the `<platform name="ios">` tag. Only do this if you are setup to receive `voip` messages. If your app does not use `voip` messages the Apple App Store will reject your app.
 
-```
+```xml
 <config-file target="*-Info.plist" parent="UIBackgroundModes">
   <array>
     <string>voip</string>
@@ -355,6 +356,8 @@ push.on('notification', data => {
 });
 ```
 
+Android quirk: Please note that some payloads may cause this event not to be always fired: [data vs notification payloads](https://github.com/phonegap/phonegap-plugin-push/blob/master/docs/PAYLOAD.md#notification-vs-data-payloads)
+
 ## push.on('error', callback)
 
 The event `error` will trigger when an internal error occurs and the cache is aborted.
@@ -571,10 +574,10 @@ Tells the OS to clear all notifications from the Notification Center
 
 ### Parameters
 
-| Parameter        | Type       | Default | Description                                                                             |
-| ---------------- | ---------- | ------- | --------------------------------------------------------------------------------------- |
-| `successHandler` | `Function` |         | Is called when the api successfully clears the notifications.                           |
-| `errorHandler`   | `Function` |         | Is called when the api encounters an error when attempting to clears the notifications. |
+Parameter | Type | Default | Description
+--------- | ---- | ------- | -----------
+`successHandler` | `Function` | | Is called when the api successfully clears the notifications.
+`errorHandler` | `Function` | | Is called when the api encounters an error when attempting to clear the notifications.
 
 ### Example
 
@@ -587,4 +590,26 @@ push.clearAllNotifications(
     console.log('error');
   }
 );
+```
+
+## push.clearNotification(id, successHandler, errorHandler) - iOS & Android only
+
+Tells the OS to clear the notification that corresponds to the id argument, from the Notification Center
+
+### Parameters
+
+Parameter | Type | Default | Description
+--------- | ---- | ------- | -----------
+`successHandler` | `Function` | | Is called when the api successfully clears the notification.
+`errorHandler` | `Function` | | Is called when the api encounters an error when attempting to clear the notification.
+`id` | `number` | | The ID of the notification that will be cleared. |
+
+### Example
+
+```javascript
+push.clearNotification(() => {
+	console.log('success');
+}, () => {
+	console.log('error');
+}, 145);
 ```

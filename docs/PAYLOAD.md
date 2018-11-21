@@ -1,45 +1,46 @@
-* [Overview](#overview)
-  * [Foreground Events](#push-message-arrives-with-app-in-foreground)
-  * [Background Events](#push-message-arrives-with-app-in-background)
-  * [Tap Events](#user-clicks-on-notification-in-notification-center)
-* [Push Notification Message Format Overview](#push-notification-message-format-overview)
-* [Android Behaviour](#android-behaviour)
-  * [Notification vs Data Payloads](#notification-vs-data-payloads)
-  * [Localization](#localization)
-  * [Images](#images)
-  * [Sound](#sound)
-  * [Stacking](#stacking)
-  * [Inbox Stacking](#inbox-stacking)
-  * [Action Buttons](#action-buttons)
-    * [In Line Replies](#in-line-replies)
-  * [Led in Notifications](#led-in-notifications)
-  * [Vibration Pattern in Notifications](#vibration-pattern-in-notifications)
-  * [Priority in Notifications](#priority-in-notifications)
-  * [Picture Messages](#picture-messages)
-  * [Background Notifications](#background-notifications)
-    * [Use of content_available: true](#use-of-content_available-true)
-  * [Caching](#caching)
-  * [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
-  * [Application force closed](#application-force-closed)
-  * [Visibility](#visibility-of-notifications)
-  * [Ongoing Notifications](#ongoing-notifications)
-  * [Badges](#badges)
-  * [Support for Twilio Notify](#support-for-twilio-notify)
-  * [Notification ID](#notification-id)
-  * [Clicking Notification Does Not Bring App to Foreground](#clicking-notification-does-not-bring-app-to-foreground)
-  * [Notification Channels](#notification-channels)
-* [iOS Behaviour](#ios-behaviour)
-  * [Sound](#sound-1)
-  * [Background Notifications](#background-notifications-1)
-  * [VoIP Notifications](#voip-notifications)
-  * [Action Buttons](#action-buttons-1)
-    * [Action Buttons using GCM on iOS](#action-buttons-using-gcm-on-ios)
-  * [GCM and Additional Data](#gcm-and-additional-data)
-* [Windows Behaviour](#windows-behaviour)
-  * [Notifications](#notifications)
-  * [Setting Toast Capable Option for Windows](#setting-toast-capable-option-for-windows)
-  * [Disabling the default processing of notifications by Windows](#disabling-the-default-processing-of-notifications-by-windows)
-  * [Background Notifications](#background-notifications-2)
+- [Overview](#overview)
+  - [Foreground Events](#push-message-arrives-with-app-in-foreground)
+  - [Background Events](#push-message-arrives-with-app-in-background)
+  - [Tap Events](#user-clicks-on-notification-in-notification-center)
+- [Push Notification Message Format Overview](#push-notification-message-format-overview)
+- [Android Behaviour](#android-behaviour)
+  - [Notification vs Data Payloads](#notification-vs-data-payloads)
+  - [Localization](#localization)
+  - [Images](#images)
+  - [Sound](#sound)
+  - [Stacking](#stacking)
+  - [Inbox Stacking](#inbox-stacking)
+  - [Action Buttons](#action-buttons)
+    - [In Line Replies](#in-line-replies)
+  - [Led in Notifications](#led-in-notifications)
+  - [Vibration Pattern in Notifications](#vibration-pattern-in-notifications)
+  - [Priority in Notifications](#priority-in-notifications)
+  - [Picture Messages](#picture-messages)
+  - [Background Notifications](#background-notifications)
+    - [Use of content_available: true](#use-of-content_available-true)
+  - [Caching](#caching)
+  - [Chinese Android Phones](#chinese-android-phones)
+  - [Application force closed](#application-force-closed)
+  - [Visibility](#visibility-of-notifications)
+  - [Ongoing Notifications](#ongoing-notifications)
+  - [Badges](#badges)
+  - [Support for Twilio Notify](#support-for-twilio-notify)
+  - [Notification ID](#notification-id)
+  - [Clicking Notification Does Not Bring App to Foreground](#clicking-notification-does-not-bring-app-to-foreground)
+  - [Notification Channels](#notification-channels)
+- [iOS Behaviour](#ios-behaviour)
+  - [Sound](#sound-1)
+  - [Background Notifications](#background-notifications-1)
+  - [VoIP Notifications](#voip-notifications)
+  - [Action Buttons](#action-buttons-1)
+    - [Action Buttons using FCM on iOS](#action-buttons-using-fcm-on-ios)
+  - [FCM and Additional Data](#fcm-and-additional-data)
+- [FCM Payload Details](#fcm-payload-details)
+- [Windows Behaviour](#windows-behaviour)
+  - [Notifications](#notifications)
+  - [Setting Toast Capable Option for Windows](#setting-toast-capable-option-for-windows)
+  - [Disabling the default processing of notifications by Windows](#disabling-the-default-processing-of-notifications-by-windows)
+  - [Background Notifications](#background-notifications-2)
 
 # Overview
 
@@ -49,28 +50,30 @@ The following flowchart attempts to give you a picture of what happens when a pu
 
 ## Push message arrives with app in foreground
 
-* The push plugin receives the data from the remote push service and calls all of your `on('notification')` event handlers.
-* The message is _not_ displayed in the devices' notification center, as that is not normal behaviour for Android or iOS.
+- The push plugin receives the data from the remote push service and calls all of your `on('notification')` event handlers.
+- The message is _not_ displayed in the devices' notification center, as that is not normal behaviour for Android or iOS.
 
 ## Push message arrives with app in background
 
-* The push plugin receives the data from the remote push service and checks to see if there is a title or message in the received data object. If there is, then the message will be displayed in the devices notification center.
-* Then the push plugin checks to see if the app is running. If the user has killed the application, then no further processing of the push data will occur.
-* If the app is running in the background the push plugin then checks to see if `content-available` exists in the push data.
-* If `content-available` is set to `1`, then the plugin calls all of your `notification` event handlers.
+- The push plugin receives the data from the remote push service and checks to see if there is a title or message in the received data object. If there is, then the message will be displayed in the devices notification center.
+- Then the push plugin checks to see if the app is running. If the user has killed the application, then no further processing of the push data will occur.
+- If the app is running in the background the push plugin then checks to see if `content-available` exists in the push data.
+- If `content-available` is set to `1`, then the plugin calls all of your `notification` event handlers.
+
+> Note: if `count` is given as `0` then all notifications are first cleared: always on Android, and if the `count` has gone down on iOS
 
 ## User clicks on notification in notification center
 
-* The app starts.
-* Then the plugin calls all of your `notification` event handlers.
+- The app starts.
+- Then the plugin calls all of your `notification` event handlers.
 
 > Note: if the push payload contained `content-available: 1` then your `notification` event handler has already been called. It is up to you to handle the double event.
 
 Some ways to handle this _double_ event are:
 
-* don't include title/message in the push so it doesn't show up in the shader.
-* send two pushes, one to be processed in the background, and the other to show up in the shade.
-* include a unique ID in your push so you can check to see if you've already processed this event.
+- don't include title/message in the push so it doesn't show up in the shader.
+- send two pushes, one to be processed in the background, and the other to show up in the shade.
+- include a unique ID in your push so you can check to see if you've already processed this event.
 
 # Push Notification Message Format Overview
 
@@ -109,8 +112,7 @@ var gcm_message = JSON.stringify({
 
 ```json
 {
-  "GCM":
-    "{\"priority\":\"normal\",\"data\":{\"title\":\"A short string describing the purpose of the notification\",\"message\":\"The text of the alert message\",\"count\":5,\"sound\": \"default\",\"notId\":1,\"content-available\":\"0\",\"custom_key1\":\"value1\",\"custom_key2\":\"value2\"}}",
+  "GCM": "{\"priority\":\"normal\",\"data\":{\"title\":\"A short string describing the purpose of the notification\",\"message\":\"The text of the alert message\",\"count\":5,\"sound\": \"default\",\"notId\":1,\"content-available\":\"0\",\"custom_key1\":\"value1\",\"custom_key2\":\"value2\"}}",
   "default": "plain text message again"
 }
 ```
@@ -143,10 +145,11 @@ Note that the properties are "normalized" across platforms, so this is passed to
 
 The JSON message can contain the following fields, see [Apple developer docs](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/PayloadKeyReference.html#//apple_ref/doc/uid/TP40008194-CH17-SW5) for a complete list
 
-```javascript
+```json
 {
   "aps": {
-    "alert": { // alternatively just a string: "Your Message",
+    "alert": {
+      // alternatively just a string: "Your Message",
       "title": "A short string describing the purpose of the notification",
       "body": "The text of the alert message",
       // localization of message is possible
@@ -156,8 +159,9 @@ The JSON message can contain the following fields, see [Apple developer docs](ht
     "content-available": "0", // configure background updates, see below
     "category": "identifier", // Provide this key with a string value that represents the notification’s type
     "thread-id": "id", // Provide this key with a string value that represents the app-specific identifier for grouping notifications
-    "sound": "default"  // play default sound, or custom sound, see [iOS Sound](#sound-1) section
+    "sound": "default" // play default sound, or custom sound, see [iOS Sound](#sound-1) section
   },
+  "notId": 1,
   "custom_key1": "value1",
   "custom_key2": "value2"
 }
@@ -169,8 +173,7 @@ This is the JSON-encoded format you can send via AWS-SNS's web UI:
 
 ```json
 {
-  "APNS_SANDBOX":
-    "{\"aps\":{\"alert\":{\"title\":\"A short string describing the purpose of the notification\",\"body\":\"The text of the alert message\",\"launch-image\":\"The filename of an image file in the app bundle, with or without the filename extension. The image is used as the launch image when users tap the action button or move the action slider\"},\"badge\":5,\"content-available\":\"0\",\"category\":\"identifier\",\"thread-id\":\"id\",\"sound\":\"default\"},\"custom_key1\":\"value1\",\"custom_key2\":\"value2\"}"
+  "APNS_SANDBOX": "{\"aps\":{\"alert\":{\"title\":\"A short string describing the purpose of the notification\",\"body\":\"The text of the alert message\",\"launch-image\":\"The filename of an image file in the app bundle, with or without the filename extension. The image is used as the launch image when users tap the action button or move the action slider\"},\"badge\":5,\"content-available\":\"0\",\"category\":\"identifier\",\"thread-id\":\"id\",\"sound\":\"default\"},\"notId\":1,\"custom_key1\":\"value1\",\"custom_key2\":\"value2\"}"
 }
 ```
 
@@ -189,7 +192,7 @@ Note: use "APNS" to send to an app signed and released to production or "APNS_SA
 This message is received in the `push.on("notification")` handler as follows.
 Note that the properties are "normalized" accross platforms, so this is passed to the app on iOS:
 
-```javascript
+```json
 {
   "count": 5, // "badge" is converted to "count"
   "message": "The text of the alert message",
@@ -200,6 +203,7 @@ Note that the properties are "normalized" accross platforms, so this is passed t
     "coldstart": false,
     "foreground": false,
     "content-available": "0",
+    "notId": 1,
     "custom_key1": "value1",
     "custom_key2": "value2",
     "launch-image": "The filename of an image file in the app bundle, with or without the filename extension. The image is used as the launch image when users tap the action button or move the action slider",
@@ -294,25 +298,25 @@ Plugin supported localization from resources for: title, message and summaryText
 
 You may use simple link to locale constant.
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-        "title": {"locKey": "push_app_title"},
-        "message": "Simple non-localizable text for message!"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": { "locKey": "push_app_title" },
+    "message": "Simple non-localizable text for message!"
+  }
 }
 ```
 
 Or use localization with formatted constants.
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-        "title": {"locKey": "push_app_title"},
-        "message": {"locKey": "push_message_fox", "locData": ["fox", "dog"]}
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": { "locKey": "push_app_title" },
+    "message": { "locKey": "push_message_fox", "locData": ["fox", "dog"] }
+  }
 }
 ```
 
@@ -376,17 +380,18 @@ The result will look much like this:
 
 ![2015-07-24 02 52 00](https://cloud.githubusercontent.com/assets/353180/8866899/2df00c3c-3190-11e5-8552-96201fb4424b.png)
 
-Note that the notification icon has gone from the default, rich, multicolored cordova icon, to a white-on-gray one.  What's going on here?
+Note that the notification icon has gone from the default, rich, multicolored cordova icon, to a white-on-gray one. What's going on here?
 
 With Android now greatly using Material design since 5.0 (Lollipop), push notification icons are forced to be monochromatic - this can be difficult to diagnose, as a lot of icons just show as a white square if not properly designed.
 
 You should design one with these guidelines in mind:
 
-* 96x96 pixels
-* Transparent background
-* White foreground
+- 96x96 pixels
+- Transparent background
+- White foreground
 
 For more details, please read:
+
 - https://material.io/tools/icons
 - https://material.io/design/iconography/
 
@@ -413,7 +418,16 @@ const push = PushNotification.init({
 ```
 
 Where _icon_ is the name of an `.png` image file in the Android `res/drawable` folder. For example: `platforms/android/res/drawable/phonegap.png`
-Writing a hook to describe how to copy an image to the Android `res/drawable` folder is out of scope for this README but there is an [excellent tutorial](http://devgirl.org/2013/11/12/three-hooks-your-cordovaphonegap-project-needs/) that you can copy.
+
+You can use a `resource-file` tag to copy the image to the `res/drawable` folder like this:
+
+```xml
+  <resource-file src="res/icon/android/push/drawable-mdpi/icon.png" target="app/src/main/res/drawable-mdpi/icon.png" />
+  <resource-file src="res/icon/android/push/drawable-hdpi/icon.png" target="app/src/main/res/drawable-hdpi/icon.png" />
+  <resource-file src="res/icon/android/push/drawable-xhdpi/icon.png" target="app/src/main/res/drawable-xhdpi/icon.png" />
+  <resource-file src="res/icon/android/push/drawable-xxhdpi/icon.png" target="app/src/main/res/drawable-xxhdpi/icon.png" />
+  <resource-file src="res/icon/android/push/drawable-xxxhdpi/icon.png" target="app/src/main/res/drawable-xxxhdpi/icon.png" />
+```
 
 `iconColor` is one of the supported formats #RRGGBB or #AARRGGBB or one of the following names: 'red', 'blue', 'green', 'black', 'white', 'gray', 'cyan', 'magenta', 'yellow', 'lightgray', 'darkgray', 'grey', 'lightgrey', 'darkgrey', 'aqua', 'fuchsia', 'lime', 'maroon', 'navy', 'olive', 'purple', 'silver', 'teal'. `iconColor` is supported on Android 5.0 and greater.
 
@@ -423,7 +437,7 @@ Please follow the [Android icon design guidelines](https://www.google.com/design
 
 Additionally, each push can include a large icon which is used to personalize each push. The location of the image may be one of three types.
 
-The first is the `res/drawable` folder in your app. This JSON is sent from GCM:
+The first is the `res/drawable` folder in your app. This JSON is sent from FCM:
 
 ```javascript
 {
@@ -468,16 +482,26 @@ Would look for the _twitter_ image in the `res/drawable` folder and produce the 
 
 ![2015-07-24 02 34 41](https://cloud.githubusercontent.com/assets/353180/8866903/2df48028-3190-11e5-8176-fe8b3f7c5aab.png)
 
-The second is the _assets_ folder in your app. This JSON sent from GCM:
+Again you can use a `resource-file` tag to copy the image to the `res/drawable` folder like this:
 
-```javascript
+```xml
+  <resource-file src="res/icon/android/push/drawable-mdpi/twitter.png" target="app/src/main/res/drawable-mdpi/twitter.png" />
+  <resource-file src="res/icon/android/push/drawable-hdpi/twitter.png" target="app/src/main/res/drawable-hdpi/twitter.png" />
+  <resource-file src="res/icon/android/push/drawable-xhdpi/twitter.png" target="app/src/main/res/drawable-xhdpi/twitter.png" />
+  <resource-file src="res/icon/android/push/drawable-xxhdpi/twitter.png" target="app/src/main/res/drawable-xxhdpi/twitter.png" />
+  <resource-file src="res/icon/android/push/drawable-xxxhdpi/twitter.png" target="app/src/main/res/drawable-xxxhdpi/twitter.png" />
+```
+
+The second is the _assets_ folder in your app. This JSON sent from FCM:
+
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Large Icon",
-    	"message": "Loaded from assets folder",
-    	"image": "www/image/logo.png"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Large Icon",
+    "message": "Loaded from assets folder",
+    "image": "www/image/logo.png"
+  }
 }
 ```
 
@@ -513,16 +537,16 @@ Would look for the _logo.png_ file in the assets/www/img folder. Since your apps
 
 ![2015-07-24 02 20 02](https://cloud.githubusercontent.com/assets/353180/8866901/2df19052-3190-11e5-8c16-a355c59209f3.png)
 
-The third is the remote _URL_. This JSON sent from GCM:
+The third is the remote _URL_. This JSON sent from FCM:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Large Icon",
-    	"message": "Loaded from URL",
-    	"image": "https://dl.dropboxusercontent.com/u/887989/antshot.png"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Large Icon",
+    "message": "Loaded from URL",
+    "image": "https://dl.dropboxusercontent.com/u/887989/antshot.png"
+  }
 }
 ```
 
@@ -558,39 +582,47 @@ Produces the following notification.
 
 ![2015-07-24 02 17 55](https://cloud.githubusercontent.com/assets/353180/8866900/2df0ab06-3190-11e5-9a81-fdb85bb0f5a4.png)
 
-Finally, the Material UI guidelines recommend using a circular icon for the large icon if the subject of the image is a person. This JSON sent from GCM:
+Finally, the Material UI guidelines recommend using a circular icon for the large icon if the subject of the image is a person. This JSON sent from FCM:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Large Circular Icon",
-    	"message": "Loaded from URL",
-        "image": "https://pbs.twimg.com/profile_images/837060031895896065/VHIQ4oUf_400x400.jpg",
-        "image-type": "circle"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Large Circular Icon",
+    "message": "Loaded from URL",
+    "image": "https://pbs.twimg.com/profile_images/837060031895896065/VHIQ4oUf_400x400.jpg",
+    "image-type": "circle"
+  }
 }
 ```
 
-Here is an example using node-gcm that sends the above JSON:
+Here is an example using fcm-node that sends the above JSON:
 
 ```javascript
-const gcm = require('node-gcm');
+const FCM = require('fcm-node');
 // Replace these with your own values.
 const apiKey = 'replace with API key';
 const deviceID = 'my device id';
-const service = new gcm.Sender(apiKey);
-const message = new gcm.Message();
-message.addData('title', 'Large Circular Icon');
-message.addData('message', 'Loaded from URL');
-message.addData(
-  'image',
-  'https://pbs.twimg.com/profile_images/837060031895896065/VHIQ4oUf_400x400.jpg'
-);
-message.addData('image-type', 'circular');
-service.send(message, { registrationTokens: [deviceID] }, (err, response) => {
-  if (err) console.error(err);
-  else console.log(response);
+const fcm = new FCM(apiKey);
+
+const message = {
+  to: deviceID,
+  data: {
+    title: 'Large Circular Icon',
+    message: 'Loaded from URL',
+    image:
+      'https://pbs.twimg.com/profile_images/837060031895896065/VHIQ4oUf_400x400.jpg',
+    'image-type': 'circular'
+  }
+};
+
+fcm.send(message, (err, response) => {
+  if (err) {
+    console.log(err);
+    console.log('Something has gone wrong!');
+  } else {
+    console.log('Successfully sent with response: ', response);
+  }
 });
 ```
 
@@ -602,53 +634,59 @@ Produces the following notification.
 
 For Android there are three special values for sound you can use. The first is `default` which will play the phones default notification sound.
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Default",
-    	"message": "Plays default notification sound",
-    	"soundname": "default"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Default",
+    "message": "Plays default notification sound",
+    "soundname": "default"
+  }
 }
 ```
 
 Then second is `ringtone` which will play the phones default ringtone sound.
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Ringtone",
-    	"message": "Plays default ringtone sound",
-    	"soundname": "ringtone"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Ringtone",
+    "message": "Plays default ringtone sound",
+    "soundname": "ringtone"
+  }
 }
 ```
 
 The third is the empty string which will cause for the playing of sound to be skipped.
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Silece",
-    	"message": "Skips playing any sound",
-    	"soundname": ""
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Silece",
+    "message": "Skips playing any sound",
+    "soundname": ""
+  }
 }
 ```
 
-In order for your your notification to play a custom sound you will need to add the files to your Android project's `res/raw` directory. Then send the follow JSON from GCM:
+In order for your your notification to play a custom sound you will need to add the files to your Android project's `res/raw` directory. The best way to do this is by using a `resource-file` tag in your `config.xml`.
 
-```javascript
+```xml
+<resource-file src="assets/sound/test.mp3" target="app/src/main/res/raw/test.mp3" />
+```
+
+Then send the follow JSON from FCM:
+
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Sound Test",
-    	"message": "Loaded res/raw",
-    	"soundname": "test"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Sound Test",
+    "message": "Loaded res/raw",
+    "soundname": "test"
+  }
 }
 ```
 
@@ -688,13 +726,13 @@ By default when using this plugin on Android each notification that your app rec
 
 If you want to see multiple notifications in the shade you will need to provide a notification ID as part of the push data sent to the app. For instance if you send:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Test Push",
-    	"message": "Push number 1"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Test Push",
+    "message": "Push number 1"
+  }
 }
 ```
 
@@ -727,13 +765,13 @@ fcm.send(message, (err, response) => {
 
 Followed by:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Test Push",
-    	"message": "Push number 2"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Test Push",
+    "message": "Push number 2"
+  }
 }
 ```
 
@@ -766,14 +804,14 @@ fcm.send(message, (err, response) => {
 
 You will only see "Push number 2" in the shade. However, if you send:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Test Push",
-    	"message": "Push number 1",
-    	"notId": 1
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Test Push",
+    "message": "Push number 1",
+    "notId": 1
+  }
 }
 ```
 
@@ -807,14 +845,14 @@ fcm.send(message, (err, response) => {
 
 and:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Test Push",
-    	"message": "Push number 2",
-    	"notId": 2
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Test Push",
+    "message": "Push number 2",
+    "notId": 2
+  }
 }
 ```
 
@@ -850,17 +888,17 @@ You will see both "Push number 1" and "Push number 2" in the shade.
 
 ## Inbox Stacking
 
-A better alternative to stacking your notifications is to use the inbox style to have up to 8 lines of notification text in a single notification. If you send the following JSON from GCM you will see:
+A better alternative to stacking your notifications is to use the inbox style to have up to 8 lines of notification text in a single notification. If you send the following JSON from FCM you will see:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "My Title",
-    	"message": "My first message",
-    	"style": "inbox",
-    	"summaryText": "There are %n% notifications"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "My Title",
+    "message": "My first message",
+    "style": "inbox",
+    "summaryText": "There are %n% notifications"
+  }
 }
 ```
 
@@ -899,15 +937,15 @@ It will produce a normal looking notification:
 
 But, if you follow it up with subsequent notifications like:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "My Title",
-    	"message": "My second message",
-    	"style": "inbox",
-    	"summaryText": "There are %n% notifications"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "My Title",
+    "message": "My second message",
+    "style": "inbox",
+    "summaryText": "There are %n% notifications"
+  }
 }
 ```
 
@@ -944,7 +982,7 @@ You will get an inbox view so you can display multiple notifications in a single
 
 ![2015-08-25 14 01 35](https://cloud.githubusercontent.com/assets/353180/9468727/2d658bee-4b11-11e5-90fa-248d54c8f3f6.png)
 
-If you use `%n%` in the `summaryText` of the JSON coming down from GCM it will be replaced by the number of messages that are currently in the queue.
+If you use `%n%` in the `summaryText` of the JSON coming down from FCM it will be replaced by the number of messages that are currently in the queue.
 
 ## Action Buttons
 
@@ -965,19 +1003,29 @@ push.on('snooze', data => {
 });
 ```
 
-If you wish to include an icon along with the button name, they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from GCM:
+If you wish to include an icon along with the button name, they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from FCM:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "AUX Scrum",
-    	"message": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
-        "actions": [
-    		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "emailGuests", "foreground": true},
-    		{ "icon": "snooze", "title": "SNOOZE", "callback": "snooze", "foreground": false}
-    	]
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "AUX Scrum",
+    "message": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
+    "actions": [
+      {
+        "icon": "emailGuests",
+        "title": "EMAIL GUESTS",
+        "callback": "emailGuests",
+        "foreground": true
+      },
+      {
+        "icon": "snooze",
+        "title": "SNOOZE",
+        "callback": "snooze",
+        "foreground": false
+      }
+    ]
+  }
 }
 ```
 
@@ -1028,19 +1076,31 @@ If your user clicks on the main body of the notification, then your app will be 
 
 Android N introduces a new capability for push notifications, the in line reply text field. If you wish to get some text data from the user when the action button is called send the following type of payload.
 
-Your notification can include action buttons. If you wish to include an icon along with the button name they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from GCM:
+Your notification can include action buttons. If you wish to include an icon along with the button name they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from FCM:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "AUX Scrum",
-    	"message": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
-        "actions": [
-    		{ "icon": "emailGuests", "title": "EMAIL GUESTS", "callback": "emailGuests", "foreground": false, "inline": true, "replyLabel": "Enter your reply here" },
-    		{ "icon": "snooze", "title": "SNOOZE", "callback": "snooze", "foreground": false}
-    	]
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "AUX Scrum",
+    "message": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
+    "actions": [
+      {
+        "icon": "emailGuests",
+        "title": "EMAIL GUESTS",
+        "callback": "emailGuests",
+        "foreground": false,
+        "inline": true,
+        "replyLabel": "Enter your reply here"
+      },
+      {
+        "icon": "snooze",
+        "title": "SNOOZE",
+        "callback": "snooze",
+        "foreground": false
+      }
+    ]
+  }
 }
 ```
 
@@ -1089,7 +1149,7 @@ when the user clicks on the Email Guests button whilst using Android N and great
 
 Then your app's `on('notification')` event handler will be called without the app being brought to the foreground and the event data would be:
 
-```
+```json
 {
   "title": "AUX Scrum",
   "message": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
@@ -1136,14 +1196,14 @@ and the text data that the user typed would be located in `data.additionalData.i
 
 You can use a Led notifcation and choose the color of it. Just add a `ledColor` field in your notification in the ARGB format array:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Green LED",
-    	"message": "This is my message with a Green LED",
-    	"ledColor": [0, 0, 255, 0]
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Green LED",
+    "message": "This is my message with a Green LED",
+    "ledColor": [0, 0, 255, 0]
+  }
 }
 ```
 
@@ -1179,14 +1239,14 @@ fcm.send(message, (err, response) => {
 
 You can set a Vibration Pattern for your notifications. Just add a `vibrationPattern` field in your notification:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Vibration Pattern",
-    	"message": "Device should wait for 2 seconds, vibrate for 1 second then be silent for 500 ms then vibrate for 500 ms",
-    	"vibrationPattern": [2000, 1000, 500, 500]
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Vibration Pattern",
+    "message": "Device should wait for 2 seconds, vibrate for 1 second then be silent for 500 ms then vibrate for 500 ms",
+    "vibrationPattern": [2000, 1000, 500, 500]
+  }
 }
 ```
 
@@ -1223,14 +1283,14 @@ fcm.send(message, (err, response) => {
 
 You can set a priority parameter for your notifications. This priority value determines where the push notification will be put in the notification shade. Low-priority notifications may be hidden from the user in certain situations, while the user might be interrupted for a higher-priority notification. Add a `priority` field in your notification. -2: minimum, -1: low, 0: default , 1: high, 2: maximum priority.
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "This is a maximum priority Notification",
-    	"message": "This notification should appear in front of all others",
-    	"priority": 2
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "This is a maximum priority Notification",
+    "message": "This notification should appear in front of all others",
+    "priority": 2
+  }
 }
 ```
 
@@ -1262,22 +1322,22 @@ fcm.send(message, (err, response) => {
 });
 ```
 
-Do not confuse this with the GCM option of setting the [delivery priority of the message](https://developers.google.com/cloud-messaging/concept-options#setting-the-priority-of-a-message). Which is used by GCM to tell the device whether or not it should wake up to deal with the message.
+Do not confuse this with the FCM option of setting the [delivery priority of the message](https://developers.google.com/cloud-messaging/concept-options#setting-the-priority-of-a-message). Which is used by FCM to tell the device whether or not it should wake up to deal with the message.
 
 ## Picture Messages
 
-Perhaps you want to include a large picture in the notification that you are sending to your users. Luckily you can do that too by sending the following JSON from GCM.
+Perhaps you want to include a large picture in the notification that you are sending to your users. Luckily you can do that too by sending the following JSON from FCM.
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Big Picture",
-    	"message": "This is my big picture message",
-    	"style": "picture",
-    	"picture": "http://36.media.tumblr.com/c066cc2238103856c9ac506faa6f3bc2/tumblr_nmstmqtuo81tssmyno1_1280.jpg",
-    	"summaryText": "The internet is built on cat pictures"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Big Picture",
+    "message": "This is my big picture message",
+    "style": "picture",
+    "picture": "http://36.media.tumblr.com/c066cc2238103856c9ac506faa6f3bc2/tumblr_nmstmqtuo81tssmyno1_1280.jpg",
+    "summaryText": "The internet is built on cat pictures"
+  }
 }
 ```
 
@@ -1321,7 +1381,7 @@ This will produce the following notification in your tray:
 
 On Android if you want your `on('notification')` event handler to be called when your app is in the background it is relatively simple.
 
-First the JSON you send from GCM will need to include `"content-available": "1"`. This will tell the push plugin to call your `on('notification')` event handler no matter what other data is in the push notification.
+First the JSON you send from FCM will need to include `"content-available": "1"`. This will tell the push plugin to call your `on('notification')` event handler no matter what other data is in the push notification.
 
 ```json
 {
@@ -1407,17 +1467,17 @@ If you do not want this type of behaviour, just omit `"content-available": 1` fr
 
 ### Use of content_available: true
 
-The [GCM docs](https://developers.google.com/cloud-messaging/http-server-ref#downstream-http-messages-json) will tell you to send a data payload of:
+The FCM docs will tell you to send a data payload of:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "content_available": true,
-    "data": {
-        "title": "Test Push",
-        "message": "Push number 1",
-        "info": "super secret info",
-    }
+  "registration_ids": ["my device id"],
+  "content_available": true,
+  "data": {
+    "title": "Test Push",
+    "message": "Push number 1",
+    "info": "super secret info"
+  }
 }
 ```
 
@@ -1425,25 +1485,29 @@ Where the `content_available` property is part of the main payload object. Setti
 
 Instead move `content_available: true` into the `data` object of the payload. The property name changes slightly to use a `-` instead of an `_`. So, `content_available` becomes `content-available` and `true` becomes `1` as per the example below:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-        "title": "Test Push",
-        "message": "Push number 1",
-        "info": "super secret info",
-        "content-available": "1"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Test Push",
+    "message": "Push number 1",
+    "info": "super secret info",
+    "content-available": "1"
+  }
 }
 ```
 
-### Huawei and Xiaomi Phones
+### Chinese Android Phones
+
+> Huawei, Oppo and Xiaomi
 
 These phones have a particular quirk that when the app is force closed that you will no longer be able to receive notifications until the app is restarted. In order for you to receive background notifications:
 
-* On your Huawei device go to Settings > Protected apps > check "My App" where.
-* On your Xiaomi make sure your phone has the "Auto-start" property enabled for your app.
-* On your Asus make sure your phone has the "Auto-start" property enabled for your app.
+- On your Huawei device go to Settings > Protected apps > check "My App" where.
+- On your Xiaomi make sure your phone has the "Auto-start" property enabled for your app.
+- On your Asus make sure your phone has the "Auto-start" property enabled for your app.
+
+More explicit instructions can be read on [Forbes website](https://www.forbes.com/sites/bensin/2017/07/28/how-to-fix-push-notifications-on-oppo-phones/#72a523371735).
 
 ### Application force closed
 
@@ -1478,14 +1542,14 @@ This should add the correct code to the `MainActivity` class.
 
 If you add `force-start: 1` to the data payload the application will be restarted in background even if it was force closed.
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Force Start",
-    	"message": "This notification should restart the app",
-    	"force-start": 1
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Force Start",
+    "message": "This notification should restart the app",
+    "force-start": 1
+  }
 }
 ```
 
@@ -1521,15 +1585,15 @@ fcm.send(message, (err, response) => {
 
 By default, when a notification arrives and 'content-available' is set to '1', the plugin will try to deliver the data payload even if the app is not running. In that case, the payload is cached and may be delivered when the app is started again. To disable this behavior, you can set a `no-cache` flag in the notification payload. 0: caching enabled (default), 1: caching disabled.
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-        "title": "Push without cache",
-        "message": "When the app is closed, this notification will not be cached",
-        "content-available": "1",
-        "no-cache": "1"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Push without cache",
+    "message": "When the app is closed, this notification will not be cached",
+    "content-available": "1",
+    "no-cache": "1"
+  }
 }
 ```
 
@@ -1537,14 +1601,14 @@ By default, when a notification arrives and 'content-available' is set to '1', t
 
 You can set a visibility parameter for your notifications. Just add a `visibility` field in your notification. -1: secret, 0: private (default), 1: public. `Secret` shows only the most minimal information, excluding even the notification's icon. `Private` shows basic information about the existence of this notification, including its icon and the name of the app that posted it. The rest of the notification's details are not displayed. `Public` Shows the notification's full content.
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "This is a maximum public Notification",
-    	"message": "This notification should appear in front of all others",
-    	"visibility": 1
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "This is a maximum public Notification",
+    "message": "This notification should appear in front of all others",
+    "visibility": 1
+  }
 }
 ```
 
@@ -1580,14 +1644,14 @@ fcm.send(message, (err, response) => {
 
 Set whether this is an "ongoing" notification. Ongoing notifications cannot be dismissed by the user, so your application or service must take care of canceling them. They are typically used to indicate a background task that the user is actively engaged with (e.g., playing music) or is pending in some way and therefore occupying the device (e.g., a file download, sync operation, active network connection).
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-      "title": "This is an ongoing Notification",
-      "message": "Some people also call me a sticky notification",
-      "ongoing": true
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "This is an ongoing Notification",
+    "message": "Some people also call me a sticky notification",
+    "ongoing": true
+  }
 }
 ```
 
@@ -1625,14 +1689,14 @@ On Android not all launchers support badges. In order for us to set badges we us
 
 In order to set the badge number, you will need to include the `badge` property in your push payload as below:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Badge Test",
-    	"message": "Badges, we don't need no stinking badges",
-    	"badge": 7
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Badge Test",
+    "message": "Badges, we don't need no stinking badges",
+    "badge": 7
+  }
 }
 ```
 
@@ -1668,9 +1732,9 @@ fcm.send(message, (err, response) => {
 
 This plugin seamlessly supports payloads generated by Twilio Notify on Android. Specifically the parameters passed in to the Twilio REST API are available in the message payload passed to your app as follows:
 
-* `Title` --> `data.title`
-* `Body` --> `data.message`
-* `Sound` --> `data.sound`
+- `Title` --> `data.title`
+- `Body` --> `data.message`
+- `Sound` --> `data.sound`
 
 Here is an example request to Twilio REST API and the corresponding JSON received by your app.
 
@@ -1685,14 +1749,14 @@ curl 'https://notify.twilio.com/v1/Services/IS1e928b239609199df31d461071fd3d23/N
 
 The JSON received by your app will comply with the standards described in the sections above:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Hello Bob!",
-    	"message": "Hello Bob! Twilio Notify + Phonegap is awesome!",
-    	"sound": "chime"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Hello Bob!",
+    "message": "Hello Bob! Twilio Notify + Phonegap is awesome!",
+    "sound": "chime"
+  }
 }
 ```
 
@@ -1726,14 +1790,14 @@ However, if you want to take advantage of multiple channels in your app, you can
 
 Now when you send a push payload to the device you'll need to specify a channel:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "Hello Bob!",
-    	"message": "Phonegap is awesome!",
-    	"android_channel_id": "testchannel2"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "Hello Bob!",
+    "message": "Phonegap is awesome!",
+    "android_channel_id": "testchannel2"
+  }
 }
 ```
 
@@ -1747,23 +1811,23 @@ In order for your notification to play a custom sound, you will need to add the 
 
 Then send the follow JSON from APNS:
 
-```javascript
+```json
 {
-	"aps": {
-		"alert": "Test sound",
-		"sound": "sub.caf"
-	}
+  "aps": {
+    "alert": "Test sound",
+    "sound": "sub.caf"
+  }
 }
 ```
 
 If you want the default sound to play upon receipt of push, use this payload:
 
-```javascript
+```json
 {
-    "aps": {
-        "alert": "Test sound",
-        "sound": "default"
-    }
+  "aps": {
+    "alert": "Test sound",
+    "sound": "default"
+  }
 }
 ```
 
@@ -1779,13 +1843,13 @@ First the JSON you send from APNS will need to include `"content-available": 1` 
 
 For instance the following JSON:
 
-```javascript
+```json
 {
-    "aps": {
-        "alert": "Test background push",
-        "content-available": 1
-    },
-    "notId": 1 // unique ID you generate
+  "aps": {
+    "alert": "Test background push",
+    "content-available": 1
+  },
+  "notId": 1 // unique ID you generate
 }
 ```
 
@@ -1795,14 +1859,14 @@ will produce a notification in the notification shade and call your `on('notific
 
 However if you want your `on('notification')` event handler called but no notification to be shown in the shader you would omit the `alert` property and send the following JSON to APNS:
 
-```javascript
+```json
 {
-    "aps": {
-        "data": "Test silent background push",
-        "moredata": "Do more stuff",
-        "content-available": 1
-    },
-    "notId": 2 // unique ID you generate
+  "aps": {
+    "data": "Test silent background push",
+    "moredata": "Do more stuff",
+    "content-available": 1
+  },
+  "notId": 2 // unique ID you generate
 }
 ```
 
@@ -1944,13 +2008,13 @@ You may notice that the `finish` method now takes `success`, `failure` and `id` 
 
 Then you will need to set the `category` value in your `aps` payload to match one of the objects in the `categories` object. As well you _should_ set a `notId` property in the root of payload object. This is the parameter you pass to the `finish` method in order to tell the operating system that the processing of the push event is done.
 
-```javascript
+```json
 {
-	"aps": {
-		"alert": "This is a notification that will be displayed ASAP.",
-		"category": "invite"
-	},
-    "notId": "1"
+  "aps": {
+    "alert": "This is a notification that will be displayed ASAP.",
+    "category": "invite"
+  },
+  "notId": "1"
 }
 ```
 
@@ -1960,53 +2024,53 @@ This will produce the following notification in your tray:
 
 If your users clicks on the main body of the notification your app will be opened. However, if they click on either of the action buttons the app will open (or start) and the specified JavaScript callback will be executed.
 
-### Action Buttons using GCM on iOS
+### Action Buttons using FCM on iOS
 
-If you are using GCM to send push messages on iOS you will need to send a different payload in order for the action buttons to be present in the notification shade. You'll need to use the `click-action` property in order to specify the category.
+If you are using FCM to send push messages on iOS you will need to send a different payload in order for the action buttons to be present in the notification shade. You'll need to use the `click-action` property in order to specify the category.
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "notification": {
-    	"title": "AUX Scrum",
-    	"body": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
-        "click-action": "invite"
-    }
+  "registration_ids": ["my device id"],
+  "notification": {
+    "title": "AUX Scrum",
+    "body": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
+    "click-action": "invite"
+  }
 }
 ```
 
-## GCM and Additional Data
+## FCM and Additional Data
 
-GCM on iOS is a different animal. The way you send data via GCM on Android is like:
+FCM on iOS is a different animal. The way you send data via FCM on Android is like:
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "data": {
-    	"title": "My Title",
-    	"message": "My message",
-    	"key1": "data 1",
-    	"key2": "data 2"
-    }
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "My Title",
+    "message": "My message",
+    "key1": "data 1",
+    "key2": "data 2"
+  }
 }
 ```
 
 will produce a `notification` event with the following data:
 
-```javascript
+```json
 {
-    "title": "My Title",
-    "message": "My message",
-    "additionalData": {
-        "key1": "data 1",
-        "key2": "data 2"
-    }
+  "title": "My Title",
+  "message": "My message",
+  "additionalData": {
+    "key1": "data 1",
+    "key2": "data 2"
+  }
 }
 ```
 
-but in order for the same `notification` event you would need to send your push to GCM iOS in a slight different format:
+but in order for the same `notification` event you would need to send your push to FCM iOS in a slight different format:
 
-```javascript
+```json
 {
     "registration_ids": ["my device id"],
     "notification": {
@@ -2022,20 +2086,77 @@ but in order for the same `notification` event you would need to send your push 
 
 The `title` and `body` need to be in the `notification` part of the payload in order for the OS to pick them up correctly. Everything else should be in the `data` part of the payload.
 
-## GCM Messages Not Arriving
+## FCM Messages Not Arriving
 
-For some users of the plugin they are unable to get messages sent via GCM to show up on their devices. If you are running into this issue try setting the `priority` of the message to `high` in the payload.
+For some users of the plugin they are unable to get messages sent via FCM to show up on their devices. If you are running into this issue try setting the `priority` of the message to `high` in the payload.
 
-```javascript
+```json
 {
-    "registration_ids": ["my device id"],
-    "notification": {
-        "title": "My Title",
-    	"body": "My message"
-    },
-    "priority": "high"
+  "registration_ids": ["my device id"],
+  "notification": {
+    "title": "My Title",
+    "body": "My message"
+  },
+  "priority": "high"
 }
 ```
+
+# FCM Payload Details
+
+Here's a sample JSON payload to send a push notification to an Android or iOS device using the FCM app server protocol:
+
+```json
+{
+	"to" : "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1...",
+	/* To send a silent push, omit the entire notification section and send only data */
+	"notification": {
+		"title": "Test title", /* The notification's title */
+		"body": "Test body.", /* The notification's body text */
+		"subtitle": "Test subtitle", /* iOS: The notification's subtitle */
+		"sound": "default", /* The sound to play when the device receives the notification */
+		"tag": "1", /* Android: Group notifications with the same tag */
+		"icon": "push_icon", /* Android: PNG icon from the res/drawable folder */
+		"color": "#AABBCC" /* Android: Icon's background color in #RRGGBB format */
+	},
+	/* Optional payload that will be available from data.additionalData */
+	"data": {
+		"custom_var_1": "custom value here", /* Retrieved on app as data.additionalData.custom_var_1 */
+		"custom_var_2:" "custom value here" /* Retrieved on app as data.additionalData.custom_var_2 */
+	}
+}
+```
+
+On iOS, using the FCM app server protocol, if you are trying to send a silent push and foreground pushes are not being triggered, try adding the ("content_available" : true) field to your payload. Here's the above sample JSON payload with this field included:
+```json
+{
+	"to" : "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1...",
+	/* To send a silent push, omit the entire notification section and send only data */
+	"notification": {
+		"title": "Test title", /* The notification's title */
+		"body": "Test body.", /* The notification's body text */
+		"subtitle": "Test subtitle", /* iOS: The notification's subtitle */
+		"sound": "default", /* The sound to play when the device receives the notification */
+		"tag": "1", /* Android: Group notifications with the same tag */
+		"icon": "push_icon", /* Android: PNG icon from the res/drawable folder */
+		"color": "#AABBCC" /* Android: Icon's background color in #RRGGBB format */
+	},
+	/* Optional payload that will be available from data.additionalData */
+	"data": {
+		"custom_var_1": "custom value here", /* Retrieved on app as data.additionalData.custom_var_1 */
+		"custom_var_2:" "custom value here" /* Retrieved on app as data.additionalData.custom_var_2 */
+	},
+  /* Forces FCM silent push notifications to be triggered in the foreground of your iOS device. */
+  "content_available": true  
+}
+```
+*Doc modification came in response to @andreszs - Issue [#2449](https://github.com/phonegap/phonegap-plugin-push/issues/2449).
+
+** IMPORTANT: When using the content_available field, Android payload issues may occur. [Read here](../docs/PAYLOAD.md#user-content-use-of-content_available-true) Make sure you separate your Android/iOS server payloads to mitigate any problems that may arise. 
+
+More information on how to send push notifications using the FCM HTTP protocol and payload details can be found here:
+
+- [Send messages using the legacy app server protocols](https://firebase.google.com/docs/cloud-messaging/send-message#send_messages_using_the_legacy_app_server_protocols 'Send messages using the legacy app server protocols')
+- [Firebase Cloud Messaging HTTP Protocol](https://firebase.google.com/docs/cloud-messaging/http-server-ref 'Firebase Cloud Messaging HTTP Protocol')
 
 # Windows Behaviour
 

@@ -224,6 +224,30 @@ var PushNotification = function () {
 
       exec(successCallback, errorCallback, 'PushNotification', 'clearAllNotifications', []);
     }
+
+    /**
+     * Clears notifications that have the ID specified.
+     * @param  {Function} [successCallback] Callback function to be called on success.
+     * @param  {Function} [errorCallback] Callback function to be called when an error is encountered.
+     * @param  {Number} id    ID of the notification to be removed.
+     */
+
+  }, {
+    key: 'clearNotification',
+    value: function clearNotification() {
+      var successCallback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function () {};
+      var errorCallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
+      var id = arguments[2];
+
+      var idNumber = parseInt(id, 10);
+      if (isNaN(idNumber) || idNumber > Number.MAX_SAFE_INTEGER || idNumber < 0) {
+        console.log('PushNotification.clearNotification failure: id parameter must' + 'be a valid integer.');
+        return;
+      }
+
+      exec(successCallback, errorCallback, 'PushNotification', 'clearNotification', [idNumber]);
+    }
+
     /**
      * Listen for an event.
      *

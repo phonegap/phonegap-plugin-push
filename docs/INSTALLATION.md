@@ -34,25 +34,25 @@
 
 To install from the command line:
 
-```
+```bash
 phonegap plugin add phonegap-plugin-push
 ```
 
 or
 
-```
+```bash
 cordova plugin add phonegap-plugin-push
 ```
 
 It is also possible to install via repo url directly ( unstable )
 
-```
+```bash
 phonegap plugin add https://github.com/phonegap/phonegap-plugin-push
 ```
 
 or
 
-```
+```bash
 cordova plugin add https://github.com/phonegap/phonegap-plugin-push
 ```
 
@@ -60,7 +60,7 @@ As of version 2.0.0 the SENDER_ID parameter has been removed at install time. In
 
 In the platform tag for Android add the following resource-file tag if you are using cordova-android 7.0 or greater:
 
-```
+```xml
 <platform name="android">
   <resource-file src="google-services.json" target="app/google-services.json" />
 </platform>
@@ -68,7 +68,7 @@ In the platform tag for Android add the following resource-file tag if you are u
 
 If you are using cordova-android 6.x or earlier, add the following resource-file tag:
 
-```
+```xml
 <platform name="android">
   <resource-file src="google-services.json" target="google-services.json" />
 </platform>
@@ -76,7 +76,7 @@ If you are using cordova-android 6.x or earlier, add the following resource-file
 
 By default, on iOS, the plugin will register with APNS. If you want to use FCM on iOS, in the platform tag for iOS add the resource-file tag:
 
-```
+```xml
 <platform name="ios">
   <resource-file src="GoogleService-Info.plist" />
 </platform>
@@ -84,7 +84,7 @@ By default, on iOS, the plugin will register with APNS. If you want to use FCM o
 
 > Note: if you are using Ionic you may need to specify the SENDER_ID variable in your package.json.
 
-```
+```json
   "cordovaPlugins": [
     {
       "locator": "phonegap-plugin-push"
@@ -94,7 +94,7 @@ By default, on iOS, the plugin will register with APNS. If you want to use FCM o
 
 > Note: You need to specify the SENDER_ID variable in your config.xml if you plan on installing/restoring plugins using the prepare method. The prepare method will skip installing the plugin otherwise.
 
-```
+```xml
 <plugin name="phonegap-plugin-push" spec="2.0.0" />
 ```
 
@@ -112,7 +112,7 @@ For more detailed instructions on how to install the Android Support Library vis
 
 _Note:_ if you are using an IDE to like Eclipse, Xamarin, etc. then the Android SDK installed by those tools may not be the same version as the one used by the Cordova/PhoneGap CLI while building. Please make sure your command line tooling is up to date with the software versions above. An easy way to make sure you up to date is to run the following command:
 
-```
+```bash
 android update sdk --no-ui --filter "extra"
 ```
 
@@ -122,39 +122,29 @@ There are a number of Cordova Facebook Plugins available but the one that we rec
 
 To add to your app:
 
-```
+```bash
 phonegap plugin add --save cordova-plugin-facebook4 --variable APP_ID="App ID" --variable APP_NAME="App Name"
 ```
 
 or
 
-```
+```bash
 cordova plugin add --save cordova-plugin-facebook4 --variable APP_ID="App ID" --variable APP_NAME="App Name"
 ```
 
 ### Co-existing with plugins that use Firebase
 
-Problems may arise when push plugin is used along plugins that implement Firebase functionality (cordova-plugin-firebase-analytics, for example). Firebase uses `@string/google_app_id`, as does the push plugin, though the value format differs, causing problems like this: `Invalid google_app_id. Firebase Analytics disabled`.
+Problems may arise when push plugin is used along plugins that implement Firebase functionality (cordova-plugin-firebase-analytics, for example). Both plugins include a version of the FCM libraries.
 
 To make the two work together, you need to migrate your GCM project from Google console to Firebase console:
 
 1.  In Firebase console - [import your existing GCM project](https://firebase.google.com/support/guides/google-android#migrate_your_console_project), don't create a new one.
-2.  Set your `SENDER_ID` variable to match the id of your imported Firebase project. In case of cordova, your `config.xml` would look something like this:
+2.  Set your `FCM_VERSION` variable to match the version used in the other plugin. In case of cordova, your `config.xml` would look something like this:
 
 ```xml
-<plugin name="phonegap-plugin-push" spec="~1.10.0">
-    <variable name="SENDER_ID" value="1:956432534015:android:df201d13e7261425" />
+<plugin name="phonegap-plugin-push" spec="~2.2.0">
+    <variable name="FCM_VERSION" value="15.0.0" />
 </plugin>
-```
-
-3.  In your JavaScript, when you init the PushPlugin, senderID remains the same format as before:
-
-```javascript
-PushNotification.init({
-  android: {
-    senderID: 956432534015
-  }
-});
 ```
 
 _Note:_ No changes on the back-end side are needed: [even though recommended](https://developers.google.com/cloud-messaging/android/android-migrate-fcm#update_server_endpoints), it isn't yet required and sending messages through GCM gateway should work just fine.
@@ -289,7 +279,7 @@ If you are on a `cordova-cli` version less than `6.1.0`, you will either have to
 
 i.e.
 
-```
+```bash
 cordova plugin add phonegap-plugin-push@1.8.1
 ```
 
@@ -316,7 +306,7 @@ Please run the command `pod repo update` and re-install the plugin. You would on
 
 Running `pod setup` can take over 1 GB of disk space and that can take quite some time to download over a slow internet connection. If you are having issues with disk space/network try this neat hack from @VinceOPS.
 
-```
+```bash
 git clone --verbose --depth=1 https://github.com/CocoaPods/Specs.git ~/.cocoapods/repos/master
 pod setup --verbose
 ```
@@ -342,6 +332,8 @@ ld: library not found for -lGoogleToolboxForMac
 
 Workarounds are to add the platform first and install the plugins later, or to manually run pod install on projectName/platforms/ios.
 
+Another workaround is to go to build phases in your project at Link Binary Libraries and add `libPods-PROJECTNAME.a` and `libGoogleToolboxForMac.a`
+
 ##### Module FirebaseInstanceID not found
 
 If you run into an error like:
@@ -352,7 +344,7 @@ module FirebaseInstanceID not found
 
 You may be running into a bug in cordova-ios. The current workaround is to run `pod install` manually.
 
-```
+```bash
 cd platforms/ios
 pod install
 ```
@@ -363,7 +355,7 @@ The push plugin enables you to play sounds and display different icons during pu
 
 You can now use the `resource-file` tag to deliver the image and sound files to your application. For example if you wanted to include an extra image file for only your Android build you would add the `resource-file` tag to your android `platform` tag:
 
-```
+```xml
 <platform name="android">
   <resource-file src="myImage.png" target="res/drawable/myImage.png" />
 </platform>
@@ -371,7 +363,7 @@ You can now use the `resource-file` tag to deliver the image and sound files to 
 
 or if you wanted to include a sound file for iOS:
 
-```
+```xml
 <platform name="ios">
   <resource-file src="mySound.caf" />
 </platform>
