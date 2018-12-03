@@ -1,6 +1,7 @@
 package com.adobe.phonegap.push;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -23,16 +24,26 @@ import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.WearableExtender;
 import android.support.v4.app.RemoteInput;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.phonegap.plugins.twiliovoice.SoundPoolManager;
+import com.phonegap.plugins.twiliovoice.TwilioVoicePlugin;
+import com.phonegap.plugins.twiliovoice.fcm.VoiceFirebaseMessagingService;
+import com.twilio.voice.CallInvite;
+import com.twilio.voice.MessageException;
+import com.twilio.voice.MessageListener;
+import com.twilio.voice.Voice;
 
+import org.apache.cordova.LOG;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,13 +57,20 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.security.SecureRandom;
+import java.util.Random;
 
 @SuppressLint("NewApi")
 public class FCMService extends FirebaseMessagingService implements PushConstants {
 
   private static final String LOG_TAG = "Push_FCMService";
   private static HashMap<Integer, ArrayList<String>> messageMap = new HashMap<Integer, ArrayList<String>>();
+
+  private static final String TAG = "VoiceFCMService";
+  private static final String NOTIFICATION_ID_KEY = "NOTIFICATION_ID";
+  private static final String CALL_SID_KEY = "CALL_SID";
+  private static final String VOICE_CHANNEL = "default";
+
+  private NotificationManager notificationManager;
 
   public void setNotification(int notId, String message) {
     ArrayList<String> messageList = messageMap.get(notId);
@@ -85,6 +103,24 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     }
     for (Map.Entry<String, String> entry : message.getData().entrySet()) {
       extras.putString(entry.getKey(), entry.getValue());
+    }
+
+    // Check if message contains a data payload.
+    if (message.getData().size() > 0) {
+      Map<String, String> data = message.getData();
+      final int notificationId = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
+      Voice.handleMessage(this, data, new MessageListener() {
+        @Override
+        public void onCallInvite(CallInvite callInvite) {
+          FCMService.this.notify(callInvite, notificationId);
+          FCMService.this.sendCallInviteToPlugin(callInvite, notificationId);
+        }
+
+        @Override
+        public void onError(MessageException messageException) {
+          Log.e(LOG_TAG, messageException.getLocalizedMessage());
+        }
+      });
     }
 
     if (extras != null && isAvailableSender(from)) {
@@ -193,9 +229,9 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
   /*
    * Replace alternate keys with our canonical value
    */
-  private String normalizeKey(String key, String messageKey, String titleKey, Bundle newExtras) {
+  private String normalizeKey(String key, String messageKey, String titleKey) {
     if (key.equals(BODY) || key.equals(ALERT) || key.equals(MP_MESSAGE) || key.equals(GCM_NOTIFICATION_BODY)
-        || key.equals(TWILIO_BODY) || key.equals(messageKey) || key.equals(AWS_PINPOINT_BODY)) {
+        || key.equals(TWILIO_BODY) || key.equals(messageKey)) {
       return MESSAGE;
     } else if (key.equals(TWILIO_TITLE) || key.equals(SUBJECT) || key.equals(titleKey)) {
       return TITLE;
@@ -203,9 +239,6 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
       return COUNT;
     } else if (key.equals(SOUNDNAME) || key.equals(TWILIO_SOUND)) {
       return SOUND;
-    } else if (key.equals(AWS_PINPOINT_PICTURE)) {
-      newExtras.putString(STYLE, STYLE_PICTURE);
-      return PICTURE;
     } else if (key.startsWith(GCM_NOTIFICATION)) {
       return key.substring(GCM_NOTIFICATION.length() + 1, key.length());
     } else if (key.startsWith(GCM_N)) {
@@ -213,8 +246,6 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     } else if (key.startsWith(UA_PREFIX)) {
       key = key.substring(UA_PREFIX.length() + 1, key.length());
       return key.toLowerCase();
-    } else if (key.startsWith(AWS_PINPOINT_PREFIX)) {
-      return key.substring(AWS_PINPOINT_PREFIX.length() + 1, key.length());
     } else {
       return key;
     }
@@ -252,13 +283,14 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
                 Log.d(LOG_TAG, "key = data/" + jsonKey);
 
                 String value = data.getString(jsonKey);
-                jsonKey = normalizeKey(jsonKey, messageKey, titleKey, newExtras);
+                jsonKey = normalizeKey(jsonKey, messageKey, titleKey);
                 value = localizeKey(context, jsonKey, value);
 
                 newExtras.putString(jsonKey, value);
               }
-            } else if (data.has(LOC_KEY) || data.has(LOC_DATA)) {
-              String newKey = normalizeKey(key, messageKey, titleKey, newExtras);
+            }
+            else if (data.has(LOC_KEY) || data.has(LOC_DATA)) {
+              String newKey = normalizeKey(key, messageKey, titleKey);
               Log.d(LOG_TAG, "replace key " + key + " with " + newKey);
               replaceKey(context, key, newKey, extras, newExtras);
             }
@@ -266,7 +298,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
             Log.e(LOG_TAG, "normalizeExtras: JSON exception");
           }
         } else {
-          String newKey = normalizeKey(key, messageKey, titleKey, newExtras);
+          String newKey = normalizeKey(key, messageKey, titleKey);
           Log.d(LOG_TAG, "replace key " + key + " with " + newKey);
           replaceKey(context, key, newKey, extras, newExtras);
         }
@@ -277,7 +309,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
           String notifkey = iterator.next();
 
           Log.d(LOG_TAG, "notifkey = " + notifkey);
-          String newKey = normalizeKey(notifkey, messageKey, titleKey, newExtras);
+          String newKey = normalizeKey(notifkey, messageKey, titleKey);
           Log.d(LOG_TAG, "replace key " + notifkey + " with " + newKey);
 
           String valueData = value.getString(notifkey);
@@ -292,7 +324,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
         // with the other "message" key (holding the body of the payload)
         // See issue #1663
       } else {
-        String newKey = normalizeKey(key, messageKey, titleKey, newExtras);
+        String newKey = normalizeKey(key, messageKey, titleKey);
         Log.d(LOG_TAG, "replace key " + key + " with " + newKey);
         replaceKey(context, key, newKey, extras, newExtras);
       }
@@ -318,6 +350,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
   }
 
   private void showNotificationIfPossible(Context context, Bundle extras) {
+    Log.d(LOG_TAG, "showNotificationIfPossible()");
 
     // Send a notification if there is a message or title, otherwise just send data
     String message = extras.getString(MESSAGE);
@@ -328,10 +361,6 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     if (badgeCount >= 0) {
       Log.d(LOG_TAG, "count =[" + badgeCount + "]");
       PushPlugin.setApplicationIconBadgeNumber(context, badgeCount);
-    }
-    if (badgeCount == 0) {
-      NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-      mNotificationManager.cancelAll();
     }
 
     Log.d(LOG_TAG, "message =[" + message + "]");
@@ -366,6 +395,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
   }
 
   public void createNotification(Context context, Bundle extras) {
+    Log.d(LOG_TAG, "createNotification()");
     NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     String appName = getAppName(this);
     String packageName = context.getPackageName();
@@ -377,8 +407,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     notificationIntent.putExtra(PUSH_BUNDLE, extras);
     notificationIntent.putExtra(NOT_ID, notId);
 
-    SecureRandom random = new SecureRandom();
-    int requestCode = random.nextInt();
+    int requestCode = new Random().nextInt();
     PendingIntent contentIntent = PendingIntent.getActivity(this, requestCode, notificationIntent,
         PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -388,7 +417,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     dismissedNotificationIntent.putExtra(DISMISSED, true);
     dismissedNotificationIntent.setAction(PUSH_DISMISSED);
 
-    requestCode = random.nextInt();
+    requestCode = new Random().nextInt();
     PendingIntent deleteIntent = PendingIntent.getBroadcast(this, requestCode, dismissedNotificationIntent,
         PendingIntent.FLAG_CANCEL_CURRENT);
 
@@ -418,7 +447,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
 
     mBuilder.setWhen(System.currentTimeMillis()).setContentTitle(fromHtml(extras.getString(TITLE)))
         .setTicker(fromHtml(extras.getString(TITLE))).setContentIntent(contentIntent).setDeleteIntent(deleteIntent)
-        .setAutoCancel(true).setPriority(2).setVisibility(1);
+        .setAutoCancel(true);
 
     SharedPreferences prefs = context.getSharedPreferences(PushPlugin.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
     String localIcon = prefs.getString(ICON, null);
@@ -519,6 +548,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
   }
 
   private void updateIntent(Intent intent, String callback, Bundle extras, boolean foreground, int notId) {
+    Log.d(LOG_TAG, "updateIntent()");
     intent.putExtra(CALLBACK, callback);
     intent.putExtra(PUSH_BUNDLE, extras);
     intent.putExtra(FOREGROUND, foreground);
@@ -536,7 +566,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
         for (int i = 0; i < actionsArray.length(); i++) {
           int min = 1;
           int max = 2000000000;
-          SecureRandom random = new SecureRandom();
+          Random random = new Random();
           int uniquePendingIntentRequestCode = random.nextInt((max - min) + 1) + min;
           Log.d(LOG_TAG, "adding action");
           JSONObject action = actionsArray.getJSONObject(i);
@@ -943,8 +973,143 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
         Context.MODE_PRIVATE);
     String savedSenderID = sharedPref.getString(SENDER_ID, "");
 
-    Log.d(LOG_TAG, "sender id = " + savedSenderID);
-
     return from.equals(savedSenderID) || from.startsWith("/topics/");
+  }
+
+  @Override
+  public void onCreate() {
+    Log.d(LOG_TAG, "onCreate()");
+    super.onCreate();
+    notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+  }
+
+  private void notify(CallInvite callInvite, int notificationId) {
+    Log.d(LOG_TAG, "notifiy()");
+    String callSid = callInvite.getCallSid();
+    Notification notification = null;
+
+    if (callInvite.getState() == CallInvite.State.PENDING) {
+      Log.d(LOG_TAG, "notify() - PENDING");
+      Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageName());
+      intent.setAction(TwilioVoicePlugin.ACTION_INCOMING_CALL);
+      intent.putExtra(TwilioVoicePlugin.INCOMING_CALL_NOTIFICATION_ID, notificationId);
+      intent.putExtra(TwilioVoicePlugin.INCOMING_CALL_INVITE, callInvite);
+      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+      PendingIntent pendingIntent =
+              PendingIntent.getActivity(this, notificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+      /*
+       * Pass the notification id and call sid to use as an identifier to cancel the
+       * notification later
+       */
+      Bundle extras = new Bundle();
+      extras.putInt(NOTIFICATION_ID_KEY, notificationId);
+      extras.putString(CALL_SID_KEY, callSid);
+
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        Log.d(LOG_TAG, "notify() - BUILD VERSION");
+        NotificationChannel callInviteChannel = new NotificationChannel(VOICE_CHANNEL,
+                "Primary Voice Channel", NotificationManager.IMPORTANCE_HIGH);
+        callInviteChannel.setLightColor(Color.RED);
+        callInviteChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        notificationManager.createNotificationChannel(callInviteChannel);
+
+        notification = buildNotification(callInvite.getFrom() + " is calling", pendingIntent, extras);
+        notificationManager.notify(notificationId, notification);
+      } else {
+        Log.d(LOG_TAG, "notify() - else in build versions");
+        int iconIdentifier = getResources().getIdentifier("icon", "mipmap", getPackageName());
+        int incomingCallAppNameId = (int) getResources().getIdentifier("incoming_call_app_name", "string", getPackageName());
+        String contentTitle = getString(incomingCallAppNameId);
+
+        if (contentTitle == null) {
+          contentTitle = "Incoming Call";
+        }
+        final String from = callInvite.getFrom() + " is calling";
+
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(iconIdentifier)
+                        .setContentTitle(contentTitle)
+                        .setContentText(from)
+                        .setAutoCancel(true)
+                        .setExtras(extras)
+                        .setContentIntent(pendingIntent)
+                        .setGroup("voice_app_notification")
+                        .setColor(Color.rgb(225, 0, 0));
+
+        notificationManager.notify(notificationId, notificationBuilder.build());
+
+      }
+    } else {
+      SoundPoolManager.getInstance(this).stopRinging();
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        /*
+         * If the incoming call was cancelled then remove the notification by matching
+         * it with the call sid from the list of notifications in the notification drawer.
+         */
+        StatusBarNotification[] activeNotifications = notificationManager.getActiveNotifications();
+        for (StatusBarNotification statusBarNotification : activeNotifications) {
+          notification = statusBarNotification.getNotification();
+          Bundle extras = notification.extras;
+          String notificationCallSid = extras.getString(CALL_SID_KEY);
+
+          if (callSid.equals(notificationCallSid)) {
+            notificationManager.cancel(extras.getInt(NOTIFICATION_ID_KEY));
+          } else {
+            sendCallInviteToPlugin(callInvite, notificationId);
+          }
+        }
+      } else {
+        /*
+         * Prior to Android M the notification manager did not provide a list of
+         * active notifications so we lazily clear all the notifications when
+         * receiving a cancelled call.
+         *
+         * In order to properly cancel a notification using
+         * NotificationManager.cancel(notificationId) we should store the call sid &
+         * notification id of any incoming calls using shared preferences or some other form
+         * of persistent storage.
+         */
+        notificationManager.cancelAll();
+      }
+    }
+  }
+
+  /**
+   * Build a notification.
+   *
+   * @param text the text of the notification
+   * @param pendingIntent the body, pending intent for the notification
+   * @param extras extras passed with the notification
+   * @return the builder
+   */
+  @TargetApi(Build.VERSION_CODES.O)
+  public Notification buildNotification(String text, PendingIntent pendingIntent, Bundle extras) {
+    Log.d(LOG_TAG, "buildNotification() API - text - " + text);
+    Log.d(LOG_TAG, "buildNotification() API - pendingIntent - " + pendingIntent);
+    Log.d(LOG_TAG, "buildNotification() API - extras - " + extras);
+    int iconIdentifier = getResources().getIdentifier("icon", "mipmap", getPackageName());
+    int incomingCallAppNameId = getResources().getIdentifier("incoming_call_app_name", "string", getPackageName());
+    String contentTitle = getString(incomingCallAppNameId);
+    return new Notification.Builder(getApplicationContext(), VOICE_CHANNEL)
+            .setSmallIcon(iconIdentifier)
+            .setContentTitle(contentTitle)
+            .setContentText(text)
+            .setContentIntent(pendingIntent)
+            .setExtras(extras)
+            .setAutoCancel(true)
+            .build();
+  }
+
+  /*
+   * Send the IncomingCallMessage to the Plugin
+   */
+  private void sendCallInviteToPlugin(CallInvite incomingCallMessage, int notificationId) {
+    Log.d(LOG_TAG, "sendCallInviteToPlugin()");
+    Intent intent = new Intent(TwilioVoicePlugin.ACTION_INCOMING_CALL);
+    intent.putExtra(TwilioVoicePlugin.INCOMING_CALL_INVITE, incomingCallMessage);
+    intent.putExtra(TwilioVoicePlugin.INCOMING_CALL_NOTIFICATION_ID, notificationId);
+    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
   }
 }
