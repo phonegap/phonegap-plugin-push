@@ -121,10 +121,6 @@ declare namespace PhonegapPluginPush {
 		 */
 		android?: {
 			/**
-			 * Maps to the project number in the Google Developer Console.
-			 */
-			senderID: string
-			/**
 			 * The name of a drawable resource to use as the small-icon. The name should not include the extension.
 			 */
 			icon?: string
@@ -142,6 +138,10 @@ declare namespace PhonegapPluginPush {
 			 */
 			vibrate?: boolean
 			/**
+			 * If true the icon badge will be cleared on init and before push messages are processed. Default is false.
+			 */
+			clearBadge?: boolean
+			/**
 			 * If true the app clears all pending notifications when it is closed. Default is true.
 			 */
 			clearNotifications?: boolean
@@ -153,12 +153,40 @@ declare namespace PhonegapPluginPush {
 			 * If the array contains one or more strings each string will be used to subscribe to a GcmPubSub topic.
 			 */
 			topics?: string[]
+			/**
+			 * The key to search for text of notification. Default is 'message'.
+			 */
+			messageKey?: string
+			/**
+			 * The key to search for title of notification. Default is 'title'.
+			 */
+			titleKey?: string
+		}
+
+		/**
+		 * Browser specific initialization options.
+		 */
+		browser?: {
+			/**
+			 * URL for the push server you want to use. Default is 'http://push.api.phonegap.com/v1/push'.
+			 */
+			pushServiceURL?: string
+			/**
+			 * Your GCM API key if you are using VAPID keys.
+			 */
+			applicationServerKey?: string
 		}
 
 		/**
 		 * iOS specific initialization options.
 		 */
 		ios?: {
+			/**
+			 * If true|"true" the device will be set up to receive VoIP Push notifications and the other options will be ignored
+			 * since VoIP notifications are silent notifications that should be handled in the "notification" event.
+			 * Default is false|"false".
+			 */
+			voip?: boolean | string
 			/**
 			 * If true|"true" the device sets the badge number on receipt of notification.
 			 * Default is false|"false".
@@ -192,10 +220,6 @@ declare namespace PhonegapPluginPush {
 			 * Action Buttons on iOS - https://github.com/phonegap/phonegap-plugin-push/blob/master/docs/PAYLOAD.md#action-buttons-1
 			 */
 			categories?: CategoryArray
-			/**
-			 * Maps to the project number in the Google Developer Console. Setting this uses GCM for notifications instead of native
-			 */
-			senderID?: string
 			/**
 			 * Whether to use prod or sandbox GCM setting. Defaults to false.
 			 */
