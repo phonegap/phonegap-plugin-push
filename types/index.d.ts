@@ -212,7 +212,7 @@ declare namespace PhonegapPluginPush {
 			 */
 			alert?: boolean | string
 			/**
-			 * If true|"true" the badge will be cleared on app startup. Default is false|"false".
+			 * If true|"true" the badge will be cleared on app startup. Defaults to false|"false".
 			 */
 			clearBadge?: boolean | string
 			/**
@@ -225,7 +225,7 @@ declare namespace PhonegapPluginPush {
 			 */
 			fcmSandbox?: boolean
 			/**
-			 * If the array contains one or more strings each string will be used to subscribe to a GcmPubSub topic. Note: only usable in conjunction with senderID
+			 * If the array contains one or more strings each string will be used to subscribe to a FcmPubSub topic. Defaults to [].
 			 */
 			topics?: string[]
 		}
