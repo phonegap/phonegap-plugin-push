@@ -28,8 +28,8 @@
 
 #import "PushPlugin.h"
 #import "AppDelegate+notification.h"
+@import Firebase;
 @import FirebaseInstanceID;
-@import FirebaseMessaging;
 @import FirebaseAnalytics;
 
 @implementation PushPlugin : CDVPlugin
@@ -155,6 +155,18 @@
         NSLog(@"There is no topic to unsubscribe");
         [self successWithMessage:command.callbackId withMsg:@"There is no topic to unsubscribe"];
     }
+}
+
+- (void)pluginInitialize
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(finishLaunching:) name:UIApplicationDidFinishLaunchingNotification object:nil];
+
+}
+
+- (void)finishLaunching:(NSNotification *)notification
+{
+    NSLog(@"finishLaunching called");
+    self.notificationMessage = notification.userInfo;
 }
 
 - (void)init:(CDVInvokedUrlCommand*)command;
