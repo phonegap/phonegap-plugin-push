@@ -563,8 +563,6 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
 			  mMediaPlayer.setDataSource(this.getApplicationContext(), android.provider.Settings.System.DEFAULT_NOTIFICATION_URI); 			  
 			}
 			
-			
-
 			if(isAlarm) {
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) 
 				{					
