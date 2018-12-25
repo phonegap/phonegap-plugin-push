@@ -56,10 +56,9 @@ All available option attributes are described bellow. Currently, there are no Wi
 
 #### Browser
 
-| Attribute                      | Type     | Default                                                      | Description                                             |
-| ------------------------------ | -------- | ------------------------------------------------------------ | ------------------------------------------------------- |
-| `browser.pushServiceURL`       | `string` | `http://push.api.phonegap.com/v1/push`                       | Optional. URL for the push server you want to use.      |
-| `browser.applicationServerKey` | `string` |                                                              | Optional. Your GCM API key if you are using VAPID keys. |
+| Attribute                      | Type     | Default                                                      | Description                                                                     |
+| ------------------------------ | -------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| `browser.applicationServerKey` | `string` |                                                              | Optional. Your VAPID public key / Firebase Cloud Messaging Web Push Certificate |
 
 #### iOS
 
@@ -140,7 +139,7 @@ The "finish" method has not use too when the VoIP notifications are enabled.
 const push = PushNotification.init({
   android: {},
   browser: {
-    pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+    applicationServerKey: '...'
   },
   ios: {
     alert: 'true',
@@ -294,10 +293,11 @@ The event `registration` will be triggered on each successful registration with 
 
 ### Callback parameters
 
-| Parameter               | Type     | Description                                                                     |
-| ----------------------- | -------- | ------------------------------------------------------------------------------- |
-| `data.registrationId`   | `string` | The registration ID provided by the 3rd party remote push service.              |
-| `data.registrationType` | `string` | The registration type of the 3rd party remote push service. Either FCM or APNS. |
+| Parameter               | Type     | Description                                                                               |
+| ----------------------- | -------- | ----------------------------------------------------------------------------------------- |
+| `data.registrationId`   | `string` | The registration ID provided by the 3rd party remote push service.                        |
+| `data.registrationType` | `string` | The registration type of the 3rd party remote push service. Either FCM, APNS or WEB_PUSH. |
+| `data.subscription`     | `string` | Browser only. A JSON object provided by the browser containing subscription details.      |
 
 ### Example
 
@@ -305,6 +305,7 @@ The event `registration` will be triggered on each successful registration with 
 push.on('registration', data => {
   console.log(data.registrationId);
   console.log(data.registrationType);
+  console.log(data.subscription);
 });
 ```
 

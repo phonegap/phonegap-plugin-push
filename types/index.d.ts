@@ -168,11 +168,7 @@ declare namespace PhonegapPluginPush {
 		 */
 		browser?: {
 			/**
-			 * URL for the push server you want to use. Default is 'http://push.api.phonegap.com/v1/push'.
-			 */
-			pushServiceURL?: string
-			/**
-			 * Your GCM API key if you are using VAPID keys.
+			 * Your VAPID public key / Firebase Cloud Messaging Web Push Certificate.
 			 */
 			applicationServerKey?: string
 		}
