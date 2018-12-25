@@ -38,12 +38,6 @@ var PushNotification = function(options) {
     // triggered on registration and notification
     var that = this;
 
-    // Add manifest.json to main HTML file
-    var linkElement = document.createElement('link');
-    linkElement.rel = 'manifest';
-    linkElement.href = 'manifest.json';
-    document.getElementsByTagName('head')[0].appendChild(linkElement);
-
     if ('serviceWorker' in navigator && 'MessageChannel' in window) {
         var result;
         var channel = new MessageChannel();
@@ -51,39 +45,32 @@ var PushNotification = function(options) {
             that.emit('notification', event.data);
         };
 
-        navigator.serviceWorker.register('ServiceWorker.js').then(function() {
-            return navigator.serviceWorker.ready;
-        })
-        .then(function(reg) {
-            serviceWorker = reg;
-            reg.pushManager.subscribe(subOptions).then(function(sub) {
-                subscription = sub;
-                result = { 'registrationId': sub.endpoint.substring(sub.endpoint.lastIndexOf('/') + 1) };
-                that.emit('registration', result);
-
-                // send encryption keys to push server
-                var xmlHttp = new XMLHttpRequest();
-                var xmlURL = (options.browser.pushServiceURL || 'http://push.api.phonegap.com/v1/push') + '/keys';
-                xmlHttp.open('POST', xmlURL, true);
-
-                var formData = new FormData();
-                formData.append('subscription', JSON.stringify(sub));
-
-                xmlHttp.send(formData);
-
-                navigator.serviceWorker.controller.postMessage(result, [channel.port2]);
-            }).catch(function(error) {
-                if (navigator.serviceWorker.controller === null) {
-                    // When you first register a SW, need a page reload to handle network operations
-                    window.location.reload();
-                    return;
-                }
-
-                throw new Error('Error subscribing for Push notifications.');
-            });
+        navigator.serviceWorker.ready.then(function(reg) {
+            if (!reg.pushManager) {
+                console.log('No pushManager in service worker - notifications disabled');
+            } else {
+                reg.pushManager.subscribe(subOptions)
+                    .then(function (sub) {
+                        result = {
+                            'registrationType': 'WEB_PUSH',
+                            'registrationId': sub.endpoint.substring(sub.endpoint.lastIndexOf('/') + 1),
+                            'subscription': sub
+                        };
+                        that.emit('registration', result);
+                        navigator.serviceWorker.controller.postMessage(result, [channel.port2]);
+                    })
+                    .catch(function (error) {
+                        if (navigator.serviceWorker.controller === null) {
+                            // When you first register a SW, need a page reload to handle network operations
+                            window.location.reload();
+                            return;
+                        }
+                        throw error;
+                    });
+            }
         }).catch(function(error) {
             console.log(error);
-            throw new Error('Error registering Service Worker');
+            throw error;
         });
     } else {
         throw new Error('Service Workers are not supported on your browser.');
@@ -116,22 +103,7 @@ PushNotification.prototype.unregister = function(successCallback, errorCallback,
         };
     }
 
-    if (serviceWorker) {
-        serviceWorker.unregister().then(function(isSuccess) {
-            if (isSuccess) {
-                var deviceID = subscription.endpoint.substring(subscription.endpoint.lastIndexOf('/') + 1);
-                var xmlHttp = new XMLHttpRequest();
-                var xmlURL = (that.options.browser.pushServiceURL || 'http://push.api.phonegap.com/v1/push')
-                    + '/keys/' + deviceID;
-                xmlHttp.open('DELETE', xmlURL, true);
-                xmlHttp.send();
-
-                successCallback();
-            } else {
-                errorCallback();
-            }
-        });
-    }
+    successCallback();
 };
 
 /**

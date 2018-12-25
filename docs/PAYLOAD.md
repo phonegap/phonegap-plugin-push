@@ -347,7 +347,7 @@ By default the icon displayed in your push notification will be your apps icon. 
 const push = PushNotification.init({
   android: {},
   browser: {
-    pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+    applicationServerKey: '...'
   },
   ios: {
     alert: 'true',
@@ -388,7 +388,7 @@ const push = PushNotification.init({
     iconColor: 'blue'
   },
   browser: {
-    pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+    applicationServerKey: '...'
   },
   ios: {
     alert: 'true',
