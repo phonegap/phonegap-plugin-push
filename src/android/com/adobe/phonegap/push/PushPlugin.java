@@ -114,6 +114,8 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
           .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build();
       if (SOUND_RINGTONE.equals(sound)) {
         mChannel.setSound(android.provider.Settings.System.DEFAULT_RINGTONE_URI, audioAttributes);
+	  } else if (SOUND_NONE.equals(sound)) {
+		  mChannel.setSound(null, null);		  
       } else if (sound != null && !sound.contentEquals(SOUND_DEFAULT)) {
         Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + packageName + "/raw/" + sound);
         mChannel.setSound(soundUri, audioAttributes);

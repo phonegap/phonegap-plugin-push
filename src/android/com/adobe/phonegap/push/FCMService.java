@@ -436,6 +436,8 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     String localIconColor = prefs.getString(ICON_COLOR, null);
     boolean soundOption = prefs.getBoolean(SOUND, true);
     boolean vibrateOption = prefs.getBoolean(VIBRATE, true);
+	boolean isAlarm = Boolean.parseBoolean(extras.getString(ISALARM, "false"));	
+	
     Log.d(LOG_TAG, "stored icon=" + localIcon);
     Log.d(LOG_TAG, "stored iconColor=" + localIconColor);
     Log.d(LOG_TAG, "stored sound=" + soundOption);
@@ -496,6 +498,16 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
      * Notification Sound
      */
     if (soundOption) {
+		
+		/* Check is isAlarm Notification */
+			
+		Log.d(LOG_TAG, "isAlarm = " + String.valueOf(isAlarm));
+		
+		if(!isAlarm) 
+		{
+			
+		}
+		
       //setNotificationSound(context, extras, mBuilder);
     }
 
@@ -543,10 +555,6 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
 		  soundname = extras.getString(SOUND);
 		}
 		
-		boolean isAlarm = Boolean.parseBoolean(extras.getString(ISALARM, "false"));
-		
-		Log.d(LOG_TAG, "isAlarm = " + String.valueOf(isAlarm));
-		
 		MediaPlayer mMediaPlayer; 
 		try {
 			
@@ -581,6 +589,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
 						.setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
 						.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
 						.build();
+					mMediaPlayer.setAudioAttributes(audioAttributes);
 				} else {
 					mMediaPlayer.setAudioStreamType(AudioManager.STREAM_NOTIFICATION);
 				}
@@ -829,6 +838,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     }
   }
 
+  
   private void setNotificationSound(Context context, Bundle extras, NotificationCompat.Builder mBuilder) {
     String soundname = extras.getString(SOUNDNAME);
     if (soundname == null) {
