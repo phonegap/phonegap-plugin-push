@@ -23,6 +23,7 @@ import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.WearableExtender;
 import android.support.v4.app.RemoteInput;
@@ -94,6 +95,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
           Context.MODE_PRIVATE);
       boolean forceShow = prefs.getBoolean(FORCE_SHOW, false);
       boolean clearBadge = prefs.getBoolean(CLEAR_BADGE, false);
+      boolean bringToFront = prefs.getBoolean(BRING_TO_FRONT, false);
       String messageKey = prefs.getString(MESSAGE_KEY, MESSAGE);
       String titleKey = prefs.getString(TITLE_KEY, TITLE);
 
@@ -101,6 +103,15 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
 
       if (clearBadge) {
         PushPlugin.setApplicationIconBadgeNumber(getApplicationContext(), 0);
+      }
+
+      if (bringToFront) {
+        if (!PushPlugin.isInForeground() || !isScreenOn()) {
+          switchOnScreenAndForeground();
+          // Stash this push until resumed?
+          PushPlugin.sendExtras(extras);
+          return;
+        }
       }
 
       // if we are in the foreground and forceShow is `false` only send data
@@ -946,5 +957,33 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     Log.d(LOG_TAG, "sender id = " + savedSenderID);
 
     return from.equals(savedSenderID) || from.startsWith("/topics/");
+  }
+
+  private boolean isScreenOn() {
+    boolean screenOn = false;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+      PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+      if (powerManager.isInteractive()) {
+        screenOn = true;
+      }
+    } else {
+      PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+      if (powerManager.isScreenOn()) {
+        screenOn = true;
+      }
+    }
+    return screenOn;
+  }
+
+  private void switchOnScreenAndForeground() {
+
+    boolean screenOn = isScreenOn();
+
+    if (!(screenOn && PushPlugin.isInForeground())) {
+        Intent i2 = new Intent("com.adobe.phonegap.push.BlankActivity");
+        i2.putExtra("turnScreenOn", true);
+        i2.setPackage(getPackageName());
+        startActivity(i2);
+    }
   }
 }

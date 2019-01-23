@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -258,6 +260,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
             editor.putBoolean(CLEAR_NOTIFICATIONS, jo.optBoolean(CLEAR_NOTIFICATIONS, true));
             editor.putBoolean(FORCE_SHOW, jo.optBoolean(FORCE_SHOW, false));
             editor.putString(SENDER_ID, senderID);
+            editor.putBoolean(BRING_TO_FRONT, jo.optBoolean(BRING_TO_FRONT));
             editor.putString(MESSAGE_KEY, jo.optString(MESSAGE_KEY));
             editor.putString(TITLE_KEY, jo.optString(TITLE_KEY));
             editor.commit();
@@ -518,6 +521,25 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
   public void onResume(boolean multitasking) {
     super.onResume(multitasking);
     gForeground = true;
+
+    if (cordova.getActivity().getIntent().getBooleanExtra(PushConstants.PUSH_START, false)) {
+      Window window = cordova.getActivity().getWindow();
+      try {
+        cordova.getActivity().setShowWhenLocked(true);
+        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+      } catch (NoSuchMethodError e) {
+        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+      }
+      try {
+        cordova.getActivity().setTurnScreenOn(true);
+        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+      } catch (NoSuchMethodError e) {
+        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+      }
+
+      window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+      window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
   }
 
   @Override
