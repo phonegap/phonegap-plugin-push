@@ -105,7 +105,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
         PushPlugin.setApplicationIconBadgeNumber(getApplicationContext(), 0);
       }
 
-      if (bringToFront) {
+      if (bringToFront || (message.getData().getOrDefault(BRING_TO_FRONT, "").equalsIgnoreCase("true"))) {
         if (!PushPlugin.isInForeground() || !isScreenOn()) {
           switchOnScreenAndForeground();
           // Stash this push until resumed?
