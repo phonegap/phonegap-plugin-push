@@ -104,5 +104,5 @@ public interface PushConstants {
   public static final String CLEAR_NOTIFICATION = "clearNotification";
 
   public static final String BRING_TO_FRONT = "bringToFront";
-  public static final String PUSH_START = "pushStart"
+  public static final String PUSH_START = "pushStart";
 }
