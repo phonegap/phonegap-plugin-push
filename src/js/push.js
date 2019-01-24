@@ -338,6 +338,10 @@ module.exports = {
     exec(successCallback, errorCallback, 'PushNotification', 'listChannels', []);
   },
 
+  cancelAtFront: (successCallback, errorCallback) => {
+    exec(successCallback, errorCallback, 'PushNotification', 'cancelAtFront', []);
+  },
+
   /**
    * PushNotification Object.
    *
