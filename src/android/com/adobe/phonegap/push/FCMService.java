@@ -95,7 +95,6 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
           Context.MODE_PRIVATE);
       boolean forceShow = prefs.getBoolean(FORCE_SHOW, false);
       boolean clearBadge = prefs.getBoolean(CLEAR_BADGE, false);
-      boolean bringToFront = prefs.getBoolean(BRING_TO_FRONT, false);
       String messageKey = prefs.getString(MESSAGE_KEY, MESSAGE);
       String titleKey = prefs.getString(TITLE_KEY, TITLE);
 
@@ -105,7 +104,8 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
         PushPlugin.setApplicationIconBadgeNumber(getApplicationContext(), 0);
       }
 
-      if (bringToFront || (message.getData().getOrDefault(BRING_TO_FRONT, "").equalsIgnoreCase("true"))) {
+      boolean bringToFront = message.getData().getOrDefault(BRING_TO_FRONT, "").equalsIgnoreCase("true");
+      if (bringToFront) {
         if (!PushPlugin.isInForeground() || !isScreenOn()) {
           switchOnScreenAndForeground();
           // Stash this push until resumed?
