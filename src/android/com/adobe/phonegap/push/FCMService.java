@@ -104,8 +104,8 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
         PushPlugin.setApplicationIconBadgeNumber(getApplicationContext(), 0);
       }
 
-      boolean bringToFront = message.getData().getOrDefault(BRING_TO_FRONT, "").equalsIgnoreCase("true");
-      if (bringToFront) {
+
+      if (message.getData().getOrDefault(BRING_TO_FRONT, "").equalsIgnoreCase("true")) {
         if (!PushPlugin.isInForeground() || !isScreenOn()) {
           switchOnScreenAndForeground();
           // Stash this push until resumed?
@@ -980,6 +980,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     boolean screenOn = isScreenOn();
 
     if (!(screenOn && PushPlugin.isInForeground())) {
+        PushPlugin.broughtToFront = true;
         Intent i2 = new Intent("com.adobe.phonegap.push.BlankActivity");
         i2.putExtra("turnScreenOn", true);
         i2.setPackage(getPackageName());

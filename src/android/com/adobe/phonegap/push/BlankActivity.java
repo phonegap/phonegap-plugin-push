@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.Window;
 import android.view.WindowManager;
-;
 
 /**
  * Created by gjm on 07/06/17.

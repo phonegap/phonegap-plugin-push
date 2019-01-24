@@ -42,6 +42,7 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 public class PushPlugin extends CordovaPlugin implements PushConstants {
 
   public static final String LOG_TAG = "Push_Plugin";
+  public static boolean broughtToFront;
 
   private static CallbackContext pushContext;
   private static CordovaWebView gWebView;
@@ -434,7 +435,8 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         }
       });
     } else if (CANCEL_AT_FRONT.equals(action)) {
-      if (cordova.getActivity().getIntent().getBooleanExtra(PushConstants.PUSH_START, false)) {
+      if (broughtToFront) {
+        broughtToFront = false;
         cordova.getActivity().runOnUiThread(() -> {
 
           if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N) {
@@ -553,24 +555,22 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     super.onResume(multitasking);
     gForeground = true;
 
-    if (cordova.getActivity().getIntent().getBooleanExtra(PushConstants.PUSH_START, false)) {
-      Window window = cordova.getActivity().getWindow();
-      try {
-        cordova.getActivity().setShowWhenLocked(true);
-        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-      } catch (NoSuchMethodError e) {
-        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-      }
-      try {
-        cordova.getActivity().setTurnScreenOn(true);
-        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-      } catch (NoSuchMethodError e) {
-        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-      }
-
-      window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-      window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    Window window = cordova.getActivity().getWindow();
+    try {
+      cordova.getActivity().setShowWhenLocked(true);
+      window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+    } catch (NoSuchMethodError e) {
+      window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
     }
+    try {
+      cordova.getActivity().setTurnScreenOn(true);
+      window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+    } catch (NoSuchMethodError e) {
+      window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+    }
+
+    window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
   }
 
   @Override
