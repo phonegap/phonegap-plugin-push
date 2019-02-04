@@ -677,8 +677,17 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
         NotificationCompat.InboxStyle notificationInbox = new NotificationCompat.InboxStyle()
             .setBigContentTitle(fromHtml(extras.getString(TITLE))).setSummaryText(fromHtml(stacking));
 
-        for (int i = messageList.size() - 1; i >= 0; i--) {
-          notificationInbox.addLine(fromHtml(messageList.get(i)));
+        String order = extras.getString(INBOX_ORDER, ORDER_DESC);
+
+        if (ORDER_ASC.equals(order)) {
+          // Display last 4 messages.
+          for (int i = Math.max(0, messageList.size() - 4); i < messageList.size(); i++) {
+            notificationInbox.addLine(fromHtml(messageList.get(i)));
+          }
+        } else {
+          for (int i = messageList.size() - 1; i >= 0; i--) {
+            notificationInbox.addLine(fromHtml(messageList.get(i)));
+          }
         }
 
         mBuilder.setStyle(notificationInbox);

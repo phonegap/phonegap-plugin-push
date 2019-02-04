@@ -39,6 +39,9 @@ public interface PushConstants {
   public static final String STYLE_INBOX = "inbox";
   public static final String STYLE_PICTURE = "picture";
   public static final String STYLE_TEXT = "text";
+  public static final String INBOX_ORDER = "inbox-order";
+  public static final String ORDER_ASC = "asc";
+  public static final String ORDER_DESC = "desc";
   public static final String BADGE = "badge";
   public static final String INITIALIZE = "init";
   public static final String SUBSCRIBE = "subscribe";
