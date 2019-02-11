@@ -21,6 +21,10 @@ public class BackgroundActionButtonHandler extends BroadcastReceiver implements 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(FCMService.getAppName(context), notId);
 
+        // Clear list of messages when an action button is clicked.
+        FCMService fcm = new FCMService();
+        fcm.setNotification(notId, "");
+
         if (extras != null)	{
             Bundle originalExtras = extras.getBundle(PUSH_BUNDLE);
 
