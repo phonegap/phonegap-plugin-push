@@ -621,6 +621,7 @@
 {
     NSLog(@"VoIP Notification received");
     self.notificationMessage = payload.dictionaryPayload;
+    isInline = [UIApplication sharedApplication].applicationState == UIApplicationStateActive;
     [self notificationReceived];
 }
 
