@@ -161,6 +161,12 @@
 {
     NSMutableDictionary* options = [command.arguments objectAtIndex:0];
     NSMutableDictionary* iosOptions = [options objectForKey:@"ios"];
+    BOOL apnsForce = false;
+    id apnsForceArg = [iosOptions objectForKey:@"apnsForce"];
+    if (([apnsForceArg isKindOfClass:[NSString class]] && [apnsForceArg isEqualToString:@"true"]) || [apnsForceArg boolValue]) {
+        apnsForce = true;
+        NSLog(@"Push Plugin will now use APNS even if GoogleService-Info.plist is present");
+    }
     id voipArg = [iosOptions objectForKey:@"voip"];
     if (([voipArg isKindOfClass:[NSString class]] && [voipArg isEqualToString:@"true"]) || [voipArg boolValue]) {
         [self.commandDelegate runInBackground:^ {
@@ -304,7 +310,7 @@
 
             //  GCM options
             [self setFcmSenderId: fcmSenderId];
-            if(isGcmEnabled && [[self fcmSenderId] length] > 0) {
+            if(isGcmEnabled && [[self fcmSenderId] length] > 0 && !apnsForce) {
                 NSLog(@"Using FCM Notification");
                 [self setUsesFCM: YES];
                 dispatch_async(dispatch_get_main_queue(), ^{
