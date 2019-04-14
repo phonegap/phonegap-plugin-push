@@ -170,8 +170,12 @@ declare namespace PhonegapPluginPush {
 			/**
 			 * Your VAPID public key / Firebase Cloud Messaging Web Push Certificate.
 			 */
-			applicationServerKey?: string
-		}
+			applicationServerKey: string
+			/**
+			 * Endpoint URL
+			 */
+			pushServiceURL: string
+    }
 
 		/**
 		 * iOS specific initialization options.
