@@ -29,6 +29,7 @@ import android.support.v4.app.RemoteInput;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
+import android.service.notification.StatusBarNotification;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -660,7 +661,47 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
   private void setNotificationMessage(int notId, Bundle extras, NotificationCompat.Builder mBuilder) {
     String message = extras.getString(MESSAGE);
     String style = extras.getString(STYLE, STYLE_TEXT);
-    if (STYLE_INBOX.equals(style)) {
+
+    if (STYLE_MESSAGING.equals(style)) {
+      NotificationCompat.MessagingStyle msgStyle;
+      String title = extras.getString(TITLE);
+
+      // Find if there is a notification already displayed with this ID.
+      Notification notification = findActiveNotification(getApplicationContext(), notId);
+
+      if (notification) {
+        // Notification already displayed. Extract the MessagingStyle to add the message.
+        msgStyle = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(notification);
+      } else {
+        // There is no notification, create a new style.
+        msgStyle = new NotificationCompat.MessagingStyle("");
+      }
+
+      // Add the new message to the style.
+      msgStyle.addMessage(message, System.currentTimeMillis(), extras.getString(SENDER, ""));
+
+       // Add the count of messages to the title if there is more than 1.
+      Integer sizeList = msgStyle.getMessages().size();
+
+      if (sizeList > 1) {
+        String stacking = "(" + sizeList + ")"; // Default value.
+
+        if (extras.getString(SUMMARY_TEXT) != null) {
+          stacking = extras.getString(SUMMARY_TEXT);
+          stacking = stacking.replace("%n%", sizeList);
+        }
+
+        if (!stacking.trim().equals("")) {
+          title += " " + stacking;
+        }
+      }
+
+      msgStyle.setConversationTitle(title);
+
+      // Use the style.
+      mBuilder.setStyle(msgStyle);
+
+    } else if (STYLE_INBOX.equals(style)) {
       setNotification(notId, message);
 
       mBuilder.setContentText(fromHtml(message));
@@ -726,6 +767,27 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
       }
       */
     }
+  }
+
+  /**
+   * Find an active notification with a certain ID.
+   *
+   * @param  context Context.
+   * @param  notId   Notification ID to find.
+   * @return Notification The active notification, null if not found.
+   */
+  private Notification findActiveNotification(Context context, Integer notId) {
+    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    StatusBarNotification[] notifications = mNotificationManager.getActiveNotifications();
+
+    // Find the notification.
+    for (int i = 0; i < notifications.length; i++) {
+      if (notifications[i].getId() == notId) {
+        return notifications[i].getNotification();
+      }
+    }
+
+    return null;
   }
 
   private void setNotificationSound(Context context, Bundle extras, NotificationCompat.Builder mBuilder) {
