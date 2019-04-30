@@ -54,7 +54,7 @@ var PushNotification = function(options) {
                         result = {
                             'registrationType': 'WEB_PUSH',
                             'registrationId': sub.endpoint.substring(sub.endpoint.lastIndexOf('/') + 1),
-                            'subscription': sub
+                            'subscription': sub.toJSON()
                         };
                         that.emit('registration', result);
                         navigator.serviceWorker.controller.postMessage(result, [channel.port2]);
