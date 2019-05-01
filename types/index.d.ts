@@ -260,6 +260,14 @@ declare namespace PhonegapPluginPush {
 		 * The registration ID provided by the 3rd party remote push service.
 		 */
 		registrationId: string
+    /**
+     * The type of registration, provided by some 3rd party push services. E.g. WEB_PUSH
+     */
+    registrationType?: string
+    /**
+     * The PushSubscription object associated with our registration if we're using web push
+     */
+    subscription?: any
 	}
 
 	interface NotificationEventResponse {
