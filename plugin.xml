@@ -22,6 +22,8 @@
       <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
       <uses-permission android:name="android.permission.WAKE_LOCK"/>
       <uses-permission android:name="android.permission.VIBRATE"/>
+      <uses-permission android:name="${applicationId}.permission.PushHandlerActivity"></uses-permission>
+      <permission android:name="${applicationId}.permission.PushHandlerActivity" android:protectionLevel="signature"></permission>
     </config-file>
     <config-file target="AndroidManifest.xml" parent="/manifest/application">
       <activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true" android:permission="${applicationId}.permission.PushHandlerActivity"/>
