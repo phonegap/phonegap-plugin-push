@@ -735,9 +735,13 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     }
     if (SOUND_RINGTONE.equals(soundname)) {
       mBuilder.setSound(android.provider.Settings.System.DEFAULT_RINGTONE_URI);
-    } else if (soundname != null && !soundname.contentEquals(SOUND_DEFAULT)) {
+    } else if (soundname != null && !soundname.contentEquals(SOUND_DEFAULT) && !soundname.contains(ContentResolver.SCHEME_CONTENT + ":")) {
       Uri sound = Uri
           .parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.getPackageName() + "/raw/" + soundname);
+      Log.d(LOG_TAG, sound.toString());
+      mBuilder.setSound(sound);
+    } else if (soundname.contains(ContentResolver.SCHEME_CONTENT + ":")){
+      Uri sound = Uri.parse(soundname);
       Log.d(LOG_TAG, sound.toString());
       mBuilder.setSound(sound);
     } else {
