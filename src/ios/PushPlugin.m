@@ -27,9 +27,8 @@
 #define GMP_NO_MODULES true
 
 #import "PushPlugin.h"
-#import "AppDelegate+notification.h"
-@import FirebaseInstanceID;
-@import FirebaseMessaging;
+#import "AppDelegate+notification.h"s
+@import Firebase;
 @import FirebaseAnalytics;
 
 @implementation PushPlugin : CDVPlugin
@@ -225,7 +224,9 @@
             } else {
                 NSLog(@"PushPlugin.register: setting badge to true");
                 clearBadge = YES;
-                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+                });
             }
             NSLog(@"PushPlugin.register: clear badge is set to %d", clearBadge);
 
@@ -283,56 +284,60 @@
 
             UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
             [center setNotificationCategories:categories];
-            [self handleNotificationSettingsWithAuthorizationOptions:[NSNumber numberWithInteger:authorizationOptions]];
+            //[self handleNotificationSettingsWithAuthorizationOptions:[NSNumber numberWithInteger:authorizationOptions]];
 
             [[NSNotificationCenter defaultCenter] addObserver:self
                                                      selector:@selector(handleNotificationSettings:)
                                                          name:pushPluginApplicationDidBecomeActiveNotification
                                                        object:nil];
 
+            [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:authorizationOptions
+             completionHandler:^(BOOL granted, NSError * _Nullable error) {
+                 NSLog(@"Push Permission granted = %d", granted);
+                 if (granted) {
+                     // Read GoogleService-Info.plist
+                     NSString *path = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info" ofType:@"plist"];
 
+                     // Load the file content and read the data into arrays
+                     NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:path];
+                     self->fcmSenderId = [dict objectForKey:@"GCM_SENDER_ID"];
+                     BOOL isGcmEnabled = [[dict valueForKey:@"IS_GCM_ENABLED"] boolValue];
 
-            // Read GoogleService-Info.plist
-            NSString *path = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info" ofType:@"plist"];
+                     NSLog(@"FCM Sender ID %@", self->fcmSenderId);
 
-            // Load the file content and read the data into arrays
-            NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:path];
-            fcmSenderId = [dict objectForKey:@"GCM_SENDER_ID"];
-            BOOL isGcmEnabled = [[dict valueForKey:@"IS_GCM_ENABLED"] boolValue];
+                     //  GCM options
+                     [self setFcmSenderId: self->fcmSenderId];
+                     if(isGcmEnabled && [[self fcmSenderId] length] > 0) {
+                         NSLog(@"Using FCM Notification");
+                         [self setUsesFCM: YES];
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                             if([FIRApp defaultApp] == nil)
+                                 [FIRApp configure];
+                             [self initRegistration];
+                         });
+                     } else {
+                         NSLog(@"Using APNS Notification");
+                         [self setUsesFCM:NO];
+                     }
+                     id fcmSandboxArg = [iosOptions objectForKey:@"fcmSandbox"];
 
-            NSLog(@"FCM Sender ID %@", fcmSenderId);
+                     [self setFcmSandbox:@NO];
+                     if ([self usesFCM] &&
+                         (([fcmSandboxArg isKindOfClass:[NSString class]] && [fcmSandboxArg isEqualToString:@"true"]) ||
+                          [fcmSandboxArg boolValue]))
+                     {
+                         NSLog(@"Using FCM Sandbox");
+                         [self setFcmSandbox:@YES];
+                     }
 
-            //  GCM options
-            [self setFcmSenderId: fcmSenderId];
-            if(isGcmEnabled && [[self fcmSenderId] length] > 0) {
-                NSLog(@"Using FCM Notification");
-                [self setUsesFCM: YES];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if([FIRApp defaultApp] == nil)
-                        [FIRApp configure];
-                    [self initRegistration];
-                });
-            } else {
-                NSLog(@"Using APNS Notification");
-                [self setUsesFCM:NO];
-            }
-            id fcmSandboxArg = [iosOptions objectForKey:@"fcmSandbox"];
-
-            [self setFcmSandbox:@NO];
-            if ([self usesFCM] &&
-                (([fcmSandboxArg isKindOfClass:[NSString class]] && [fcmSandboxArg isEqualToString:@"true"]) ||
-                 [fcmSandboxArg boolValue]))
-            {
-                NSLog(@"Using FCM Sandbox");
-                [self setFcmSandbox:@YES];
-            }
-
-            if (notificationMessage) {            // if there is a pending startup notification
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    // delay to allow JS event handlers to be setup
-                    [self performSelector:@selector(notificationReceived) withObject:nil afterDelay: 0.5];
-                });
-            }
+                     if (self->notificationMessage) {            // if there is a pending startup notification
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                             // delay to allow JS event handlers to be setup
+                             [self performSelector:@selector(notificationReceived) withObject:nil afterDelay: 0.5];
+                         });
+                     }
+                 }
+             }];
 
         }];
     }
