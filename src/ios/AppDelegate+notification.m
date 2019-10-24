@@ -151,6 +151,14 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
     }];
 }
 
+- (void)requestUserPermissionRemoteNotificationsWithCompletionHandler:(nonnull void (^)(BOOL))completionHandler
+{
+    UNAuthorizationOptions options = (UNAuthorizationOptionBadge | UNAuthorizationOptionSound | UNAuthorizationOptionAlert);
+     [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:options completionHandler:^(BOOL granted, NSError* e) {
+         completionHandler(granted);
+     }];
+}
+
 - (void)pushPluginOnApplicationDidBecomeActive:(NSNotification *)notification {
 
     NSLog(@"active");
