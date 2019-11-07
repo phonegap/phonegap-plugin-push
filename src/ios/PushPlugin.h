@@ -41,7 +41,7 @@
 
     NSMutableDictionary *handlerObj;
     void (^completionHandler)(UIBackgroundFetchResult);
-
+    NSString *replyCallBack;
     BOOL ready;
 }
 
