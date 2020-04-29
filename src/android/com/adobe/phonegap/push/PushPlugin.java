@@ -510,12 +510,6 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
   public void onPause(boolean multitasking) {
     super.onPause(multitasking);
     gForeground = false;
-
-    SharedPreferences prefs = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH,
-        Context.MODE_PRIVATE);
-    if (prefs.getBoolean(CLEAR_NOTIFICATIONS, true)) {
-      clearAllNotifications();
-    }
   }
 
   @Override
@@ -529,6 +523,12 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     super.onDestroy();
     gForeground = false;
     gWebView = null;
+    
+    SharedPreferences prefs = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH,
+        Context.MODE_PRIVATE);
+    if (prefs.getBoolean(CLEAR_NOTIFICATIONS, true)) {
+      clearAllNotifications();
+    }
   }
 
   private void clearAllNotifications() {
