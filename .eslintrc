@@ -1,17 +1,16 @@
 {
-  "extends": "airbnb",
+  "extends": "airbnb-base",
   "parser": "babel-eslint",
-  "ecmaFeatures": {
-    "experimentalObjectRestSpread": true
-  },
   "rules": {
     "spaced-comment": 0,
     "no-console": 0,
-    "no-unused-expressions": [2, { "allowShortCircuit": true }]
+    "no-unused-expressions": [2, { "allowShortCircuit": true }],
+    "class-methods-use-this": 0
   },
   "env": {
-      "node": true,
-      "mocha": true,
-      "browser": true
+    "browser": true
+  },
+  "globals": {
+    "cordova": false
   }
 }
