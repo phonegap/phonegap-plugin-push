@@ -43,7 +43,7 @@
       </service>
     </config-file>
     <preference name="ANDROID_SUPPORT_V13_VERSION" default="27.+"/>
-    <preference name="FCM_VERSION" default="17.0.+"/>
+    <preference name="FCM_VERSION" default="20.2.1"/>
     <framework src="com.android.support:support-v13:$ANDROID_SUPPORT_V13_VERSION"/>
     <framework src="me.leolin:ShortcutBadger:1.1.17@aar"/>
     <framework src="com.google.firebase:firebase-messaging:$FCM_VERSION"/>
