@@ -3,7 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android" 
   xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads" 
   xmlns:rim="http://www.blackberry.com/ns/widgets" 
-  id="phonegap-plugin-push" version="2.3.0">
+  id="phonegap-plugin-push" version="2.3.1">
   <name>PushPlugin</name>
   <description>    This plugin allows your application to receive push notifications on Android, iOS and Windows devices.    Android uses Firebase Cloud Messaging.    iOS uses Apple APNS Notifications.    Windows uses Microsoft WNS Notifications.  </description>
   <license>MIT</license>
