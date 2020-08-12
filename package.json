@@ -32,11 +32,7 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
     "jasmine": "^3.4.0",
-    "nodemon": "^1.19.1",
-    "pluginpub": "^0.0.9"
-  },
-  "dependencies": {
-    "install": "^0.8.2"
+    "nodemon": "^1.19.1"
   },
   "engines": {
     "cordovaDependencies": {
