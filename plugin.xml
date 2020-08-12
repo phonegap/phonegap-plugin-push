@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
   xmlns:android="http://schemas.android.com/apk/res/android"
-  id="cordova-plugin-push" version="2.3.0">
+  id="cordova-plugin-push" version="1.0.0">
 
   <name>Cordova Push Plugin</name>
   <description>Enable receiving push notifications on Android, iOS and Windows devices. Android uses Firebase Cloud Messaging. iOS uses Apple APNS Notifications. Windows uses Microsoft WNS Notifications.</description>
