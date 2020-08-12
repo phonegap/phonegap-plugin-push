@@ -25,7 +25,7 @@
 
 module.exports = global.cordova = cordova = {
 
-    /**
+  /**
      * cordova.require Mock.
      *
      * Hijacks all cordova.requires. By default, it returns an empty function.
@@ -35,16 +35,16 @@ module.exports = global.cordova = cordova = {
      * See `cordova.required` to learn how to add your own module implemtnation.
      */
 
-    require: function(moduleId) {
-        // define a default function if it doesn't exist
-        if (!cordova.required[moduleId]) {
-            cordova.required[moduleId] = function() {};
-        }
-        // create a new module mapping between the module Id and cordova.required.
-        return new ModuleMap(moduleId);
-    },
+  require: function (moduleId) {
+    // define a default function if it doesn't exist
+    if (!cordova.required[moduleId]) {
+      cordova.required[moduleId] = function () {};
+    }
+    // create a new module mapping between the module Id and cordova.required.
+    return new ModuleMap(moduleId);
+  },
 
-    /**
+  /**
      * Cordova module implementations.
      *
      * A key-value hash, where the key is the module such as 'cordova/exec'
@@ -59,9 +59,9 @@ module.exports = global.cordova = cordova = {
      *     cordova.required['cordova/exec'];
      */
 
-    required: {
-        // populated at runtime
-    }
+  required: {
+    // populated at runtime
+  }
 };
 
 /**
@@ -74,10 +74,10 @@ module.exports = global.cordova = cordova = {
  * @return {Function}.
  */
 
-function ModuleMap(moduleId) {
-    return function() {
-        // lookup and execute the module's mock implementation, passing
-        // in any parameters that were provided.
-        return cordova.required[moduleId].apply(this, arguments);
-    };
+function ModuleMap (moduleId) {
+  return function () {
+    // lookup and execute the module's mock implementation, passing
+    // in any parameters that were provided.
+    return cordova.required[moduleId].apply(this, arguments);
+  };
 }

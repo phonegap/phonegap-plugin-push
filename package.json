@@ -5,10 +5,11 @@
   "scripts": {
     "build": "babel src/js --out-dir www",
     "build:watch": "nodemon -w ./src/js -e js -x npm run build",
-    "eslint": "eslint src/js",
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix",
     "jasmine": "jasmine --config=spec/unit.json",
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
-    "test": "npm run build && npm run eslint && npm run jasmine"
+    "test": "npm run build && npm run lint && npm run jasmine"
   },
   "repository": "github:havesource/cordova-plugin-push",
   "keywords": [
@@ -25,12 +26,10 @@
   "devDependencies": {
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
+    "@babel/eslint-parser": "^7.11.3",
     "@babel/preset-env": "^7.5.5",
-    "babel-eslint": "^10.0.3",
+    "@cordova/eslint-config": "^3.0.0",
     "babel-plugin-add-header-comment": "^1.0.3",
-    "eslint": "^6.2.2",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.2",
     "jasmine": "^3.4.0",
     "nodemon": "^1.19.1"
   },

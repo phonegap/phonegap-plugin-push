@@ -1,4 +1,4 @@
-module.exports = function(context) {
+module.exports = function (context) {
   console.log('Updating manifest.json with push properties…');
   var path = require('path');
   var fs = require('fs');
@@ -18,7 +18,7 @@ module.exports = function(context) {
     return;
   }
 
-  fs.readFile(platformManifestJson, 'utf8', function(err, platformJson) {
+  fs.readFile(platformManifestJson, 'utf8', function (err, platformJson) {
     if (err) throw err; // we'll not consider error handling for now
     var platformManifest = JSON.parse(platformJson);
 
@@ -27,16 +27,16 @@ module.exports = function(context) {
       'plugins/phonegap-plugin-push/src/browser/manifest.json'
     );
 
-    fs.readFile(pluginManifestPath, 'utf8', function(err, pluginJson) {
+    fs.readFile(pluginManifestPath, 'utf8', function (err, pluginJson) {
       if (err) throw err; // we'll not consider error handling for now
       var pluginManifest = JSON.parse(pluginJson);
 
-      platformManifest['gcm_sender_id'] = pluginManifest['gcm_sender_id'];
+      platformManifest.gcm_sender_id = pluginManifest.gcm_sender_id;
 
       fs.writeFile(
         platformManifestJson,
         JSON.stringify(platformManifest),
-        function(err) {
+        function (err) {
           if (err) {
             return console.log(err);
           }

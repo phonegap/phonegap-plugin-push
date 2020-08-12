@@ -1,0 +1,17 @@
+root: true
+extends: '@cordova/eslint-config/browser'
+parser: '@babel/eslint-parser'
+globals:
+  cordova: true
+rules:
+  indent: ["error", 2]
+
+overrides:
+  - files: [spec/**/*.js, example/server/**/*.js]
+    extends: '@cordova/eslint-config/node-tests'
+    rules:
+      indent: ["error", 2]
+
+  - files: [src/windows/**/*.js]
+    globals:
+      Windows: true

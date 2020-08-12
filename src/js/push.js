@@ -11,11 +11,11 @@ class PushNotification {
    * @param {Object} options to initiate Push Notifications.
    * @return {PushNotification} instance that can be monitored and cancelled.
    */
-  constructor(options) {
+  constructor (options) {
     this.handlers = {
       registration: [],
       notification: [],
-      error: [],
+      error: []
     };
 
     // require options parameter
@@ -31,9 +31,9 @@ class PushNotification {
       if (result && typeof result.registrationId !== 'undefined') {
         this.emit('registration', result);
       } else if (
-        result
-        && result.additionalData
-        && typeof result.additionalData.actionCallback !== 'undefined'
+        result &&
+        result.additionalData &&
+        typeof result.additionalData.actionCallback !== 'undefined'
       ) {
         this.emit(result.additionalData.actionCallback, result);
       } else if (result) {
@@ -56,7 +56,7 @@ class PushNotification {
   /**
    * Unregister from push notifications
    */
-  unregister(successCallback, errorCallback = () => {}, options) {
+  unregister (successCallback, errorCallback = () => {}, options) {
     if (typeof errorCallback !== 'function') {
       console.log('PushNotification.unregister failure: failure parameter not a function');
       return;
@@ -64,7 +64,7 @@ class PushNotification {
 
     if (typeof successCallback !== 'function') {
       console.log(
-        'PushNotification.unregister failure: success callback parameter must be a function',
+        'PushNotification.unregister failure: success callback parameter must be a function'
       );
       return;
     }
@@ -74,7 +74,7 @@ class PushNotification {
         this.handlers = {
           registration: [],
           notification: [],
-          error: [],
+          error: []
         };
       }
       successCallback();
@@ -90,7 +90,7 @@ class PushNotification {
    * @param   {Function}    errorCallback       error callback
    * @return  {void}
    */
-  subscribe(topic, successCallback, errorCallback = () => {}) {
+  subscribe (topic, successCallback, errorCallback = () => {}) {
     if (typeof errorCallback !== 'function') {
       console.log('PushNotification.subscribe failure: failure parameter not a function');
       return;
@@ -98,7 +98,7 @@ class PushNotification {
 
     if (typeof successCallback !== 'function') {
       console.log(
-        'PushNotification.subscribe failure: success callback parameter must be a function',
+        'PushNotification.subscribe failure: success callback parameter must be a function'
       );
       return;
     }
@@ -113,7 +113,7 @@ class PushNotification {
    * @param   {Function}    errorCallback       error callback
    * @return  {void}
    */
-  unsubscribe(topic, successCallback, errorCallback = () => {}) {
+  unsubscribe (topic, successCallback, errorCallback = () => {}) {
     if (typeof errorCallback !== 'function') {
       console.log('PushNotification.unsubscribe failure: failure parameter not a function');
       return;
@@ -121,7 +121,7 @@ class PushNotification {
 
     if (typeof successCallback !== 'function') {
       console.log(
-        'PushNotification.unsubscribe failure: success callback parameter must be a function',
+        'PushNotification.unsubscribe failure: success callback parameter must be a function'
       );
       return;
     }
@@ -132,25 +132,25 @@ class PushNotification {
   /**
    * Call this to set the application icon badge
    */
-  setApplicationIconBadgeNumber(successCallback, errorCallback = () => {}, badge) {
+  setApplicationIconBadgeNumber (successCallback, errorCallback = () => {}, badge) {
     if (typeof errorCallback !== 'function') {
       console.log(
-        'PushNotification.setApplicationIconBadgeNumber failure: failure '
-          + 'parameter not a function',
+        'PushNotification.setApplicationIconBadgeNumber failure: failure ' +
+          'parameter not a function'
       );
       return;
     }
 
     if (typeof successCallback !== 'function') {
       console.log(
-        'PushNotification.setApplicationIconBadgeNumber failure: success '
-          + 'callback parameter must be a function',
+        'PushNotification.setApplicationIconBadgeNumber failure: success ' +
+          'callback parameter must be a function'
       );
       return;
     }
 
     exec(successCallback, errorCallback, 'PushNotification', 'setApplicationIconBadgeNumber', [
-      { badge },
+      { badge }
     ]);
   }
 
@@ -158,19 +158,19 @@ class PushNotification {
    * Get the application icon badge
    */
 
-  getApplicationIconBadgeNumber(successCallback, errorCallback = () => {}) {
+  getApplicationIconBadgeNumber (successCallback, errorCallback = () => {}) {
     if (typeof errorCallback !== 'function') {
       console.log(
-        'PushNotification.getApplicationIconBadgeNumber failure: failure '
-          + 'parameter not a function',
+        'PushNotification.getApplicationIconBadgeNumber failure: failure ' +
+          'parameter not a function'
       );
       return;
     }
 
     if (typeof successCallback !== 'function') {
       console.log(
-        'PushNotification.getApplicationIconBadgeNumber failure: success '
-          + 'callback parameter must be a function',
+        'PushNotification.getApplicationIconBadgeNumber failure: success ' +
+          'callback parameter must be a function'
       );
       return;
     }
@@ -182,18 +182,18 @@ class PushNotification {
    * Clear all notifications
    */
 
-  clearAllNotifications(successCallback = () => {}, errorCallback = () => {}) {
+  clearAllNotifications (successCallback = () => {}, errorCallback = () => {}) {
     if (typeof errorCallback !== 'function') {
       console.log(
-        'PushNotification.clearAllNotifications failure: failure parameter not a function',
+        'PushNotification.clearAllNotifications failure: failure parameter not a function'
       );
       return;
     }
 
     if (typeof successCallback !== 'function') {
       console.log(
-        'PushNotification.clearAllNotifications failure: success callback '
-          + 'parameter must be a function',
+        'PushNotification.clearAllNotifications failure: success callback ' +
+          'parameter must be a function'
       );
       return;
     }
@@ -207,12 +207,12 @@ class PushNotification {
    * @param  {Function} [errorCallback] Callback function to be called when an error is encountered.
    * @param  {Number} id    ID of the notification to be removed.
    */
-  clearNotification(successCallback = () => {}, errorCallback = () => {}, id) {
+  clearNotification (successCallback = () => {}, errorCallback = () => {}, id) {
     const idNumber = parseInt(id, 10);
     if (Number.isNaN(idNumber) || idNumber > Number.MAX_SAFE_INTEGER || idNumber < 0) {
       console.log(
-        'PushNotification.clearNotification failure: id parameter must'
-          + 'be a valid integer.',
+        'PushNotification.clearNotification failure: id parameter must' +
+          'be a valid integer.'
       );
       return;
     }
@@ -234,7 +234,7 @@ class PushNotification {
    * @param {Function} callback triggered on the event.
    */
 
-  on(eventName, callback) {
+  on (eventName, callback) {
     if (!Object.prototype.hasOwnProperty.call(this.handlers, eventName)) {
       this.handlers[eventName] = [];
     }
@@ -248,7 +248,7 @@ class PushNotification {
    * @param {Function} handle function associated with event.
    */
 
-  off(eventName, handle) {
+  off (eventName, handle) {
     if (Object.prototype.hasOwnProperty.call(this.handlers, eventName)) {
       const handleIndex = this.handlers[eventName].indexOf(handle);
       if (handleIndex >= 0) {
@@ -268,7 +268,7 @@ class PushNotification {
    * @return {Boolean} is true when the event is triggered otherwise false.
    */
 
-  emit(...args) {
+  emit (...args) {
     const eventName = args.shift();
 
     if (!Object.prototype.hasOwnProperty.call(this.handlers, eventName)) {
@@ -278,7 +278,7 @@ class PushNotification {
     for (let i = 0, { length } = this.handlers[eventName]; i < length; i += 1) {
       const callback = this.handlers[eventName][i];
       if (typeof callback === 'function') {
-        callback(...args);
+        callback(...args); // eslint-disable-line standard/no-callback-literal
       } else {
         console.log(`event handler: ${eventName} must be a function`);
       }
@@ -287,7 +287,7 @@ class PushNotification {
     return true;
   }
 
-  finish(successCallback = () => {}, errorCallback = () => {}, id = 'handler') {
+  finish (successCallback = () => {}, errorCallback = () => {}, id = 'handler') {
     if (typeof successCallback !== 'function') {
       console.log('finish failure: success callback parameter must be a function');
       return;
@@ -342,5 +342,5 @@ module.exports = {
    * and testing. Typically, you should use the
    * .init helper method.
    */
-  PushNotification,
+  PushNotification
 };
