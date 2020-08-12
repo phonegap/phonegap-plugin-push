@@ -37,7 +37,7 @@
     "cordovaDependencies": {
       "1.0.0": {
         "cordova": ">=9.0.0",
-        "cordova-android": ">=8.1.0",
+        "cordova-android": ">=9.0.0",
         "cordova-ios": ">=5.1.1"
       }
     }
