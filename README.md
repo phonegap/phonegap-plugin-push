@@ -1,4 +1,6 @@
-# phonegap-plugin-push [![Build Status](https://travis-ci.org/phonegap/phonegap-plugin-push.svg)](https://travis-ci.org/phonegap/phonegap-plugin-push)
+# Cordova Plugin Push
+
+[![Build Status](https://travis-ci.org/havesource/cordova-plugin-push.svg)](https://travis-ci.org/havesource/cordova-plugin-push)
 
 > Register and receive push notifications
 
