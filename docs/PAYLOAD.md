@@ -1,8 +1,14 @@
 - [Overview](#overview)
-  - [Foreground Events](#push-message-arrives-with-app-in-foreground)
-  - [Background Events](#push-message-arrives-with-app-in-background)
-  - [Tap Events](#user-clicks-on-notification-in-notification-center)
+  - [Push message arrives with app in foreground](#push-message-arrives-with-app-in-foreground)
+  - [Push message arrives with app in background](#push-message-arrives-with-app-in-background)
+  - [User clicks on notification in notification center](#user-clicks-on-notification-in-notification-center)
 - [Push Notification Message Format Overview](#push-notification-message-format-overview)
+  - [Android Message Format](#android-message-format)
+    - [Using AWS-SNS with GCM](#using-aws-sns-with-gcm)
+    - [Message Received in JavaScript](#message-received-in-javascript)
+  - [iOS Message Format](#ios-message-format)
+    - [Using AWS-SNS with APNS](#using-aws-sns-with-apns)
+    - [Message Received in JavaScript](#message-received-in-javascript-1)
 - [Android Behaviour](#android-behaviour)
   - [Notification vs Data Payloads](#notification-vs-data-payloads)
   - [Localization](#localization)
@@ -12,16 +18,17 @@
   - [Inbox Stacking](#inbox-stacking)
   - [Action Buttons](#action-buttons)
     - [In Line Replies](#in-line-replies)
+      - [Attributes](#attributes)
   - [Led in Notifications](#led-in-notifications)
   - [Vibration Pattern in Notifications](#vibration-pattern-in-notifications)
   - [Priority in Notifications](#priority-in-notifications)
   - [Picture Messages](#picture-messages)
   - [Background Notifications](#background-notifications)
     - [Use of content_available: true](#use-of-content_available-true)
-  - [Caching](#caching)
-  - [Chinese Android Phones](#chinese-android-phones)
-  - [Application force closed](#application-force-closed)
-  - [Visibility](#visibility-of-notifications)
+    - [Chinese Android Phones](#chinese-android-phones)
+    - [Application force closed](#application-force-closed)
+    - [Caching](#caching)
+  - [Visibility of Notifications](#visibility-of-notifications)
   - [Ongoing Notifications](#ongoing-notifications)
   - [Badges](#badges)
   - [Support for Twilio Notify](#support-for-twilio-notify)
@@ -35,6 +42,7 @@
   - [Action Buttons](#action-buttons-1)
     - [Action Buttons using FCM on iOS](#action-buttons-using-fcm-on-ios)
   - [FCM and Additional Data](#fcm-and-additional-data)
+  - [FCM Messages Not Arriving](#fcm-messages-not-arriving)
 - [FCM Payload Details](#fcm-payload-details)
 - [Windows Behaviour](#windows-behaviour)
   - [Notifications](#notifications)
@@ -2128,12 +2136,12 @@ On iOS, using the FCM app server protocol, if you are trying to send a silent pu
 		"custom_var_2:" "custom value here" /* Retrieved on app as data.additionalData.custom_var_2 */
 	},
   /* Forces FCM silent push notifications to be triggered in the foreground of your iOS device. */
-  "content_available": true  
+  "content_available": true
 }
 ```
 *Doc modification came in response to @andreszs - Issue [#2449](https://github.com/phonegap/phonegap-plugin-push/issues/2449).
 
-** IMPORTANT: When using the content_available field, Android payload issues may occur. [Read here](../docs/PAYLOAD.md#user-content-use-of-content_available-true) Make sure you separate your Android/iOS server payloads to mitigate any problems that may arise. 
+** IMPORTANT: When using the content_available field, Android payload issues may occur. [Read here](../docs/PAYLOAD.md#user-content-use-of-content_available-true) Make sure you separate your Android/iOS server payloads to mitigate any problems that may arise.
 
 More information on how to send push notifications using the FCM HTTP protocol and payload details can be found here:
 

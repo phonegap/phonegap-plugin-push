@@ -1,11 +1,12 @@
 # ISSUES
 
-- [Read the docs](#read-the-docs)
-- [Search the issues](#search-the-issues)
-- [Opening a new issue](#opening-a-new-issue)
-  - [Provide details](#provide-details)
-  - [An example issue](#an-example-issue)
-- [Voting on an issue](#voting-on-an-issue)
+- [ISSUES](#issues)
+  - [Read the docs](#read-the-docs)
+  - [Search the issues](#search-the-issues)
+  - [Opening a new issue](#opening-a-new-issue)
+    - [Provide details](#provide-details)
+    - [An example issue](#an-example-issue)
+  - [Voting on an issue](#voting-on-an-issue)
 
 The following tips are for users of this plugin who want to get help.
 
@@ -55,7 +56,7 @@ If the code or logs are huge, let's say over 20 lines please think about using a
 
 *Title:* Registration event never received on Samsung Galaxy S running Android 2.3
 
-*Details:* I'm using version 1.5.2 of this plugin on my Samsung Galaxy S5 device which runs Android 4.4. I never receiving the `registration` event in my application when I expect it to return a value I can send to my push service. 
+*Details:* I'm using version 1.5.2 of this plugin on my Samsung Galaxy S5 device which runs Android 4.4. I never receiving the `registration` event in my application when I expect it to return a value I can send to my push service.
 
 You can see the code I'm using in this gist: [https://gist.github.com/macdonst/191f74ac75b6802c047d](https://gist.github.com/macdonst/191f74ac75b6802c047d)
 
@@ -71,7 +72,7 @@ Thanks for the detailed logs and example code by looking them over I'm sure of w
 I/chromium(11669): [INFO:CONSOLE(54)] "Uncaught ReferenceError: PushNotification is not defined", source: file:///android_asset/www/js/index.js (54)
 ```
 
-This leads me to line [4](https://gist.github.com/macdonst/191f74ac75b6802c047d#file-app-js-L4) of your code where you are initializing push before you get the `deviceready` event. Like all Cordova API's you have to wait until you receive the `deviceready` event before you initialize Push.  
+This leads me to line [4](https://gist.github.com/macdonst/191f74ac75b6802c047d#file-app-js-L4) of your code where you are initializing push before you get the `deviceready` event. Like all Cordova API's you have to wait until you receive the `deviceready` event before you initialize Push.
 
 Check out [https://github.com/phonegap/phonegap-plugin-push/blob/20f489a90cf519f962fd957700f92115f142594b/example/www/js/index.js](https://github.com/phonegap/phonegap-plugin-push/blob/20f489a90cf519f962fd957700f92115f142594b/example/www/js/index.js) for an example of how to wait for `deviceready`.
 
