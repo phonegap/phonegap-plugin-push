@@ -30,8 +30,11 @@
     "@babel/preset-env": "^7.5.5",
     "@cordova/eslint-config": "^3.0.0",
     "babel-plugin-add-header-comment": "^1.0.3",
+    "fs-extra": "^9.0.1",
     "jasmine": "^3.4.0",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "nopt": "^5.0.0",
+    "xml2js": "^0.4.23"
   },
   "engines": {
     "cordovaDependencies": {
