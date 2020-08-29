@@ -137,20 +137,30 @@ cordova plugin add --save cordova-plugin-facebook4 --variable APP_ID="App ID" --
 
 ### Co-existing with plugins that use Firebase
 
-Problems may arise when push plugin is used along plugins that implement Firebase functionality (cordova-plugin-firebase-analytics, for example). Both plugins include a version of the FCM libraries.
+Problems may arise when push plugin is used along plugins that implement Firebase functionality (e.g. `cordova-plugin-firebase-analytics`). Both plugins include a version of the FCM libraries.
 
 To make the two work together, you need to migrate your GCM project from Google console to Firebase console:
 
-1.  In Firebase console - [import your existing GCM project](https://firebase.google.com/support/guides/google-android#migrate_your_console_project), don't create a new one.
-2.  Set your `FCM_VERSION` variable to match the version used in the other plugin. In case of cordova, your `config.xml` would look something like this:
+1. In Firebase console - [import your existing GCM project](https://firebase.google.com/support/guides/google-android#migrate_your_console_project), don't create a new one.
+2. Set your `FCM_VERSION` variable to match the version used in the other plugin. In case of Cordova, your `package.json` contains something like this:
 
-```xml
-<plugin name="phonegap-plugin-push" spec="~2.2.0">
-    <variable name="FCM_VERSION" value="15.0.0" />
-</plugin>
+```json
+{
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-push": {
+        "ANDROID_SUPPORT_V13_VERSION": "27.+",
+        "FCM_VERSION": "18.+"
+      }
+    },
+    "platforms": []
+  }
+}
 ```
 
 _Note:_ No changes on the back-end side are needed: [even though recommended](https://developers.google.com/cloud-messaging/android/android-migrate-fcm#update_server_endpoints), it isn't yet required and sending messages through GCM gateway should work just fine.
+
+_Note:_ The `FCM_VERSION` must be greater than or equal to 17.1.0 and less than or equal to 18.0.0.
 
 ### Common errors
 
