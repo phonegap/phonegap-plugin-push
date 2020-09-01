@@ -14,14 +14,12 @@
     - [Browser quirks](#browser-quirks)
     - [Browser Support](#browser-support)
   - [iOS details](#ios-details)
-    - [Xcode](#xcode)
+    - [System & Cordova Requirements](#system--cordova-requirements)
     - [Bitcode](#bitcode)
     - [CocoaPods](#cocoapods)
       - [Common CocoaPod Installation issues](#common-cocoapod-installation-issues)
-        - [CocoaPod Disk Space](#cocoapod-disk-space)
         - [Library not found for -lPods-Appname](#library-not-found-for--lpods-appname)
         - [Library not found for -lGoogleToolboxForMac](#library-not-found-for--lgoogletoolboxformac)
-        - [Module FirebaseInstanceID not found](#module-firebaseinstanceid-not-found)
   - [Additional Resources](#additional-resources)
 
 ## Installation Requirements
@@ -252,59 +250,49 @@ Firefox 46+
 
 ## iOS details
 
-### Xcode
+### System & Cordova Requirements
 
-Xcode version 8.0 or greater is required for building this plugin.
+**System:**
+
+- `Xcode`: `11.0` or greater.
+- `CocoaPods`: `1.8.0` or greater. Preferably `1.9.x`
+- `Ruby`: `2.0.0` or greater.
+
+**Cordova:**
+
+- `cordova-cli`: `9.0.0` or greater. Preferably `10.x`
+- `cordova-ios`: `5.1.1` or greater. Preferably `6.1.x`
 
 ### Bitcode
 
 If you are running into a problem where the linker is complaining about bit code. For instance:
 
-```
+```log
 ld: '<file.o>' does not contain bitcode. You must rebuild it with bitcode enabled (Xcode setting ENABLE_BITCODE), obtain an updated library from the vendor, or disable bitcode for this target. for architecture arm64 clang: error: linker command failed with exit code 1 (use -v to see invocation)
 ```
 
-You have two options. The first is to [disable bitcode as per this StackOverflow answer](http://stackoverflow.com/a/32466484/41679) or [upgrade to cordova-ios 4 or greater](https://cordova.apache.org/announcements/2015/12/08/cordova-ios-4.0.0.html).
+You have two options. The first is to [disable bitcode as per this StackOverflow answer](http://stackoverflow.com/a/32466484/41679) or [upgrade to cordova-ios 5.1.1 or greater](https://cordova.apache.org/announcements/2019/12/02/cordova-ios-release-5.1.1.html).
 
-```
-cordova platform update ios@4.0.0
+```bash
+cordova platform rm ios
+cordova platform add ios@5.1.1
 ```
 
 ### CocoaPods
 
-Required `cordova-cli` minimum version: `6.4.0`
+To install CocoaPods, please follow the installation instructions [here](https://guides.cocoapods.org/using/getting-started). Since version `1.8.0` and greater, the pod repo no longer needs to be setup or fetched. Pods specs will be fetched directly from the **CocoaPods CDN**.
 
-Required `cordova-ios` minimum version: `4.3.0`
+If you are upgrading from an older version, it might be best to uninstall first the older version and remove the `~/.cocoapods/` directory.
 
-Required `CocoaPods` minimum version: `1.0.1`
-
-To install CocoaPods, please follow the installation instructions [here](https://guides.cocoapods.org/using/getting-started). After installing CocoaPods, please run:
-
-    pod setup
-
-This will clone the required CocoaPods specs-repo into your home folder at `~/.cocoapods/repos`, so it might take a while. See the [CocoaPod Disk Space](#cocoapod-disk-space) section below for more information.
-
-Version `2.0.0` (and above) of this plugin supports [CocoaPods](https://cocoapods.org) installation of the [Firebase Cloud Messaging](https://cocoapods.org/pods/FirebaseMessaging) library.
-
-If you are installing this plugin using `npm`, and you are using version `6.1.0` or greater of the `cordova-cli`, it will automatically download the right version of this plugin for both your platform and cli.
-
-If you are on a `cordova-cli` version less than `6.1.0`, you will either have to upgrade your `cordova-cli` version, or install the plugin explicitly:
-
-i.e.
-
-```bash
-cordova plugin add phonegap-plugin-push@1.8.1
-```
-
-If you are installing this plugin using a `local file reference` or a `git url`, you will have to specify the version of this plugin explicitly (see above) if you don't fulfill the `cordova-cli` and `cordova-ios` requirements.
+This plugin uses the [Firebase/Messaging](https://cocoapods.org/pods/Firebase) library.
 
 #### Common CocoaPod Installation issues
 
 If you are attempting to install this plugin and you run into this error:
 
-```
-Installing "phonegap-plugin-push" for ios
-Failed to install 'phonegap-plugin-push':Error: pod: Command failed with exit code 1
+```log
+Installing "cordova-plugin-push" for ios
+Failed to install 'cordova-plugin-push':Error: pod: Command failed with exit code 1
     at ChildProcess.whenDone (/Users/smacdona/code/push151/platforms/ios/cordova/node_modules/cordova-common/src/superspawn.js:169:23)
     at emitTwo (events.js:87:13)
     at ChildProcess.emit (events.js:172:7)
@@ -313,22 +301,28 @@ Failed to install 'phonegap-plugin-push':Error: pod: Command failed with exit co
 Error: pod: Command failed with exit code 1
 ```
 
-Please run the command `pod repo update` and re-install the plugin. You would only run `pod repo update` if you have the specs-repo already cloned on your machine through `pod setup`.
+Please try to add the plugin again, with the `--verbose` flag. The above error is generic and can actually be caused by a number of reasons. The `--verbose` flag should help display the exact cause of the install failure.
 
-##### CocoaPod Disk Space
+One of the most common reason is that it is trying to fetch the podspec from the CocoaPods repo and the repo is out-of-date. It recommended to use CocoaPods CDN over the repo. If your using an older version of CocoaPods, it is recommend to upgrade with a fresh installation.
 
-Running `pod setup` can take over 1 GB of disk space and that can take quite some time to download over a slow internet connection. If you are having issues with disk space/network try this neat hack from @VinceOPS.
+With a fresh installations, you should have one repo source which can be checked with the `pod repo` command.
 
-```bash
-git clone --verbose --depth=1 https://github.com/CocoaPods/Specs.git ~/.cocoapods/repos/master
-pod setup --verbose
+```log
+$ pod repo
+
+trunk
+- Type: CDN
+- URL:  https://cdn.cocoapods.org/
+- Path: /Users/home/.cocoapods/repos/trunk
+
+1 repo
 ```
 
 ##### Library not found for -lPods-Appname
 
 If you open the app in Xcode and you get an error like:
 
-```
+```log
 ld: library not found for -lPods-Appname
 clang: error: linker command failed with exit code 1
 ```
@@ -337,30 +331,15 @@ Then you are opening the .xcodeproj file when you should be opening the .xcworks
 
 ##### Library not found for -lGoogleToolboxForMac
 
-Trying to build for iOS using the latest cocoapods (1.2.1) but failed with the following error (from terminal running cordova build ios):
+Trying to build for iOS using the latest cocoapods (1.9.3) but failed with the following error (from terminal running cordova build ios):
 
-```
+```log
 ld: library not found for -lGoogleToolboxForMac
 ```
 
 Workarounds are to add the platform first and install the plugins later, or to manually run pod install on projectName/platforms/ios.
 
 Another workaround is to go to build phases in your project at Link Binary Libraries and add `libPods-PROJECTNAME.a` and `libGoogleToolboxForMac.a`
-
-##### Module FirebaseInstanceID not found
-
-If you run into an error like:
-
-```
-module FirebaseInstanceID not found
-```
-
-You may be running into a bug in cordova-ios. The current workaround is to run `pod install` manually.
-
-```bash
-cd platforms/ios
-pod install
-```
 
 ## Additional Resources
 

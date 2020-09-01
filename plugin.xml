@@ -109,8 +109,15 @@
     <header-file src="src/ios/AppDelegate+notification.h"/>
     <header-file src="src/ios/PushPlugin.h"/>
 
-    <framework src="FirebaseMessaging" type="podspec" spec="~> 2.0.0"/>
     <framework src="PushKit.framework"/>
+
+    <podspec>
+      <!-- keep empty `config` object to prevent `cordova-common` install issues.-->
+      <config></config>
+      <pods use-frameworks="true">
+        <pod name="Firebase/Messaging" spec="~> 6.31.0" />
+      </pods>
+    </podspec>
   </platform>
 
   <platform name="windows">
