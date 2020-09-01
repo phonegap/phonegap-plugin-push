@@ -1,0 +1,35 @@
+# The "request-info" app is used to automatically alert users when they have created a
+# new issues that does not have any description. We will reassure them that we need information
+# to be able to help them. It will also say they should follow the issue template that was
+# pre-provided when creating the issue.
+
+requestInfoReplyComment: >
+  Thank you for your submission, however, with the lack of information, we are unable
+  to continue at this time.
+
+  We would appreciate it if you could provide us with more information about this
+  submission so that we could provide better support to this issue/pr.
+
+  Therefore, please edit this issue accordingly by using our pre-provided template or
+  close and create a new one and make sure to provide all the required information.
+
+  This submission will be automatically closed later if no information is provided.
+
+# Titles can also be checked against for lack of descriptiveness. (MUST BE ALL LOWERCASE)
+# requestInfoDefaultTitles:
+#   - update readme.md
+#   - updates
+
+# Append the info-needed label issues and prs with insufficient information.
+requestInfoLabelToAdd: info-needed
+
+# Issues and PR requires more information than what is provided in the templates
+# This check will will fail if the body matches the provided template
+checkIssueTemplate: true
+checkPullRequestTemplate: true
+
+# Only warn about insufficient information on these events types
+# Keys must be lowercase. Valid values are 'issue' and 'pullRequest'
+requestInfoOn:
+  pullRequest: true
+  issue: true

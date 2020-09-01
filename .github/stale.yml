@@ -1,0 +1,27 @@
+# The "Stale" app is used to automatically close stale issues and pr which accumulates over time.
+
+# The number of days of inactivity before an issue or pr is flagged as stale with the stale tag.
+daysUntilStale: 60
+
+# The number of days of inactivity before a stale issue is closed
+daysUntilClose: 14
+
+# The issues and pr that contains any of these labels will never be flagged as stale
+exemptLabels:
+  - pinned
+  - security
+
+# The label which is appened to mark an issue or pr as stale
+staleLabel: wontfix
+
+# Below is the stale bot's comment to warn users when a issue or pr becomes stale.
+markComment: >
+This has been automatically marked as stale due to the lack of activity. It will be closed if no further activity occurs.
+
+If you believe this is still valid, please provide an update to reassure that it is needed and all open questions were answered.
+When verifying, please use the master branch as this may have already been resolved.
+
+Thank you for your contributions.
+
+# Comment to post when closing a stale issue. Set to `false` to disable
+closeComment: false
