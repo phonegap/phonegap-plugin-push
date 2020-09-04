@@ -13,6 +13,7 @@ public interface PushConstants {
   public static final String SOUND = "sound";
   public static final String SOUND_DEFAULT = "default";
   public static final String SOUND_RINGTONE = "ringtone";
+  public static final String SOUND_NONE = "none";
   public static final String VIBRATE = "vibrate";
   public static final String ACTIONS = "actions";
   public static final String CALLBACK = "callback";
@@ -102,4 +103,5 @@ public interface PushConstants {
   public static final String ONGOING = "ongoing";
   public static final String LIST_CHANNELS = "listChannels";
   public static final String CLEAR_NOTIFICATION = "clearNotification";
+  public static final String ISALARM = "isAlarm";
 }

@@ -29,6 +29,11 @@ import android.support.v4.app.RemoteInput;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
+import android.media.MediaPlayer;
+import android.os.Vibrator;
+import android.media.AudioManager;
+import android.media.AudioAttributes;
+import android.os.VibrationEffect;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -53,6 +58,10 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
 
   private static final String LOG_TAG = "Push_FCMService";
   private static HashMap<Integer, ArrayList<String>> messageMap = new HashMap<Integer, ArrayList<String>>();
+      
+  public FCMService() {	 
+
+  }
 
   public void setNotification(int notId, String message) {
     ArrayList<String> messageList = messageMap.get(notId);
@@ -415,6 +424,8 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     } else {
       mBuilder = new NotificationCompat.Builder(context);
     }
+	
+	  mBuilder.setCategory(NotificationCompat.CATEGORY_ALARM);
 
     mBuilder.setWhen(System.currentTimeMillis()).setContentTitle(fromHtml(extras.getString(TITLE)))
         .setTicker(fromHtml(extras.getString(TITLE))).setContentIntent(contentIntent).setDeleteIntent(deleteIntent)
@@ -425,6 +436,8 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     String localIconColor = prefs.getString(ICON_COLOR, null);
     boolean soundOption = prefs.getBoolean(SOUND, true);
     boolean vibrateOption = prefs.getBoolean(VIBRATE, true);
+	boolean isAlarm = Boolean.parseBoolean(extras.getString(ISALARM, "false"));	
+	
     Log.d(LOG_TAG, "stored icon=" + localIcon);
     Log.d(LOG_TAG, "stored iconColor=" + localIconColor);
     Log.d(LOG_TAG, "stored sound=" + soundOption);
@@ -434,8 +447,16 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
      * Notification Vibration
      */
 
-    setNotificationVibration(extras, vibrateOption, mBuilder);
+	if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) 
+	{
+		setNotificationVibrationExternal(extras, vibrateOption, mBuilder);		
+	} else {
+		setNotificationVibration(extras, vibrateOption, mBuilder);
+	}
+		
 
+	
+	
     /*
      * Notification Icon Color
      *
@@ -477,7 +498,17 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
      * Notification Sound
      */
     if (soundOption) {
-      setNotificationSound(context, extras, mBuilder);
+		
+		/* Check is isAlarm Notification */
+			
+		Log.d(LOG_TAG, "isAlarm = " + String.valueOf(isAlarm));
+		
+		if(!isAlarm) 
+		{
+			
+		}
+		
+      //setNotificationSound(context, extras, mBuilder);
     }
 
     /*
@@ -516,6 +547,68 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     createActions(extras, mBuilder, resources, packageName, notId);
 
     mNotificationManager.notify(appName, notId, mBuilder.build());
+	
+	if (soundOption) {
+		
+		String soundname = extras.getString(SOUNDNAME);
+		if (soundname == null) {
+		  soundname = extras.getString(SOUND);
+		}
+		
+		MediaPlayer mMediaPlayer; 
+		try {
+			
+			mMediaPlayer = new MediaPlayer();
+							 
+			if (SOUND_RINGTONE.equals(soundname)) {
+			  mMediaPlayer.setDataSource(this.getApplicationContext(), android.provider.Settings.System.DEFAULT_RINGTONE_URI); 			  
+			} else if (soundname != null && !soundname.contentEquals(SOUND_DEFAULT)) {
+			  Uri sound = Uri
+				  .parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.getPackageName() + "/raw/" + soundname);
+			  Log.d(LOG_TAG, sound.toString());			  
+			  mMediaPlayer.setDataSource(this.getApplicationContext(), sound); 
+			} else {
+			  mMediaPlayer.setDataSource(this.getApplicationContext(), android.provider.Settings.System.DEFAULT_NOTIFICATION_URI); 			  
+			}
+			
+			if(isAlarm) {
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) 
+				{					
+					AudioAttributes audioAttributes = new AudioAttributes.Builder()
+						.setUsage(AudioAttributes.USAGE_ALARM)
+						.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+						.build();
+					mMediaPlayer.setAudioAttributes(audioAttributes);
+				} else {
+					mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+				}
+			} else {
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) 
+				{
+					AudioAttributes audioAttributes = new AudioAttributes.Builder()
+						.setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+						.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+						.build();
+					mMediaPlayer.setAudioAttributes(audioAttributes);
+				} else {
+					mMediaPlayer.setAudioStreamType(AudioManager.STREAM_NOTIFICATION);
+				}
+			}
+	
+			
+			mMediaPlayer.setLooping(false);
+			mMediaPlayer.prepareAsync();
+			mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+				@Override
+				public void onPrepared(MediaPlayer mp) {
+					mMediaPlayer.start();
+				}
+			});
+		} catch (SecurityException | IOException e) {
+			
+		}
+	}
+	
   }
 
   private void updateIntent(Intent intent, String callback, Bundle extras, boolean foreground, int notId) {
@@ -633,6 +726,23 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     }
   }
 
+  private void setNotificationVibrationExternal(Bundle extras, Boolean vibrateOption, NotificationCompat.Builder mBuilder) {
+    String vibrationPattern = extras.getString(VIBRATION_PATTERN);
+    if (vibrationPattern != null) {
+      String[] items = vibrationPattern.replaceAll("\\[", "").replaceAll("\\]", "").split(",");
+      long[] results = new long[items.length];
+      for (int i = 0; i < items.length; i++) {
+        try {
+          results[i] = Long.parseLong(items[i].trim());
+        } catch (NumberFormatException nfe) {
+        }
+      }
+	  
+	  Vibrator vibrator = (Vibrator)this.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+	  vibrator.vibrate(VibrationEffect.createWaveform(results, -1));
+    }
+  }
+  
   private void setNotificationVibration(Bundle extras, Boolean vibrateOption, NotificationCompat.Builder mBuilder) {
     String vibrationPattern = extras.getString(VIBRATION_PATTERN);
     if (vibrationPattern != null) {
@@ -728,6 +838,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     }
   }
 
+  
   private void setNotificationSound(Context context, Bundle extras, NotificationCompat.Builder mBuilder) {
     String soundname = extras.getString(SOUNDNAME);
     if (soundname == null) {

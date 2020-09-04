@@ -167,6 +167,37 @@ The JSON message can contain the following fields, see [Apple developer docs](ht
 }
 ```
 
+### Speical Format for Critical Alerts
+
+Since iOS 12 it's possible to send critical alerts to the users device. A critical alert will popup and play sound even when device is in DND Mode or muted. This functionallity is mainly to be used by health Apps to inform about critical states.
+Instead of the name of the sound you have to send a dictionary containing further information about critical
+
+```json
+{
+  "aps": {
+    "alert": {
+      // alternatively just a string: "Your Message",
+      "title": "A short string describing the purpose of the notification",
+      "body": "The text of the alert message",
+      // localization of message is possible
+      "launch-image": "The filename of an image file in the app bundle, with or without the filename extension. The image is used as the launch image when users tap the action button or move the action slider"
+    },
+    "badge": 5, // Number to show at App icon
+    "content-available": "0", // configure background updates, see below
+    "category": "identifier", // Provide this key with a string value that represents the notification’s type
+    "thread-id": "id", // Provide this key with a string value that represents the app-specific identifier for grouping notifications
+    "sound": {
+		"critical" : 1, // When 1, the notification is handled as a critical one. The sound is played aloud even when device is in dnd mode or muted
+		"name" : "default", // play default sound, or custom sound, see [iOS Sound](#sound-1) section
+		"volume" : 1.0 // Optional: Volume. Value can between 0.0 (silent) and 1.0 (full volume)
+	}
+  },
+  "notId": 1,
+  "custom_key1": "value1",
+  "custom_key2": "value2"
+}
+```
+
 ### Using AWS-SNS with APNS
 
 This is the JSON-encoded format you can send via AWS-SNS's web UI:

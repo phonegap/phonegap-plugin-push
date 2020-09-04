@@ -202,6 +202,7 @@
             id badgeArg = [iosOptions objectForKey:@"badge"];
             id soundArg = [iosOptions objectForKey:@"sound"];
             id alertArg = [iosOptions objectForKey:@"alert"];
+			id criticalArg = [iosOptions objectForKey:@"critical"];
             id clearBadgeArg = [iosOptions objectForKey:@"clearBadge"];
 
             if (([badgeArg isKindOfClass:[NSString class]] && [badgeArg isEqualToString:@"true"]) || [badgeArg boolValue])
@@ -217,6 +218,11 @@
             if (([alertArg isKindOfClass:[NSString class]] && [alertArg isEqualToString:@"true"]) || [alertArg boolValue])
             {
                 authorizationOptions |= UNAuthorizationOptionAlert;
+            }
+			
+			if ((([criticalArg isKindOfClass:[NSString class]] && [criticalArg isEqualToString:@"true"]) || [criticalArg boolValue]) && @available(iOS 12.0, *))
+            {
+                authorizationOptions |= UNAuthorizationOptionCriticalAlert;
             }
 
             if (clearBadgeArg == nil || ([clearBadgeArg isKindOfClass:[NSString class]] && [clearBadgeArg isEqualToString:@"false"]) || ![clearBadgeArg boolValue]) {
