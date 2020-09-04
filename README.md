@@ -1,3 +1,7 @@
+# DEPRECATED
+
+This project is not under active development. Folks who are users of this plugin should switch to using [cordova-plugin-push](https://github.com/havesource/cordova-plugin-push) which is a fork of this project.
+
 # phonegap-plugin-push [![Build Status](https://travis-ci.org/phonegap/phonegap-plugin-push.svg)](https://travis-ci.org/phonegap/phonegap-plugin-push)
 
 > Register and receive push notifications
