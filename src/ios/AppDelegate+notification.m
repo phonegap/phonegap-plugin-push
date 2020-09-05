@@ -81,9 +81,17 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     NSLog(@"didReceiveNotification with fetchCompletionHandler");
 
-    // app is in the background or inactive, so only call notification callback if this is a silent push
-    if (application.applicationState != UIApplicationStateActive) {
+    // app is in the foreground so call notification callback
+    if (application.applicationState == UIApplicationStateActive) {
+        NSLog(@"app active");
+        PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+        pushHandler.notificationMessage = userInfo;
+        pushHandler.isInline = YES;
+        [pushHandler notificationReceived];
 
+        completionHandler(UIBackgroundFetchResultNewData);
+    } else {
+        // app is in the background or inactive, so only call notification callback if this is a silent push
         NSLog(@"app in-active");
 
         // do some convoluted logic to find out if this should be a silent push.
@@ -128,9 +136,6 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
             self.launchNotification = userInfo;
             completionHandler(UIBackgroundFetchResultNewData);
         }
-
-    } else {
-        completionHandler(UIBackgroundFetchResultNoData);
     }
 }
 
