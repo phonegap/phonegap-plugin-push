@@ -10,10 +10,28 @@
 #import "PushPlugin.h"
 #import <objc/runtime.h>
 
+static char clobberedDelegateKey;
 static char launchNotificationKey;
 static char coldstartKey;
 NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginApplicationDidBecomeActiveNotification";
 
+@interface WeakObjectContainer<T> : NSObject
+
+@property (nonatomic, readonly, weak) T object;
+
+@end
+
+@implementation WeakObjectContainer
+
+- (instancetype) initWithObject:(id)object
+{
+    if (self = [super init]) {
+        _object = object;
+    }
+    return self;
+}
+
+@end
 
 @implementation AppDelegate (notification)
 
@@ -56,6 +74,7 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
 - (AppDelegate *)pushPluginSwizzledInit
 {
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    self.clobberedDelegate = center.delegate;
     center.delegate = self;
 
     [[NSNotificationCenter defaultCenter]addObserver:self
@@ -190,6 +209,14 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
        willPresentNotification:(UNNotification *)notification
          withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler
 {
+    [self.clobberedDelegate userNotificationCenter:center
+                           willPresentNotification:notification
+                             withCompletionHandler:completionHandler];
+    
+    if (![notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
+        return;
+    }
+    
     NSLog( @"NotificationCenter Handle push from foreground" );
     // custom code to handle push while app is in the foreground
     PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
@@ -204,6 +231,14 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
 didReceiveNotificationResponse:(UNNotificationResponse *)response
          withCompletionHandler:(void(^)(void))completionHandler
 {
+    [self.clobberedDelegate userNotificationCenter:center
+                    didReceiveNotificationResponse:response
+                             withCompletionHandler:completionHandler];
+    
+    if (![response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
+        return;
+    }
+    
     NSLog(@"Push Plugin didReceiveNotificationResponse: actionIdentifier %@, notification: %@", response.actionIdentifier,
           response.notification.request.content.userInfo);
     NSMutableDictionary *userInfo = [response.notification.request.content.userInfo mutableCopy];
@@ -260,6 +295,18 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 
 // The accessors use an Associative Reference since you can't define a iVar in a category
 // http://developer.apple.com/library/ios/#documentation/cocoa/conceptual/objectivec/Chapters/ocAssociativeReferences.html
+- (id<UNUserNotificationCenterDelegate>)clobberedDelegate
+{
+    WeakObjectContainer<id<UNUserNotificationCenterDelegate>> *weakDelegateContainer = objc_getAssociatedObject(self, &clobberedDelegateKey);
+    return weakDelegateContainer.object;
+}
+
+- (void)setClobberedDelegate:(id<UNUserNotificationCenterDelegate>)clobberedDelegate
+{
+    WeakObjectContainer<id<UNUserNotificationCenterDelegate>> *weakDelegateContainer = [[WeakObjectContainer alloc] initWithObject:clobberedDelegate];
+    objc_setAssociatedObject(self, &clobberedDelegateKey, weakDelegateContainer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 - (NSMutableArray *)launchNotification
 {
     return objc_getAssociatedObject(self, &launchNotificationKey);
