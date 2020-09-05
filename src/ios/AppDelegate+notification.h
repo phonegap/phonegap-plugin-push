@@ -17,6 +17,7 @@ extern NSString *const pushPluginApplicationDidBecomeActiveNotification;
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:( void (^)(UIBackgroundFetchResult))completionHandler;
 - (void)pushPluginOnApplicationDidBecomeActive:(UIApplication *)application;
 - (void)checkUserHasRemoteNotificationsEnabledWithCompletionHandler:(nonnull void (^)(BOOL))completionHandler;
+- (void)requestUserPermissionRemoteNotificationsWithCompletionHandler:(nonnull void (^)(BOOL))completionHandler;
 - (id) getCommandInstance:(NSString*)className;
 
 @property (nonatomic, retain) NSDictionary  *launchNotification;
