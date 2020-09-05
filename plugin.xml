@@ -43,7 +43,7 @@
       </service>
     </config-file>
     <preference name="ANDROID_SUPPORT_V13_VERSION" default="27.+"/>
-    <preference name="FCM_VERSION" default="17.0.+"/>
+    <preference name="FCM_VERSION" default="17.0.0"/>
     <framework src="com.android.support:support-v13:$ANDROID_SUPPORT_V13_VERSION"/>
     <framework src="me.leolin:ShortcutBadger:1.1.17@aar"/>
     <framework src="com.google.firebase:firebase-messaging:$FCM_VERSION"/>
@@ -86,7 +86,7 @@
     <source-file src="src/ios/PushPlugin.m"/>
     <header-file src="src/ios/AppDelegate+notification.h"/>
     <header-file src="src/ios/PushPlugin.h"/>
-    <framework src="FirebaseMessaging" type="podspec" spec="~> 2.0.0"/>
+    <framework src="Firebase/Messaging" type="podspec"/>
     <framework src="PushKit.framework"/>
   </platform>
   <platform name="windows">
