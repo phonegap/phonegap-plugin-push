@@ -6,12 +6,14 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
@@ -69,6 +71,8 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         JSONObject channel = new JSONObject();
         channel.put(CHANNEL_ID, notificationChannel.getId());
         channel.put(CHANNEL_DESCRIPTION, notificationChannel.getDescription());
+        channel.put(CHANNEL_IMPORTANCE, notificationChannel.getImportance());
+        channel.put(CHANNEL_SOUND_URI, notificationChannel.getSound());
         channels.put(channel);
       }
     }
@@ -429,6 +433,21 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
             Log.v(LOG_TAG, "clearNotification");
             int id = data.getInt(0);
             clearNotification(id);
+            callbackContext.success();
+          } catch (JSONException e) {
+            callbackContext.error(e.getMessage());
+          }
+        }
+      });
+    } else if (OPEN_NOTIFICATIONS_SETTINGS.equals(action)) {
+      // open notifications settings
+      cordova.getThreadPool().execute(new Runnable() {
+        public void run() {
+          try {
+            Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, cordova.getContext().getApplicationInfo().packageName);
+            intent.putExtra(Settings.EXTRA_CHANNEL_ID, data.getString(0));
+            cordova.getActivity().getApplicationContext().startActivity(intent);
             callbackContext.success();
           } catch (JSONException e) {
             callbackContext.error(e.getMessage());

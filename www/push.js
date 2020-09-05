@@ -372,6 +372,9 @@ module.exports = {
   listChannels: function listChannels(successCallback, errorCallback) {
     exec(successCallback, errorCallback, 'PushNotification', 'listChannels', []);
   },
+  openNotificationsSettings: function openNotificationsSettings(successCallback, errorCallback, channelId) {
+    exec(successCallback, errorCallback, 'PushNotification', 'openNotificationsSettings', [channelId]);
+  },
 
   /**
    * PushNotification Object.
