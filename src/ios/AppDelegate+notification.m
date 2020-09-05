@@ -71,7 +71,18 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
     [pushHandler didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self
+                                            selector:@selector(inLineNotificationHandler:)
+                                                name:@"inlinecallback"
+                                              object:nil];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self
+                                            selector:@selector(handleConfirmDeclineNotification:)
+                                                name:@"confirmcallback"
+                                              object:nil];
 }
+
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
@@ -126,10 +137,15 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
             NSLog(@"just put it in the shade");
             //save it for later
             self.launchNotification = userInfo;
+            
             completionHandler(UIBackgroundFetchResultNewData);
         }
 
     } else {
+        PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+        pushHandler.notificationMessage = userInfo;
+        pushHandler.isInline = YES;
+        [pushHandler notificationReceived];
         completionHandler(UIBackgroundFetchResultNoData);
     }
 }
@@ -255,6 +271,110 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 
             [pushHandler performSelectorOnMainThread:@selector(notificationReceived) withObject:pushHandler waitUntilDone:NO];
         }
+    }
+}
+
+- (void)inLineNotificationHandler:(NSNotification *)notification {
+    
+    NSLog(@"inLineNotificationHandler::::::%@",notification.userInfo);
+    UNNotificationResponse* response  = (UNNotificationResponse *)notification.userInfo;
+    
+    NSMutableDictionary *userInfo = [response.notification.request.content.userInfo mutableCopy];
+    
+    // set user text for plugin.
+    UNTextInputNotificationResponse * textResponse = (UNTextInputNotificationResponse *) response;
+    if (textResponse.userText != nil){
+        NSLog(@"textResponse:::::: %@ %@",textResponse, textResponse.userText);
+        [userInfo setObject:textResponse.userText forKey:@"userText"];
+    }
+    
+    [userInfo setObject:response.actionIdentifier forKey:@"actionCallback"];
+    NSLog(@"Push Plugin userInfo %@", userInfo);
+    
+    if (UIApplication.sharedApplication.applicationState == UIApplicationStateActive) {
+        PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+        pushHandler.notificationMessage = userInfo;
+        pushHandler.isInline = NO;
+        [pushHandler notificationReceived];
+    }else if (UIApplication.sharedApplication.applicationState == UIApplicationStateInactive){
+        NSLog(@"coldstart");
+        self.launchNotification = response.notification.request.content.userInfo;
+        self.coldstart = [NSNumber numberWithBool:YES];
+    }
+    else{
+        
+        void (^safeHandler)() = ^(void){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // TODO: Handle Callback
+            });
+        };
+        
+        PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+        
+        if (pushHandler.handlerObj == nil) {
+            pushHandler.handlerObj = [NSMutableDictionary dictionaryWithCapacity:2];
+        }
+        
+        id notId = [userInfo objectForKey:@"notId"];
+        if (notId != nil) {
+            NSLog(@"Push Plugin notId %@", notId);
+            [pushHandler.handlerObj setObject:safeHandler forKey:notId];
+        } else {
+            NSLog(@"Push Plugin notId handler");
+            [pushHandler.handlerObj setObject:safeHandler forKey:@"handler"];
+        }
+        
+        pushHandler.notificationMessage = userInfo;
+        pushHandler.isInline = NO;
+        
+        [pushHandler performSelectorOnMainThread:@selector(notificationReceived) withObject:pushHandler waitUntilDone:NO];
+    }
+}
+
+- (void)handleConfirmDeclineNotification:(NSNotification *)notification {
+    
+    NSLog(@"inLineNotificationHandler::::::%@",notification.userInfo);
+    UNNotificationResponse* response = (UNNotificationResponse *)notification.userInfo;
+    
+    NSMutableDictionary *userInfo = [response.notification.request.content.userInfo mutableCopy];
+    [userInfo setObject:response.actionIdentifier forKey:@"actionCallback"];
+    NSLog(@"Push Plugin userInfo %@", userInfo);
+    
+    if (UIApplication.sharedApplication.applicationState == UIApplicationStateActive) {
+        PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+        pushHandler.notificationMessage = userInfo;
+        pushHandler.isInline = NO;
+        [pushHandler notificationReceived];
+    }else if(UIApplication.sharedApplication.applicationState == UIApplicationStateInactive){
+        NSLog(@"coldstart");
+        self.launchNotification = response.notification.request.content.userInfo;
+        self.coldstart = [NSNumber numberWithBool:YES];
+    } else {
+        void (^safeHandler)() = ^(void){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //  TODO: Handle callback
+            });
+        };
+        
+        PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+        
+        if (pushHandler.handlerObj == nil) {
+            pushHandler.handlerObj = [NSMutableDictionary dictionaryWithCapacity:2];
+        }
+        
+        id notId = [userInfo objectForKey:@"notId"];
+        if (notId != nil) {
+            NSLog(@"Push Plugin notId %@", notId);
+            [pushHandler.handlerObj setObject:safeHandler forKey:notId];
+        } else {
+            NSLog(@"Push Plugin notId handler");
+            [pushHandler.handlerObj setObject:safeHandler forKey:@"handler"];
+        }
+        
+        pushHandler.notificationMessage = userInfo;
+        pushHandler.isInline = NO;
+        
+        [pushHandler performSelectorOnMainThread:@selector(notificationReceived) withObject:pushHandler waitUntilDone:NO];
     }
 }
 
