@@ -83,7 +83,6 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
 
     // app is in the background or inactive, so only call notification callback if this is a silent push
     if (application.applicationState != UIApplicationStateActive) {
-
         NSLog(@"app in-active");
 
         // do some convoluted logic to find out if this should be a silent push.
@@ -108,6 +107,13 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
 
             if (pushHandler.handlerObj == nil) {
                 pushHandler.handlerObj = [NSMutableDictionary dictionaryWithCapacity:2];
+            }
+
+            // Check if this is a clear notification.
+            id clearNotification = [userInfo objectForKey:@"clearNotification"];
+            if ([clearNotification isKindOfClass:[NSString class]]) {
+                NSNumber *clearNotificationId = @([clearNotification integerValue]);
+                [pushHandler clearRealNotification: clearNotificationId];
             }
 
             id notId = [userInfo objectForKey:@"notId"];
@@ -154,7 +160,7 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
 - (void)pushPluginOnApplicationDidBecomeActive:(NSNotification *)notification {
 
     NSLog(@"active");
-    
+
     NSString *firstLaunchKey = @"firstLaunchKey";
     NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:@"phonegap-plugin-push"];
     if (![defaults boolForKey:firstLaunchKey]) {

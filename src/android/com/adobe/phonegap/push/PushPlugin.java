@@ -538,10 +538,13 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
   }
 
   private void clearNotification(int id) {
-    final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
-        .getSystemService(Context.NOTIFICATION_SERVICE);
-    String appName = (String) this.cordova.getActivity().getPackageManager()
-        .getApplicationLabel(this.cordova.getActivity().getApplicationInfo());
+    PushPlugin.clearNotification(cordova.getActivity(), id);
+  }
+
+  public static void clearNotification(Context context, int id) {
+    final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+    String appName = (String) context.getPackageManager()
+      .getApplicationLabel(context.getApplicationInfo());
     notificationManager.cancel(appName, id);
   }
 

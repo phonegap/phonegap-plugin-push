@@ -488,9 +488,8 @@
     }
 }
 
-- (void)clearNotification:(CDVInvokedUrlCommand *)command
+- (void)clearRealNotification:(NSNumber *)notId
 {
-    NSNumber *notId = [command.arguments objectAtIndex:0];
     [[UNUserNotificationCenter currentNotificationCenter] getDeliveredNotificationsWithCompletionHandler:^(NSArray<UNNotification *> * _Nonnull notifications) {
         /*
          * If the server generates a unique "notId" for every push notification, there should only be one match in these arrays, but if not, it will delete
@@ -503,11 +502,17 @@
             [matchingNotificationIdentifiers addObject:notification.request.identifier];
         }
         [[UNUserNotificationCenter currentNotificationCenter] removeDeliveredNotificationsWithIdentifiers:matchingNotificationIdentifiers];
-        
-        NSString *message = [NSString stringWithFormat:@"Cleared notification with ID: %@", notId];
-        CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message];
-        [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
     }];
+}
+
+- (void)clearNotification:(CDVInvokedUrlCommand *)command
+{
+    NSNumber *notId = [command.arguments objectAtIndex:0];
+    [self clearRealNotification: notId];
+
+    NSString *message = [NSString stringWithFormat:@"Cleared notification with ID: %@", notId];
+    CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message];
+    [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
 }
 
 - (void)setApplicationIconBadgeNumber:(CDVInvokedUrlCommand *)command
