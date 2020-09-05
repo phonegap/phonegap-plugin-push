@@ -99,6 +99,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
       int lightColor = channel.optInt(CHANNEL_LIGHT_COLOR, -1);
       if (lightColor != -1) {
+        mChannel.enableLights(true);
         mChannel.setLightColor(lightColor);
       }
 
