@@ -31,6 +31,7 @@ public interface PushConstants {
   public static final String ALERT = "alert";
   public static final String MESSAGE = "message";
   public static final String BODY = "body";
+  public static final String SENDER = "sender";
   public static final String SOUNDNAME = "soundname";
   public static final String COLOR = "color";
   public static final String LED_COLOR = "ledColor";
@@ -39,6 +40,7 @@ public interface PushConstants {
   public static final String STYLE_INBOX = "inbox";
   public static final String STYLE_PICTURE = "picture";
   public static final String STYLE_TEXT = "text";
+  public static final String STYLE_MESSAGING = "messaging";
   public static final String BADGE = "badge";
   public static final String INITIALIZE = "init";
   public static final String SUBSCRIBE = "subscribe";
