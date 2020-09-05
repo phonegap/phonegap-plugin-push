@@ -168,14 +168,14 @@ declare namespace PhonegapPluginPush {
 		 */
 		browser?: {
 			/**
-			 * URL for the push server you want to use. Default is 'http://push.api.phonegap.com/v1/push'.
+			 * Your VAPID public key / Firebase Cloud Messaging Web Push Certificate.
 			 */
-			pushServiceURL?: string
+			applicationServerKey: string
 			/**
-			 * Your GCM API key if you are using VAPID keys.
+			 * Endpoint URL
 			 */
-			applicationServerKey?: string
-		}
+			pushServiceURL: string
+    }
 
 		/**
 		 * iOS specific initialization options.
@@ -260,6 +260,14 @@ declare namespace PhonegapPluginPush {
 		 * The registration ID provided by the 3rd party remote push service.
 		 */
 		registrationId: string
+    /**
+     * The type of registration, provided by some 3rd party push services. E.g. WEB_PUSH
+     */
+    registrationType?: string
+    /**
+     * The PushSubscription object associated with our registration if we're using web push
+     */
+    subscription?: any
 	}
 
 	interface NotificationEventResponse {
