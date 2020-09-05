@@ -119,6 +119,15 @@
             NSLog(@"unsubscribe from topic: %@", topic);
             [pubSub unsubscribeFromTopic:topic];
         }
+    } else if ([self usesFCM]){
+        [[FIRInstanceID instanceID] deleteIDWithHandler:^void(NSError *_Nullable error){
+            if (error) {
+                [self failWithMessage:command.callbackId withMsg:@"" withError:error];
+            } else {
+                [[UIApplication sharedApplication] unregisterForRemoteNotifications];
+                [self successWithMessage:command.callbackId withMsg:@"unregistered"];
+            }
+        }];
     } else {
         [[UIApplication sharedApplication] unregisterForRemoteNotifications];
         [self successWithMessage:command.callbackId withMsg:@"unregistered"];
