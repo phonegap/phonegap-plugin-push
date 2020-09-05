@@ -228,6 +228,10 @@ declare namespace PhonegapPluginPush {
 			 * If the array contains one or more strings each string will be used to subscribe to a FcmPubSub topic. Defaults to [].
 			 */
 			topics?: string[]
+			/**
+			 * If true|"true" the criticalAlerts will be available
+			 */
+			criticalAlert?: boolean | string
 		}
 
 		/**

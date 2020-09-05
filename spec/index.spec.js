@@ -135,13 +135,22 @@ describe('phonegap-plugin-push', () => {
             sound: 'beep',
             image: 'Image',
             additionalData: {},
+            'critical-alert': 1
           });
         });
       });
 
-      it('should be emitted on success', (done) => {
-        const push = PushNotification.init(options);
+      it('should provide the data[critical-alert] argument', (done) => {
+        var push = PushNotification.init(options);
         push.on('notification', (data) => {
+          expect(data['critical-alert']).toEqual(1);
+          done();
+        });
+      });
+
+      it('should be emitted on success', function (done) {
+        var push = PushNotification.init(options);
+        push.on('notification', function (data) {
           done();
         });
       });
