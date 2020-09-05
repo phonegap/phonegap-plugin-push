@@ -262,6 +262,24 @@ My recommended format for your push payload when using this plugin (while it dif
 }
 ```
 
+However, if you want to use the mixed payload, you can make it so the values in your `data` payload is passed to the app when tapping the notification by adding `"click_action": "com.adobe.phonegap.push.background.MESSAGING_EVENT"` to your `notification` payload.
+Your payload would end up looking something like this:
+
+```json
+{
+  "notification": {
+    "title": "Test Notification",
+    "body": "This offer expires at 11:30 or whatever",
+    "notId": 10,
+    "click_action": "com.adobe.phonegap.push.background.MESSAGING_EVENT"
+  },
+  "data": {
+     "surveyID": "ewtawgreg-gragrag-rgarhthgbad"
+  }
+}
+```
+**Important note:** By using the `notification` object in your payload, in all cases, all custom notification features provided by this plugin are unavailable.
+
 When your app is in the foreground any `on('notification')` handlers you have registered will be called. If your app is in the background, then the notification will show up in the system tray. Clicking on the notification in the system tray will start the app, and your `on('notification')` handler will be called with the following data:
 
 ```json
