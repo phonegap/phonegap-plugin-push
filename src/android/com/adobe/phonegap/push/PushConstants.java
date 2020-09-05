@@ -91,6 +91,7 @@ public interface PushConstants {
   public static final String DEFAULT_CHANNEL_ID = "PushPluginChannel";
   public static final String CHANNELS = "channels";
   public static final String CHANNEL_ID = "id";
+  public static final String CHANNEL_NAME = "name";
   public static final String CHANNEL_DESCRIPTION = "description";
   public static final String CHANNEL_IMPORTANCE = "importance";
   public static final String CHANNEL_LIGHT_COLOR = "lightColor";

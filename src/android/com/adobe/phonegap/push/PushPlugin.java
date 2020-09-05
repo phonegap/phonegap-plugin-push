@@ -68,6 +68,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
       for (NotificationChannel notificationChannel : notificationChannels) {
         JSONObject channel = new JSONObject();
         channel.put(CHANNEL_ID, notificationChannel.getId());
+        channel.put(CHANNEL_NAME, notificationChannel.getName());
         channel.put(CHANNEL_DESCRIPTION, notificationChannel.getDescription());
         channels.put(channel);
       }
@@ -94,8 +95,13 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
       String packageName = getApplicationContext().getPackageName();
       NotificationChannel mChannel = new NotificationChannel(channel.getString(CHANNEL_ID),
-          channel.optString(CHANNEL_DESCRIPTION, ""),
+          channel.optString(CHANNEL_NAME, ""),
           channel.optInt(CHANNEL_IMPORTANCE, NotificationManager.IMPORTANCE_DEFAULT));
+
+      String desc = channel.optString(CHANNEL_DESCRIPTION, "");
+      if(desc != null && !desc.isEmpty()) {
+        mChannel.setDescription(desc);
+      }
 
       int lightColor = channel.optInt(CHANNEL_LIGHT_COLOR, -1);
       if (lightColor != -1) {
@@ -161,7 +167,8 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
       }
       try {
         options.put(CHANNEL_ID, DEFAULT_CHANNEL_ID);
-        options.putOpt(CHANNEL_DESCRIPTION, "PhoneGap PushPlugin");
+        options.putOpt(CHANNEL_NAME, "PhoneGap PushPlugin");
+        options.putOpt(CHANNEL_DESCRIPTION, "Default channel");
         createChannel(options);
       } catch (JSONException e) {
         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
