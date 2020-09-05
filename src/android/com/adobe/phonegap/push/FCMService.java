@@ -86,7 +86,6 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     for (Map.Entry<String, String> entry : message.getData().entrySet()) {
       extras.putString(entry.getKey(), entry.getValue());
     }
-
     if (extras != null && isAvailableSender(from)) {
       Context applicationContext = getApplicationContext();
 
@@ -96,7 +95,6 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
       boolean clearBadge = prefs.getBoolean(CLEAR_BADGE, false);
       String messageKey = prefs.getString(MESSAGE_KEY, MESSAGE);
       String titleKey = prefs.getString(TITLE_KEY, TITLE);
-
       extras = normalizeExtras(applicationContext, extras, messageKey, titleKey);
 
       if (clearBadge) {
@@ -149,22 +147,36 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     }
   }
 
+  private String localizeKey(Context context, String key, String value) {
+    return localizeKey(context, key, value, "");
+  }
+
   /*
    * Normalize localization for key
    */
-  private String localizeKey(Context context, String key, String value) {
+  private String localizeKey(Context context, String key, String value, String args) {
     if (key.equals(TITLE) || key.equals(MESSAGE) || key.equals(SUMMARY_TEXT)) {
       try {
-        JSONObject localeObject = new JSONObject(value);
-
-        String localeKey = localeObject.getString(LOC_KEY);
-
+        String localeKey;
         ArrayList<String> localeFormatData = new ArrayList<String>();
-        if (!localeObject.isNull(LOC_DATA)) {
-          String localeData = localeObject.getString(LOC_DATA);
-          JSONArray localeDataArray = new JSONArray(localeData);
-          for (int i = 0; i < localeDataArray.length(); i++) {
-            localeFormatData.add(localeDataArray.getString(i));
+
+        if(value.startsWith("{")) {
+          JSONObject localeObject = new JSONObject(value);
+          localeKey = localeObject.getString(LOC_KEY);
+          if (!localeObject.isNull(LOC_DATA)) {
+            String localeData = localeObject.getString(LOC_DATA);
+            JSONArray localeDataArray = new JSONArray(localeData);
+            for (int i = 0; i < localeDataArray.length(); i++) {
+              localeFormatData.add(localeDataArray.getString(i));
+            }
+          }
+        } else {
+          localeKey = value;
+          if(!args.isEmpty() && args.startsWith("[")){
+            JSONArray localeDataArray = new JSONArray(args);
+            for (int i = 0; i < localeDataArray.length(); i++) {
+              localeFormatData.add(localeDataArray.getString(i));
+            }
           }
         }
 
@@ -177,12 +189,13 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
           return resources.getString(resourceId, localeFormatData.toArray());
         } else {
           Log.d(LOG_TAG, "can't find resource for locale key = " + localeKey);
-
           return value;
         }
       } catch (JSONException e) {
         Log.d(LOG_TAG, "no locale found for key = " + key + ", error " + e.getMessage());
-
+        return value;
+      } catch(Exception e) {
+        Log.e(LOG_TAG, "error during string localization: " + e.toString());
         return value;
       }
     }
@@ -195,9 +208,9 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
    */
   private String normalizeKey(String key, String messageKey, String titleKey, Bundle newExtras) {
     if (key.equals(BODY) || key.equals(ALERT) || key.equals(MP_MESSAGE) || key.equals(GCM_NOTIFICATION_BODY)
-        || key.equals(TWILIO_BODY) || key.equals(messageKey) || key.equals(AWS_PINPOINT_BODY)) {
+        || key.equals(TWILIO_BODY) || key.equals(BODY_LOC_KEY) || key.equals(messageKey) || key.equals(AWS_PINPOINT_BODY)) {
       return MESSAGE;
-    } else if (key.equals(TWILIO_TITLE) || key.equals(SUBJECT) || key.equals(titleKey)) {
+    } else if (key.equals(TWILIO_TITLE) || key.equals(SUBJECT) || key.equals(TITLE_LOC_KEY) || key.equals(titleKey)) {
       return TITLE;
     } else if (key.equals(MSGCNT) || key.equals(BADGE)) {
       return COUNT;
@@ -233,7 +246,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
 
       Log.d(LOG_TAG, "key = " + key);
 
-      // If normalizeKeythe key is "data" or "message" and the value is a json object extract
+      // If normalizeKey the key is "data" or "message" and the value is a json object extract
       // This is to support parse.com and other services. Issue #147 and pull #218
       if (key.equals(PARSE_COM_DATA) || key.equals(MESSAGE) || key.equals(messageKey)) {
         Object json = extras.get(key);
@@ -270,6 +283,18 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
           Log.d(LOG_TAG, "replace key " + key + " with " + newKey);
           replaceKey(context, key, newKey, extras, newExtras);
         }
+      } else if(key.equals(TITLE_LOC_KEY)) {
+        String value = extras.getString(key);
+        String newKey = normalizeKey(key, messageKey, titleKey, newExtras);
+        String args = extras.containsKey(TITLE_LOC_DATA) ? extras.getString(TITLE_LOC_DATA) : "";
+        value = localizeKey(context, newKey, value, args);
+        newExtras.putString(newKey, value);
+      } else if(key.equals(BODY_LOC_KEY)) {
+        String value = extras.getString(key);
+        String newKey = normalizeKey(key, messageKey, titleKey, newExtras);
+        String args = extras.containsKey(BODY_LOC_DATA) ? extras.getString(BODY_LOC_DATA) : "";
+        value = localizeKey(context, newKey, value, args);
+        newExtras.putString(newKey, value);
       } else if (key.equals(("notification"))) {
         Bundle value = extras.getBundle(key);
         Iterator<String> iterator = value.keySet().iterator();

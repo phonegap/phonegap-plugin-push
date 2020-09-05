@@ -302,6 +302,21 @@ Or use localization with formatted constants.
 }
 ```
 
+Or use localization compatible with FCM Admin package for Node.js (Android only)
+```json
+{
+  "android": {
+    "data": {
+      "title_loc_key": "NOTIFICATION_TITLE",
+      "body_loc_key": "NOTIFICATION_MESSAGE",
+      "body_loc_args": "[\"args\", \"as\", \"stringified\", \"array\"]",
+      "title_loc_args": "[\"args\", \"as\", \"stringified\", \"array\"]"
+    }
+  },
+  "tokens": ["REGISTRARION_ID_1", "REGISTRATION_ID_2"]
+}
+```
+
 Here is an example using fcm-node that sends the above JSON:
 
 ```javascript
