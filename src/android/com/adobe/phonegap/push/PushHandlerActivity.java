@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.support.v4.app.RemoteInput;
+import androidx.core.app.RemoteInput;
 
 
 public class PushHandlerActivity extends Activity implements PushConstants {
