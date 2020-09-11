@@ -24,7 +24,7 @@ module.exports = function (context) {
 
     var pluginManifestPath = path.join(
       context.opts.projectRoot,
-      'plugins/cordova-plugin-push/src/browser/manifest.json'
+      'plugins/havesource-cordova-plugin-push/src/browser/manifest.json'
     );
 
     fs.readFile(pluginManifestPath, 'utf8', function (err, pluginJson) {

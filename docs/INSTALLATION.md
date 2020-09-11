@@ -146,7 +146,7 @@ To make the two work together, you need to migrate your GCM project from Google 
 {
   "cordova": {
     "plugins": {
-      "cordova-plugin-push": {
+      "havesource-cordova-plugin-push": {
         "ANDROID_SUPPORT_V13_VERSION": "27.+",
         "FCM_VERSION": "18.+"
       }
@@ -291,8 +291,8 @@ This plugin uses the [Firebase/Messaging](https://cocoapods.org/pods/Firebase) l
 If you are attempting to install this plugin and you run into this error:
 
 ```log
-Installing "cordova-plugin-push" for ios
-Failed to install 'cordova-plugin-push':Error: pod: Command failed with exit code 1
+Installing "havesource-cordova-plugin-push" for ios
+Failed to install 'havesource-cordova-plugin-push':Error: pod: Command failed with exit code 1
     at ChildProcess.whenDone (/Users/smacdona/code/push151/platforms/ios/cordova/node_modules/cordova-common/src/superspawn.js:169:23)
     at emitTwo (events.js:87:13)
     at ChildProcess.emit (events.js:172:7)
