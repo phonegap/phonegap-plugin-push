@@ -167,7 +167,9 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
       }
       try {
         options.put(CHANNEL_ID, DEFAULT_CHANNEL_ID);
-        options.putOpt(CHANNEL_DESCRIPTION, "PhoneGap PushPlugin");
+        String appName = (String) this.cordova.getActivity().getPackageManager()
+          .getApplicationLabel(this.cordova.getActivity().getApplicationInfo());
+        options.putOpt(CHANNEL_DESCRIPTION, appName);
         createChannel(options);
       } catch (JSONException e) {
         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
