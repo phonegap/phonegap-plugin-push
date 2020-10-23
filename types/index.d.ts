@@ -1,5 +1,5 @@
 // Type definitions for phonegap-plugin-push
-// Project: https://github.com/phonegap/phonegap-plugin-push
+// Project: https://github.com/havesource/cordova-plugin-push
 // Definitions by: Frederico Galvão <https://github.com/fredgalvao>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
@@ -217,7 +217,7 @@ declare namespace PhonegapPluginPush {
 			clearBadge?: boolean | string
 			/**
 			 * The data required in order to enable Action Buttons for iOS.
-			 * Action Buttons on iOS - https://github.com/phonegap/phonegap-plugin-push/blob/master/docs/PAYLOAD.md#action-buttons-1
+			 * Action Buttons on iOS - https://github.com/havesource/cordova-plugin-push/blob/master/docs/PAYLOAD.md#action-buttons-1
 			 */
 			categories?: CategoryArray
 			/**
