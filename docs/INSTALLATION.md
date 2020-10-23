@@ -2,6 +2,7 @@
 
 - [Installation](#installation)
   - [Installation Requirements](#installation-requirements)
+    - [Cordova Android 8.x Specifics](#cordova-android-8x-specifics)
   - [Android details](#android-details)
     - [Co-existing with Facebook Plugin](#co-existing-with-facebook-plugin)
     - [Co-existing with plugins that use Firebase](#co-existing-with-plugins-that-use-firebase)
@@ -74,6 +75,22 @@ By default, on iOS, the plugin will register with APNS. If you want to use FCM o
 ```xml
 <plugin name="@havesource/cordova-plugin-push" spec="1.0.0" />
 ```
+
+### Cordova Android 8.x Specifics
+
+You will need to install the `cordova-support-google-services` plugin. This plugin enables the Google APIs and Firebase services for your Android application.
+
+If your application uses many plugins and references over 64K methods, you will need to enable multidex. If multidex is not enabled, your build should fail and you should see the following error:
+
+```log
+trouble writing output:
+Too many field references: 131000; max is 65536.
+You may try using --multi-dex option.
+```
+
+To enable multidex, use the  `phonegap-plugin-multidex` plugin.
+
+These two plugins are only necessary for the Cordova Android 8.x releases.
 
 ## Android details
 

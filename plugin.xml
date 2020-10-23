@@ -14,7 +14,7 @@
 
   <engines>
     <engine name="cordova" version=">=9.0.0"/>
-    <engine name="cordova-android" version=">=9.0.0"/>
+    <engine name="cordova-android" version=">=8.0.0"/>
     <engine name="cordova-ios" version=">=5.1.1"/>
   </engines>
 
