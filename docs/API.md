@@ -277,6 +277,7 @@ A default channel with the id "PushPluginChannel" is created automatically. To m
 | `sound`                          | `String`  | The name of the sound file to be played upon receipt of the notification in this channel. Empty string to disable sound. Cannot be changed after channel is created.                                                                                               |
 | `vibration`                      | `Boolean` or `Array` | Boolean sets whether notification posted to this channel should vibrate. Array sets custom vibration pattern. Example - vibration: `[2000, 1000, 500, 500]`. Cannot be changed after channel is created.                 |
 | `visibility`                     | `Int`     | Sets whether notifications posted to this channel appear on the lockscreen or not, and if so, whether they appear in a redacted form. 0 = Private, 1 = Public, -1 = Secret.                                                         |
+| `lightColor`                     | `Int`     | Sets and enables the color of the notification light. The default value, `-1`, disables the notification light. (**Android Only**) |
 
 ## PushNotification.deleteChannel(successHandler, failureHandler, channelId)
 
