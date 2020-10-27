@@ -53,17 +53,25 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
    *
    * @return the application context
    */
-  private Context getApplicationContext() {
+  private Context getApplicationContext () {
     return this.cordova.getActivity().getApplicationContext();
   }
 
+  private String getAppName () {
+    return (String) this.cordova.getActivity()
+      .getPackageManager()
+      .getApplicationLabel(
+        this.cordova.getActivity().getApplicationInfo()
+      );
+  }
+
   @TargetApi(26)
-  private JSONArray listChannels() throws JSONException {
+  private JSONArray listChannels () throws JSONException {
     JSONArray channels = new JSONArray();
     // only call on Android O and above
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
-          .getSystemService(Context.NOTIFICATION_SERVICE);
+        .getSystemService(Context.NOTIFICATION_SERVICE);
       List<NotificationChannel> notificationChannels = notificationManager.getNotificationChannels();
       for (NotificationChannel notificationChannel : notificationChannels) {
         JSONObject channel = new JSONObject();
@@ -76,29 +84,33 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
   }
 
   @TargetApi(26)
-  private void deleteChannel(String channelId) {
+  private void deleteChannel (String channelId) {
     // only call on Android O and above
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
-          .getSystemService(Context.NOTIFICATION_SERVICE);
+        .getSystemService(Context.NOTIFICATION_SERVICE);
       notificationManager.deleteNotificationChannel(channelId);
     }
   }
 
   @TargetApi(26)
-  private void createChannel(JSONObject channel) throws JSONException {
+  private void createChannel (JSONObject channel) throws JSONException {
     // only call on Android O and above
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
-          .getSystemService(Context.NOTIFICATION_SERVICE);
+        .getSystemService(Context.NOTIFICATION_SERVICE);
 
       String packageName = getApplicationContext().getPackageName();
-      NotificationChannel mChannel = new NotificationChannel(channel.getString(CHANNEL_ID),
-          channel.optString(CHANNEL_DESCRIPTION, ""),
-          channel.optInt(CHANNEL_IMPORTANCE, NotificationManager.IMPORTANCE_DEFAULT));
+      String appName = this.getAppName();
+      NotificationChannel mChannel = new NotificationChannel(
+        channel.getString(CHANNEL_ID),
+        channel.optString(CHANNEL_DESCRIPTION, appName),
+        channel.optInt(CHANNEL_IMPORTANCE, NotificationManager.IMPORTANCE_DEFAULT)
+      );
 
       int lightColor = channel.optInt(CHANNEL_LIGHT_COLOR, -1);
       if (lightColor != -1) {
+        mChannel.enableLights(true);
         mChannel.setLightColor(lightColor);
       }
 
@@ -110,8 +122,8 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
       String sound = channel.optString(SOUND, "default");
       AudioAttributes audioAttributes = new AudioAttributes.Builder()
-          .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-          .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build();
+        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+        .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build();
       if (SOUND_RINGTONE.equals(sound)) {
         mChannel.setSound(android.provider.Settings.System.DEFAULT_RINGTONE_URI, audioAttributes);
       } else if (sound != null && sound.isEmpty()) {
@@ -122,7 +134,10 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + packageName + "/raw/" + sound);
         mChannel.setSound(soundUri, audioAttributes);
       } else {
-        mChannel.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI, audioAttributes);
+        mChannel.setSound(
+          android.provider.Settings.System.DEFAULT_NOTIFICATION_URI,
+          audioAttributes
+        );
       }
 
       // If vibration settings is an array set vibration pattern, else set enable
@@ -130,9 +145,9 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
       JSONArray pattern = channel.optJSONArray(CHANNEL_VIBRATION);
       if (pattern != null) {
         int patternLength = pattern.length();
-        long[] patternArray = new long[patternLength];
+        long[] patternArray = new long[ patternLength ];
         for (int i = 0; i < patternLength; i++) {
-          patternArray[i] = pattern.optLong(i);
+          patternArray[ i ] = pattern.optLong(i);
         }
         mChannel.setVibrationPattern(patternArray);
       } else {
@@ -145,12 +160,12 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
   }
 
   @TargetApi(26)
-  private void createDefaultNotificationChannelIfNeeded(JSONObject options) {
+  private void createDefaultNotificationChannelIfNeeded (JSONObject options) {
     String id;
     // only call on Android O and above
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
-          .getSystemService(Context.NOTIFICATION_SERVICE);
+        .getSystemService(Context.NOTIFICATION_SERVICE);
       List<NotificationChannel> channels = notificationManager.getNotificationChannels();
 
       for (int i = 0; i < channels.size(); i++) {
@@ -161,7 +176,8 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
       }
       try {
         options.put(CHANNEL_ID, DEFAULT_CHANNEL_ID);
-        options.putOpt(CHANNEL_DESCRIPTION, "PhoneGap PushPlugin");
+        String appName = this.getAppName();
+        options.putOpt(CHANNEL_DESCRIPTION, appName);
         createChannel(options);
       } catch (JSONException e) {
         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
@@ -170,19 +186,25 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
   }
 
   @Override
-  public boolean execute(final String action, final JSONArray data, final CallbackContext callbackContext) {
+  public boolean execute (
+    final String action,
+    final JSONArray data,
+    final CallbackContext callbackContext
+  ) {
     Log.v(LOG_TAG, "execute: action=" + action);
     gWebView = this.webView;
 
     if (INITIALIZE.equals(action)) {
       cordova.getThreadPool().execute(new Runnable() {
-        public void run() {
+        public void run () {
           pushContext = callbackContext;
           JSONObject jo = null;
 
           Log.v(LOG_TAG, "execute: data=" + data.toString());
-          SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH,
-              Context.MODE_PRIVATE);
+          SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
+            COM_ADOBE_PHONEGAP_PUSH,
+            Context.MODE_PRIVATE
+          );
           String token = null;
           String senderID = null;
 
@@ -282,10 +304,12 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
       });
     } else if (UNREGISTER.equals(action)) {
       cordova.getThreadPool().execute(new Runnable() {
-        public void run() {
+        public void run () {
           try {
-            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH,
-                Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
+              COM_ADOBE_PHONEGAP_PUSH,
+              Context.MODE_PRIVATE
+            );
             JSONArray topics = data.optJSONArray(0);
             if (topics != null && !"".equals(registration_id)) {
               unsubscribeFromTopics(topics, registration_id);
@@ -315,12 +339,18 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
       callbackContext.success();
     } else if (HAS_PERMISSION.equals(action)) {
       cordova.getThreadPool().execute(new Runnable() {
-        public void run() {
+        public void run () {
           JSONObject jo = new JSONObject();
           try {
-            Log.d(LOG_TAG,
-                "has permission: " + NotificationManagerCompat.from(getApplicationContext()).areNotificationsEnabled());
-            jo.put("isEnabled", NotificationManagerCompat.from(getApplicationContext()).areNotificationsEnabled());
+            Log.d(
+              LOG_TAG,
+              "has permission: " + NotificationManagerCompat.from(getApplicationContext())
+                .areNotificationsEnabled()
+            );
+            jo.put(
+              "isEnabled",
+              NotificationManagerCompat.from(getApplicationContext()).areNotificationsEnabled()
+            );
             PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, jo);
             pluginResult.setKeepCallback(true);
             callbackContext.sendPluginResult(pluginResult);
@@ -333,10 +363,13 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
       });
     } else if (SET_APPLICATION_ICON_BADGE_NUMBER.equals(action)) {
       cordova.getThreadPool().execute(new Runnable() {
-        public void run() {
+        public void run () {
           Log.v(LOG_TAG, "setApplicationIconBadgeNumber: data=" + data.toString());
           try {
-            setApplicationIconBadgeNumber(getApplicationContext(), data.getJSONObject(0).getInt(BADGE));
+            setApplicationIconBadgeNumber(
+              getApplicationContext(),
+              data.getJSONObject(0).getInt(BADGE)
+            );
           } catch (JSONException e) {
             callbackContext.error(e.getMessage());
           }
@@ -345,14 +378,14 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
       });
     } else if (GET_APPLICATION_ICON_BADGE_NUMBER.equals(action)) {
       cordova.getThreadPool().execute(new Runnable() {
-        public void run() {
+        public void run () {
           Log.v(LOG_TAG, "getApplicationIconBadgeNumber");
           callbackContext.success(getApplicationIconBadgeNumber(getApplicationContext()));
         }
       });
     } else if (CLEAR_ALL_NOTIFICATIONS.equals(action)) {
       cordova.getThreadPool().execute(new Runnable() {
-        public void run() {
+        public void run () {
           Log.v(LOG_TAG, "clearAllNotifications");
           clearAllNotifications();
           callbackContext.success();
@@ -361,7 +394,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     } else if (SUBSCRIBE.equals(action)) {
       // Subscribing for a topic
       cordova.getThreadPool().execute(new Runnable() {
-        public void run() {
+        public void run () {
           try {
             String topic = data.getString(0);
             subscribeToTopic(topic, registration_id);
@@ -374,7 +407,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     } else if (UNSUBSCRIBE.equals(action)) {
       // un-subscribing for a topic
       cordova.getThreadPool().execute(new Runnable() {
-        public void run() {
+        public void run () {
           try {
             String topic = data.getString(0);
             unsubscribeFromTopic(topic, registration_id);
@@ -387,7 +420,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     } else if (CREATE_CHANNEL.equals(action)) {
       // un-subscribing for a topic
       cordova.getThreadPool().execute(new Runnable() {
-        public void run() {
+        public void run () {
           try {
             // call create channel
             createChannel(data.getJSONObject(0));
@@ -400,7 +433,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     } else if (DELETE_CHANNEL.equals(action)) {
       // un-subscribing for a topic
       cordova.getThreadPool().execute(new Runnable() {
-        public void run() {
+        public void run () {
           try {
             String channelId = data.getString(0);
             deleteChannel(channelId);
@@ -413,7 +446,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     } else if (LIST_CHANNELS.equals(action)) {
       // un-subscribing for a topic
       cordova.getThreadPool().execute(new Runnable() {
-        public void run() {
+        public void run () {
           try {
             callbackContext.success(listChannels());
           } catch (JSONException e) {
@@ -424,7 +457,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     } else if (CLEAR_NOTIFICATION.equals(action)) {
       // clearing a single notification
       cordova.getThreadPool().execute(new Runnable() {
-        public void run() {
+        public void run () {
           try {
             Log.v(LOG_TAG, "clearNotification");
             int id = data.getInt(0);
@@ -444,7 +477,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     return true;
   }
 
-  public static void sendEvent(JSONObject _json) {
+  public static void sendEvent (JSONObject _json) {
     PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, _json);
     pluginResult.setKeepCallback(true);
     if (pushContext != null) {
@@ -452,7 +485,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     }
   }
 
-  public static void sendError(String message) {
+  public static void sendError (String message) {
     PluginResult pluginResult = new PluginResult(PluginResult.Status.ERROR, message);
     pluginResult.setKeepCallback(true);
     if (pushContext != null) {
@@ -465,7 +498,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
    * application isn't currently active and the no-cache flag is not set, it is
    * cached for later processing.
    */
-  public static void sendExtras(Bundle extras) {
+  public static void sendExtras (Bundle extras) {
     if (extras != null) {
       String noCache = extras.getString(NO_CACHE);
       if (gWebView != null) {
@@ -480,7 +513,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
   /*
    * Retrives badge count from SharedPreferences
    */
-  public static int getApplicationIconBadgeNumber(Context context) {
+  public static int getApplicationIconBadgeNumber (Context context) {
     SharedPreferences settings = context.getSharedPreferences(BADGE, Context.MODE_PRIVATE);
     return settings.getInt(BADGE, 0);
   }
@@ -488,64 +521,66 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
   /*
    * Sets badge count on application icon and in SharedPreferences
    */
-  public static void setApplicationIconBadgeNumber(Context context, int badgeCount) {
+  public static void setApplicationIconBadgeNumber (Context context, int badgeCount) {
     if (badgeCount > 0) {
       ShortcutBadger.applyCount(context, badgeCount);
     } else {
       ShortcutBadger.removeCount(context);
     }
 
-    SharedPreferences.Editor editor = context.getSharedPreferences(BADGE, Context.MODE_PRIVATE).edit();
+    SharedPreferences.Editor editor = context.getSharedPreferences(BADGE, Context.MODE_PRIVATE)
+      .edit();
     editor.putInt(BADGE, Math.max(badgeCount, 0));
     editor.apply();
   }
 
   @Override
-  public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+  public void initialize (CordovaInterface cordova, CordovaWebView webView) {
     super.initialize(cordova, webView);
     gForeground = true;
   }
 
   @Override
-  public void onPause(boolean multitasking) {
+  public void onPause (boolean multitasking) {
     super.onPause(multitasking);
     gForeground = false;
-
-    SharedPreferences prefs = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH,
-        Context.MODE_PRIVATE);
-    if (prefs.getBoolean(CLEAR_NOTIFICATIONS, true)) {
-      clearAllNotifications();
-    }
   }
 
   @Override
-  public void onResume(boolean multitasking) {
+  public void onResume (boolean multitasking) {
     super.onResume(multitasking);
     gForeground = true;
   }
 
   @Override
-  public void onDestroy() {
+  public void onDestroy () {
     super.onDestroy();
     gForeground = false;
     gWebView = null;
+
+    SharedPreferences prefs = getApplicationContext().getSharedPreferences(
+      COM_ADOBE_PHONEGAP_PUSH,
+      Context.MODE_PRIVATE
+    );
+    if (prefs.getBoolean(CLEAR_NOTIFICATIONS, true)) {
+      clearAllNotifications();
+    }
   }
 
-  private void clearAllNotifications() {
+  private void clearAllNotifications () {
     final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
-        .getSystemService(Context.NOTIFICATION_SERVICE);
+      .getSystemService(Context.NOTIFICATION_SERVICE);
     notificationManager.cancelAll();
   }
 
-  private void clearNotification(int id) {
+  private void clearNotification (int id) {
     final NotificationManager notificationManager = (NotificationManager) cordova.getActivity()
-        .getSystemService(Context.NOTIFICATION_SERVICE);
-    String appName = (String) this.cordova.getActivity().getPackageManager()
-        .getApplicationLabel(this.cordova.getActivity().getApplicationInfo());
+      .getSystemService(Context.NOTIFICATION_SERVICE);
+    String appName = this.getAppName();
     notificationManager.cancel(appName, id);
   }
 
-  private void subscribeToTopics(JSONArray topics, String registrationToken) {
+  private void subscribeToTopics (JSONArray topics, String registrationToken) {
     if (topics != null) {
       String topic = null;
       for (int i = 0; i < topics.length(); i++) {
@@ -555,14 +590,14 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     }
   }
 
-  private void subscribeToTopic(String topic, String registrationToken) {
+  private void subscribeToTopic (String topic, String registrationToken) {
     if (topic != null) {
       Log.d(LOG_TAG, "Subscribing to topic: " + topic);
       FirebaseMessaging.getInstance().subscribeToTopic(topic);
     }
   }
 
-  private void unsubscribeFromTopics(JSONArray topics, String registrationToken) {
+  private void unsubscribeFromTopics (JSONArray topics, String registrationToken) {
     if (topics != null) {
       String topic = null;
       for (int i = 0; i < topics.length(); i++) {
@@ -572,7 +607,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     }
   }
 
-  private void unsubscribeFromTopic(String topic, String registrationToken) {
+  private void unsubscribeFromTopic (String topic, String registrationToken) {
     if (topic != null) {
       Log.d(LOG_TAG, "Unsubscribing to topic: " + topic);
       FirebaseMessaging.getInstance().unsubscribeFromTopic(topic);
@@ -582,7 +617,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
   /*
    * serializes a bundle to JSON.
    */
-  private static JSONObject convertBundleToJson(Bundle extras) {
+  private static JSONObject convertBundleToJson (Bundle extras) {
     Log.d(LOG_TAG, "convert extras to json");
     try {
       JSONObject json = new JSONObject();
@@ -636,22 +671,22 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     return null;
   }
 
-  private String getStringResourceByName(String aString) {
+  private String getStringResourceByName (String aString) {
     Activity activity = cordova.getActivity();
     String packageName = activity.getPackageName();
     int resId = activity.getResources().getIdentifier(aString, "string", packageName);
     return activity.getString(resId);
   }
 
-  public static boolean isInForeground() {
+  public static boolean isInForeground () {
     return gForeground;
   }
 
-  public static boolean isActive() {
+  public static boolean isActive () {
     return gWebView != null;
   }
 
-  protected static void setRegistrationID(String token) {
+  protected static void setRegistrationID (String token) {
     registration_id = token;
   }
 }

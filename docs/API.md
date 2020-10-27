@@ -1,23 +1,75 @@
 # API
 
-- [.init()](#pushnotificationinitoptions)
-- [.hasPermission()](#pushnotificationhaspermissionsuccesshandler)
-- [.createChannel() - Android only](#pushnotificationcreatechannelsuccesshandler-failurehandler-channel)
-- [.deleteChannel() - Android only](#pushnotificationdeletechannelsuccesshandler-failurehandler-channelid)
-- [.listChannels() - Android only](#pushnotificationlistchannelssuccesshandler)
-- [push.on()](#pushonevent-callback)
-  - [push.on('registration')](#pushonregistration-callback)
-  - [push.on('notification')](#pushonnotification-callback)
-  - [push.on('error')](#pushonerror-callback)
-- [push.off()](#pushoffevent-callback)
-- [push.unregister()](#pushunregistersuccesshandler-errorhandler-topics)
-- [push.subscribe()](#pushsubscribetopic-successhandler-errorhandler)
-- [push.unsubscribe()](#pushunsubscribetopic-successhandler-errorhandler)
-- [push.setApplicationIconBadgeNumber() - iOS & Android only](#pushsetapplicationiconbadgenumbersuccesshandler-errorhandler-count---ios--android-only)
-- [push.getApplicationIconBadgeNumber() - iOS & Android only](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios--android-only)
-- [push.finish() - iOS only](#pushfinishsuccesshandler-errorhandler-id---ios-only)
-- [push.clearAllNotifications() - iOS & Android only](#pushclearallnotificationssuccesshandler-errorhandler---ios--android-only)
-- [push.clearNotification() - iOS & Android only](#pushclearnotificationid-successhandler-errorhandler---ios--android-only)
+- [API](#api)
+  - [PushNotification.init(options)](#pushnotificationinitoptions)
+    - [Returns](#returns)
+    - [Parameters](#parameters)
+      - [Android](#android)
+      - [Browser](#browser)
+      - [iOS](#ios)
+      - [iOS GCM support](#ios-gcm-support)
+        - [How GCM on iOS works.](#how-gcm-on-ios-works)
+      - [iOS VoIP Notifications](#ios-voip-notifications)
+    - [Example](#example)
+  - [PushNotification.hasPermission(successHandler)](#pushnotificationhaspermissionsuccesshandler)
+    - [Parameters](#parameters-1)
+    - [Callback parameters](#callback-parameters)
+      - [`successHandler`](#successhandler)
+    - [Example](#example-1)
+  - [PushNotification.createChannel(successHandler, failureHandler, channel)](#pushnotificationcreatechannelsuccesshandler-failurehandler-channel)
+    - [Parameters](#parameters-2)
+    - [Example](#example-2)
+    - [Channel properties](#channel-properties)
+  - [PushNotification.deleteChannel(successHandler, failureHandler, channelId)](#pushnotificationdeletechannelsuccesshandler-failurehandler-channelid)
+    - [Parameters](#parameters-3)
+    - [Example](#example-3)
+  - [PushNotification.listChannels(successHandler)](#pushnotificationlistchannelssuccesshandler)
+    - [Parameters](#parameters-4)
+    - [Callback parameters](#callback-parameters-1)
+      - [`successHandler`](#successhandler-1)
+    - [Example](#example-4)
+  - [push.on(event, callback)](#pushonevent-callback)
+    - [Parameters](#parameters-5)
+  - [push.on('registration', callback)](#pushonregistration-callback)
+    - [Callback parameters](#callback-parameters-2)
+    - [Example](#example-5)
+    - [Common Problems](#common-problems)
+      - [Got JSON Exception TIMEOUT](#got-json-exception-timeout)
+  - [push.on('notification', callback)](#pushonnotification-callback)
+    - [Callback parameters](#callback-parameters-3)
+    - [Example](#example-6)
+  - [push.on('error', callback)](#pushonerror-callback)
+    - [Callback parameters](#callback-parameters-4)
+    - [Example](#example-7)
+  - [push.off(event, callback)](#pushoffevent-callback)
+    - [Parameters](#parameters-6)
+    - [Example](#example-8)
+  - [push.unregister(successHandler, errorHandler, topics)](#pushunregistersuccesshandler-errorhandler-topics)
+    - [Parameters](#parameters-7)
+    - [Example](#example-9)
+  - [push.subscribe(topic, successHandler, errorHandler)](#pushsubscribetopic-successhandler-errorhandler)
+    - [Parameters](#parameters-8)
+    - [Example](#example-10)
+  - [push.unsubscribe(topic, successHandler, errorHandler)](#pushunsubscribetopic-successhandler-errorhandler)
+    - [Parameters](#parameters-9)
+    - [Example](#example-11)
+  - [push.setApplicationIconBadgeNumber(successHandler, errorHandler, count) - iOS & Android only](#pushsetapplicationiconbadgenumbersuccesshandler-errorhandler-count---ios--android-only)
+    - [Parameters](#parameters-10)
+    - [Example](#example-12)
+  - [push.getApplicationIconBadgeNumber(successHandler, errorHandler) - iOS & Android only](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios--android-only)
+    - [Parameters](#parameters-11)
+    - [Callback parameters](#callback-parameters-5)
+      - [`successHandler`](#successhandler-2)
+    - [Example](#example-13)
+  - [push.finish(successHandler, errorHandler, id) - iOS only](#pushfinishsuccesshandler-errorhandler-id---ios-only)
+    - [Parameters](#parameters-12)
+    - [Example](#example-14)
+  - [push.clearAllNotifications(successHandler, errorHandler) - iOS & Android only](#pushclearallnotificationssuccesshandler-errorhandler---ios--android-only)
+    - [Parameters](#parameters-13)
+    - [Example](#example-15)
+  - [push.clearNotification(id, successHandler, errorHandler) - iOS & Android only](#pushclearnotificationid-successhandler-errorhandler---ios--android-only)
+    - [Parameters](#parameters-14)
+    - [Example](#example-16)
 
 ## PushNotification.init(options)
 
@@ -73,6 +125,7 @@ All iOS boolean options can also be specified as `string`
 | `ios.sound`      | `boolean` | `false` | Optional. If `true` the device plays a sound on receipt of notification. **Note:** the value you set this option to the first time you call the init method will be how the application always acts. Once this is set programmatically in the init method it can only be changed manually by the user in Settings>Notifications>`App Name`. This is normal iOS behaviour.         |
 | `ios.clearBadge` | `boolean` | `false` | Optional. If `true` the badge will be cleared on app startup.                                                                                                                                                                                                                                                                                                                     |
 | `ios.categories` | `Object`  | `{}`    | Optional. The data required in order to enable Action Buttons for iOS. See [Action Buttons on iOS](https://github.com/phonegap/phonegap-plugin-push/blob/master/docs/PAYLOAD.md#action-buttons-1) for more details.                                                                                                                                                              |
+| `ios.critical`   | `boolean` | `false` | Optional. If `true` the device can show up critical alerts. (Possible since iOS 12 with a special entitlement) **Note:** the value you set this option to the first time you call the init method will be how the application always acts. Once this is set programmatically in the init method it can only be changed manually by the user in Settings > Notifications > `App Name`. This is normal iOS behaviour.         |
 
 #### iOS GCM support
 
@@ -210,7 +263,7 @@ PushNotification.createChannel(
 );
 ```
 
-The above will create a channel for your app. You'll need to provide the `id`, `description` and `importance` properties. 
+The above will create a channel for your app. You'll need to provide the `id`, `description` and `importance` properties.
 
 A default channel with the id "PushPluginChannel" is created automatically. To make changes to the default channel's settings, create a channel with the id "PushPluginChannel" before calling the PushNotification.init function.
 
@@ -220,10 +273,11 @@ A default channel with the id "PushPluginChannel" is created automatically. To m
 | -------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`                             | `String`  | The id of the channel. Must be unique per package. The value may be truncated if it is too long.                                                                                                                                    |
 | `description`                    | `String`  | The user visible name of the channel. The recommended maximum length is 40 characters; the value may be truncated if it is too long.                                                                                                |
-| `importance`                     | `Int`     | The importance of the channel. This controls how interruptive notifications posted to this channel are. The importance property goes from 1 = Lowest, 2 = Low, 3 = Normal, 4 = High and 5 = Highest.                                |            
+| `importance`                     | `Int`     | The importance of the channel. This controls how interruptive notifications posted to this channel are. The importance property goes from 1 = Lowest, 2 = Low, 3 = Normal, 4 = High and 5 = Highest.                                |
 | `sound`                          | `String`  | The name of the sound file to be played upon receipt of the notification in this channel. Empty string to disable sound. Cannot be changed after channel is created.                                                                                               |
 | `vibration`                      | `Boolean` or `Array` | Boolean sets whether notification posted to this channel should vibrate. Array sets custom vibration pattern. Example - vibration: `[2000, 1000, 500, 500]`. Cannot be changed after channel is created.                 |
 | `visibility`                     | `Int`     | Sets whether notifications posted to this channel appear on the lockscreen or not, and if so, whether they appear in a redacted form. 0 = Private, 1 = Public, -1 = Secret.                                                         |
+| `lightColor`                     | `Int`     | Sets and enables the color of the notification light. The default value, `-1`, disables the notification light. (**Android Only**) |
 
 ## PushNotification.deleteChannel(successHandler, failureHandler, channelId)
 

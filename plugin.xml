@@ -1,99 +1,139 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" 
-  xmlns:android="http://schemas.android.com/apk/res/android" 
-  xmlns:amazon="http://schemas.android.com/apk/lib/com.amazon.device.ads" 
-  xmlns:rim="http://www.blackberry.com/ns/widgets" 
-  id="phonegap-plugin-push" version="2.3.1">
-  <name>PushPlugin</name>
-  <description>    This plugin allows your application to receive push notifications on Android, iOS and Windows devices.    Android uses Firebase Cloud Messaging.    iOS uses Apple APNS Notifications.    Windows uses Microsoft WNS Notifications.  </description>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  id="havesource-cordova-plugin-push" version="1.0.0">
+
+  <name>Cordova Push Plugin</name>
+  <description>Enable receiving push notifications on Android, iOS and Windows devices. Android uses Firebase Cloud Messaging. iOS uses Apple APNS Notifications. Windows uses Microsoft WNS Notifications.</description>
+
   <license>MIT</license>
+
   <js-module src="www/push.js" name="PushNotification">
     <clobbers target="PushNotification"/>
   </js-module>
+
   <engines>
-    <engine name="cordova" version=">=7.1.0"/>
-    <engine name="cordova-android" version=">=7.1.0"/>
-    <engine name="cordova-ios" version=">=4.5.0"/>
+    <engine name="cordova" version=">=9.0.0"/>
+    <engine name="cordova-android" version=">=8.0.0"/>
+    <engine name="cordova-ios" version=">=5.1.1"/>
   </engines>
+
   <platform name="android">
     <config-file target="res/xml/config.xml" parent="/*">
       <feature name="PushNotification">
         <param name="android-package" value="com.adobe.phonegap.push.PushPlugin"/>
       </feature>
     </config-file>
+
     <config-file target="AndroidManifest.xml" parent="/manifest">
       <uses-permission android:name="android.permission.INTERNET"/>
       <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
       <uses-permission android:name="android.permission.WAKE_LOCK"/>
       <uses-permission android:name="android.permission.VIBRATE"/>
     </config-file>
+
     <config-file target="AndroidManifest.xml" parent="/manifest/application">
       <activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true" android:permission="${applicationId}.permission.PushHandlerActivity"/>
+      <activity android:name="com.adobe.phonegap.push.BackgroundHandlerActivity" android:exported="true" android:permission="${applicationId}.permission.BackgroundHandlerActivity">
+        <intent-filter>
+          <action android:name="com.adobe.phonegap.push.background.MESSAGING_EVENT"/>
+          <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+      </activity>
+
       <receiver android:name="com.adobe.phonegap.push.BackgroundActionButtonHandler"/>
       <receiver android:name="com.adobe.phonegap.push.PushDismissedHandler"/>
+
       <service android:name="com.adobe.phonegap.push.FCMService">
         <intent-filter>
           <action android:name="com.google.firebase.MESSAGING_EVENT"/>
         </intent-filter>
       </service>
+
       <service android:name="com.adobe.phonegap.push.PushInstanceIDListenerService">
         <intent-filter>
           <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
         </intent-filter>
       </service>
     </config-file>
-    <preference name="ANDROID_SUPPORT_V13_VERSION" default="27.+"/>
-    <preference name="FCM_VERSION" default="17.0.+"/>
+
+    <config-file target="config.xml" parent="/*">
+      <preference name="GradlePluginGoogleServicesEnabled" value="true" />
+      <preference name="GradlePluginGoogleServicesVersion" value="4.2.0" />
+    </config-file>
+
+    <preference name="ANDROID_SUPPORT_V13_VERSION" default="28.0.0"/>
+    <preference name="FCM_VERSION" default="18.+"/>
+
     <framework src="com.android.support:support-v13:$ANDROID_SUPPORT_V13_VERSION"/>
     <framework src="me.leolin:ShortcutBadger:1.1.17@aar"/>
     <framework src="com.google.firebase:firebase-messaging:$FCM_VERSION"/>
-    <dependency id="cordova-support-google-services" version="~1.3.1"/>
-    <dependency id="phonegap-plugin-multidex" version="~1.0.0"/>
+
     <source-file src="src/android/com/adobe/phonegap/push/FCMService.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/"/>
+    <source-file src="src/android/com/adobe/phonegap/push/BackgroundHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushInstanceIDListenerService.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushPlugin.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/BackgroundActionButtonHandler.java" target-dir="src/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushDismissedHandler.java" target-dir="src/com/adobe/phonegap/push/"/>
   </platform>
+
   <platform name="browser">
     <js-module src="www/browser/push.js" name="BrowserPush">
       <clobbers target="PushNotification"/>
     </js-module>
+
     <asset src="src/browser/ServiceWorker.js" target="ServiceWorker.js"/>
     <asset src="src/browser/manifest.json" target="manifest.json"/>
+
     <hook type="after_prepare" src="hooks/browser/updateManifest.js"/>
   </platform>
+
   <platform name="ios">
     <config-file target="config.xml" parent="/*">
       <feature name="PushNotification">
         <param name="ios-package" value="PushPlugin"/>
       </feature>
     </config-file>
+
     <config-file target="*-Info.plist" parent="UIBackgroundModes">
       <array>
         <string>remote-notification</string>
       </array>
     </config-file>
+
     <config-file target="*-Debug.plist" parent="aps-environment">
       <string>development</string>
     </config-file>
+
     <config-file target="*-Release.plist" parent="aps-environment">
       <string>production</string>
     </config-file>
+
     <source-file src="src/ios/AppDelegate+notification.m"/>
     <source-file src="src/ios/PushPlugin.m"/>
     <header-file src="src/ios/AppDelegate+notification.h"/>
     <header-file src="src/ios/PushPlugin.h"/>
-    <framework src="Firebase/Messaging" type="podspec" spec="~> 6.27.0"/>
+
     <framework src="PushKit.framework"/>
+
+    <podspec>
+      <!-- keep empty `config` object to prevent `cordova-common` install issues.-->
+      <config></config>
+      <pods use-frameworks="true">
+        <pod name="Firebase/Messaging" spec="~> 6.32.2" />
+      </pods>
+    </podspec>
   </platform>
+
   <platform name="windows">
     <hook type="after_plugin_install" src="hooks/windows/setToastCapable.js"/>
+
     <js-module src="src/windows/PushPluginProxy.js" name="PushPlugin">
       <runs/>
     </js-module>
+
     <config-file target="config.xml" parent="/*">
       <preference name="WindowsToastCapable" value="true"/>
     </config-file>

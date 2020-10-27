@@ -1,10 +1,12 @@
 # Cloud Build Services
 
-* [PhoneGap Build Support](#phonegap-build-support)
-  * [Including the plugin](#including-the-plugin)
-  * [Adding Resources](#adding-resources)
-* [IntelXDK Support](#intelxdk-support)
-* [Ionic Cloud Build](#ionic-cloud-build)
+- [Cloud Build Services](#cloud-build-services)
+  - [PhoneGap Build Support](#phonegap-build-support)
+    - [Including the plugin](#including-the-plugin)
+    - [Adding resources](#adding-resources)
+      - [Android](#android)
+  - [IntelXDK Support](#intelxdk-support)
+  - [Ionic Cloud Build](#ionic-cloud-build)
 
 ## PhoneGap Build Support
 

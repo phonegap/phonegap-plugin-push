@@ -1,8 +1,15 @@
 - [Overview](#overview)
-  - [Foreground Events](#push-message-arrives-with-app-in-foreground)
-  - [Background Events](#push-message-arrives-with-app-in-background)
-  - [Tap Events](#user-clicks-on-notification-in-notification-center)
+  - [Push message arrives with app in foreground](#push-message-arrives-with-app-in-foreground)
+  - [Push message arrives with app in background](#push-message-arrives-with-app-in-background)
+  - [User clicks on notification in notification center](#user-clicks-on-notification-in-notification-center)
 - [Push Notification Message Format Overview](#push-notification-message-format-overview)
+  - [Android Message Format](#android-message-format)
+    - [Using AWS-SNS with GCM](#using-aws-sns-with-gcm)
+    - [Message Received in JavaScript](#message-received-in-javascript)
+  - [iOS Message Format](#ios-message-format)
+    - [Speical Format for Critical Alerts](#speical-format-for-critical-alerts)
+    - [Using AWS-SNS with APNS](#using-aws-sns-with-apns)
+    - [Message Received in JavaScript](#message-received-in-javascript-1)
 - [Android Behaviour](#android-behaviour)
   - [Notification vs Data Payloads](#notification-vs-data-payloads)
   - [Localization](#localization)
@@ -12,16 +19,17 @@
   - [Inbox Stacking](#inbox-stacking)
   - [Action Buttons](#action-buttons)
     - [In Line Replies](#in-line-replies)
+      - [Attributes](#attributes)
   - [Led in Notifications](#led-in-notifications)
   - [Vibration Pattern in Notifications](#vibration-pattern-in-notifications)
   - [Priority in Notifications](#priority-in-notifications)
   - [Picture Messages](#picture-messages)
   - [Background Notifications](#background-notifications)
     - [Use of content_available: true](#use-of-content_available-true)
-  - [Caching](#caching)
-  - [Chinese Android Phones](#chinese-android-phones)
-  - [Application force closed](#application-force-closed)
-  - [Visibility](#visibility-of-notifications)
+    - [Chinese Android Phones](#chinese-android-phones)
+    - [Application force closed](#application-force-closed)
+    - [Caching](#caching)
+  - [Visibility of Notifications](#visibility-of-notifications)
   - [Ongoing Notifications](#ongoing-notifications)
   - [Badges](#badges)
   - [Support for Twilio Notify](#support-for-twilio-notify)
@@ -35,6 +43,7 @@
   - [Action Buttons](#action-buttons-1)
     - [Action Buttons using FCM on iOS](#action-buttons-using-fcm-on-ios)
   - [FCM and Additional Data](#fcm-and-additional-data)
+  - [FCM Messages Not Arriving](#fcm-messages-not-arriving)
 - [FCM Payload Details](#fcm-payload-details)
 - [Windows Behaviour](#windows-behaviour)
   - [Notifications](#notifications)
@@ -167,6 +176,38 @@ The JSON message can contain the following fields, see [Apple developer docs](ht
 }
 ```
 
+### Speical Format for Critical Alerts
+
+Since iOS 12, it's possible to send critical alerts to the user's device. A critical alert will popup and play sound even when device is in DND mode or muted. This functionallity is mainly to be used by health apps to inform about critical states.
+
+Instead of the name of the sound, you have to send a dictionary containing further information about critical.
+
+```json
+{
+  "aps": {
+    "alert": {
+      // alternatively just a string: "Your Message",
+      "title": "A short string describing the purpose of the notification",
+      "body": "The text of the alert message",
+      // localization of message is possible
+      "launch-image": "The filename of an image file in the app bundle, with or without the filename extension. The image is used as the launch image when users tap the action button or move the action slider"
+    },
+    "badge": 5, // Number to show at App icon
+    "content-available": "0", // configure background updates, see below
+    "category": "identifier", // Provide this key with a string value that represents the notification’s type
+    "thread-id": "id", // Provide this key with a string value that represents the app-specific identifier for grouping notifications
+    "sound": {
+      "critical" : 1, // When 1, the notification is handled as a critical one. The sound is played aloud even when device is in dnd mode or muted
+      "name" : "default", // play default sound, or custom sound, see [iOS Sound](#sound-1) section
+      "volume" : 1.0 // Optional: Volume. Value can between 0.0 (silent) and 1.0 (full volume)
+    }
+  },
+  "notId": 1,
+  "custom_key1": "value1",
+  "custom_key2": "value2"
+}
+```
+
 ### Using AWS-SNS with APNS
 
 This is the JSON-encoded format you can send via AWS-SNS's web UI:
@@ -261,6 +302,24 @@ My recommended format for your push payload when using this plugin (while it dif
   }
 }
 ```
+
+However, if you want to use the mixed payload, you can make it so the values in your `data` payload is passed to the app when tapping the notification by adding `"click_action": "com.adobe.phonegap.push.background.MESSAGING_EVENT"` to your `notification` payload.
+Your payload would end up looking something like this:
+
+```json
+{
+  "notification": {
+    "title": "Test Notification",
+    "body": "This offer expires at 11:30 or whatever",
+    "notId": 10,
+    "click_action": "com.adobe.phonegap.push.background.MESSAGING_EVENT"
+  },
+  "data": {
+     "surveyID": "ewtawgreg-gragrag-rgarhthgbad"
+  }
+}
+```
+**Important note:** By using the `notification` object in your payload, in all cases, all custom notification features provided by this plugin are unavailable.
 
 When your app is in the foreground any `on('notification')` handlers you have registered will be called. If your app is in the background, then the notification will show up in the system tray. Clicking on the notification in the system tray will start the app, and your `on('notification')` handler will be called with the following data:
 
@@ -2128,12 +2187,12 @@ On iOS, using the FCM app server protocol, if you are trying to send a silent pu
 		"custom_var_2:" "custom value here" /* Retrieved on app as data.additionalData.custom_var_2 */
 	},
   /* Forces FCM silent push notifications to be triggered in the foreground of your iOS device. */
-  "content_available": true  
+  "content_available": true
 }
 ```
 *Doc modification came in response to @andreszs - Issue [#2449](https://github.com/phonegap/phonegap-plugin-push/issues/2449).
 
-** IMPORTANT: When using the content_available field, Android payload issues may occur. [Read here](../docs/PAYLOAD.md#user-content-use-of-content_available-true) Make sure you separate your Android/iOS server payloads to mitigate any problems that may arise. 
+** IMPORTANT: When using the content_available field, Android payload issues may occur. [Read here](../docs/PAYLOAD.md#user-content-use-of-content_available-true) Make sure you separate your Android/iOS server payloads to mitigate any problems that may arise.
 
 More information on how to send push notifications using the FCM HTTP protocol and payload details can be found here:
 

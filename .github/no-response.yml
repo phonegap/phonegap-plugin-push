@@ -1,0 +1,20 @@
+# The "no-response" app is used to automatically close issues that have not received a response
+# from the author. This app is paired with the "request-info" app which manages the warning
+# and label pinning.
+
+# Notice: This app does not support PRs. While the "request-info" app still warns users in PRs,
+# PRs will need to be managed manually for the closing.
+
+# The number of days of inactivity before an issue is closed for lack of response
+daysUntilClose: 4
+
+# The pinned label requiring a response
+responseRequiredLabel: info-needed
+
+# Comment to post when closing an issue for lack of response. `false` to disable
+closeComment: >
+  This issue has been automatically closed because there has been no response
+  to our request for more information from the original author. With only the
+  information that is currently in the issue, we don't have enough information
+  to take action. Please reach out if you have or find the answers we need so
+  that we can investigate further.

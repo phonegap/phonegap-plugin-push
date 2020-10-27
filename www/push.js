@@ -18,9 +18,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  */
 var exec = cordova.require('cordova/exec');
 
-var PushNotification =
-/*#__PURE__*/
-function () {
+var PushNotification = /*#__PURE__*/function () {
   /**
    * PushNotification constructor.
    *
@@ -311,7 +309,7 @@ function () {
         var callback = this.handlers[eventName][i];
 
         if (typeof callback === 'function') {
-          callback.apply(void 0, args);
+          callback.apply(void 0, args); // eslint-disable-line standard/no-callback-literal
         } else {
           console.log("event handler: ".concat(eventName, " must be a function"));
         }

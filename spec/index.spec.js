@@ -134,7 +134,7 @@ describe('phonegap-plugin-push', () => {
             count: 1,
             sound: 'beep',
             image: 'Image',
-            additionalData: {},
+            additionalData: {}
           });
         });
       });
@@ -211,8 +211,8 @@ describe('phonegap-plugin-push', () => {
 
     describe('off "notification" event', () => {
       it('should exist and be registered a callback handle', (done) => {
-        const push = PushNotification.init(options),
-          eventHandler = () => {};
+        const push = PushNotification.init(options);
+        const eventHandler = () => {};
 
         push.on('notification', eventHandler);
 
@@ -225,8 +225,8 @@ describe('phonegap-plugin-push', () => {
 
     describe('off "registration" event', () => {
       it('should exist and be registered a callback handle', (done) => {
-        const push = PushNotification.init(options),
-          eventHandler = () => {};
+        const push = PushNotification.init(options);
+        const eventHandler = () => {};
 
         push.on('registration', eventHandler);
 
@@ -239,8 +239,8 @@ describe('phonegap-plugin-push', () => {
 
     describe('off "error" event', () => {
       it('should exist and be registered a callback handle', (done) => {
-        const push = PushNotification.init(options),
-          eventHandler = () => {};
+        const push = PushNotification.init(options);
+        const eventHandler = () => {};
 
         push.on('error', eventHandler);
         push.off('error', eventHandler);

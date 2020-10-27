@@ -1,5 +1,5 @@
 // Type definitions for phonegap-plugin-push
-// Project: https://github.com/phonegap/phonegap-plugin-push
+// Project: https://github.com/havesource/cordova-plugin-push
 // Definitions by: Frederico Galvão <https://github.com/fredgalvao>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
@@ -217,7 +217,7 @@ declare namespace PhonegapPluginPush {
 			clearBadge?: boolean | string
 			/**
 			 * The data required in order to enable Action Buttons for iOS.
-			 * Action Buttons on iOS - https://github.com/phonegap/phonegap-plugin-push/blob/master/docs/PAYLOAD.md#action-buttons-1
+			 * Action Buttons on iOS - https://github.com/havesource/cordova-plugin-push/blob/master/docs/PAYLOAD.md#action-buttons-1
 			 */
 			categories?: CategoryArray
 			/**
@@ -314,9 +314,69 @@ declare namespace PhonegapPluginPush {
 		notId?: string
 	}
 
+	interface Channel {
+		/**
+		 * The id of the channel. Must be unique per package. The value may be truncated if it is too long.
+		 */
+		id: string;
+		/**
+		 * The user visible name of the channel. The recommended maximum length is 40 characters; the value may be truncated if it is too long.
+		 */
+		description: string;
+		/**
+		 * The importance of the channel. This controls how interruptive notifications posted to this channel are. The importance property goes from 1 = Lowest, 2 = Low, 3 = Normal, 4 = High and 5 = Highest.
+		 */
+		importance: number;
+		/**
+		 * The name of the sound file to be played upon receipt of the notification in this channel. Empty string to disable sound. Cannot be changed after channel is created.
+		 */
+		sound?: string;
+		/**
+		 * Boolean sets whether notification posted to this channel should vibrate. Array sets custom vibration pattern. Example - vibration: [2000, 1000, 500, 500]. Cannot be changed after channel is created.
+		 */
+		vibration?: boolean|number[];
+		/**
+		 * Sets whether notifications posted to this channel appear on the lockscreen or not, and if so, whether they appear in a redacted form. 0 = Private, 1 = Public, -1 = Secret.
+		 */
+		visibility?: number;
+	}
+
 	interface PushNotificationStatic {
-		init(options: InitOptions): PushNotification
 		new (options: InitOptions): PushNotification
+		/**
+		 * Initializes the plugin on the native side.
+		 * @param options An object describing relevant specific options for all target platforms.
+		 */
+		init(options: InitOptions): PushNotification
+		/**
+		 * Checks whether the push notification permission has been granted.
+		 * @param successCallback Is called when the api successfully retrieves the details on the permission.
+		 * @param errorCallback	Is called when the api fails to retrieve the details on the permission.
+		 */
+		hasPermission(successCallback: (data: {isEnabled: boolean}) => void, errorCallback: () => void): void;
+		/**
+		 * Android only
+		 * Create a new notification channel for Android O and above.
+		 * @param successCallback Is called when the api successfully creates a channel.
+		 * @param errorCallback Is called when the api fails to create a channel.
+		 * @param channel The options for the channel.
+		 */
+		createChannel(successCallback: () => void, errorCallback: () => void, channel: Channel): void;
+		/**
+		 * Android only
+		 * Delete a notification channel for Android O and above.
+		 * @param successCallback Is called when the api successfully deletes a channel.
+		 * @param errorCallback Is called when the api fails to create a channel.
+		 * @param channelId The ID of the channel.
+		 */
+		deleteChannel(successCallback: () => void, errorCallback: () => void, channelId: string): void;
+		/**
+		 * Android only
+		 * Returns a list of currently configured channels.
+		 * @param successCallback Is called when the api successfully retrieves the list of channels.
+		 * @param errorCallback Is called when the api fails to retrieve the list of channels.
+		 */
+		listChannels(successCallback: (channels: Channel[]) => void, errorCallback: () => void): void;
 	}
 }
 
