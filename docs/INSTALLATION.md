@@ -24,7 +24,7 @@
 
 | Plugin version | Cordova CLI | Cordova Android | Cordova iOS | CocoaPods |
 | -------------- | ----------- | --------------- | ----------- | --------- |
-| 1.0.0          | 9.0.0       | 8.0.0           | 5.1.1       | 1.8.0     |
+| 1.0.0          | 10.0.0      | 8.0.0           | 5.1.1       | 1.8.0     |
 
 To install from the command line:
 
@@ -117,7 +117,7 @@ To make the two work together, you need to migrate your GCM project from Google 
 {
   "cordova": {
     "plugins": {
-      "havesource-cordova-plugin-push": {
+      "@havesource/cordova-plugin-push": {
         "ANDROID_SUPPORT_V13_VERSION": "28.0.0",
         "FCM_VERSION": "18.+"
       }
@@ -230,8 +230,8 @@ This plugin uses the [Firebase/Messaging](https://cocoapods.org/pods/Firebase) l
 If you are attempting to install this plugin and you run into this error:
 
 ```log
-Installing "havesource-cordova-plugin-push" for ios
-Failed to install 'havesource-cordova-plugin-push':Error: pod: Command failed with exit code 1
+Installing "@havesource/cordova-plugin-push" for ios
+Failed to install '@havesource/cordova-plugin-push':Error: pod: Command failed with exit code 1
     at ChildProcess.whenDone (/Users/smacdona/code/push151/platforms/ios/cordova/node_modules/cordova-common/src/superspawn.js:169:23)
     at emitTwo (events.js:87:13)
     at ChildProcess.emit (events.js:172:7)
