@@ -544,10 +544,19 @@
     id<UIApplicationDelegate> appDelegate = [UIApplication sharedApplication].delegate;
     if ([appDelegate respondsToSelector:@selector(checkUserHasRemoteNotificationsEnabledWithCompletionHandler:)]) {
         [appDelegate performSelector:@selector(checkUserHasRemoteNotificationsEnabledWithCompletionHandler:) withObject:^(BOOL isEnabled) {
-            NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:1];
-            [message setObject:[NSNumber numberWithBool:isEnabled] forKey:@"isEnabled"];
-            CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
-            [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
+            if(!isEnabled){
+                [appDelegate performSelector:@selector(requestUserPermissionRemoteNotificationsWithCompletionHandler:) withObject:^(BOOL granted) {
+                        NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:1];
+                        [message setObject:[NSNumber numberWithBool:granted] forKey:@"isEnabled"];
+                        CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
+                        [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
+                 }];
+            }else{
+                NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:1];
+                [message setObject:[NSNumber numberWithBool:isEnabled] forKey:@"isEnabled"];
+                CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
+                [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
+            }
         }];
     }
 }
